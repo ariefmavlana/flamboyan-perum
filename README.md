@@ -50,4 +50,4 @@ GitHub Actions tidak digunakan. Jalankan backend Pint/PHPUnit/Composer validate+
 
 ## Workflow
 
-Setiap fitur/fix/refactor/dokumentasi memakai branch baru dari `main` terbaru, Conventional Commits dan PR komprehensif. Selama fondasi belum di-merge, PR lanjutan berbasis branch dependensi agar diff terbatas; urutan review/merge mengikuti PR #3 → #4 → #5 → #6 → #7 → #8 → #9. Tidak ada merge tanpa instruksi pengguna, tidak ada GitHub Actions. Main masih bootstrap sampai PR disetujui dan merge diinstruksikan.
+Setiap fitur/fix/refactor/dokumentasi memakai branch baru dari `main` terbaru, Conventional Commits dan PR komprehensif. Selama fondasi belum di-merge, PR lanjutan berbasis branch dependensi agar diff terbatas; urutan review/merge mengikuti PR #3 → #4 → #5 → #6 → #7 → #8 → #9 → [#10 dataset dinamis](https://github.com/ariefmavlana/flamboyan-perum/pull/10). Tidak ada merge tanpa instruksi pengguna, tidak ada GitHub Actions. Main masih bootstrap sampai PR disetujui dan merge diinstruksikan.

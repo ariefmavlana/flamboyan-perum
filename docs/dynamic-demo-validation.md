@@ -2,6 +2,8 @@
 
 2026-10-04 Asia/Jakarta · branch `codex/dynamic-demo-data` · dependensi PR #9. Branch dibuat dari main terbaru `e9ca01a` lalu membawa dependensi dengan fast-forward cherry-pick; main kembali difetch sebelum commit dan tetap bootstrap. Tidak merge, deploy, atau GitHub Actions.
 
+Feature commit `5f04b04` sudah dipush. [PR #10](https://github.com/ariefmavlana/flamboyan-perum/pull/10) open/non-draft, base `codex/operational-acceptance`; commit dokumentasi sesudahnya hanya menambahkan tautan/status PR. Konektor create PR menghasilkan403 insufficient integration permission; jalur GitHub API dengan kredensial Git lokal berhasil. Token tidak dicetak/disimpan dan tidak diperlukan perubahan izin integrasi untuk menyelesaikan PR ini.
+
 ## Perubahan dan bukti
 
 Demo satu properti/lead tetap diganti generator Faker/GD pada database kosong. Default24properties/72leads/3Marketing/7CMS/48media. Nama/slug/harga/lokasi/spesifikasi, persona/rate dan ilustrasi dihasilkan baru per database; login alias lokal tetap sebagai pintu akses. Data dipersistenkan, bukan reseed per request. CRM menggunakan `LeadWorkflow`, media menggunakan `MediaOperations`/database queue/worker native. Notifikasi inbox tetap dibangun atomik; push eksternal dimatikan hanya selama seed lalu dipulihkan.

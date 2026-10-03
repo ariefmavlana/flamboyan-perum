@@ -12,7 +12,7 @@ PR #3 fondasi masih terbuka; main belum memuat fondasi. Setiap tahap membuat bra
 | Notifikasi — implemented PR #7 | I-07/FR-RT-001..004 | Private Echo/Pusher/durablequeue/IDs/retry/dedup/reconnect/poll/inbox; realtime-validation.md |
 | Supervisi/privacy — implemented PR #8 | I-08/FR-CRM-004, PRD§8/retention | Cohort/median/pending/PII-free aggregate/read-only candidates/controlled CLI; supervision-validation.md |
 | Operasi/acceptance — implemented PR #9 | SRS§7/10/NFR | Headers/host/signed proxy/readiness/JSONlogs/backup alert/load/restore/mobile320/database parity; acceptance-validation.md dan requirements-traceability.md |
-| Dummy dinamis — implemented branch codex/dynamic-demo-data | Instruksi pengguna 2026-10-04 + PRD§11/SRS§12 | Persisted generative dataset/real CRUD/API/SSR/native media/rollback/empty-domain guard; demo-data.md dan dynamic-demo-validation.md |
+| Dummy dinamis — implemented PR #10, codex/dynamic-demo-data | Instruksi pengguna 2026-10-04 + PRD§11/SRS§12 | Persisted generative dataset/real CRUD/API/SSR/native media/rollback/empty-domain guard; demo-data.md dan dynamic-demo-validation.md |
 
 Setiap tahap menjalankan Pint, PHPUnit SQLite/PostgreSQL terisolasi, Composer validate/audit, frontend lint/typecheck/unit/build/browser, audit lengkap source+artefak; hasil dan runtime dicatat pada PR. Status berubah menjadi implemented hanya setelah perilaku diuji. Test/provider fakes membuktikan kontrak tetapi bukan bukti pengiriman SMTP/Pusher nyata.
 
