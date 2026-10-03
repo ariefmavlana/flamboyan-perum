@@ -1,0 +1,121 @@
+name: Foundation CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (${{ matrix.database }}, PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        database: [sqlite, pgsql]
+        php: ['8.3', '8.4']
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: flamboyan_test
+          POSTGRES_USER: flamboyan
+          POSTGRES_PASSWORD: ci-only-password
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45 # v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, pdo_sqlite, pdo_pgsql, fileinfo
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist
+      - run: composer validate --strict
+      - run: vendor/bin/pint --test
+      - run: php artisan test
+        env:
+          DB_CONNECTION: ${{ matrix.database }}
+          DB_DATABASE: ${{ matrix.database == 'pgsql' && 'flamboyan_test' || ':memory:' }}
+          DB_HOST: 127.0.0.1
+          DB_PORT: '5432'
+          DB_USERNAME: flamboyan
+          DB_PASSWORD: ci-only-password
+      - run: composer audit
+
+  frontend:
+    name: Frontend and browser flows
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      DEMO_PASSWORD: CI-fixture-only-2026
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - uses: shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45 # v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite, fileinfo
+          coverage: none
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Audit deployable runtime artifact
+        run: |
+          npm install --prefix .output/server --package-lock-only --ignore-scripts --no-fund --no-audit
+          npm audit --prefix .output/server --omit=dev
+      - name: Prepare isolated demo backend
+        working-directory: apps/api
+        run: |
+          composer install --no-interaction --prefer-dist
+          cp .env.example .env
+          php artisan key:generate
+          touch database/database.sqlite
+          php artisan migrate --no-interaction
+          php artisan db:seed --class=DemoSeeder --no-interaction
+          php artisan serve --host=127.0.0.1 --port=8000 > /tmp/flamboyan-api.log 2>&1 &
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: failure()
+        with:
+          name: browser-failure-evidence
+          path: apps/web/test-results/
+          retention-days: 7
+
+  dependency-audit:
+    name: Dependency audit (upstream advisories tracked)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - run: npm ci
+      - name: Audit source dependency tree
+        run: npm audit --omit=dev
