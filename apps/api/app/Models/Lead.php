@@ -22,7 +22,7 @@ class Lead extends Model
 
     protected function casts(): array
     {
-        return ['version' => 'integer', 'assigned_at' => 'datetime', 'first_followed_up_at' => 'datetime'];
+        return ['version' => 'integer', 'assigned_at' => 'datetime', 'first_followed_up_at' => 'datetime', 'anonymized_at' => 'datetime'];
     }
 
     public function scopeVisibleTo(Builder $query, User $user): void

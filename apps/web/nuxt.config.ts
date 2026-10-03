@@ -40,6 +40,7 @@ export default defineNuxtConfig({
     public: {
       siteUrl: 'http://localhost:3000',
       whatsappNumber: '6287776734038',
+      analyticsEnabled: false,
     },
   },
   routeRules: {

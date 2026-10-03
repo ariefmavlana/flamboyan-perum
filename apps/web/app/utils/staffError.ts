@@ -10,7 +10,7 @@ export function staffError(error: unknown): string {
     return (
       Object.values(failure.data?.errors ?? {})
         .flat()
-        .join(' ') || 'Periksa isian formulir.'
+        .join(' ') || failure.data?.message || 'Periksa isian formulir.'
     )
   return (
     failure.data?.message ?? 'Permintaan belum berhasil. Silakan coba kembali.'

@@ -4,7 +4,11 @@ export default defineEventHandler(async (event) => {
   const origin = sitemapOrigin()
   let entries: { url: string; updated?: string }[]
   if (file === 'pages.xml')
-    entries = [{ url: origin }, { url: `${origin}/properti` }]
+    entries = [
+      { url: origin },
+      { url: `${origin}/properti` },
+      { url: `${origin}/privasi` },
+    ]
   else {
     const match = /^properties-([1-9]\d{0,3}|10000)\.xml$/.exec(file)
     if (!match) throw createError({ statusCode: 404 })

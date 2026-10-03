@@ -111,7 +111,10 @@ class LeadWorkflow
         $current = $actor->fresh();
         abort_unless($current?->is_active && in_array($current->role, ['ADMIN', 'MARKETING'], true), 403);
 
-        return Lead::query()->visibleTo($current)->whereKey($id)->lockForUpdate()->firstOrFail();
+        $lead = Lead::query()->visibleTo($current)->whereKey($id)->lockForUpdate()->firstOrFail();
+        abort_if($lead->anonymized_at, 409, 'Lead dianonimkan dan tidak dapat diubah.');
+
+        return $lead;
     }
 
     private function update(Lead $lead, int $version, array $changes): void

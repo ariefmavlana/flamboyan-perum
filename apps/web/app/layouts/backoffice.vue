@@ -35,6 +35,16 @@ onMounted(async () => {
       <button type="button" class="button secondary" @click="logout">
         Keluar
       </button>
+      <NuxtLink
+        v-if="session.account.value?.role === 'ADMIN'"
+        to="/backoffice/laporan"
+        >Laporan</NuxtLink
+      >
+      <NuxtLink
+        v-if="session.account.value?.role === 'ADMIN'"
+        to="/backoffice/privasi"
+        >Retensi lead</NuxtLink
+      >
     </nav>
     <div class="container"><NotificationBell /></div>
     <p v-if="message" class="container error-text" role="alert">
