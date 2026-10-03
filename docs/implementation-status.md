@@ -34,17 +34,19 @@ Tanggal 2026-10-03 · branch `feat/project-foundation` · F0 fondasi tersedia, M
 | FR-RT-004 Read/unread | Implemented | Exact unread count, own recipient list/read idempotent |
 | SEO canonical/metadata | Implemented | Sitemap/robots/query policy/structured data F1/F2 |
 | CI / branch+PR | Implemented workflow | Main protection not configured; AGENTS/CONTRIBUTING rule active |
-| DB/migration parity | SQLite validated locally | PostgreSQL/PHP8.3+8.4 configured in CI; results recorded after PR |
+| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing18 tests/95 assertions; matrix CI PHP8.3+8.4 belum berjalan karena billing akun GitHub |
 | Production/backups/privacy/performance | Gate open | Actual hosting/load/restore/retention/provider/content evidence required |
 
 ## Validasi lokal
 
 - PHPUnit: 18 tests,95 assertions lulus pada SQLite/PHP8.4.26, termasuk duplicate/owner/scoping/status/reassign/version/read-idempotency/transaction rollback dan demo-production guard.
+- Suite yang sama juga lulus18 tests/95 assertions pada PostgreSQL17.9 dengan cluster lokal terisolasi dan PHP8.4.26; tidak mengubah database instalasi yang sudah ada.
 - Pint, Composer validate --strict dan Composer audit lulus; route:cache/route:clear berhasil.
 - Frontend Node24.21.0: ESLint `--max-warnings 0`, Nuxt typecheck, Vitest5 tests, Playwright3 flows, SSR build lulus. Browser flows meliputi raw SSR+canonical404+missing-CSRF419, mobile search/layout, session login/drawer/note/Escape/logout.
 - Public API/detail HTTP smoke sukses200 dan spesifikasi ada pada HTML sebelum client JavaScript. Screenshot desktop/mobile ditinjau lokal; bukan audit accessibility/UAT lengkap.
 - Artefak runtime audit0 advisory; source tooling audit menemukan11 high propagated entries dari dua upstream advisories tanpa patch, tetap blocking audit job dan dicatat pada dependency-security. Build mempunyai warning upstream DEP0155.
 - Tidak ada klaim bahwa hosting produksi, load/SLO, actual backup/restore, legal privacy atau push provider telah diuji. Semua gate mempunyai pemilik/bukti di PRD§10/runbook.
+- [PR #1](https://github.com/ariefmavlana/flamboyan-perum/pull/1) terbuka sebagai draft. GitHub Actions run37094860790 tidak memulai job karena akun terkunci akibat billing. Pemilik akun perlu menyelesaikan billing dan rerun; matrix PHP8.3/8.4 pada Linux belum dinyatakan lulus. Detail ada pada validation.md.
 
 ## Urutan PR lanjutan
 
