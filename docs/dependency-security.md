@@ -22,3 +22,7 @@ Tidak melakukan `npm audit fix --force` yang menyarankan downgrade Nuxt3.15.1 da
 Pemilik Engineering wajib mengevaluasi ulang saat patch upstream tersedia, membuat branch fix baru, memperbarui lockfile, typecheck/test/build/E2E dan scan ulang sebelum rilis. Tidak ada risk acceptance permanen atau hasil 'zero vulnerabilities' palsu untuk source dependency tree. Rilis produksi tetap membutuhkan gate keamanan yang ditinjau pemilik.
 
 Hasil audit artefak `.output/server` yang akan di-deploy: **0 advisory** pada build akhir lokal. Audit lokal membuat lock hanya di folder output yang diabaikan Git; ulangi setelah setiap build sebelum rilis sesuai runbook. Ini tidak mengubah hasil source toolchain yang masih 11 entry high dari dua advisory di atas. Build juga menghasilkan satu warning deprecation `DEP0155` pada resolver Vue/Nitro; lint aplikasi lulus dengan `--max-warnings 0`, warning upstream dicatat tanpa disembunyikan. Belum ada deployment produksi.
+
+## Final acceptance audit
+
+Audit ulang pada branch operational-acceptance (2026-10-03): source11 high/exit1 tetap dua advisory di atas; Composer0 dan production.output/server0/exit0. Npm menyarankan audit fix/force pada dependency chain, tetapi advisory root masih mencakup seluruh versi tersedia dan force menawarkan downgrade Nuxt3.15.1. Tidak ada patch dipalsukan, scanner suppression atau risk acceptance produksi otomatis. Validasi final13unit/12browser/build/lint/typecheck tercatat pada acceptance-validation.md; hasil awal5unit/3browser di atas adalah historis perbaikan Vitest.

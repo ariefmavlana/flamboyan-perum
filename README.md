@@ -1,6 +1,6 @@
 # Flamboyan Perum
 
-Fondasi katalog properti premium dan CRM leads terpusat: **Nuxt SSR + Laravel REST API**, PostgreSQL sebagai target produksi dan SQLite untuk lokal/instalasi ringan. Target deployment shared hosting tanpa Docker, dengan PHP dan proses Node persisten.
+Katalog properti dan CRM leads terpusat: **Nuxt SSR + Laravel REST API**, PostgreSQL sebagai target produksi dan SQLite untuk lokal/instalasi ringan. Target deployment Hostinger/Rumahweb tanpa Docker membutuhkan paket dengan PHP dan proses Node persisten; paket dan domain belum dipilih.
 
 ## Struktur
 
@@ -28,13 +28,13 @@ npm ci
 npm run dev
 ```
 
-Buka `http://127.0.0.1:3000`. Nomor WA/konten produksi tidak disediakan; konfigurasi kosong tidak membuat CTA fiktif. Seed default tidak membuat account. Demo memerlukan password yang dipilih sendiri dan tidak dapat dijalankan pada production.
+Buka `http://127.0.0.1:3000`. Nomor WA sementara dari pengguna: `6287776734038`; konfirmasi kepemilikan sebelum rilis. Konfigurasi kosong menyembunyikan CTA. Konten bisnis asli belum disediakan. Seed default tidak membuat account. Demo memerlukan password yang dipilih sendiri dan tidak dapat dijalankan pada production.
 
-## Cakupan fondasi
+## Cakupan implementasi
 
-Tersedia: home/list/detail SSR, katalog API dengan filter/pagination dan public allowlist, session login/logout, backend role/ownership, create/assign/status/notes CRM, optimistic concurrency, history dan database notifications atomik, tabel CRM/drawer, provisioning CLI, calculation kernel KPR, dan suite pengujian lokal.
+Tersedia: home/list/detail SSR, full filter/sort/URL, compare, KPR fixed/floating dengan schedule/chart, galeri/denah/video/tour/brosur, maps/POI, sitemap/metadata; katalog dan CRM scoped dengan UI Admin/Marketing, akun/profil/recovery/CMS, histori/notifikasi/queue atomik, Echo private dengan polling, laporan cohort, analytics agregat opt-in, prosedur redaksi CLI, readiness/monitoring dan suite pengujian lokal.
 
-Tahap berikutnya: UX Admin create/assign dan CRUD katalog lengkap, media/upload, recovery/profil/CMS, real-time push/Echo, compare/KPR UI dan bank rates, maps/POI/brochure/reporting. [Status per fitur](docs/implementation-status.md) memisahkan fondasi dari MVP dan produksi.
+[Status per fitur](docs/implementation-status.md), [traceability](docs/requirements-traceability.md) dan [bukti acceptance](docs/acceptance-validation.md) memisahkan kode yang telah diuji dari gate produksi: hosting/domain/SMTP/Pusher/ClamAV aktual, konten berizin, policy, audit upstream, UAT dan kapasitas hosting.
 
 ## Dokumentasi dan kualitas
 
@@ -48,4 +48,4 @@ GitHub Actions tidak digunakan. Jalankan backend Pint/PHPUnit/Composer validate+
 
 ## Workflow
 
-Setiap fitur/fix/refactor/dokumentasi memakai branch baru dan PR menuju `main`, Conventional Commits, validasi aktual, risiko/migrasi/rollback, dan dokumentasi terbaru. Tidak ada merge otomatis. PR fondasi pertama berstatus draft untuk review scope dan advisory upstream.
+Setiap fitur/fix/refactor/dokumentasi memakai branch baru dari `main` terbaru, Conventional Commits dan PR komprehensif. Selama fondasi belum di-merge, PR lanjutan berbasis branch dependensi agar diff terbatas; urutan review/merge mengikuti PR #3 → #4 → #5 → #6 → #7 → #8 → #9. Tidak ada merge tanpa instruksi pengguna, tidak ada GitHub Actions. Main masih bootstrap sampai PR disetujui dan merge diinstruksikan.

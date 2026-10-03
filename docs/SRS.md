@@ -1,6 +1,6 @@
 # Software Requirements Specification — Flamboyan Perum
 
-Versi 2.0 · 2026-10-03 · Baseline F0 dan kontrak target F1/F2.
+Versi 2.1 · 2026-10-03 · Kontrak F0–F2; bukti aktual di implementation-status/acceptance-validation.
 
 ## 1. Otoritas, stack, dan scope
 
@@ -21,7 +21,7 @@ Nuxt 4/Vue 3/TypeScript strict dengan SSR aktif; Laravel 13/PHP ≥8.3, Eloquent
 | Assign/reassign lead | Tidak | Ya | Tidak |
 | Update pipeline/add notes | Tidak | Semua | Assignee terkini |
 | Read/mark notification | Tidak | Milik sendiri | Milik sendiri |
-| Reports/CMS/users | Tidak | Ya (target F1/F2) | Tidak |
+| Reports/CMS/users/operations/privacy candidates | Tidak | Ya | Tidak |
 | Profile | Tidak | Diri sendiri | Diri sendiri |
 
 Role lain tidak ada. Pengguna inactive ditolak pada setiap protected request, bukan hanya login. Object di luar scope Marketing menghasilkan 404 agar identitas object tidak bocor. Aksi di luar role menghasilkan 403. User ID tidak dipercaya dari frontend; authorization dicek kembali dalam transaksi mutation, setelah lock/version guard.
@@ -44,7 +44,7 @@ URL `/properti/{slug}` stabil. Published 200; lainnya 404. Error upstream bukan 
 
 ## 4. Media, lokasi, content (F1/F2)
 
-`property_media`: property_id, kind PHOTO/FLOOR_PLAN/VIDEO/TOUR/BROCHURE, path atau validated URL, alt, order, published flag, mime/size. Tidak perlu tabel terpisah untuk setiap jenis file. Lokasi/koordinat optional sebagai field property ketika fitur dibangun; POI editorial JSON bounded20 pada property berisi nama/kategori/jarak meter/source HTTPS/source_date; selalu dibaca bersama satu detail, belum membutuhkan query lintas POI. CMS HERO/TESTIMONIAL/BANK_RATE terstruktur dengan version, publication, order, Admin attestation dan audit; generic CMS/versioning bukan requirement awal.
+`property_media`: property_id, kind PHOTO/FLOOR_PLAN/VIDEO/TOUR/BROCHURE, private staging/variants atau validated URL, alt, position, state, published flag, mime/size. Tidak perlu tabel terpisah untuk setiap jenis file. Lokasi/koordinat optional pada property; POI editorial JSON bounded20 berisi nama/kategori/jarak meter/source HTTPS/source_date; selalu dibaca bersama satu detail, belum membutuhkan query lintas POI. CMS HERO/TESTIMONIAL/BANK_RATE terstruktur dengan version, publication, position, Admin attestation dan audit; generic CMS/versioning bukan requirement awal.
 
 Photo/floorplan: JPEG/PNG/WebP ≤5MiB, ≤40MP, tiap dimensi≤20000px, maksimum20 foto dan5 denah aktif per unit; PDF brosur ≤10MiB satu aktif; tanpa SVG/HTML/executable/upload video. MIME + signature + decode gambar, random storage name, jangan percaya filename klien; strip EXIF, generate responsive variants di background. Upload authorization owner/Admin, staging private, baru expose sanitized media published. PDF diunduh attachment dengan nosniff dan malware scan sebelum produksi. Batas request/server selaras batas file. Replace/archive media memakai audit; cleanup setelah grace 30 hari dan backup.
 
@@ -74,7 +74,7 @@ Request update/assignment/status/note menyertakan `version` yang dibaca klien. S
 
 Notification: id UUID, recipient_id FK user, kind LEAD_ASSIGNED/LEAD_STATUS_CHANGED, lead_id FK, history_id FK unique bersama recipient_id, read_at nullable, created_at UTC. Payload hanya ID dan jenis; tidak memasukkan nomor/nama lead pada push. Assignment menghasilkan satu notification penerima; status change menghasilkan notification semua Admin aktif kecuali actor. Tandai read idempotent hanya notification milik sendiri; list per-page20 maksimum100, unread_count exact. Akses ke lead tetap diperiksa lagi ketika notifikasi diklik (assignee dapat berubah).
 
-Fondasi hanya persisted delivery melalui API. Target F1 menggunakan queued push setelah commit (Pusher + Echo private `users.{id}` channel), retry/backoff bounded, monitoring failed_jobs, event_id dedup, reconnect refresh dan polling60s saat offline. Tidak ada server WebSocket self-hosted sampai hosting membuktikan dukungan. Worker persisten target push p95≤5s; cron-only hingga60s tidak boleh disebut instantaneous; bila bisnis memerlukan5s paket hosting/provider job processing harus memenuhi. Push failure tidak membatalkan transaksi CRM yang sudah sukses.
+Persisted delivery melalui API menjadi sumber kebenaran. Queued push (Pusher + Echo private `users.{id}` channel) menggunakan job database dalam transaksi yang sama, hanya terlihat worker setelah commit; retry/backoff bounded, monitoring failed_jobs, dedup UUID, reconnect refresh dan polling60s selalu berjalan. Tidak ada server WebSocket self-hosted. Worker persisten target push p95≤5s; cron-only hingga60s tidak boleh disebut instantaneous; paket hosting/provider wajib membuktikan target itu. Push failure tidak membatalkan transaksi CRM yang sudah sukses.
 
 ## 7. API, authentication, dan keamanan
 
@@ -84,7 +84,7 @@ Auth: Sanctum first-party session cookie melalui endpoint web POST `/auth/login`
 
 Limits baseline: login5/min per normalized email+IP; public120/min perIP; internal120/min peruser; setup counter store durable/shared sesuai hosting. Form max body, query/field allowlist, plain-text render escaping, no v-html, parameterized queries, mass-assignment allowlist, no public registration/demo production account. Foundation rate limits konservatif dapat disetel berdasarkan load; tidak dipercaya sebagai perlindungan DDoS platform.
 
-Account provisioning/recovery F1: Admin CLI/operasi authenticated dengan password prompt; jangan password di argument/log; reset verified identity + expiring single-use token/link via verified mail/operasi owner terkontrol; revocation existing sessions; last active Admin tidak dapat dinonaktifkan. Production launch blocked jika recovery belum siap. TLS, CSP sesuai embed allowlist, frame-ancestors, nosniff, Referrer-Policy, host/proxy trust spesifik diuji pada hosting.
+Account provisioning/recovery: Admin CLI/operasi authenticated dengan password prompt; jangan password di argument/log; reset verified identity + expiring single-use token/link via verified mail/operasi owner terkontrol; revocation existing sessions; last active Admin tidak dapat dinonaktifkan. Production launch blocked jika delivery recovery belum diverifikasi. TLS, nonce CSP sesuai embed allowlist, frame-ancestors, nosniff, Referrer-Policy, host/proxy trust spesifik diuji lokal dan pada hosting. Login/backoffice memakai same-origin agar Sanctum dapat mengenali GET sesi; reset/forgot-password no-referrer; tidak mengirim referrer internal ke origin eksternal.
 
 ## 8. KPR/compare (F2)
 
@@ -102,7 +102,7 @@ UTC ISO8601 response, UI format id-ID Asia/Jakarta. No DB-specific enum/ILIKE/js
 
 NFR-UI-001..004: premium/readable, responsive320px+, keyboard/focus, WCAG2.2AA target; browser dua versi terbaru Chrome/Edge/Firefox/Safari. NFR-SEO-001..005: SSR published, metadata, crawlable specs, stable slug, OG/canonical F0 dan sitemap/schema F1/F2. Performance/load/availability targets dan backup defaults mengikuti PRD§9; target bukan bukti kelulusan.
 
-Health `/up` liveness tanpa secret; readiness target sebelum produksi DB/storage/queue external monitoring, tidak memanggil provider mahal pada setiap probe. Logs structured request_id/status/latency tanpa body/phone/password; retention30 hari usulan; alert5xx>1%/5min, queue backlog>5min, backup missing>26h. Hosting SLO dinilai via uptime monitor dan laporan error.
+Health `/up` liveness tanpa secret; `/ready` DB/private-storage/queue/config readiness generic200/503; `/api/v1/internal/operations` Admin-only metadata sanitized. Tidak memanggil provider pada setiap probe. Logs JSON request_id/route-pattern/status/duration_ms tanpa query/body/phone/password/SQL/credential. Retention30 hari usulan; monitor eksternal alert5xx>1%/5min, queue backlog>5min, backup missing>26h. Backup timestamp hanya bukti operator, bukan otomatisasi atau verifikasi isi arsip. Hosting SLO dinilai via uptime monitor dan laporan error.
 
 Deploy: build artifacts reproducible lockfiles, backup sebelum migrasi, maintenance bila perlu, composer install no-dev, generate protected APP_KEY sekali, cache config/routes, migrate force, restart SSR/worker terkelola, smoke URL dan persistent data. Cron `schedule:run` setiap menit; bounded queue work cron dengan overlap lock jika worker tidak tersedia. Schema expand/contract; rollback kode hanya pada schema compatible; destructive DB rollback lewat restore teruji dan menerima konsekuensi RPO. Database/media di shared persistent path, tidak dalam direktori release yang diganti. SQLite backup native backup API/snapshot coordinated, bukan copy live DB/WAL sembarang.
 

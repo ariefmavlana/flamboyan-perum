@@ -1,6 +1,6 @@
 # Product Requirements Document — Flamboyan Perum
 
-Versi 2.0 · 2026-10-03 · Baseline fondasi; release produk masih bertahap.
+Versi 2.1 · 2026-10-03 · Kontrak produk F0–F2; implementasi dan gate rilis tercatat terpisah.
 
 ## 1. Produk dan masalah
 
@@ -26,7 +26,7 @@ Premium melalui tipografi, whitespace, foto sah, dan konten jelas; bukan efek vi
 
 | Tahap | Ruang lingkup | Syarat selesai |
 |---|---|---|
-| F0 — fondasi saat ini | Monorepo, runtime, katalog API/SSR, scoped API katalog/CRM, auth, histori, notifikasi database, suite pengujian lokal, dokumentasi | Check lokal lulus dan bukti tercatat; status fitur jujur; PR reviewable |
+| F0 — fondasi | Monorepo, runtime, katalog API/SSR, scoped API katalog/CRM, auth, histori, notifikasi database, suite pengujian lokal, dokumentasi | Check lokal lulus dan bukti tercatat; status fitur jujur; PR reviewable |
 | F1 — MVP operasi | UX CRUD properti, media aman, Admin create/assign, tabel Marketing, drawer, akun/profil, push/Echo dan fallback | Seluruh flow P0 dan keamanan lulus; hosting terverifikasi |
 | F2 — evaluasi dan supervisi | Compare UI, kalkulator UI/rate bank, maps/POI, brosur, CMS/social proof, reporting | Acceptance terkait masing-masing fitur lulus |
 | Produksi | F1 + fitur F2 yang dipilih untuk rilis | Deployment, restore, privacy, beban, konten, dan provider dibuktikan |
@@ -72,7 +72,7 @@ Funnel event `property_view`, `whatsapp_click` (tanpa PII); lead recorded dan ou
 
 ## 9. Kualitas dan operasi
 
-SLO usulan: availability bulanan 99.5%, API public p95 ≤500ms, SSR p95 ≤1.5s pada dataset 10.000 properties / 50.000 leads dan 20 request/s, error <1% selama 15 menit. Target lapangan LCP ≤2.5s, INP ≤200ms, CLS ≤0.1 pada p75 mobile; baru dapat dibuktikan setelah trafik. Target bukan hasil pengujian saat ini. Optimalkan pagination/index/image sebelum layanan tambahan.
+SLO usulan: availability bulanan 99.5%, API public p95 ≤500ms, SSR p95 ≤1.5s pada dataset 10.000 properties / 50.000 leads dan 20 request/s, error <1% selama 15 menit. Target lapangan LCP ≤2.5s, INP ≤200ms, CLS ≤0.1 pada p75 mobile; baru dapat dibuktikan setelah trafik. Target hosting/lapangan bukan klaim kelulusan. Bukti local synthetic load/restore ada di acceptance-validation.md; pengukuran hosting, uptime bulanan dan field Web Vitals tetap gate. Optimalkan pagination/index/image sebelum layanan tambahan.
 
 Baseline backup: harian DB+media, 7 harian/4 mingguan/3 bulanan di lokasi terpisah dan terenkripsi, RPO ≤24 jam/RTO ≤8 jam, restore triwulanan. Retensi PII lead usulan 24 bulan setelah aktivitas terakhir; kebijakan legal, notice, dan proses penghapusan/anonymization harus ditandatangani sebelum produksi. Identitas dan nomor WA tidak masuk log/analytics.
 

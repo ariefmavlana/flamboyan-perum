@@ -15,11 +15,11 @@ flowchart LR
     Catalog --> DB[(PostgreSQL / SQLite)]
     CRM -->|Transaction: lead + history + notification| DB
     Identity --> DB
-    API -. F1 queued after commit .-> Push[Managed push]
+    API -. queued delivery after commit .-> Push[Managed push]
     API --> Media[Persistent sanitized media]
 ```
 
-Browser memakai same-origin API. Nuxt hanya mem-proxy public GET melalui allowlist; session/CSRF/private routes diteruskan oleh web reverse proxy, bukan proxy Nuxt generik yang menerima arbitrary destination. Lokal gunakan Nitro devProxy untuk private routes. Public SSR tidak meneruskan cookie. Production `/api`, `/auth`, `/sanctum` ke Laravel; `/login` ke Nuxt. Alternatif subdomain harus menyesuaikan Sanctum/CORS/cookie dan diuji dahulu.
+Browser memakai same-origin API. Nuxt mem-proxy public GET melalui allowlist dan POST analytics strict; session/CSRF/private routes diteruskan oleh web reverse proxy. Lokal gunakan Nitro devProxy untuk private routes. Public SSR tidak meneruskan cookie. Production `/api`, `/auth`, `/sanctum`, `/media`, `/up`, `/ready` ke Laravel; `/login` ke Nuxt. Alternatif subdomain harus menyesuaikan Sanctum/CORS/cookie dan diuji dahulu.
 
 | Module | Ownership | Boundary |
 |---|---|---|
@@ -49,7 +49,7 @@ Index, constraints, types dan query conventions ada di SRS§9 serta migrations. 
 
 Workspace operasi menambahkan AccountOperations sebagai batas transaksi akun (version, last-active-Admin lock, workload guard, revoke sessions/reset tokens, audit) serta ActivityLog readonly. Property transfer adalah operasi Admin terpisah; CRM contact correction menggunakan LeadWorkflow dengan CONTACT_UPDATED append-only. Query list memakai eager loading relasi ringkas untuk mencegah N+1 dan dropdown menggunakan search/pagination sehingga tidak menganggap100 akun/properti pertama sebagai seluruh pilihan. Recovery memakai password broker Laravel dengan frontend URL konfigurasi trusted; tidak menggunakan host header untuk tautan email. Tidak menambah repository/event bus atau layanan identitas tambahan.
 
-API validation422 tidak mengubah data. Version/transition/duplicate409 tidak menghasilkan histori/notification baru. Unauthorized scoped object404; unknown role403/inactive403; expired session401; CSRF419. Provider push F1 gagal sesudah commit: data tetap tersimpan, retry/backoff dan persisted notification tetap tersedia. Public API unavailable: SSR503 dengan retry, bukan daftar demo diam-diam. Database/storage release path persisten agar deploy tidak menghapus data.
+API validation422 tidak mengubah data. Version/transition/duplicate409 tidak menghasilkan histori/notification baru. Unauthorized scoped object404; unknown role403/inactive403; expired session401; CSRF419. Provider push gagal sesudah commit: data tetap tersimpan, retry/backoff dan persisted notification tetap tersedia. Public API unavailable: SSR503 dengan retry, bukan daftar demo diam-diam. Database/storage release path persisten agar deploy tidak menghapus data.
 
 ## Scaling path
 
@@ -69,3 +69,9 @@ Pusher delivery adalah adapter konkret kecil untuk dua operasi protokol terdokum
 LeadReport membaca satu cohort select≤50.000 rows tanpa kontak, exact median menyimpan durasi saja. Index created_at/id dan history lead_id/created_at/id, tidak membutuhkan warehouse/event bus. Cohort/current assignee berbeda dari actor follow-up. Daily funnel aggregate atomic bukan identitas/event stream/integrasi WhatsApp.
 
 LeadPrivacy merupakan CLI khusus redaksi terverifikasi, bukan API editing histori. Lock fresh Admin+lead/version; contact/historynotes/oldLEADaudittext+appendprivacylog atomik. Original status/time/actor retained; redacted_at menandai redaksi. Phone nullable menghapus identitas tanpa hash kontak yang masih bisa dilacak. Rows retained for metrics/FK, mutations blocked. Policy/backup redaction replay gate; execution defaultdisallowed.
+
+## Edge trust dan operational acceptance
+
+Nuxt client-IP middleware memakai socket+exact trusted hops, private HMAC metadata untuk internal SSR requestFetch dan signature path/method/time/IP ke Laravel public routes. Backend memakai request-time explicit TrustProxies subclass dan HMAC verification; tidak wildcard proxy trust atau cookie forwarding ke public API. Rate limiter tidak menggabungkan seluruh pengguna SSR ke alamat Node. Private routes tetap edge→Laravel same-origin. Key≥32random bytes, exact host/proxy allowlists dan canonical origin adalah environment hosting, bukan credential hardcoded.
+
+Nonce CSP per response pada built SSR melindungi hidrasi/render script dan membatasi frame/connect provider. Referrer policy login/backoffice same-origin diperlukan Sanctum session GET; recovery no-referrer menjaga token. JSON request logs tidak menyimpan PII/SQL/query; exception report class/code saja. Readiness hanya technical live dependencies/config, Admin ops queue/media/backup metadata; tidak menggantikan provider/offsite/security/content gate. Backup marker private hanya written oleh operator setelah bukti pipeline, bukan application-generated claim. SQLite WAL/busy_timeout5000/synchronousFULL tetap satu ringan instance; PostgreSQL dipakai untuk acceptance10k/50k/load. Windows local8workers+OPCache hanyalah model proses PHP terukur, bukan layanan baru deployment.

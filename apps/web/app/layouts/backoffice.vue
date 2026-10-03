@@ -45,6 +45,11 @@ onMounted(async () => {
         to="/backoffice/privasi"
         >Retensi lead</NuxtLink
       >
+      <NuxtLink
+        v-if="session.account.value?.role === 'ADMIN'"
+        to="/backoffice/operasi"
+        >Operasi</NuxtLink
+      >
     </nav>
     <div class="container"><NotificationBell /></div>
     <p v-if="message" class="container error-text" role="alert">

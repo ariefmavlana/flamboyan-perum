@@ -37,6 +37,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     apiBase: 'http://127.0.0.1:8000',
+    apiProxySecret: '',
+    trustedProxyIps: '',
+    allowedHosts: 'localhost,127.0.0.1',
+    tourHosts: 'my.matterport.com',
     public: {
       siteUrl: 'http://localhost:3000',
       whatsappNumber: '6287776734038',

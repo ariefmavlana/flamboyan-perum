@@ -6,7 +6,7 @@ export async function catalogApi(
   try {
     return await $fetch(`${config.apiBase}/api/v1/properties${path}`, {
       query: getQuery(event),
-      headers: { Accept: 'application/json' },
+      headers: publicHeaders(event, 'GET', `/api/v1/properties${path}`),
       timeout: 5000,
     })
   } catch (error: unknown) {

@@ -1,14 +1,14 @@
 # Status implementasi
 
-Tanggal 2026-10-03 · branch `codex/supervision-privacy` · F0 + workspace operasi + media + evaluasi/editorial + notifikasi + supervisi/privacy; produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
+Tanggal 2026-10-04 · branch `codex/operational-acceptance` · F0–F2 + acceptance operasional. Kode seluruh kelompok requirement tersedia dan dipetakan di requirements-traceability.md; produksi tetap gated. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi. Bagian historis merekam hasil masing-masing PR, bukan status fitur terkini.
 
-| Requirement / fitur | Status F0 | Tahap berikutnya / batas |
+| Requirement / fitur | Status aktual | Batas / gate |
 |---|---|---|
 | Stack Nuxt4.5.2/Laravel13, lockfiles/runtime | Implemented | PHP8.3 compatible platform; hosting belum dipilih |
 | FR-PUB-001 Hero | Implemented | CMS Admin/verified hero + sanitized cover published; konten asli masih gate |
 | FR-PUB-002 Search | Implemented basic | title/location/address + full filter/URL/pagination; hydration guarded |
 | FR-PUB-003/029 WhatsApp | Implemented/config-gated | Nomor sementara pengguna 6287776734038; link/context tested |
-| FR-PUB-004 Featured | Implemented | Hanya published featured; Admin UX flag F1 |
+| FR-PUB-004 Featured | Implemented | Hanya published featured; scoped flag UI/catalog version |
 | FR-PUB-005 Social proof | Implemented/content-gated | Testimonial verified + rate references; izin/konten aktual gate, tanpa klaim kemitraan |
 | FR-PUB-010 Listing/cards | Implemented | Semua spesifikasi inti + availability; tanpa identitas Marketing |
 | FR-PUB-011/012 Filter/sort | Implemented | Full documented UI, URL/back/reload, numeric bounds +7sort |
@@ -24,7 +24,7 @@ Tanggal 2026-10-03 · branch `codex/supervision-privacy` · F0 + workspace opera
 | Auth/active-user/role | Implemented | Cookie session/CSRF/login/logout/provision CLI + users UI/recovery/deactivation guard; SMTP real-delivery gate |
 | FR-CRM-001 Create lead | Implemented API | Manual Admin UI + normalized phone/unique perproperty; controlled audited contact correction |
 | FR-CRM-002 Assignment | Implemented API | Single active assignee/reassign reason/atomic notification; bounded searchable dropdown UI |
-| FR-CRM-003 Monitoring | Implemented basic | Scoped search/status/assignee/unassigned filters + labels + pagination; reports F2 |
+| FR-CRM-003 Monitoring | Implemented | Scoped search/status/assignee/unassigned filters + labels/pagination/reports |
 | FR-CRM-004 Reports | Implemented | Admin cohort/current assignee vs follow-up actor, median sample/pending age; date/count bounds |
 | FR-MKT-001 Table | Implemented | Scoped list/pagination/read+status+notes; property/assignee human labels |
 | FR-MKT-002/003 Pipeline/notes | Implemented | Ordered transitions+LOST reason+terminal guard+versions |
@@ -34,8 +34,10 @@ Tanggal 2026-10-03 · branch `codex/supervision-privacy` · F0 + workspace opera
 | FR-RT-004 Read/unread | Implemented | Exact unread count, own recipient list/read idempotent |
 | SEO canonical/metadata | Implemented | Sitemap index/1000 published perfile, robots/query noindex, factual JSON-LD |
 | Validasi lokal / branch+PR | Implemented | GitHub Actions dihapus sesuai instruksi pengguna; bukti lokal wajib sebelum review; main protection belum dikonfigurasi |
-| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing59 tests/389 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
-| Production/backups/privacy/performance | Gate open | Actual hosting/load/restore/retention/provider/content evidence required |
+| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing66 tests/453 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
+| Host/proxy/CSP/logs/readiness/monitoring | Implemented | Signed per-client proxy, exact allowlists, production nonce CSP, JSON logs, Admin ops/backup age; external TLS/monitoring gate |
+| Local load/restore | Validated synthetic locally | 18k requests/900s/20scheduledrps/0errors; 10k properties/50k leads; consistent/encrypted SQLite+media and PG isolated restore; actual hosting/offsite/RPO/RTO/retention gate |
+| Production/privacy/providers/content | Gate open | Actual hosting/domain/SMTP/Pusher/ClamAV/policy/content/QA/security evidence required |
 
 ## Validasi F0 historis
 
@@ -48,7 +50,7 @@ Tanggal 2026-10-03 · branch `codex/supervision-privacy` · F0 + workspace opera
 - Tidak ada klaim bahwa hosting produksi, load/SLO, actual backup/restore, legal privacy atau push provider telah diuji. Semua gate mempunyai pemilik/bukti di PRD§10/runbook.
 - [PR #3](https://github.com/ariefmavlana/flamboyan-perum/pull/3) terbuka dan siap review pada branch baru, membawa fondasi yang belum di-merge, aturan tanpa Actions, fix Vitest dan validasi akhir. [PR #1](https://github.com/ariefmavlana/flamboyan-perum/pull/1)/[PR #2](https://github.com/ariefmavlana/flamboyan-perum/pull/2) ditutup sebagai superseded, tanpa merge. Tidak ada syarat memperbaiki billing atau menjalankan ulang Actions. Bukti commit/runtime/perintah dan batasan ada pada validation.md; siap review tidak berarti siap produksi atau otorisasi merge.
 
-## Urutan PR lanjutan
+## Rencana historis setelah F0
 
 1. `fix/dependency-tooling-advisories` saat patch upstream tersedia, scan/test ulang; jangan downgrade framework secara paksa.
 2. `feat/admin-catalog-crm-ui`: owner-aware CRUD, create/assign form/dropdown, active-user provisioning/recovery/profile serta account deactivation policy.
@@ -58,7 +60,7 @@ Tanggal 2026-10-03 · branch `codex/supervision-privacy` · F0 + workspace opera
 6. `feat/admin-reporting`: cohort/median/pending, query correctness/performance.
 7. `chore/production-readiness`: hosting evidence/load/UAT/security/restore/content/privacy/SEO checks.
 
-Nama branch berikutnya merupakan saran workflow, bukan branch yang sudah dibuat. Setiap pekerjaan baru dari main terbaru dan PR sendiri sesuai AGENTS; fondasi sekarang satu perubahan koheren dengan beberapa Conventional Commits.
+Daftar ini adalah rencana saat F0 dibuat, bukan pekerjaan aplikasi yang belum tersedia. Tahap telah dijalankan melalui PR #4–#9 pada implementation-plan.md. Perbaikan advisori upstream tetap menunggu patch yang benar. Setiap pekerjaan baru dari main terbaru dan PR sendiri sesuai AGENTS.
 
 ## Workspace operasi historis (PR #4)
 
@@ -68,13 +70,19 @@ Lihat operations-validation.md untuk bukti tahap operasi saat PR #4: PHPUnit32 t
 
 Lihat media-validation.md:43 tests/252 assertions masing-masing SQLite/PostgreSQL,6 browser flows termasuk queue worker nyata+SSR gallery/archive404, Pint/Composer/frontend checks/build. Source11 high dan runtime0 tetap dilaporkan. PR #4 operasi telah terbuka dan menjadi dependensi media; tidak ada merge. PDF clean/unsafe scanner tests menggunakan mocks; scanner nyata/content berizin/large-image hosting masih gate. Compare/KPR/CMS/maps/push/report/privacy tetap belum diklaim selesai.
 
-## Evaluasi/editorial terbaru
+## Evaluasi/editorial historis (PR #6)
 
 Lihat evaluation-validation.md: PHPUnit49 tests/299 assertions masing-masing SQLite/PostgreSQL,8 browser flows55.6s,7 unit tests; final lint0/type/build passed, source11 high/runtime0 dan Composer0/cache fallback dicatat PR. Compare/fullfilters/KPR/CMS/maps/SEO tersedia dengan actual content/provider gates. PR #5 media terbuka sebagai dependensi; tidak ada merge. Push/report/analytics/privacy/operational acceptance masih harus diselesaikan sesuai implementation-plan.md.
-## Notifikasi terbaru
+## Notifikasi historis (PR #7)
 
 Lihat realtime-validation.md:55 tests/337 assertions SQLite/PostgreSQL,11 unit tests,9 browser flows, lint/type/build/Composer passed; source11 high/runtime0. Echo/private push tersedia dengan provider nyata gated; laporan/analytics/privacy/operational acceptance masih dilanjutkan. Tidak ada merge/deployment.
 
-## Supervisi dan privasi terbaru
+## Supervisi dan privasi historis (PR #8)
 
 Lihat supervision-validation.md:59 tests/389 assertions SQLite/PostgreSQL,11 unit tests,10 browser flows, lint/type/build/Composer passed; source11 high/runtime0. Reports/PII-free aggregates opt-in/read-only retention candidates/controlled CLI redaction implemented. Policy dan restore-ledger masih gate. Acceptance operasional dilanjutkan, tanpa merge/deployment.
+
+## Acceptance operasional terbaru (PR #9)
+
+Lihat acceptance-validation.md dan requirements-traceability.md:66 tests/453assertions SQLite+PostgreSQL,13 unit tests,12 browser flows termasuk production CSP/320px, lint/type/build/Pint/Composer/cache passed. Dataset10kproperty/50klead;15min/20scheduledrps/18krequests/0errors, API p95≤165.85ms/SSR≤428.19ms pada8nativePHPworkers+OPCache/PostgreSQL lokal. Native encrypted consistent SQLite+media restore dan PG isolated restore lulus. Tidak mengklaim throughput SQLite/shared-hosting, uptime99.5%, fullWCAG/cross-browser, realSMTP/Pusher/ClamAV/offsite/policy.
+
+PR #3 fondasi, #4 workspace, #5 media, #6 evaluasi, #7 realtime, #8 supervisi/privacy dan #9 acceptance membentuk stack review. Main masih bootstrap, tidak ada merge/deployment/Actions. Nomor sementara pengguna6287776734038; hostingHostinger/Rumahweb paket/domain belum dipilih. Runtime audit0/Composer0; source11high dari dua upstream advisories tetap gate. Source originals unchangedSHA; app artifacts/runtime/private fixtures/keys/passwords tidak dicommit.
