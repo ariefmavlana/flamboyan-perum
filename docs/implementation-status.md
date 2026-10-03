@@ -1,6 +1,6 @@
 # Status implementasi
 
-Tanggal 2026-10-03 · branch `chore/local-validation` · F0 fondasi tersedia, MVP/produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
+Tanggal 2026-10-03 · branch `fix/foundation-validation` · F0 fondasi siap direview, MVP/produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
 
 | Requirement / fitur | Status F0 | Tahap berikutnya / batas |
 |---|---|---|
@@ -42,11 +42,11 @@ Tanggal 2026-10-03 · branch `chore/local-validation` · F0 fondasi tersedia, MV
 - PHPUnit: 18 tests,95 assertions lulus pada SQLite/PHP8.4.26, termasuk duplicate/owner/scoping/status/reassign/version/read-idempotency/transaction rollback dan demo-production guard.
 - Suite yang sama juga lulus18 tests/95 assertions pada PostgreSQL17.9 dengan cluster lokal terisolasi dan PHP8.4.26; tidak mengubah database instalasi yang sudah ada.
 - Pint, Composer validate --strict dan Composer audit lulus; route:cache/route:clear berhasil.
-- Frontend Node24.21.0: ESLint `--max-warnings 0`, Nuxt typecheck, Vitest5 tests, Playwright3 flows, SSR build lulus. Browser flows meliputi raw SSR+canonical404+missing-CSRF419, mobile search/layout, session login/drawer/note/Escape/logout.
+- Frontend Node24.21.0: npm ci, ESLint `--max-warnings 0`, Nuxt typecheck, Vitest4.1.11/5 tests, Playwright3 flows, SSR build lulus pada validasi akhir. Browser flows meliputi raw SSR+canonical404+missing-CSRF419, mobile search/layout, session login/drawer/note/Escape/logout pada fixture terisolasi.
 - Public API/detail HTTP smoke sukses200 dan spesifikasi ada pada HTML sebelum client JavaScript. Screenshot desktop/mobile ditinjau lokal; bukan audit accessibility/UAT lengkap.
-- Artefak runtime audit0 advisory; source tooling audit menemukan11 high propagated entries dari dua upstream advisories tanpa patch, tetap menjadi gate keamanan produksi dan dicatat pada dependency-security. Build mempunyai warning upstream DEP0155.
+- Advisory Vitest diperbaiki melalui versi patched4.1.11. Audit source lengkap termasuk devDependencies menghasilkan11 high propagated entries dari dua upstream advisories tanpa patch,0 moderate/critical; tetap menjadi gate keamanan produksi. Audit artefak runtime0 advisory dan tidak memuat paket tooling tersebut. Build mempunyai warning upstream DEP0155. Detail ada di dependency-security.md.
 - Tidak ada klaim bahwa hosting produksi, load/SLO, actual backup/restore, legal privacy atau push provider telah diuji. Semua gate mempunyai pemilik/bukti di PRD§10/runbook.
-- [PR #2](https://github.com/ariefmavlana/flamboyan-perum/pull/2) menjadi proposal aktif. Branch baru membawa fondasi yang belum di-merge dan mengganti workflow dengan validasi lokal sesuai instruksi pengguna. [PR #1](https://github.com/ariefmavlana/flamboyan-perum/pull/1) ditutup sebagai superseded, tanpa merge. Tidak ada syarat memperbaiki billing atau menjalankan ulang Actions. Detail hasil dan keterbatasan ada pada validation.md.
+- Proposal final pada branch baru membawa fondasi yang belum di-merge, aturan tanpa Actions, fix Vitest dan validasi akhir. [PR #1](https://github.com/ariefmavlana/flamboyan-perum/pull/1)/[PR #2](https://github.com/ariefmavlana/flamboyan-perum/pull/2) merupakan riwayat proposal sebelumnya. Tidak ada syarat memperbaiki billing atau menjalankan ulang Actions. Bukti commit/runtime/perintah dan batasan ada pada validation.md; siap review tidak berarti siap produksi atau otorisasi merge.
 
 ## Urutan PR lanjutan
 
