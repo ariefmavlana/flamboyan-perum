@@ -2,7 +2,7 @@
 
 ## Prasyarat
 
-PHP8.3+ (extensions ctype,curl,dom,fileinfo,filter,hash,mbstring,openssl,pcre,pdo,session,tokenizer,xml,sqlite atau pgsql), Composer2, Node24.11+ LTS dan npm. Fondasi menggunakan Nuxt4.5.2/Laravel13; versi transitive ditentukan lockfiles dan PHP platform8.3 pada composer.json. Runtime lokal `.tools` hanya alat pengujian di mesin pembuat, tidak bagian repository/installer otomatis.
+PHP8.3+ (extensions ctype,curl,dom,fileinfo,filter,hash,mbstring,openssl,pcre,pdo,session,tokenizer,xml,gd dengan JPEG/PNG/WebP,sqlite atau pgsql), Composer2, Node24.11+ LTS dan npm. Fondasi menggunakan Nuxt4.5.2/Laravel13; versi transitive ditentukan lockfiles dan PHP platform8.3 pada composer.json. Runtime lokal `.tools` hanya alat pengujian di mesin pembuat, tidak bagian repository/installer otomatis.
 
 ## Setup lokal
 
@@ -66,7 +66,7 @@ Lock audit hanya dibuat pada `.output` yang diabaikan Git. Audit source (`npm ru
 
 Pemilik hosting harus membuktikan PHP/extensions, private deploy/config path, Composer atau uploaded vendor artifact, Node24 process persisten+restart+routing HTTPS, DB PostgreSQL atau SQLite private persistent disk, cron permenit, media shared storage, resource quota, outbound push dan log/backup access. SSR HTML diuji pada domain produksi. Paket tanpa Node persisten tidak lulus; jangan mengganti menjadi SPA tanpa revisi requirement.
 
-Routing produksi: `/api/*`,`/auth/*`,`/sanctum/*`,`/up` ke Laravel public/index.php; lainnya Nuxt Node SSR. `/login` adalah halaman Nuxt. Static `_nuxt` boleh CDN setelah privacy/cache policy; protected API/HTML tidak di-cache. Public API+SSR same-origin; Node dapat memakai private backend URL. Host-provided Apache/LiteSpeed/Passenger routing disesuaikan paket dan diuji; tidak menyediakan file server palsu sebelum stack hosting diketahui.
+Routing produksi: `/api/*`,`/auth/*`,`/sanctum/*`,`/media/*`,`/up` ke Laravel public/index.php; lainnya Nuxt Node SSR. `/login` adalah halaman Nuxt. Static `_nuxt` boleh CDN setelah privacy/cache policy; protected API/HTML tidak di-cache. Public API+SSR same-origin; Node dapat memakai private backend URL. Host-provided Apache/LiteSpeed/Passenger routing disesuaikan paket dan diuji; tidak menyediakan file server palsu sebelum stack hosting diketahui.
 
 Urutan release: (1) review bukti validasi lokal+security+scope+content/privacy, (2) consistent encrypted database+media backup dan checksum, (3) upload release terpisah dari persistent storage/.env, (4) composer install --no-dev --prefer-dist --optimize-autoloader, build Nuxt di mesin build terkontrol, (5) maintenance bila schema perlu, (6) php artisan migrate --force, config:cache, route:cache, (7) restart Node/PHP/worker sesuai hosting, (8) smoke SSR/public/login/scoped mutation/history, (9) cek persistence dan monitoring, (10) akhiri maintenance setelah sehat. APP_KEY tidak di-regenerate pada deploy.
 
@@ -80,10 +80,22 @@ Rollback: gunakan artefak commit sebelumnya hanya jika schema compatible; jangan
 
 Cron schedule:run permenit; queued push/media F1 membutuhkan managed worker atau bounded cron queue:work dengan lock overlap. Push target≤5s membutuhkan worker persisten; cron-only interval60s tidak memenuhi itu. Monitor liveness `/up`, target readiness DB/storage/queue sebelum produksi, alert5xx>1%/5min, queue backlog>5min, missed backup>26h. Logs request_id/status/latency tanpa password/phone/body CRM. Retention dan alert channels disetujui owner sebelum go-live.
 
-Production database PostgreSQL lebih disukai; uji suite lokal+load nyata pada runtime deployment yang dipilih. SQLite hanya satu instalasi ringan; migrasikan saat kebutuhan multi-instance, lock-contention/latency atau kuota terlampaui. F0 tidak mempunyai push provider, media uploads atau reports lengkap; recovery akun tersedia dan pengiriman SMTP produksi masih membutuhkan konfigurasi serta verifikasi; status file menjadi checklist release. Dependency advisory terpisah di `dependency-security.md` wajib ditangani/review sebelum production approval.
+Production database PostgreSQL lebih disukai; uji suite lokal+load nyata pada runtime deployment yang dipilih. SQLite hanya satu instalasi ringan; migrasikan saat kebutuhan multi-instance, lock-contention/latency atau kuota terlampaui. Media private/queue/gallery tersedia; push provider dan reports masih mengikuti status implementasi; recovery akun tersedia dan pengiriman SMTP produksi masih membutuhkan konfigurasi serta verifikasi; status file menjadi checklist release. Dependency advisory terpisah di `dependency-security.md` wajib ditangani/review sebelum production approval.
 
 ## Workspace akun dan pemulihan
 
 Set FRONTEND_URL ke origin frontend trusted; konfigurasi SMTP private dan verifikasi pengiriman recovery pada akun test sebelum go-live. Admin menandai identity_verified hanya setelah memeriksa identitas melalui prosedur tim. Broker token berlaku60 menit dan sekali pakai; tautan menggunakan no-referrer/no-store/noindex. CLI bootstrap juga meminta attestation identitas, default tidak terverifikasi. Nomor sementara pengguna6287776734038 boleh dikosongkan melalui NUXT_PUBLIC_WHATSAPP_NUMBER agar CTA disembunyikan.
 
 Sebelum migration operasi, periksa duplikasi case-insensitive email secara privat dan selesaikan secara manual tanpa menghapus histori. Preflight migration menolak duplikasi sebelum perubahan schema. Backup konsisten wajib; audit tidak dihapus melalui API. Demotion/deactivation Marketing diblokir bila masih memiliki katalog non-ARCHIVED atau assigned lead nonterminal; transfer/archive dan reassign/resolve dahulu. Admin aktif terakhir tidak dapat dicabut. Detail migrasi/rollback ada di operations-validation.md.
+
+## Operasi media private
+
+Aktifkan GD JPEG/PNG/WebP; set upload_max_filesize≥10M dan post_max_size≥12M pada PHP serta batas proxy yang selaras. Persistent storage/app/media-private harus berada di luar web root, dapat ditulis API/worker, dan disertakan backup. Jangan storage:link disk media. Production `/media/*` diarahkan ke Laravel, karena handler memeriksa publication dan state pada setiap request.
+
+Jalankan worker database `php artisan queue:work database --queue=media --sleep=1 --tries=3 --timeout=60` terkelola; restart setelah deploy. Jika hanya tersedia cron, gunakan bounded worker --stop-when-empty --max-time=50 dengan lock overlap hosting. Uji memory/timeout untuk batas40MP; target awal worker512MiB belum membuktikan kapasitas paket. Sumber tetap private; hanya variants WebP READY dan published dapat dilihat publik. YouTube/tour memerlukan consent dan tour HTTPS host terdaftar pada MEDIA_TOUR_HOSTS.
+
+Set MEDIA_SCANNER_BINARY absolute path engine clamscan maintained dengan signatures freshclam. Brosur gagal tertutup bila scanner tidak tersedia; jangan publish sebelum clean/unsafe/encrypted/limit fixture diuji pada hosting. Perintah aplikasi dan batas scanner ada di media-validation.md. Bukan cukup hanya memeriksa binary ada.
+
+Pantau media FAILED/PROCESSING>15 menit dan failed_jobs. `php artisan flamboyan:media-recover` dry-run; --execute setelah masalah worker diperbaiki. Retry FAILED melalui UI versioned. `php artisan flamboyan:media-cleanup` dry-run; --execute hanya setelah backup DB+media konsisten/checksum terverifikasi, grace30 hari. Tidak menghapus registry/audit. Test menggunakan Storagefake dan browser demo terisolasi.
+
+Untuk reproduksi browser media, siapkan JPEG uji milik sendiri pada path private dan set E2E_MEDIA_FILE ke absolute path tersebut; default repository test adalah `.tools/browser-photo.jpg`, fixture lokal yang tidak di-commit. Worker media dan API harus menunjuk DB demo yang sama. Jangan memakai konten/DB bisnis untuk suite.

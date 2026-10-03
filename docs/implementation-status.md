@@ -1,6 +1,6 @@
 # Status implementasi
 
-Tanggal 2026-10-03 · branch `codex/operations-workspace` · F0 + workspace operasi; MVP/produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
+Tanggal 2026-10-03 · branch `codex/property-media` · F0 + workspace operasi + media; MVP/produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
 
 | Requirement / fitur | Status F0 | Tahap berikutnya / batas |
 |---|---|---|
@@ -14,9 +14,9 @@ Tanggal 2026-10-03 · branch `codex/operations-workspace` · F0 + workspace oper
 | FR-PUB-011/012 Filter/sort | Implemented API/basic UI | API full allowlist; UI search/price/sort, remainder F2 |
 | FR-PUB-013 Compare | Planned | Max3 contract; UI/data selection F2 |
 | FR-PUB-020/021 Detail/specifications | Implemented | SSR HTML/canonical/OG + missing404; no upstream soft404 |
-| FR-PUB-022..025 Gallery/video/tour/plan | Planned | Safe upload/media/embed F1/F2; current UI explicit no-photo state |
+| FR-PUB-022..025 Gallery/video/tour/plan | Implemented | Private staging/WebP variants/scoped management/SSR gallery, YouTube/tour consent; real content/hosting gate |
 | FR-PUB-026/027 Maps/POI | Planned | Editorial/provider/content gate F2 |
-| FR-PUB-028 Brochure | Planned | PDF pipeline/scan/content F1/F2 |
+| FR-PUB-028 Brochure | Implemented/scanner-gated | Signature/private queue/scan fail-closed/attachment; real maintainedClamAV required before public PDF |
 | FR-PUB-030..035 KPR | Partial | Annuity kernel automated; no bank selection/floating/chart UI F2 |
 | FR-BO-PROP-001..003 Catalog/spec/availability | Implemented API + UI | Scoped create/edit/version/archive/featured; Admin audited owner transfer; no hard-delete |
 | FR-BO-PROP-004 CMS | Planned | Structured content, no generic CMS F2 |
@@ -34,7 +34,7 @@ Tanggal 2026-10-03 · branch `codex/operations-workspace` · F0 + workspace oper
 | FR-RT-004 Read/unread | Implemented | Exact unread count, own recipient list/read idempotent |
 | SEO canonical/metadata | Implemented | Sitemap/robots/query policy/structured data F1/F2 |
 | Validasi lokal / branch+PR | Implemented | GitHub Actions dihapus sesuai instruksi pengguna; bukti lokal wajib sebelum review; main protection belum dikonfigurasi |
-| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing32 tests/167 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
+| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing43 tests/252 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
 | Production/backups/privacy/performance | Gate open | Actual hosting/load/restore/retention/provider/content evidence required |
 
 ## Validasi F0 historis
@@ -63,3 +63,7 @@ Nama branch berikutnya merupakan saran workflow, bukan branch yang sudah dibuat.
 ## Workspace operasi terbaru
 
 Lihat operations-validation.md untuk bukti branch saat ini: PHPUnit32 tests/167 assertions pada SQLite dan PostgreSQL17.9, Pint/Composer/lint/typecheck/unit/build, source audit11 high dan runtime0. Workspace akun/katalog/CRM/recovery tersedia; SMTP nyata dan seluruh fitur media/evaluasi/push/report/privacy tetap gate/tahap berikutnya. Rencana penuntasan lengkap ada di implementation-plan.md. Tidak ada merge PR atau deployment produksi.
+
+## Media terbaru
+
+Lihat media-validation.md:43 tests/252 assertions masing-masing SQLite/PostgreSQL,6 browser flows termasuk queue worker nyata+SSR gallery/archive404, Pint/Composer/frontend checks/build. Source11 high dan runtime0 tetap dilaporkan. PR #4 operasi telah terbuka dan menjadi dependensi media; tidak ada merge. PDF clean/unsafe scanner tests menggunakan mocks; scanner nyata/content berizin/large-image hosting masih gate. Compare/KPR/CMS/maps/push/report/privacy tetap belum diklaim selesai.
