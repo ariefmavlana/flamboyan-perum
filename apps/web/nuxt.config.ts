@@ -32,9 +32,28 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     apiBase: 'http://127.0.0.1:8000',
-    public: { siteUrl: 'http://localhost:3000', whatsappNumber: '' },
+    public: {
+      siteUrl: 'http://localhost:3000',
+      whatsappNumber: '6287776734038',
+    },
   },
   routeRules: {
+    '/forgot-password': {
+      ssr: false,
+      headers: {
+        'X-Robots-Tag': 'noindex, nofollow',
+        'Cache-Control': 'no-store',
+        'Referrer-Policy': 'no-referrer',
+      },
+    },
+    '/reset-password': {
+      ssr: false,
+      headers: {
+        'X-Robots-Tag': 'noindex, nofollow',
+        'Cache-Control': 'no-store',
+        'Referrer-Policy': 'no-referrer',
+      },
+    },
     '/backoffice/**': {
       ssr: false,
       headers: {

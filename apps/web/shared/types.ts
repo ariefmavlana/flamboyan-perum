@@ -31,6 +31,18 @@ export interface User {
   name: string
   role: 'ADMIN' | 'MARKETING'
 }
+export interface StaffAccount extends User {
+  email: string
+  is_active: boolean
+  version: number
+  email_verified_at: string | null
+}
+export interface InternalProperty extends Property {
+  owner_id: number
+  owner: { id: number; name: string }
+  publication: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'
+  version: number
+}
 export type LeadStatus =
   | 'NEW_LEAD'
   | 'FOLLOWED_UP'
@@ -46,6 +58,8 @@ export interface Lead {
   assigned_marketing_id: number | null
   status: LeadStatus
   version: number
+  property?: { id: number; title: string; slug: string }
+  assignee?: { id: number; name: string } | null
 }
 export interface LeadHistory {
   id: number
@@ -55,4 +69,6 @@ export interface LeadHistory {
   note: string | null
   created_at: string
   actor: { id: number; name: string }
+  previous_assignee?: { id: number; name: string } | null
+  next_assignee?: { id: number; name: string } | null
 }

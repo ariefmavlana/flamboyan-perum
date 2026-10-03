@@ -1,4 +1,4 @@
-# REST API — fondasi F0
+# REST API — fondasi dan workspace operasi
 
 Base `/api/v1`, JSON, waktu UTC ISO8601. Production browser/API same origin; proxy hosting mengirim `/api`, `/auth`, `/sanctum` ke Laravel dan halaman lainnya ke Nuxt. Private routes hanya session Sanctum + user active ADMIN/MARKETING. Bearer token/public register tidak tersedia.
 
@@ -8,11 +8,11 @@ Base `/api/v1`, JSON, waktu UTC ISO8601. Production browser/API same origin; pro
 |---|---|---|
 | GET `/properties` | Public | q, page, per_page≤48, sort, filter di bawah; resource allowlist paginator |
 | GET `/properties/{slug}` | Public | published saja; `{data: Property}`; missing/draft/archive404 |
-| GET `/internal/properties` | Internal | Admin semua, Marketing owner; page/per_page≤48; internal paginator |
+| GET `/internal/properties` | Internal | Admin semua, Marketing owner; q,publication,page/per_page≤48; paginator+owner{id,name} |
 | POST `/internal/properties` | Internal | Core fields required; Admin owner_id Marketing aktif; Marketing otomatis dirinya;201 |
 | PATCH `/internal/properties/{id}` | Internal scoped | partial fields + version required; owner_id/slug prohibited;409 stale |
-| GET `/me` | Internal | `{data:{id,name,role}}` |
-| GET `/leads` | Internal scoped | page, per_page≤100, status; paginator |
+| GET `/me` | Internal | id,name,email,role,is_active,version,email_verified_at; tanpa password/token |
+| GET `/leads` | Internal scoped | q,status,assigned_marketing_id,unassigned,page/per_page≤100; paginator+property/assignee |
 | POST `/leads` | Admin | name, whatsapp_number, property_id;201 /409 duplicate |
 | POST `/leads/{id}/assignment` | Admin | marketing_id, version, reason required pada reassignment;200 |
 | PATCH `/leads/{id}/status` | Scoped | status, version, note optional kecuali LOST required;200 |
@@ -64,6 +64,28 @@ X-XSRF-TOKEN: <current browser CSRF token>
 
 Admin kemudian assign `{marketing_id:2,version:1}`. Lead returned version2; Marketing membaca list, mengirim status `{status:"FOLLOWED_UP",version:2,note:"Sudah dihubungi"}`. Update returned version3; note siguiente memerlukan3. Conflict409 wajib reload, tidak retry dengan versi terbaru tanpa meninjau data. History+notifications persisten atomik; push belum aktif pada F0.
 
-## Contract tests
+## Workspace operasi
+
+### Endpoint tambahan
+
+| Method/path | Akses | Kontrak |
+|---|---|---|
+| GET `/internal/properties/{id}` | Scoped | Detail internal + owner{id,name}; owner lama setelah transfer404 |
+| POST `/internal/properties/{id}/owner` | Admin | owner_id Marketing aktif,version,reason required; audit atomik |
+| PATCH `/me` | Own | version,name; password≥12+confirmation+current_password optional; email/role/is_active prohibited |
+| GET `/internal/users` | Admin | q,role,is_active,page,per_page≤100; account paginator |
+| POST `/internal/users` | Admin | name,email,role,password≥12+confirmation,identity_verified optional;201 |
+| PATCH `/internal/users/{id}` | Admin | version,name/email/role/is_active/identity_verified; last-admin/workload guard |
+| GET `/internal/audit` | Admin | subject_type,subject_id,page,per_page≤100; readonly audit+actor |
+| GET `/leads/{id}` | Scoped | Detail + property{id,title,slug},assignee{id,name} |
+| PATCH `/leads/{id}/contact` | Admin | name,whatsapp_number,version,reason; CONTACT_UPDATED; duplicate409 rollback |
+| POST `/auth/forgot-password` | CSRF | email; generic202 existing/absent;5/min/email+IP; production log/array503 |
+| POST `/auth/reset-password` | CSRF | email,token,password≥12+confirmation;200; invalid/expired/used422 |
+
+Internal catalog list menerima q(title/location),publication dan eager-loaded owner. Lead list menerima q(name/phone/property title),status,assigned_marketing_id,unassigned=1 dan eager-loaded property/assignee. History menambahkan previous_assignee/next_assignee{id,name}. Semua pagination tetap bounded; pencarian literal wildcard dan backend scoping tetap berlaku.
+
+Email baru disimpan lowercase, unique index LOWER(email), login case-insensitive. Security changes mencabut sessions/reset tokens dan mengganti security stamp; middleware menolak stamp lama yang tersimpan kembali oleh concurrent request. Deactivation/demotion Marketing memerlukan seluruh katalog non-ARCHIVED dan lead nonterminal dialihkan/ditutup. Admin aktif terakhir dilindungi. `identity_verified` merupakan attestation Admin melalui prosedur pemeriksaan identitas tim; email berubah menghapus verifikasi kecuali attestation eksplisit. Recovery60 menit/single-use hanya active verified roles; audit/password/session revoke atomik. Audit tidak menyimpan password/token/email/nomor lama. SMTP aktual belum diuji; production mailer log/array ditolak503.
+
+OperationsTest mencakup version/last-admin/workload/transfer/profile/recovery expiry/single-use/unverified/throttle/security-stamp/case-insensitive email/contact duplicate serta fault-injection audit/history rollback.
 
 FoundationTest: public/scoping/query/duplicate/assignment/version/pipeline/history. SecurityAndAtomicityTest: login/logout/inactive, bearer unsupported, notification rollback, recipient/read idempotency, request_id, seed production guard. Playwright: SSR HTML+canonical404, mobile discovery, login CSRF, drawer notes/logout. PHPUnit bypass CSRF secara framework pada test environment, sehingga CSRF dibuktikan lagi lewat HTTP browser pada runtime local.

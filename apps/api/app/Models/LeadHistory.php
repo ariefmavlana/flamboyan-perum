@@ -15,4 +15,14 @@ class LeadHistory extends Model
     {
         return $this->belongsTo(User::class, 'actor_id')->select(['id', 'name']);
     }
+
+    public function previousAssignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'from_assignee')->select(['id', 'name']);
+    }
+
+    public function nextAssignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'to_assignee')->select(['id', 'name']);
+    }
 }

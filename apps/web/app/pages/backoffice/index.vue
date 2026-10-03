@@ -7,6 +7,28 @@ import type {
   User,
 } from '#shared/types'
 const api = useStaffApi()
+definePageMeta({ layout: 'backoffice' })
+const search = ref('')
+const filterStatus = ref('')
+const assigneeFilter = ref<number | null>(null)
+const unassigned = ref(false)
+const createDialog = ref<HTMLDialogElement | null>(null)
+const leadForm = reactive({
+  name: '',
+  whatsapp_number: '',
+  property_id: null as number | null,
+})
+const marketingId = ref<number | null>(null)
+const assignReason = ref('')
+const contact = reactive({ name: '', whatsapp_number: '', reason: '' })
+const eventLabels: Record<string, string> = {
+  CREATED: 'Lead dicatat',
+  ASSIGNED: 'Penugasan',
+  REASSIGNED: 'Pengalihan penugasan',
+  STATUS_CHANGED: 'Perubahan status',
+  NOTE_ADDED: 'Catatan ditambahkan',
+  CONTACT_UPDATED: 'Koreksi kontak',
+}
 const user = ref<User | null>(null)
 const leads = ref<Paginated<Lead> | null>(null)
 const notices = ref<{
@@ -50,7 +72,9 @@ async function load(page = 1) {
   try {
     user.value = (await api.request<{ data: User }>('/api/v1/me')).data
     const results = await Promise.all([
-      api.request<Paginated<Lead>>(`/api/v1/leads?page=${page}`),
+      api.request<Paginated<Lead>>(
+        `/api/v1/leads?${new URLSearchParams({ page: String(page), ...(search.value ? { q: search.value } : {}), ...(filterStatus.value ? { status: filterStatus.value } : {}), ...(assigneeFilter.value ? { assigned_marketing_id: String(assigneeFilter.value) } : {}), ...(unassigned.value ? { unassigned: '1' } : {}) })}`,
+      ),
       api.request<NonNullable<typeof notices.value>>('/api/v1/notifications'),
     ])
     leads.value = results[0]
@@ -70,8 +94,80 @@ async function openLead(lead: Lead) {
   message.value = ''
   history.value = null
   nextStatus.value = transitions[lead.status][0] ?? lead.status
+  marketingId.value = null
+  assignReason.value = ''
+  Object.assign(contact, {
+    name: lead.name,
+    whatsapp_number: lead.whatsapp_number,
+    reason: '',
+  })
   drawer.value?.showModal()
   await loadHistory()
+}
+async function createLead() {
+  busy.value = true
+  try {
+    await api.request('/api/v1/leads', {
+      method: 'POST',
+      body: { ...leadForm },
+    })
+    createDialog.value?.close()
+    Object.assign(leadForm, {
+      name: '',
+      whatsapp_number: '',
+      property_id: null,
+    })
+    await load()
+    message.value = 'Lead dicatat. Pilih lead untuk menugaskan Marketing.'
+  } catch (error) {
+    message.value = staffError(error)
+  } finally {
+    busy.value = false
+  }
+}
+function clearAssigneeFilter() {
+  assigneeFilter.value = null
+  void load()
+}
+function openCreateLead() {
+  message.value = ''
+  createDialog.value?.showModal()
+}
+async function adminMutation(kind: 'assignment' | 'contact') {
+  if (!selected.value) return
+  busy.value = true
+  try {
+    const result = await api.request<{ data: Lead }>(
+      `/api/v1/leads/${selected.value.id}/${kind}`,
+      {
+        method: kind === 'assignment' ? 'POST' : 'PATCH',
+        body: {
+          version: selected.value.version,
+          ...(kind === 'assignment'
+            ? {
+                marketing_id: marketingId.value,
+                reason: assignReason.value || undefined,
+              }
+            : { ...contact }),
+        },
+      },
+    )
+    selected.value = (
+      await api.request<{ data: Lead }>(`/api/v1/leads/${result.data.id}`)
+    ).data
+    marketingId.value = null
+    assignReason.value = ''
+    contact.reason = ''
+    await Promise.all([
+      load(leads.value?.meta.current_page ?? 1),
+      loadHistory(),
+    ])
+    message.value = 'Perubahan tersimpan.'
+  } catch (error) {
+    message.value = staffError(error)
+  } finally {
+    busy.value = false
+  }
 }
 async function loadHistory(page = 1) {
   if (!selected.value) return
@@ -151,6 +247,46 @@ onMounted(() => load())
       {{ message }}
     </p>
     <p v-if="loading" role="status">Memuat workspace…</p>
+    <form class="action-row" @submit.prevent="load()">
+      <label
+        >Cari nama / nomor / properti<input
+          v-model="search"
+          maxlength="100" /></label
+      ><label
+        >Status<select v-model="filterStatus">
+          <option value="">Semua status</option>
+          <option v-for="(label, state) in labels" :key="state" :value="state">
+            {{ label }}
+          </option>
+        </select></label
+      ><label v-if="user?.role === 'ADMIN'" class="checkbox-label"
+        ><input v-model="unassigned" type="checkbox" />Belum ditugaskan</label
+      ><button class="button secondary" :disabled="loading">
+        Terapkan pencarian
+      </button>
+    </form>
+    <details v-if="user?.role === 'ADMIN'">
+      <summary>Filter Marketing</summary>
+      <StaffPicker
+        v-model="assigneeFilter"
+        kind="marketing"
+        label="Marketing filter"
+      />
+      <div class="action-row">
+        <button class="button secondary" @click="load()">
+          Terapkan Marketing</button
+        ><button class="text-button" @click="clearAssigneeFilter">
+          Semua Marketing
+        </button>
+      </div>
+    </details>
+    <button
+      v-if="user?.role === 'ADMIN'"
+      class="button"
+      @click="openCreateLead"
+    >
+      Catat lead baru
+    </button>
     <button class="text-button" @click="load(leads?.meta.current_page ?? 1)">
       Muat ulang data ↻
     </button>
@@ -174,7 +310,12 @@ onMounted(() => load())
                 <strong>{{ lead.name }}</strong
                 ><br /><span class="muted">+{{ lead.whatsapp_number }}</span>
               </td>
-              <td>#{{ lead.property_id }}</td>
+              <td>
+                {{ lead.property?.title ?? `#${lead.property_id}` }}<br /><span
+                  class="muted"
+                  >{{ lead.assignee?.name ?? 'Belum ditugaskan' }}</span
+                >
+              </td>
               <td>
                 <span class="badge">{{ labels[lead.status] }}</span>
               </td>
@@ -253,7 +394,56 @@ onMounted(() => load())
           </button>
         </div>
         <p class="badge">{{ labels[selected.status] }}</p>
+        <p>
+          {{ selected.property?.title }} ·
+          {{ selected.assignee?.name ?? 'Belum ditugaskan' }}
+        </p>
         <p v-if="message" role="alert" class="error-text">{{ message }}</p>
+        <details
+          v-if="user?.role === 'ADMIN' && transitions[selected.status].length"
+        >
+          <summary>Assign / alihkan Marketing</summary>
+          <form @submit.prevent="adminMutation('assignment')">
+            <StaffPicker
+              v-model="marketingId"
+              kind="marketing"
+              label="Marketing penerima"
+            /><label
+              >Alasan pengalihan<textarea
+                v-model="assignReason"
+                :required="!!selected.assigned_marketing_id"
+                maxlength="2000"
+              /></label
+            ><button class="button secondary" :disabled="busy || !marketingId">
+              Simpan penugasan
+            </button>
+          </form>
+        </details>
+        <details v-if="user?.role === 'ADMIN'">
+          <summary>Koreksi kontak</summary>
+          <form @submit.prevent="adminMutation('contact')">
+            <label
+              >Nama kontak<input
+                v-model="contact.name"
+                required
+                maxlength="160" /></label
+            ><label
+              >WhatsApp kontak<input
+                v-model="contact.whatsapp_number"
+                required
+                type="tel"
+                maxlength="30" /></label
+            ><label
+              >Alasan koreksi<textarea
+                v-model="contact.reason"
+                required
+                maxlength="2000"
+              /></label
+            ><button class="button secondary" :disabled="busy">
+              Simpan koreksi
+            </button>
+          </form>
+        </details>
         <label v-if="transitions[selected.status].length"
           >Tahap berikutnya<select v-model="nextStatus">
             <option
@@ -288,13 +478,21 @@ onMounted(() => load())
           <li v-for="event in history?.data" :key="event.id">
             <time>{{ date(event.created_at) }}</time>
             <p>
-              <strong>{{ event.actor.name }}</strong> · {{ event.type }}
+              <strong>{{ event.actor.name }}</strong> ·
+              {{ eventLabels[event.type] ?? event.type }}
             </p>
             <p v-if="event.to_status">
               {{ event.from_status ? labels[event.from_status] + ' → ' : ''
               }}{{ labels[event.to_status] }}
             </p>
             <p v-if="event.note">{{ event.note }}</p>
+            <p v-if="event.next_assignee">
+              {{
+                event.previous_assignee
+                  ? event.previous_assignee.name + ' → '
+                  : ''
+              }}{{ event.next_assignee.name }}
+            </p>
           </li>
         </ol>
         <p v-if="history && !history.data.length" class="muted">
@@ -308,6 +506,46 @@ onMounted(() => load())
           Histori lebih lama →
         </button></template
       >
+    </dialog>
+    <dialog
+      ref="createDialog"
+      class="history-drawer"
+      aria-labelledby="create-lead-title"
+    >
+      <div class="section-heading">
+        <h2 id="create-lead-title">Catat lead baru</h2>
+        <button class="button secondary" @click="createDialog?.close()">
+          Tutup
+        </button>
+      </div>
+      <p v-if="message" role="alert">{{ message }}</p>
+      <form @submit.prevent="createLead">
+        <label
+          >Nama calon pembeli<input
+            v-model="leadForm.name"
+            required
+            maxlength="160"
+            autocomplete="off" /></label
+        ><label
+          >Nomor WhatsApp<input
+            v-model="leadForm.whatsapp_number"
+            required
+            type="tel"
+            maxlength="30"
+            autocomplete="off" /></label
+        ><StaffPicker
+          v-model="leadForm.property_id"
+          kind="property"
+          label="Properti yang diminati"
+        />
+        <p class="muted">
+          Nomor dan properti yang sama hanya dicatat sekali. Klik WhatsApp
+          publik belum berarti lead tercatat.
+        </p>
+        <button class="button" :disabled="busy || !leadForm.property_id">
+          Simpan lead
+        </button>
+      </form>
     </dialog>
   </section>
 </template>

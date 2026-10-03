@@ -47,6 +47,8 @@ Index, constraints, types dan query conventions ada di SRS§9 serta migrations. 
 
 ## Failure boundaries
 
+Workspace operasi menambahkan AccountOperations sebagai batas transaksi akun (version, last-active-Admin lock, workload guard, revoke sessions/reset tokens, audit) serta ActivityLog readonly. Property transfer adalah operasi Admin terpisah; CRM contact correction menggunakan LeadWorkflow dengan CONTACT_UPDATED append-only. Query list memakai eager loading relasi ringkas untuk mencegah N+1 dan dropdown menggunakan search/pagination sehingga tidak menganggap100 akun/properti pertama sebagai seluruh pilihan. Recovery memakai password broker Laravel dengan frontend URL konfigurasi trusted; tidak menggunakan host header untuk tautan email. Tidak menambah repository/event bus atau layanan identitas tambahan.
+
 API validation422 tidak mengubah data. Version/transition/duplicate409 tidak menghasilkan histori/notification baru. Unauthorized scoped object404; unknown role403/inactive403; expired session401; CSRF419. Provider push F1 gagal sesudah commit: data tetap tersimpan, retry/backoff dan persisted notification tetap tersedia. Public API unavailable: SSR503 dengan retry, bukan daftar demo diam-diam. Database/storage release path persisten agar deploy tidak menghapus data.
 
 ## Scaling path

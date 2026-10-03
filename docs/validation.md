@@ -1,5 +1,7 @@
 # Bukti validasi fondasi
 
+Catatan F0 di bawah merupakan bukti historis. Bukti workspace operasi terbaru ada di `operations-validation.md`; kode sekarang membawa fitur akun/katalog/CRM tambahan. Hasil F0 tidak menggantikan validasi branch fitur berikutnya.
+
 Tanggal 2026-10-03, local Windows. Branch `fix/foundation-validation`, fix aplikasi/dependensi commit `b5468a2`. Seluruh pemeriksaan aplikasi di bawah dijalankan ulang setelah update Vitest4.1.11; dokumentasi berikutnya tidak mengubah kode atau lockfiles. GitHub Actions tidak digunakan.
 
 | Check | Hasil lokal | Cakupan / batas |

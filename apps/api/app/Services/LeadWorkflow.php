@@ -18,6 +18,8 @@ class LeadWorkflow
         abort_unless($actor->role === 'ADMIN', 403);
         try {
             return DB::transaction(function () use ($actor, $data) {
+                $current = User::query()->whereKey($actor->id)->lockForUpdate()->first();
+                abort_unless($current?->is_active && $current->role === 'ADMIN', 403);
                 $lead = Lead::create($data)->refresh();
                 $this->history($lead, $actor, ['type' => 'CREATED', 'to_status' => $lead->status]);
 
@@ -34,6 +36,7 @@ class LeadWorkflow
 
         return DB::transaction(function () use ($actor, $id, $data) {
             $lead = $this->locked($actor, $id);
+            abort_unless($actor->fresh()?->role === 'ADMIN', 403);
             $target = User::query()->whereKey($data['marketing_id'])->lockForUpdate()->first();
             if (! $target || ! $target->is_active || $target->role !== 'MARKETING') {
                 throw ValidationException::withMessages(['marketing_id' => 'Pilih Marketing aktif.']);
@@ -86,11 +89,29 @@ class LeadWorkflow
         }, 3);
     }
 
+    public function correctContact(User $actor, int $id, array $data): Lead
+    {
+        abort_unless($actor->role === 'ADMIN', 403);
+        try {
+            return DB::transaction(function () use ($actor, $id, $data) {
+                $lead = $this->locked($actor, $id);
+                abort_unless($actor->fresh()?->role === 'ADMIN', 403);
+                $this->update($lead, $data['version'], ['name' => $data['name'], 'whatsapp_number' => $data['whatsapp_number']]);
+                $this->history($lead, $actor, ['type' => 'CONTACT_UPDATED', 'note' => $data['reason']]);
+
+                return $lead;
+            }, 3);
+        } catch (UniqueConstraintViolationException $exception) {
+            abort(409, 'Lead untuk nomor dan properti ini sudah tercatat.');
+        }
+    }
+
     private function locked(User $actor, int $id): Lead
     {
-        abort_unless($actor->is_active && in_array($actor->role, ['ADMIN', 'MARKETING'], true), 403);
+        $current = $actor->fresh();
+        abort_unless($current?->is_active && in_array($current->role, ['ADMIN', 'MARKETING'], true), 403);
 
-        return Lead::query()->visibleTo($actor)->whereKey($id)->lockForUpdate()->firstOrFail();
+        return Lead::query()->visibleTo($current)->whereKey($id)->lockForUpdate()->firstOrFail();
     }
 
     private function update(Lead $lead, int $version, array $changes): void
