@@ -1,3 +1,6 @@
+<script setup lang="ts">
+const comparison = useComparison()
+</script>
 <template>
   <div>
     <a class="skip-link" href="#main">Lewati ke konten</a>
@@ -14,6 +17,22 @@
       </nav>
     </header>
     <main id="main"><slot /></main>
+    <aside
+      v-if="comparison.ids.value.length"
+      class="comparison-tray container"
+      aria-label="Pilihan perbandingan"
+    >
+      <NuxtLink
+        :to="{
+          path: '/bandingkan',
+          query: { ids: comparison.ids.value.join(',') },
+        }"
+        >Bandingkan {{ comparison.ids.value.length }} properti →</NuxtLink
+      >
+      <p v-if="comparison.message.value" role="status">
+        {{ comparison.message.value }}
+      </p>
+    </aside>
     <footer class="site-footer container">
       <span>Flamboyan Perum</span
       ><span>Temukan ruang untuk cerita berikutnya.</span>

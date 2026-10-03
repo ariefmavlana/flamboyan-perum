@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ContentController;
+use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NotificationController;
@@ -10,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::middleware('throttle:public-api')->group(function () {
+        Route::get('content', [ContentController::class, 'publicIndex']);
+        Route::get('compare', [EvaluationController::class, 'compare']);
+        Route::get('sitemap', [EvaluationController::class, 'sitemap']);
         Route::get('properties', [PropertyController::class, 'index']);
         Route::get('properties/{slug}', [PropertyController::class, 'show']);
     });
@@ -20,6 +25,10 @@ Route::prefix('v1')->group(function () {
         Route::post('internal/users', [UserController::class, 'store']);
         Route::patch('internal/users/{id}', [UserController::class, 'update'])->whereNumber('id');
         Route::get('internal/audit', [UserController::class, 'audit']);
+        Route::get('internal/content', [ContentController::class, 'index']);
+        Route::post('internal/content', [ContentController::class, 'store']);
+        Route::patch('internal/content/{id}', [ContentController::class, 'update'])->whereNumber('id');
+        Route::patch('internal/properties/{id}/location', [EvaluationController::class, 'location'])->whereNumber('id');
         Route::get('internal/properties', [PropertyController::class, 'internalIndex']);
         Route::post('internal/properties', [PropertyController::class, 'store']);
         Route::get('internal/properties/{id}/media', [MediaController::class, 'index'])->whereNumber('id');

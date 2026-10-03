@@ -10,7 +10,7 @@ export function useStaffApi() {
       await $fetch('/sanctum/csrf-cookie', { credentials: 'include' })
     refreshCookie('XSRF-TOKEN')
     const xsrf = useCookie<string | null>('XSRF-TOKEN').value
-    return await $fetch<T>(path, {
+    return await $fetch<T, string>(path, {
       ...options,
       credentials: 'include',
       headers: {

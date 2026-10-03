@@ -33,6 +33,6 @@ class Property extends Model
 
     protected function casts(): array
     {
-        return ['price_idr' => 'string', 'land_area' => 'decimal:2', 'building_area' => 'decimal:2', 'featured' => 'boolean', 'version' => 'integer'];
+        return ['price_idr' => 'string', 'land_area' => 'decimal:2', 'building_area' => 'decimal:2', 'featured' => 'boolean', 'version' => 'integer', 'latitude' => 'decimal:7', 'longitude' => 'decimal:7', 'pois' => 'array'];
     }
 }

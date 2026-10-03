@@ -1,8 +1,17 @@
 <script setup lang="ts">
-import type { Paginated, Property } from '#shared/types'
+import type { Paginated, Property, PublicContent } from '#shared/types'
 import { whatsappLink } from '#shared/utils/catalog'
 const config = useRuntimeConfig()
 const search = ref('')
+const { data: content, error: contentError } = await useFetch<{
+  data: PublicContent
+}>('/api/v1/content')
+const hero = computed(() => content.value?.data.hero)
+const heroCover = computed(
+  () =>
+    hero.value?.property?.media?.find((media) => media.kind === 'PHOTO')
+      ?.sources[0],
+)
 const hydrated = ref(false)
 onMounted(() => {
   hydrated.value = true
@@ -30,11 +39,16 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
   <div>
     <section class="hero container">
       <div class="hero-copy">
-        <p class="eyebrow">RUMAH · KEHIDUPAN · MASA DEPAN</p>
-        <h1>Ruang untuk<br />cerita <em>berikutnya.</em></h1>
+        <p class="eyebrow">
+          {{ hero?.eyebrow ?? 'RUMAH · KEHIDUPAN · MASA DEPAN' }}
+        </p>
+        <h1 v-if="hero">{{ hero.title }}</h1>
+        <h1 v-else>Ruang untuk<br />cerita <em>berikutnya.</em></h1>
         <p class="hero-description">
-          Setiap rumah membuka kemungkinan baru. Temukan properti yang selaras
-          dengan kebutuhan dan rencana Anda.
+          {{
+            hero?.description ??
+            'Setiap rumah membuka kemungkinan baru. Temukan properti yang selaras dengan kebutuhan dan rencana Anda.'
+          }}
         </p>
         <form
           class="hero-search"
@@ -64,7 +78,16 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
           >Bicarakan kebutuhan Anda dengan Admin ↗</a
         >
       </div>
-      <div class="hero-art" aria-hidden="true">
+      <img
+        v-if="heroCover"
+        class="hero-photo"
+        :src="heroCover.url"
+        :width="heroCover.width ?? undefined"
+        :height="heroCover.height ?? undefined"
+        :alt="hero?.property?.title ?? 'Properti Flamboyan'"
+        fetchpriority="high"
+      />
+      <div v-else class="hero-art" aria-hidden="true">
         <div class="sun" />
         <div class="arch">
           <div class="art-house">
@@ -74,6 +97,38 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
         </div>
         <span class="art-caption">A PLACE TO BEGIN AGAIN</span>
       </div>
+    </section>
+    <p v-if="contentError" class="container notice">
+      Konten referensi belum dapat dimuat.
+    </p>
+    <section v-if="content?.data.testimonials.length" class="container section">
+      <p class="eyebrow">CERITA PENGALAMAN</p>
+      <h2>Dari mereka yang telah memilih.</h2>
+      <div class="property-grid">
+        <figure
+          v-for="item in content.data.testimonials"
+          :key="item.id"
+          class="detail-summary"
+        >
+          <blockquote>{{ item.quote }}</blockquote>
+          <figcaption>{{ item.name }} · {{ item.context }}</figcaption>
+        </figure>
+      </div>
+    </section>
+    <section v-if="content?.data.bank_rates.length" class="container section">
+      <h2>Referensi pembiayaan</h2>
+      <p class="muted">
+        Referensi rate publik yang dikurasi, bukan klaim kemitraan bank.
+      </p>
+      <ul class="poi-list">
+        <li v-for="rate in content.data.bank_rates" :key="rate.id">
+          {{ rate.bank }} · {{ rate.product }} · {{ rate.annual_rate }}% ·
+          Berlaku {{ rate.effective_date }}–{{ rate.valid_until }}.
+          <a :href="rate.source_url" target="_blank" rel="noopener noreferrer"
+            >Sumber bank ↗</a
+          >
+        </li>
+      </ul>
     </section>
     <section class="section container">
       <div class="section-heading">

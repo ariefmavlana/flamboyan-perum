@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import type { Paginated, StaffAccount, InternalProperty } from '#shared/types'
-const props = defineProps<{ kind: 'marketing' | 'property'; label: string }>()
+const props = withDefaults(
+  defineProps<{
+    kind: 'marketing' | 'property'
+    label: string
+    required?: boolean
+  }>(),
+  { required: true },
+)
 const selectId = useId()
 const model = defineModel<number | null>({ required: true })
 const search = ref('')
@@ -51,8 +58,16 @@ onMounted(() => load())
       </button>
     </div>
     <label :for="selectId">{{ label }}</label>
-    <select :id="selectId" v-model="model" required>
-      <option :value="null" disabled>Pilih…</option>
+    <select :id="selectId" v-model="model" :required="required">
+      <option :value="null" :disabled="required">
+        {{ required ? 'Pilih…' : 'Tidak dipilih' }}
+      </option>
+      <option
+        v-if="model && !result?.data.some((item) => item.id === model)"
+        :value="model"
+      >
+        Pilihan #{{ model }}
+      </option>
       <option v-for="item in result?.data" :key="item.id" :value="item.id">
         {{ 'title' in item ? item.title : item.name }}
       </option>

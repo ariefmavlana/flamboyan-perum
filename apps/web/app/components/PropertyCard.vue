@@ -69,6 +69,7 @@ const wa = computed(() =>
         {{ property.condition === 'NEW' ? 'Rumah baru' : 'Rumah bekas' }} ·
         {{ property.certificate }} · {{ property.house_type }}
       </p>
+      <CompareButton :id="property.id" />
       <a
         v-if="wa"
         :href="wa"

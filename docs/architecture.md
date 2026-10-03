@@ -16,7 +16,7 @@ flowchart LR
     CRM -->|Transaction: lead + history + notification| DB
     Identity --> DB
     API -. F1 queued after commit .-> Push[Managed push]
-    API -. F1 .-> Media[Persistent sanitized media]
+    API --> Media[Persistent sanitized media]
 ```
 
 Browser memakai same-origin API. Nuxt hanya mem-proxy public GET melalui allowlist; session/CSRF/private routes diteruskan oleh web reverse proxy, bukan proxy Nuxt generik yang menerima arbitrary destination. Lokal gunakan Nitro devProxy untuk private routes. Public SSR tidak meneruskan cookie. Production `/api`, `/auth`, `/sanctum` ke Laravel; `/login` ke Nuxt. Alternatif subdomain harus menyesuaikan Sanctum/CORS/cookie dan diuji dahulu.
@@ -28,7 +28,7 @@ Browser memakai same-origin API. Nuxt hanya mem-proxy public GET melalui allowli
 | CRM | Lead/history/notifications, workflow service | Atomic mutation, version condition, scoped policy |
 | Public frontend | Home/list/detail, card, canonical/WA | Hanya public DTO, SSR API failure tidak diperlakukan missing |
 | Backoffice frontend | Client login/list/status/notes/history | Backend tetap menegakkan policy; noindex/no-store |
-| KPR kernel | Pure amortization function | Belum bank offers/floating product UI |
+| KPR kernel | Pure amortization function | Fixed/floating reset+schedule/UI; current verified editorial bank references, bukan bank approval |
 
 ## ERD fondasi
 
@@ -56,3 +56,7 @@ API validation422 tidak mengubah data. Version/transition/duplicate409 tidak men
 Media menggunakan private disk, PropertyMedia registry dan job database dalam transaksi yang sama dengan version/audit; worker visibility sesudah commit. Decode+WebP variants640/1280/1920; public file handler memeriksa publication/state/flag pada setiap request dan tidak mengirim path sumber. PDF scanner terpisah concrete service agar contract dapat diuji, bukan generic repository/interface. List eager-load single photo cover melalui aggregate position/id; detail eager-load gallery bounded, internal media paginated. Cleanup/recovery CLI eksplisit, grace30 hari/audit dipertahankan. Media storage belum memakai S3/CDN sehingga tidak memerlukan SDK tambahan.
 
 Pertama ukur p95/error/query volume; batasi payload, perbaiki indeks, optimalkan media. PostgreSQL dapat dipindahkan ke managed service, Nuxt ke Node hosting terpisah, media ke object storage melalui Laravel filesystem ketika kebutuhan nyata muncul. Horizontal Laravel memerlukan shared session/cache/queue serta database bersama. SQLite hanya satu instalasi ringan; tidak untuk multi-instance. Redis/full text/worker service ditambahkan berdasarkan evidence, bukan persiapan spekulatif.
+
+## Editorial dan evaluasi
+
+SiteContent adalah tiga schema fixed HERO/TESTIMONIAL/BANK_RATE, Admin-only full validation/attestation/version/audit. Public DTO tersendiri tanpa identity verification actor; query tanggal rate Asia/Jakarta dan public published cover menghindari bocor draft. POI JSON bounded20 hidup bersama property/version dan hanya detail public, sesuai kebutuhan baca seluruh referensi sekaligus tanpa spatial query. Compare query bounded3 menjaga urutan/public scope; localStorage IDs saja. KPR pure monthly annuity dengan reset remaining balance/term, annual chart dan accessible schedule. Tidak menambah generic CMS, mapper/repository, chart SDK atau map SDK. Sitemap index/property pages bounded1000 dengan live publication filtering.

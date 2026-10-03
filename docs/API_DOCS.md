@@ -96,3 +96,23 @@ OperationsTest mencakup version/last-admin/workload/transfer/profile/recovery ex
 Public Property kini menambahkan media allowlist: id,kind,alt,position,url,width,height,sources{url,width,height}. List hanya satu cover PHOTO READY yang deterministik(position,id); detail seluruh media READY+published berurutan. Tidak ada original filename/staging_path/variants storage path/owner/CRM. Video URL canonical youtube-nocookie, tour HTTPS host allowlist; tidak mengambil URL dari server. PHOTO≤20,FLOOR_PLAN≤5,VIDEO/TOUR/BROCHURE masing-masing1 aktif; archive dahulu sebelum replace. Input gambarJPEG/PNG/WebP≤5MiB/40MP/20000px tiap dimensi; PDF≤10MiB+signature/EOF. Metadata gambar dibuang melalui decode+reencode WebP pada worker; sumber privat. Media hanya terlihat setelah READY. PDF scanner missing/error/timeout/unsafe tidak pernah READY; antivirus contract mocked pada test tidak membuktikan engine nyata. Media mutations/row/audit/property version/durable DB job satu transaksi; gagal enqueue menghapus staging dan rollback seluruhnya. Worker idempotent dengan state guard; retry bounded3, timeout60/backoff10/30/60; failed state bisa retry oleh owner/Admin dengan version.
 
 FoundationTest: public/scoping/query/duplicate/assignment/version/pipeline/history. SecurityAndAtomicityTest: login/logout/inactive, bearer unsupported, notification rollback, recipient/read idempotency, request_id, seed production guard. Playwright: SSR HTML+canonical404, mobile discovery, login CSRF, drawer notes/logout. PHPUnit bypass CSRF secara framework pada test environment, sehingga CSRF dibuktikan lagi lewat HTTP browser pada runtime local.
+
+## Evaluasi dan editorial publik
+
+Semua endpoint berikut memakai prefix /api/v1 dan public throttle; public GET tidak meneruskan credential melalui Nuxt.
+
+| Method/path | Akses | Kontrak |
+|---|---|---|
+| GET `/compare` | Public | ids[]=positive integer1..3 entries; dedup/order retained; `{data:PublicProperty[],missing:number[]}`; unpublished/missing hanya ID permintaan, tanpa metadata |
+| GET `/content` | Public | `{data:{hero,testimonials,bank_rates}}`; verified+published only; hero pertama position/id, ≤12 testimonials, ≤50 current rates tanggal Asia/Jakarta |
+| GET `/sitemap` | Public | page1..10000,1000 published entries/page; plain Laravel paginator `{data:[{slug,updated_at}],current_page,last_page,...}` |
+| GET `/internal/content` | Admin | kind optional HERO/TESTIMONIAL/BANK_RATE,page; resource paginator20 |
+| POST `/internal/content` | Admin | kind,published boolean,position0..1000,payload; verified=true wajib saat published;201 |
+| PATCH `/internal/content/{id}` | Admin | Full fields+version; kind immutable;409 stale; audit atomik;200 |
+| PATCH `/internal/properties/{id}/location` | Scoped | version,latitude/longitude paired nullable,pois array≤20; audit+property version atomik |
+
+HERO payload keys: title≤160,description≤1000,eyebrow≤100,property_id nullable existing property. Public hero property_id/property menjadi null bila referensi tidak published; property DTO menggunakan sanitized cover, bukan sumber private. TESTIMONIAL: name≤160,quote≤2000,context≤160; Admin wajib memverifikasi izin/kebenaran publikasi. BANK_RATE: bank≤120,product≤160,annual_rate numeric0..30,effective_date/valid_until YYYY-MM-DD (akhir≥mulai),fixed_months integer1..360,source_url HTTPS≤2048. Expired/future rates tidak public. Semua payload unknown keys ditolak; fields updated_by/verified_by/version tidak masuk public payload. verified_at/verified_by merupakan attestation internal; publish setiap save memerlukan verified eksplisit, tidak mewarisi otomatis attestation lama. Semua editorial rendering plain text.
+
+Location latitude[-90,90],longitude[-180,180],stored decimal7; salah satu null memerlukan keduanya null. POI keys name≤160,category TRANSPORT/EDUCATION/HEALTH/SHOPPING/OTHER,distance_m integer0..1000000,source_url HTTPS≤2048,source_date YYYY-MM-DD≤hari Asia/Jakarta. JSON bounded20 disimpan bersama property dan ditampilkan detail saja; list tidak memperbesar payload POI. Public detail menambahkan latitude,longitude,pois; internal fields/Marketing tetap dilarang. POI editorial bukan perhitungan geospatial otomatis.
+
+Nuxt GET `/sitemap.xml` index, `/sitemaps/pages.xml`, `/sitemaps/properties-{page}.xml`, `/robots.txt`; absolute configured site origin/XML escaped, only published/lastmod. Missing/out-of-range file404, backend failure503; sitemap no-store. Query listing noindex/canonical base; compare noindex; JSON-LD RealEstateListing faktual tanpa rating/identity Marketing. KPR adalah kalkulasi client pure, bukan endpoint bank atau CRM; fixed/floating estimate manual+current editorial references dengan disclaimer biaya.
