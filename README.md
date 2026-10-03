@@ -44,7 +44,7 @@ Tahap berikutnya: UX Admin create/assign dan CRUD katalog lengkap, media/upload,
 - [Deployment/recovery runbook](docs/runbook.md), [dependency security](docs/dependency-security.md)
 - [Aturan kontribusi](CONTRIBUTING.md), [AGENTS](AGENTS.md)
 
-Jalankan backend Pint/PHPUnit/Composer validate+audit dan frontend lint/typecheck/Vitest/build/Playwright. CI menguji core behavior pada SQLite dan PostgreSQL dengan PHP8.3/8.4. Source toolchain Nuxt memiliki advisory upstream tanpa patch yang dicatat di security document; audit tetap dijalankan dan tidak disamarkan. Tidak mengklaim production-ready sebelum hosting, security, media/data recovery, content, privacy, provider, load dan UAT gates lulus.
+Jalankan backend Pint/PHPUnit/Composer validate+audit dan frontend lint/typecheck/Vitest/build/Playwright. Suite lokal lulus pada SQLite dan PostgreSQL17.9 dengan PHP8.4.26. CI dikonfigurasi untuk SQLite/PostgreSQL dan PHP8.3/8.4, tetapi run pertama belum memulai job karena masalah billing akun GitHub. Source toolchain Nuxt memiliki advisory upstream tanpa patch yang dicatat di security document; audit tetap dijalankan dan tidak disamarkan. Tidak mengklaim production-ready sebelum hosting, security, media/data recovery, content, privacy, provider, load dan UAT gates lulus. Bukti lengkap ada di [docs/validation.md](docs/validation.md).
 
 ## Workflow
 
