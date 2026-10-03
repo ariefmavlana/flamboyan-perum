@@ -1,6 +1,6 @@
 # Bukti validasi fondasi
 
-Tanggal 2026-10-03, local Windows. Branch `feat/project-foundation`.
+Tanggal 2026-10-03, local Windows. Pengujian aplikasi di bawah dijalankan pada fondasi sebelum perubahan dokumentasi/workflow; kode aplikasi dan lockfiles pada branch `chore/local-validation` tetap identik. Penghapusan Actions tidak diklaim sebagai pengujian ulang aplikasi.
 
 | Check | Hasil lokal | Cakupan / batas |
 |---|---|---|
@@ -21,10 +21,11 @@ Tanggal 2026-10-03, local Windows. Branch `feat/project-foundation`.
 | Runtime artifact npm audit |0 advisories | Generated `.output/server` dependency lock audit |
 | Source npm audit |11 high entries,2 root advisories | Upstream node-forge/braces tanpa patch; draft PR+security gate; jangan klaim all-green |
 | Build warnings |1 upstream DEP0155 | Vue/Nitro trailing-slash exports mapping; bukan warning aplikasi yang disembunyikan |
-| GitHub Actions PHP8.3+8.4/SQLite+PostgreSQL |Blocked before execution | Run 37094860790: seluruh job tidak mulai karena akun terkunci akibat masalah billing; bukan kegagalan assertion. PHP8.3 dan matrix Linux belum terverifikasi |
+| GitHub Actions |Tidak digunakan | Workflow dihapus sesuai instruksi pengguna; validasi lokal wajib. PHP8.3/Linux belum diuji; verifikasi runtime deployment sebelum produksi |
+| Perubahan validasi lokal |passed | Tidak ada file workflow Actions; diff --check bersih; kode aplikasi/lockfiles identik dengan fondasi yang sudah diuji; ketiga SHA256 arsip sama dengan sumber |
 
 Red→green: sebelum migrations/routes/domain implementasi, suite fondasi gagal pada kolom role dan route missing. Setelah implementasi dan regression fixes, seluruh18 backend tests lulus. E2E awal mendeteksi input sebelum hydration dan origin Sanctum lokal; form ready gate dan konfigurasi origin memperbaiki reproduksi. Scope/duplicate/concurrency assertions menguji kontrak bisnis, bukan hanya snapshot implementasi.
 
 Tidak dijalankan: actual deployment shared hosting, load/SLO, restore DB/media produksi, provider push, accessibility audit lengkap, account recovery, media uploads dan business UAT. Keputusan/gate tercatat pada PRD/SRS/runbook/status; bukan fitur yang diklaim telah selesai.
 
-PR fondasi: [#1](https://github.com/ariefmavlana/flamboyan-perum/pull/1). Bukti hambatan CI: [run 37094860790](https://github.com/ariefmavlana/flamboyan-perum/actions/runs/37094860790), annotation: “The job was not started because your account is locked due to a billing issue.” Pemilik akun perlu menyelesaikan billing dan menjalankan ulang workflow; PR tetap draft dan tidak di-merge. Validasi lokal PostgreSQL menambah bukti parity database, tetapi tidak menggantikan matrix CI.
+Riwayat: fondasi awal diusulkan pada [PR #1](https://github.com/ariefmavlana/flamboyan-perum/pull/1). Actions saat itu tidak menjalankan job; tidak ada hasil pengujian aplikasi dari Actions. Sesuai instruksi pengguna berikutnya, workflow dihapus dan seluruh quality gate menggunakan bukti lokal pada PR pengganti. Billing bukan prasyarat kontribusi. PR tetap draft karena gate keamanan dependensi belum selesai; tidak di-merge otomatis.

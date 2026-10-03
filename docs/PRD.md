@@ -26,7 +26,7 @@ Premium melalui tipografi, whitespace, foto sah, dan konten jelas; bukan efek vi
 
 | Tahap | Ruang lingkup | Syarat selesai |
 |---|---|---|
-| F0 — fondasi saat ini | Monorepo, runtime, katalog API/SSR, scoped API katalog/CRM, auth, histori, notifikasi database, CI, dokumentasi | Check otomatis lulus; status fitur jujur; PR reviewable |
+| F0 — fondasi saat ini | Monorepo, runtime, katalog API/SSR, scoped API katalog/CRM, auth, histori, notifikasi database, suite pengujian lokal, dokumentasi | Check lokal lulus dan bukti tercatat; status fitur jujur; PR reviewable |
 | F1 — MVP operasi | UX CRUD properti, media aman, Admin create/assign, tabel Marketing, drawer, akun/profil, push/Echo dan fallback | Seluruh flow P0 dan keamanan lulus; hosting terverifikasi |
 | F2 — evaluasi dan supervisi | Compare UI, kalkulator UI/rate bank, maps/POI, brosur, CMS/social proof, reporting | Acceptance terkait masing-masing fitur lulus |
 | Produksi | F1 + fitur F2 yang dipilih untuk rilis | Deployment, restore, privacy, beban, konten, dan provider dibuktikan |
@@ -81,12 +81,12 @@ Baseline backup: harian DB+media, 7 harian/4 mingguan/3 bulanan di lokasi terpis
 | Gate / risiko | Pemilik | Bukti sebelum produksi |
 |---|---|---|
 | SSR shared hosting | Engineering + pemilik hosting | PHP ≥8.3, Node LTS, proses/restart/routing, HTTPS, cron, DB/media private, outbound push |
-| Database | Engineering | PostgreSQL CI + load; SQLite hanya satu instance lokal, private disk dan consistent snapshot |
+| Database | Engineering | Pengujian lokal SQLite/PostgreSQL + load; SQLite hanya satu instance lokal, private disk dan consistent snapshot |
 | Identitas/konten | Business owner | Domain, WA Admin, property asli, media berizin, testimonial/rekanan sah |
 | Notifications | Engineering + business | Provider/biaya, worker/cron latency, private channel, fallback dan failure recovery |
 | KPR/maps | Business owner | Rates berlaku/tanggal, provider/biaya, embed consent, POI/editorial |
 | Security/privacy | Business owner + engineering | Provision/recovery, cookie/CSRF, retention/deletion, akses, audit, restore |
-| Quality | Engineering | CI lint/type/tests/build, UAT mobile/keyboard, load/restore, smoke produksi |
+| Quality | Engineering | Bukti lokal lint/type/tests/build/browser/audit, UAT mobile/keyboard, load/restore, smoke produksi; GitHub Actions tidak digunakan |
 
 ## 11. Traceability dan perubahan
 

@@ -8,6 +8,6 @@
 - Semua otorisasi ada di backend. Public resource harus berupa allowlist dan tidak mengandung identitas Marketing maupun data CRM.
 - Perubahan CRM, histori, dan notifikasi persisten harus atomik. Gunakan optimistic concurrency; histori tidak dapat diedit melalui API.
 - Harga IDR berupa bilangan bulat; luas berupa decimal; waktu tersimpan UTC dan ditampilkan Asia/Jakarta.
-- Tambah pengujian perilaku untuk perubahan berisiko. Jalankan Pint, PHPUnit (SQLite dan PostgreSQL melalui CI), frontend lint, typecheck, test, dan build sebelum PR siap direview.
+- Jangan menggunakan GitHub Actions. Jalankan validasi lokal sebelum PR siap direview: Pint, PHPUnit pada database test SQLite dan PostgreSQL, Composer validate/audit, frontend lint, typecheck, test, build, browser flows, dan audit dependensi. Tambah pengujian perilaku untuk perubahan berisiko; catat runtime, perintah, hasil dan keterbatasan pada PR.
 - Jangan commit `.env`, database, unggahan, kredensial, vendor, node_modules, atau runtime lokal. Seed demo harus opt-in dan dilarang di produksi.
 - Update status implementasi dan kontrak API pada PR yang mengubah fitur. Fitur planned tidak boleh ditampilkan sebagai fitur selesai.
