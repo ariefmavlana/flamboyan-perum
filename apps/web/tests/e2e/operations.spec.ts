@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { marketingUser } from './helpers'
 
 test('Admin creates catalog, records and assigns lead; Marketing processes assigned work', async ({
   page,
@@ -13,6 +14,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
     .fill(process.env.DEMO_PASSWORD ?? '')
   await page.getByRole('button', { name: 'Masuk →' }).click()
   await expect(page).toHaveURL(/backoffice/)
+  const owner = await marketingUser(page)
   await page.getByRole('link', { name: 'Katalog', exact: true }).click()
   await page.getByRole('button', { name: 'Tambah properti' }).click()
   const property = page.getByRole('dialog')
@@ -36,7 +38,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
     .fill('Data pengujian terisolasi, bukan penawaran.')
   await property
     .getByLabel('Pemilik properti', { exact: true })
-    .selectOption({ label: 'Marketing Demo' })
+    .selectOption({ value: String(owner.id) })
   await property.getByRole('button', { name: 'Simpan properti' }).click()
   await expect(property).not.toBeVisible()
   await expect(
@@ -79,7 +81,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
   await drawer.getByText('Assign / alihkan Marketing', { exact: true }).click()
   await drawer
     .getByLabel('Marketing penerima', { exact: true })
-    .selectOption({ label: 'Marketing Demo' })
+    .selectOption({ value: String(owner.id) })
   await drawer.getByRole('button', { name: 'Simpan penugasan' }).click()
   await expect(
     drawer.getByText('Penugasan', { exact: false }).last(),
@@ -134,7 +136,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
     ).toBeVisible()
     await marketing.keyboard.press('Escape')
     await marketing.getByRole('link', { name: 'Profil', exact: true }).click()
-    await marketing.getByLabel('Nama', { exact: true }).fill('Marketing Demo')
+    await marketing.getByLabel('Nama', { exact: true }).fill(owner.name)
     await marketing.getByRole('button', { name: 'Simpan profil' }).click()
     await expect(
       marketing.getByText('Profil tersimpan.', { exact: true }),

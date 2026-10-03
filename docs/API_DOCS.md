@@ -2,6 +2,8 @@
 
 Base `/api/v1`, JSON, waktu UTC ISO8601. Production browser/API same origin; proxy hosting mengirim `/api`, `/auth`, `/sanctum` ke Laravel dan halaman lainnya ke Nuxt. Private routes hanya session Sanctum + user active ADMIN/MARKETING. Bearer token/public register tidak tersedia.
 
+Dataset dummy lokal memakai kontrak yang sama: nilai katalog/CMS/CRM berasal dari database hasil generator, lalu dapat dikelola melalui endpoint scoped/versioned di bawah. Tidak ada endpoint mock atau fallback data statis. Nama, slug, harga, lokasi dan identitas Marketing berubah antar-database seed baru; konsumen tidak boleh mengandalkan nilai fixture tertentu. Login alias demo tetap untuk akses lokal, bukan identitas bisnis. Persiapan dan batas ada di demo-data.md; validasi perubahan nyata API→SSR→reload ada di dynamic-demo-validation.md.
+
 ## Endpoint yang diimplementasikan
 
 | Method/path | Akses | Input / output |

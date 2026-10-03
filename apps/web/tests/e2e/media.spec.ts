@@ -1,10 +1,12 @@
 import { expect, test } from '@playwright/test'
+import { demoProperty } from './helpers'
 
 test('private upload is processed by the real worker, SSR gallery serves sanitized images and archive revokes access', async ({
   page,
   request,
 }) => {
   test.setTimeout(60000)
+  const fixture = await demoProperty(request)
   const alt = `Gambar fixture ${Date.now()}`
   await page.goto('/login')
   await page.getByLabel('Email', { exact: true }).fill('admin@example.test')
@@ -14,11 +16,11 @@ test('private upload is processed by the real worker, SSR gallery serves sanitiz
   await page.getByRole('button', { name: 'Masuk →' }).click()
   await expect(page).toHaveURL(/backoffice/)
   await page.getByRole('link', { name: 'Katalog', exact: true }).click()
-  await page.getByLabel('Cari properti', { exact: true }).fill('Rumah Taman')
+  await page.getByLabel('Cari properti', { exact: true }).fill(fixture.title)
   await page.getByRole('button', { name: 'Cari / muat ulang' }).click()
   await page
     .getByRole('row')
-    .filter({ hasText: 'Rumah Taman — Demo' })
+    .filter({ hasText: fixture.title })
     .getByRole('button', { name: 'Edit properti' })
     .click()
   const dialog = page.getByRole('dialog')
@@ -34,7 +36,7 @@ test('private upload is processed by the real worker, SSR gallery serves sanitiz
   const item = dialog.locator('.media-editor').filter({ hasText: alt })
   await expect(item.getByRole('img')).toBeVisible({ timeout: 20000 })
   await page.keyboard.press('Escape')
-  const publicData = await request.get('/api/v1/properties/rumah-taman-demo')
+  const publicData = await request.get(`/api/v1/properties/${fixture.slug}`)
   const property = (await publicData.json()).data as {
     media: { id: number; alt: string; sources: { url: string }[] }[]
   }
@@ -44,21 +46,24 @@ test('private upload is processed by the real worker, SSR gallery serves sanitiz
   expect(image.status()).toBe(200)
   expect(image.headers()['content-type']).toContain('image/webp')
   expect(image.headers()['x-content-type-options']).toBe('nosniff')
-  const html = await (await request.get('/properti/rumah-taman-demo')).text()
+  const html = await (await request.get(`/properti/${fixture.slug}`)).text()
   expect(html).toContain(alt)
   expect(html).not.toContain('marketing@example.test')
-  await page.goto('/properti/rumah-taman-demo')
-  await page.getByRole('button', { name: 'Perbesar gambar properti' }).click()
+  await page.goto(`/properti/${fixture.slug}`)
+  await page
+    .getByRole('button', { name: 'Perbesar gambar properti' })
+    .first()
+    .click()
   await expect(
     page.getByRole('dialog', { name: 'Gambar properti diperbesar' }),
   ).toBeVisible()
   await page.keyboard.press('Escape')
   await page.goto('/backoffice/properti')
-  await page.getByLabel('Cari properti', { exact: true }).fill('Rumah Taman')
+  await page.getByLabel('Cari properti', { exact: true }).fill(fixture.title)
   await page.getByRole('button', { name: 'Cari / muat ulang' }).click()
   await page
     .getByRole('row')
-    .filter({ hasText: 'Rumah Taman — Demo' })
+    .filter({ hasText: fixture.title })
     .getByRole('button', { name: 'Edit properti' })
     .click()
   await page

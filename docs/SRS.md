@@ -1,6 +1,6 @@
 # Software Requirements Specification — Flamboyan Perum
 
-Versi 2.1 · 2026-10-03 · Kontrak F0–F2; bukti aktual di implementation-status/acceptance-validation.
+Versi 2.2 · 2026-10-04 · Kontrak F0–F2 dan demo dinamis; bukti aktual di implementation-status/acceptance-validation/dynamic-demo-validation.
 
 ## 1. Otoritas, stack, dan scope
 
@@ -136,9 +136,13 @@ Fitur yang kontraknya lengkap tetapi belum dibangun tetap planned di status file
 
 ## 12. Definition of done dan gate
 
+Demo lokal: `DemoSeeder` memakai generator acak tanpa fixed RNG seed, default24properties/72leads/3Marketing, konfigurasi bounded6..100/6..500/1..10. Data tersimpan lewat Eloquent dan workflow CRM/media yang sama dengan aplikasi; histori/notifikasi persisten/version serta job media mengikuti transaksi domain. CMS demo diberi attestation Admin lokal dan label sintetis, bukan verifikasi bisnis. Foto/denah digambar saat seed lalu diproses worker native; gagal seed membatalkan rows/jobs dan membersihkan staging yang dibuatnya. Existing domain data ditolak, password eksplisit≥12, production/staging ditolak, push eksternal dinonaktifkan sementara dan dipulihkan. API/SSR selalu membaca database; tidak ada reseed otomatis atau mock response produk. Galeri SSR menonaktifkan kontrol interaktif sampai hydration selesai.
+
 F0: migrations/auth/public visibility/scoped CRM/atomic history/notification/versioning terbukti melalui suite otomatis yang dijalankan lokal; lint/typecheck/build lulus, errors bermakna, dokumentasi status, branch commit push PR. Fitur F1/F2: acceptance PRD + negative/scoped/empty/error/keyboard tests + provider configuration + operasi relevan. Production: F1 release scope selesai, suite SQLite/PostgreSQL lokal lulus pada runtime deployment yang dipilih dan bukti commit/runtime tercatat, load/UAT/security/restore dan hosting evidence, valid content/privacy/provider decisions. Open deployment facts tetap gate eksplisit dengan pemilik; tidak dihilangkan dengan mengubah kata menjadi 'done'.
 
 Changelog: 1.1 2026-09-30 shared hosting/DB; 2.0 2026-10-03 menutup ambiguity baseline, physical schema/contracts/state/security/acceptance dan traceability, menjaga seluruh fitur sumber.
+
+2.1 2026-10-03 melengkapi implementasi F0–F2/acceptance operasional;2.2 2026-10-04 menambahkan kontrak seed generatif persisten, guard/rollback dan batas dummy lokal sesuai instruksi pengguna.
 
 FR-RT-003 sekarang implemented/config-gated: job persisten pada transaksi aplikasi, worker sesudah commit, private user channel authorization+CSRF, payload IDs/kind tanpa PII, bounded retry, dedup/reconnect/poll60s dan inbox navigation. Target≤5s wajib dibuktikan dengan worker persisten/provider/hosting nyata; simulated provider tests tidak membuktikan latency delivery produksi. Polling tetap menyelaraskan unread state saat WebSocket sehat.
 

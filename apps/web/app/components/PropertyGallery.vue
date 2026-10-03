@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { PublicMedia } from '#shared/types'
 const props = defineProps<{ media: PublicMedia[] }>()
+const hydrated = ref(false)
+onMounted(() => {
+  hydrated.value = true
+})
 const images = computed(() =>
   props.media.filter(
     (item) => item.kind === 'PHOTO' || item.kind === 'FLOOR_PLAN',
@@ -28,6 +32,7 @@ const srcset = (item: PublicMedia) =>
       class="gallery-main"
       type="button"
       aria-label="Perbesar gambar properti"
+      :disabled="!hydrated"
       @click="preview?.showModal()"
     >
       <img
@@ -51,6 +56,7 @@ const srcset = (item: PublicMedia) =>
         type="button"
         :aria-label="`Lihat ${item.alt}`"
         :aria-pressed="active === index"
+        :disabled="!hydrated"
         @click="active = index"
       >
         <img
@@ -98,6 +104,7 @@ const srcset = (item: PublicMedia) =>
       v-if="!loadedEmbeds.includes(item.id)"
       class="button secondary"
       type="button"
+      :disabled="!hydrated"
       @click="loadedEmbeds.push(item.id)"
     >
       Muat {{ item.kind === 'VIDEO' ? 'video' : 'tour' }}</button

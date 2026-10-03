@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test'
+import { demoProperty } from './helpers'
 
 test('full filters, persistent comparison, floating KPR and factual SEO work on mobile', async ({
   page,
   request,
 }) => {
+  const fixture = await demoProperty(request)
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/properti')
   await page.evaluate(() =>
@@ -27,14 +29,17 @@ test('full filters, persistent comparison, floating KPR and factual SEO work on 
   await page
     .getByText('Filter spesifikasi dan ketersediaan', { exact: true })
     .click()
-  await page.getByLabel('Lokasi tepat').fill('Bogor (contoh)')
-  await page.getByLabel('Minimum kamar tidur').fill('3')
-  await page.getByLabel('Kondisi', { exact: true }).selectOption('NEW')
+  await page.getByLabel('Lokasi tepat').fill(fixture.location)
+  await page.getByLabel('Minimum kamar tidur').fill(String(fixture.bedrooms))
+  await page
+    .getByLabel('Kondisi', { exact: true })
+    .selectOption(fixture.condition)
   await page.getByRole('button', { name: 'Terapkan spesifikasi' }).click()
-  await expect(page).toHaveURL(/bedrooms=3/)
-  await expect(
-    page.getByRole('heading', { name: 'Rumah Taman — Demo' }),
-  ).toBeVisible()
+  await expect(page).toHaveURL(/bedrooms=/)
+  expect(new URL(page.url()).searchParams.get('bedrooms')).toBe(
+    String(fixture.bedrooms),
+  )
+  await expect(page.getByRole('heading', { name: fixture.title })).toBeVisible()
   await page
     .getByRole('button', { name: 'Bandingkan properti', exact: true })
     .first()
@@ -46,11 +51,9 @@ test('full filters, persistent comparison, floating KPR and factual SEO work on 
       'Tambahkan pilihan hingga minimal 2 properti untuk dibandingkan.',
     ),
   ).toBeVisible()
-  await expect(
-    page.getByRole('heading', { name: 'Rumah Taman — Demo' }),
-  ).toBeVisible()
+  await expect(page.getByRole('heading', { name: fixture.title })).toBeVisible()
   const property = (
-    await (await request.get('/api/v1/properties/rumah-taman-demo')).json()
+    await (await request.get(`/api/v1/properties/${fixture.slug}`)).json()
   ).data as { id: number }
   await page.goto(`/bandingkan?ids=${property.id},999999999`)
   await expect(
@@ -58,13 +61,11 @@ test('full filters, persistent comparison, floating KPR and factual SEO work on 
   ).toBeVisible()
   await page.getByRole('button', { name: 'Hapus pilihan #999999999' }).click()
   await expect(page).not.toHaveURL(/999999999/)
-  await page
-    .getByRole('link', { name: 'Rumah Taman — Demo', exact: true })
-    .click()
+  await page.getByRole('link', { name: fixture.title, exact: true }).click()
   await page.getByLabel('Skenario fixed lalu floating').check()
   await page.getByLabel('Asumsi bunga floating (%)').fill('12')
   await expect(page.getByText('Cicilan setelah fixed / bulan')).toBeVisible()
-  await page.getByLabel('Uang muka (IDR)').fill('850000000')
+  await page.getByLabel('Uang muka (IDR)').fill(fixture.price_idr)
   await expect(
     page
       .locator('dt')
@@ -77,7 +78,7 @@ test('full filters, persistent comparison, floating KPR and factual SEO work on 
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true)
-  const html = await (await request.get('/properti/rumah-taman-demo')).text()
+  const html = await (await request.get(`/properti/${fixture.slug}`)).text()
   expect(html).toContain('application/ld+json')
   expect(html).toContain('RealEstateListing')
   expect(html).not.toContain('aggregateRating')
@@ -86,7 +87,7 @@ test('full filters, persistent comparison, floating KPR and factual SEO work on 
   expect(await sitemap.text()).toContain('/sitemaps/properties-1.xml')
   expect(
     await (await request.get('/sitemaps/properties-1.xml')).text(),
-  ).toContain('/properti/rumah-taman-demo')
+  ).toContain(`/properti/${fixture.slug}`)
   expect((await request.get('/sitemaps/properties-10000.xml')).status()).toBe(
     404,
   )
@@ -104,6 +105,7 @@ test('Admin curates verified testimonial and location; map stays consent gated',
   request,
 }) => {
   test.setTimeout(60000)
+  const fixture = await demoProperty(request)
   const name = `Testimonial fixture ${Date.now()}`
   await page.goto('/login')
   await page.getByLabel('Email', { exact: true }).fill('admin@example.test')
@@ -133,11 +135,11 @@ test('Admin curates verified testimonial and location; map stays consent gated',
   await expect(dialog).not.toBeVisible()
   expect(await (await request.get('/')).text()).not.toContain(name)
   await page.getByRole('link', { name: 'Katalog', exact: true }).click()
-  await page.getByLabel('Cari properti', { exact: true }).fill('Rumah Taman')
+  await page.getByLabel('Cari properti', { exact: true }).fill(fixture.title)
   await page.getByRole('button', { name: 'Cari / muat ulang' }).click()
   await page
     .getByRole('row')
-    .filter({ hasText: 'Rumah Taman — Demo' })
+    .filter({ hasText: fixture.title })
     .getByRole('button', { name: 'Edit properti' })
     .click()
   await dialog.getByLabel('Latitude', { exact: true }).fill('-6.6')
@@ -149,7 +151,7 @@ test('Admin curates verified testimonial and location; map stays consent gated',
     dialog.getByText('Lokasi dan referensi tersimpan.'),
   ).toBeVisible()
   await page.keyboard.press('Escape')
-  await page.goto('/properti/rumah-taman-demo')
+  await page.goto(`/properti/${fixture.slug}`)
   expect(await page.locator('iframe').count()).toBe(0)
   await page.route('https://www.openstreetmap.org/**', (route) =>
     route.fulfill({

@@ -1,6 +1,6 @@
 # Product Requirements Document — Flamboyan Perum
 
-Versi 2.1 · 2026-10-03 · Kontrak produk F0–F2; implementasi dan gate rilis tercatat terpisah.
+Versi 2.2 · 2026-10-04 · Kontrak produk F0–F2 dan evaluasi dummy dinamis; implementasi dan gate rilis tercatat terpisah.
 
 ## 1. Produk dan masalah
 
@@ -90,4 +90,8 @@ Baseline backup: harian DB+media, 7 harian/4 mingguan/3 bulanan di lokasi terpis
 
 ## 11. Traceability dan perubahan
 
+Untuk evaluasi lokal sebelum konten asli tersedia, gunakan dummy sintetis generatif yang disimpan di database dan dikelola melalui API/CRUD sebenarnya. Dataset tidak dibuat ulang pada setiap request/reload, tidak memakai katalog/CRM hardcoded, dan tidak menjadi fallback saat API gagal. Label demo wajib jelas; ilustrasi, testimonial persona, serta rate bank simulasi bukan bukti bisnis. Seed opt-in hanya local/testing pada database domain kosong, tanpa pengiriman notifikasi eksternal. Konten demo tidak memenuhi gate konten produksi.
+
 Guideline publik → P-01..P-08; back office → I-01..I-09; flows → §7; stack/deployment → §9–10 dan SRS. SRS menguraikan kontrak teknis dan ID source lama agar kebutuhan tidak hilang. `review.md` merekam gap dokumen awal; `implementation-status.md` memisahkan implemented/partial/planned. Original tidak diedit. Versi 1.1 (2026-09-30) diganti 2.0 dengan keputusan baseline, tahapan, acceptance, kualitas dan gate yang eksplisit.
+
+Versi2.1 melengkapi F0–F2/acceptance operasional; versi2.2 mengikuti instruksi pengguna untuk dummy dinamis persisten pada evaluasi lokal, tanpa mengganti gate konten/hosting produksi.

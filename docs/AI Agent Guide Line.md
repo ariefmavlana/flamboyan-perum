@@ -1,6 +1,6 @@
 # Guideline AI Agent — Flamboyan Perum
 
-Versi 2.1 · 2026-10-03 · Engineering F0–F2 dan gate rilis.
+Versi 2.2 · 2026-10-04 · Engineering F0–F2, dummy dinamis dan gate rilis.
 
 ## Tujuan dan otoritas
 
@@ -18,6 +18,7 @@ Hierarki: instruksi pengguna → keputusan terbaru yang tercatat → PRD (produk
 6. Lead, histori append-only, dan notifikasi database ditulis dalam transaksi. Push merupakan akselerator pengiriman; database menjadi sumber kebenaran.
 7. Validasi, conflict handling, paginasi berbatas, query terindeks, dan pengujian lintas database lebih penting daripada abstraksi spekulatif.
 8. Setiap pekerjaan memakai branch baru, Conventional Commits, PR komprehensif, bukti validasi lokal, dokumentasi aktual, dan rollback yang realistis. GitHub Actions tidak digunakan sesuai instruksi pengguna.
+9. Sesuai instruksi pengguna, evaluasi lokal memakai dummy generatif persisten pada database kosong, label sintetis, real API/CRUD/workflows, tanpa katalog/CRM hardcoded atau fallback mock. Seed opt-in menolak production/staging dan data domain yang sudah ada; konten demo tidak memenuhi gate bisnis produksi. Panduan ada di demo-data.md.
 
 ## Target pengalaman
 

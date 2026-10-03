@@ -1,6 +1,6 @@
 # Status implementasi
 
-Tanggal 2026-10-04 · branch `codex/operational-acceptance` · F0–F2 + acceptance operasional. Kode seluruh kelompok requirement tersedia dan dipetakan di requirements-traceability.md; produksi tetap gated. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi. Bagian historis merekam hasil masing-masing PR, bukan status fitur terkini.
+Tanggal 2026-10-04 · branch `codex/dynamic-demo-data` · F0–F2 + acceptance operasional + dummy dinamis sesuai instruksi pengguna. Kode seluruh kelompok requirement tersedia dan dipetakan di requirements-traceability.md; produksi tetap gated. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi. Bagian historis merekam hasil masing-masing PR, bukan status fitur terkini.
 
 | Requirement / fitur | Status aktual | Batas / gate |
 |---|---|---|
@@ -34,7 +34,8 @@ Tanggal 2026-10-04 · branch `codex/operational-acceptance` · F0–F2 + accepta
 | FR-RT-004 Read/unread | Implemented | Exact unread count, own recipient list/read idempotent |
 | SEO canonical/metadata | Implemented | Sitemap index/1000 published perfile, robots/query noindex, factual JSON-LD |
 | Validasi lokal / branch+PR | Implemented | GitHub Actions dihapus sesuai instruksi pengguna; bukti lokal wajib sebelum review; main protection belum dikonfigurasi |
-| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing66 tests/453 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
+| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing71 tests/504 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
+| Dummy dinamis lokal | Implemented | Generative persisted24properties/72leads/3Marketing/7CMS/48media, real CRUD/workflows/API/SSR; opt-in local/testing/domain kosong; demo bukan konten bisnis |
 | Host/proxy/CSP/logs/readiness/monitoring | Implemented | Signed per-client proxy, exact allowlists, production nonce CSP, JSON logs, Admin ops/backup age; external TLS/monitoring gate |
 | Local load/restore | Validated synthetic locally | 18k requests/900s/20scheduledrps/0errors; 10k properties/50k leads; consistent/encrypted SQLite+media and PG isolated restore; actual hosting/offsite/RPO/RTO/retention gate |
 | Production/privacy/providers/content | Gate open | Actual hosting/domain/SMTP/Pusher/ClamAV/policy/content/QA/security evidence required |
@@ -81,8 +82,14 @@ Lihat realtime-validation.md:55 tests/337 assertions SQLite/PostgreSQL,11 unit t
 
 Lihat supervision-validation.md:59 tests/389 assertions SQLite/PostgreSQL,11 unit tests,10 browser flows, lint/type/build/Composer passed; source11 high/runtime0. Reports/PII-free aggregates opt-in/read-only retention candidates/controlled CLI redaction implemented. Policy dan restore-ledger masih gate. Acceptance operasional dilanjutkan, tanpa merge/deployment.
 
-## Acceptance operasional terbaru (PR #9)
+## Acceptance operasional (PR #9)
 
 Lihat acceptance-validation.md dan requirements-traceability.md:66 tests/453assertions SQLite+PostgreSQL,13 unit tests,12 browser flows termasuk production CSP/320px, lint/type/build/Pint/Composer/cache passed. Dataset10kproperty/50klead;15min/20scheduledrps/18krequests/0errors, API p95≤165.85ms/SSR≤428.19ms pada8nativePHPworkers+OPCache/PostgreSQL lokal. Native encrypted consistent SQLite+media restore dan PG isolated restore lulus. Tidak mengklaim throughput SQLite/shared-hosting, uptime99.5%, fullWCAG/cross-browser, realSMTP/Pusher/ClamAV/offsite/policy.
 
 PR #3 fondasi, #4 workspace, #5 media, #6 evaluasi, #7 realtime, #8 supervisi/privacy dan #9 acceptance membentuk stack review. Main masih bootstrap, tidak ada merge/deployment/Actions. Nomor sementara pengguna6287776734038; hostingHostinger/Rumahweb paket/domain belum dipilih. Runtime audit0/Composer0; source11high dari dua upstream advisories tetap gate. Source originals unchangedSHA; app artifacts/runtime/private fixtures/keys/passwords tidak dicommit.
+
+## Dataset dinamis terbaru
+
+Lihat demo-data.md dan dynamic-demo-validation.md. Default generator menyediakan24properties/72leads/3Marketing/7CMS/48media generatif yang diproses worker native pada database demo baru. E2E boleh menambah/mengubah data sehingga jumlah workspace setelah pengujian berbeda. Data tetap tersimpan dan berubah melalui UI/API; tidak ada katalog/CRM hardcoded, reseed saat reload, atau fallback mock. Semua konten diberi label sintetis; attestation CMS lokal bukan verifikasi bisnis. Seed menolak domain berisi data dan production/staging; rollback rows/jobs/staging dan pemulihan clock/config diuji.
+
+Validasi final: Pint,71tests/504assertions masing-masingSQLite5.78s/PostgreSQL12.24s,Composer strict/audit0,routecache/clear; lint0/typecheck/build,13unit299ms, seluruh13browser flows pada8spec dengan cache fixture diisolasi antar-berkas dan worker aktif. Gallery SSR controls sekarang menunggu hydration; test histori tidak mengandalkan catatan seed tertentu. Audit source11high/exit1, runtime0/exit0; warning build upstreamDEP0155 tetap dicatat. Tidak ada migrasi/API breaking change, dependency baru, merge, deployment atau Actions. PR dataset bergantung pada PR #9 agar diff review tetap terfokus.
