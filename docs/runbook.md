@@ -46,21 +46,21 @@ npm run lint
 npm run typecheck
 npm test
 npm run build
-npm audit --omit=dev
+npm run audit:source
 ```
 
 PHPUnit default menggunakan SQLite `:memory:`. Untuk PostgreSQL, buat database test khusus dan kredensial private, lalu set `DB_CONNECTION=pgsql`, `DB_DATABASE=<database-test>`, `DB_HOST`, `DB_PORT`, `DB_USERNAME`, dan `DB_PASSWORD` pada environment proses shell sebelum `php artisan test`. Nilai environment tersebut mengungguli default phpunit.xml. Gunakan nama database yang berbeda dari development/demo/bisnis: `RefreshDatabase` dapat menghapus dan membuat ulang tabel. Jangan menjalankan suite terhadap database produksi atau database development yang ingin dipertahankan. Jalankan suite pada kedua driver, catat versi database dan hasil; tutup cluster pengujian sementara setelah selesai. Konfigurasi test tidak di-commit.
 
-Playwright: backend local+DemoSeeder seeded harus berjalan, DEMO_PASSWORD environment sesuai seed, `npx playwright install chromium` lalu `npm run test:e2e`; config menjalankan/reuse frontend dev server. Windows boleh set PLAYWRIGHT_EXECUTABLE ke browser Chrome terpasang untuk local test. Test CRM menambahkan note pada demo lead, sehingga jangan menunjuk database produksi. Unit frontend tidak memuat Playwright specs.
+Playwright: backend local+DemoSeeder seeded harus berjalan, DEMO_PASSWORD environment sesuai seed, `npx playwright install chromium` lalu `npm run test:e2e`; config menjalankan/reuse frontend dev server. Windows boleh set PLAYWRIGHT_EXECUTABLE ke browser Chrome terpasang untuk local test. Test CRM menambahkan note pada demo lead, sehingga jangan menunjuk database produksi. Unit frontend tidak memuat Playwright specs. Bila database fixture/backend diatur melalui environment proses shell, jalankan `php artisan serve --no-reload --host=127.0.0.1 --port=8000`: mode reload Laravel dapat membuang override environment dan membaca ulang `.env`, sehingga seed dan server menunjuk database berbeda.
 
 Audit artefak setelah build, dari `apps/web`:
 
 ```sh
 npm install --prefix .output/server --package-lock-only --ignore-scripts --no-fund --no-audit
-npm audit --prefix .output/server --omit=dev
+npm run audit:runtime
 ```
 
-Lock audit hanya dibuat pada `.output` yang diabaikan Git. Audit source (`npm audit --omit=dev`) dan runtime dilaporkan terpisah; audit runtime bersih tidak menghapus temuan source. Kegagalan audit harus dicatat dan ditinjau sebelum produksi, bukan disembunyikan atau dilewati.
+Lock audit hanya dibuat pada `.output` yang diabaikan Git. Audit source (`npm run audit:source`, seluruh dependency termasuk devDependencies) dan runtime dilaporkan terpisah; audit runtime bersih tidak menghapus temuan source. Kegagalan audit harus dicatat dan ditinjau sebelum produksi, bukan disembunyikan atau dilewati. Audit dengan `--omit=dev` pada source saja tidak cukup karena dapat melewatkan kerentanan test tooling.
 
 ## Gate hosting dan rilis
 
