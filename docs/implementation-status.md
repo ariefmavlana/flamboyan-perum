@@ -46,7 +46,7 @@ Tanggal 2026-10-03 · branch `chore/local-validation` · F0 fondasi tersedia, MV
 - Public API/detail HTTP smoke sukses200 dan spesifikasi ada pada HTML sebelum client JavaScript. Screenshot desktop/mobile ditinjau lokal; bukan audit accessibility/UAT lengkap.
 - Artefak runtime audit0 advisory; source tooling audit menemukan11 high propagated entries dari dua upstream advisories tanpa patch, tetap menjadi gate keamanan produksi dan dicatat pada dependency-security. Build mempunyai warning upstream DEP0155.
 - Tidak ada klaim bahwa hosting produksi, load/SLO, actual backup/restore, legal privacy atau push provider telah diuji. Semua gate mempunyai pemilik/bukti di PRD§10/runbook.
-- Fondasi awal diusulkan pada [PR #1](https://github.com/ariefmavlana/flamboyan-perum/pull/1). Branch baru membawa fondasi yang belum di-merge dan mengganti workflow dengan validasi lokal sesuai instruksi pengguna; PR pengganti menjadi proposal aktif. Tidak ada syarat memperbaiki billing atau menjalankan ulang Actions. Detail hasil dan keterbatasan ada pada validation.md.
+- [PR #2](https://github.com/ariefmavlana/flamboyan-perum/pull/2) menjadi proposal aktif. Branch baru membawa fondasi yang belum di-merge dan mengganti workflow dengan validasi lokal sesuai instruksi pengguna. [PR #1](https://github.com/ariefmavlana/flamboyan-perum/pull/1) ditutup sebagai superseded, tanpa merge. Tidak ada syarat memperbaiki billing atau menjalankan ulang Actions. Detail hasil dan keterbatasan ada pada validation.md.
 
 ## Urutan PR lanjutan
 
