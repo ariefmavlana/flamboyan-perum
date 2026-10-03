@@ -6,7 +6,7 @@ Versi 2.0 · 2026-10-03 · Baseline F0 dan kontrak target F1/F2.
 
 PRD mendefinisikan produk, SRS mendefinisikan perilaku, ADR menjelaskan tradeoff, `API_DOCS.md` menjelaskan endpoint yang benar-benar tersedia. `implementation-status.md` menentukan coverage saat ini. Original v1.1 di `original/` merupakan arsip, bukan spesifikasi aktif. Semua keputusan tambahan di §2 adalah baseline engineering yang dapat diganti melalui PR; tidak diklaim telah berasal dari guideline awal.
 
-Nuxt 4/Vue 3/TypeScript strict dengan SSR aktif; Laravel 13/PHP ≥8.3, Eloquent, Sanctum cookie; Node 24 LTS target CI/produksi; PostgreSQL produksi utama, SQLite lokal/instalasi ringan teruji. Composer dan npm lockfile wajib. Tidak menggunakan Docker atau microservices. Backend web root `public/`, private configuration/database/storage di luar web root. Website dan API berada pada origin yang sama melalui routing reverse proxy di produksi.
+Nuxt 4/Vue 3/TypeScript strict dengan SSR aktif; Laravel 13/PHP ≥8.3, Eloquent, Sanctum cookie; Node 24 LTS target development/build/produksi; PostgreSQL produksi utama, SQLite lokal/instalasi ringan teruji. Composer dan npm lockfile wajib. Validasi dijalankan lokal dan dicatat pada PR; GitHub Actions tidak digunakan. Tidak menggunakan Docker atau microservices. Backend web root `public/`, private configuration/database/storage di luar web root. Website dan API berada pada origin yang sama melalui routing reverse proxy di produksi.
 
 ## 2. Keputusan dan permissions
 
@@ -136,6 +136,6 @@ Fitur yang kontraknya lengkap tetapi belum dibangun tetap planned di status file
 
 ## 12. Definition of done dan gate
 
-F0: migrations/auth/public visibility/scoped CRM/atomic history/notification/versioning terbukti automated; lint/typecheck/build lulus, errors bermakna, dokumentasi status, branch commit push PR. Fitur F1/F2: acceptance PRD + negative/scoped/empty/error/keyboard tests + provider configuration + operasi relevan. Production: F1 release scope selesai, CI PostgreSQL green, load/UAT/security/restore dan hosting evidence, valid content/privacy/provider decisions. Open deployment facts tetap gate eksplisit dengan pemilik; tidak dihilangkan dengan mengubah kata menjadi 'done'.
+F0: migrations/auth/public visibility/scoped CRM/atomic history/notification/versioning terbukti melalui suite otomatis yang dijalankan lokal; lint/typecheck/build lulus, errors bermakna, dokumentasi status, branch commit push PR. Fitur F1/F2: acceptance PRD + negative/scoped/empty/error/keyboard tests + provider configuration + operasi relevan. Production: F1 release scope selesai, suite SQLite/PostgreSQL lokal lulus pada runtime deployment yang dipilih dan bukti commit/runtime tercatat, load/UAT/security/restore dan hosting evidence, valid content/privacy/provider decisions. Open deployment facts tetap gate eksplisit dengan pemilik; tidak dihilangkan dengan mengubah kata menjadi 'done'.
 
 Changelog: 1.1 2026-09-30 shared hosting/DB; 2.0 2026-10-03 menutup ambiguity baseline, physical schema/contracts/state/security/acceptance dan traceability, menjaga seluruh fitur sumber.

@@ -17,7 +17,7 @@ Hierarki: instruksi pengguna → keputusan terbaru yang tercatat → PRD (produk
 5. Pisahkan publication `DRAFT/PUBLISHED/ARCHIVED` dari availability `AVAILABLE/BOOKED/SOLD_OUT`. Sold out tetap dapat dipublikasikan dengan label yang jelas.
 6. Lead, histori append-only, dan notifikasi database ditulis dalam transaksi. Push merupakan akselerator pengiriman; database menjadi sumber kebenaran.
 7. Validasi, conflict handling, paginasi berbatas, query terindeks, dan pengujian lintas database lebih penting daripada abstraksi spekulatif.
-8. Setiap pekerjaan memakai branch baru, Conventional Commits, PR komprehensif, CI, dokumentasi aktual, dan rollback yang realistis.
+8. Setiap pekerjaan memakai branch baru, Conventional Commits, PR komprehensif, bukti validasi lokal, dokumentasi aktual, dan rollback yang realistis. GitHub Actions tidak digunakan sesuai instruksi pengguna.
 
 ## Target pengalaman
 
@@ -27,7 +27,7 @@ Internal: login tanpa registrasi publik, Marketing mengelola properti sendiri da
 
 ## Batas fondasi
 
-Fondasi membuktikan runtime, SSR katalog, login, scoped API, transaksi CRM, histori, notifikasi database, validasi, CI, dan prosedur kontribusi. Media upload, CMS, push/Echo, laporan, provisioning akun lengkap, dan UX CRUD lengkap mengikuti PR berikutnya. Jangan membuat logo bank, testimoni, harga, rate, alamat, atau nomor WA produksi fiktif. Demo hanya melalui seed eksplisit.
+Fondasi membuktikan runtime, SSR katalog, login, scoped API, transaksi CRM, histori, notifikasi database, validasi lokal, dan prosedur kontribusi. Media upload, CMS, push/Echo, laporan, provisioning akun lengkap, dan UX CRUD lengkap mengikuti PR berikutnya. Jangan membuat logo bank, testimoni, harga, rate, alamat, atau nomor WA produksi fiktif. Demo hanya melalui seed eksplisit.
 
 ## Gate rilis
 

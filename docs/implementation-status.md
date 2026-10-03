@@ -1,6 +1,6 @@
 # Status implementasi
 
-Tanggal 2026-10-03 · branch `feat/project-foundation` · F0 fondasi tersedia, MVP/produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
+Tanggal 2026-10-03 · branch `chore/local-validation` · F0 fondasi tersedia, MVP/produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
 
 | Requirement / fitur | Status F0 | Tahap berikutnya / batas |
 |---|---|---|
@@ -33,8 +33,8 @@ Tanggal 2026-10-03 · branch `feat/project-foundation` · F0 fondasi tersedia, M
 | FR-RT-003 Push/Echo | Planned | No realtime claim; current manual refresh; queued provider+poll/reconnect F1 |
 | FR-RT-004 Read/unread | Implemented | Exact unread count, own recipient list/read idempotent |
 | SEO canonical/metadata | Implemented | Sitemap/robots/query policy/structured data F1/F2 |
-| CI / branch+PR | Implemented workflow | Main protection not configured; AGENTS/CONTRIBUTING rule active |
-| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing18 tests/95 assertions; matrix CI PHP8.3+8.4 belum berjalan karena billing akun GitHub |
+| Validasi lokal / branch+PR | Implemented | GitHub Actions dihapus sesuai instruksi pengguna; bukti lokal wajib sebelum review; main protection belum dikonfigurasi |
+| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing18 tests/95 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
 | Production/backups/privacy/performance | Gate open | Actual hosting/load/restore/retention/provider/content evidence required |
 
 ## Validasi lokal
@@ -44,9 +44,9 @@ Tanggal 2026-10-03 · branch `feat/project-foundation` · F0 fondasi tersedia, M
 - Pint, Composer validate --strict dan Composer audit lulus; route:cache/route:clear berhasil.
 - Frontend Node24.21.0: ESLint `--max-warnings 0`, Nuxt typecheck, Vitest5 tests, Playwright3 flows, SSR build lulus. Browser flows meliputi raw SSR+canonical404+missing-CSRF419, mobile search/layout, session login/drawer/note/Escape/logout.
 - Public API/detail HTTP smoke sukses200 dan spesifikasi ada pada HTML sebelum client JavaScript. Screenshot desktop/mobile ditinjau lokal; bukan audit accessibility/UAT lengkap.
-- Artefak runtime audit0 advisory; source tooling audit menemukan11 high propagated entries dari dua upstream advisories tanpa patch, tetap blocking audit job dan dicatat pada dependency-security. Build mempunyai warning upstream DEP0155.
+- Artefak runtime audit0 advisory; source tooling audit menemukan11 high propagated entries dari dua upstream advisories tanpa patch, tetap menjadi gate keamanan produksi dan dicatat pada dependency-security. Build mempunyai warning upstream DEP0155.
 - Tidak ada klaim bahwa hosting produksi, load/SLO, actual backup/restore, legal privacy atau push provider telah diuji. Semua gate mempunyai pemilik/bukti di PRD§10/runbook.
-- [PR #1](https://github.com/ariefmavlana/flamboyan-perum/pull/1) terbuka sebagai draft. GitHub Actions run37094860790 tidak memulai job karena akun terkunci akibat billing. Pemilik akun perlu menyelesaikan billing dan rerun; matrix PHP8.3/8.4 pada Linux belum dinyatakan lulus. Detail ada pada validation.md.
+- Fondasi awal diusulkan pada [PR #1](https://github.com/ariefmavlana/flamboyan-perum/pull/1). Branch baru membawa fondasi yang belum di-merge dan mengganti workflow dengan validasi lokal sesuai instruksi pengguna; PR pengganti menjadi proposal aktif. Tidak ada syarat memperbaiki billing atau menjalankan ulang Actions. Detail hasil dan keterbatasan ada pada validation.md.
 
 ## Urutan PR lanjutan
 

@@ -9,7 +9,7 @@ apps/api       Laravel 13: session auth, scoped catalog/CRM, history, notificati
 apps/web       Nuxt 4 / Vue / TypeScript: public SSR + login + CRM workspace
 docs           PRD, SRS, review, architecture, API, runbook, implementation status
 docs/original  Arsip utuh tiga dokumen sumber
-.github        CI SQLite/PostgreSQL, frontend, browser flows, dependency audit
+.github        Template PR (tanpa GitHub Actions)
 ```
 
 ## Mulai
@@ -32,7 +32,7 @@ Buka `http://127.0.0.1:3000`. Nomor WA/konten produksi tidak disediakan; konfigu
 
 ## Cakupan fondasi
 
-Tersedia: home/list/detail SSR, katalog API dengan filter/pagination dan public allowlist, session login/logout, backend role/ownership, create/assign/status/notes CRM, optimistic concurrency, history dan database notifications atomik, tabel CRM/drawer, provisioning CLI, calculation kernel KPR, tests/CI.
+Tersedia: home/list/detail SSR, katalog API dengan filter/pagination dan public allowlist, session login/logout, backend role/ownership, create/assign/status/notes CRM, optimistic concurrency, history dan database notifications atomik, tabel CRM/drawer, provisioning CLI, calculation kernel KPR, dan suite pengujian lokal.
 
 Tahap berikutnya: UX Admin create/assign dan CRUD katalog lengkap, media/upload, recovery/profil/CMS, real-time push/Echo, compare/KPR UI dan bank rates, maps/POI/brochure/reporting. [Status per fitur](docs/implementation-status.md) memisahkan fondasi dari MVP dan produksi.
 
@@ -44,7 +44,7 @@ Tahap berikutnya: UX Admin create/assign dan CRUD katalog lengkap, media/upload,
 - [Deployment/recovery runbook](docs/runbook.md), [dependency security](docs/dependency-security.md)
 - [Aturan kontribusi](CONTRIBUTING.md), [AGENTS](AGENTS.md)
 
-Jalankan backend Pint/PHPUnit/Composer validate+audit dan frontend lint/typecheck/Vitest/build/Playwright. Suite lokal lulus pada SQLite dan PostgreSQL17.9 dengan PHP8.4.26. CI dikonfigurasi untuk SQLite/PostgreSQL dan PHP8.3/8.4, tetapi run pertama belum memulai job karena masalah billing akun GitHub. Source toolchain Nuxt memiliki advisory upstream tanpa patch yang dicatat di security document; audit tetap dijalankan dan tidak disamarkan. Tidak mengklaim production-ready sebelum hosting, security, media/data recovery, content, privacy, provider, load dan UAT gates lulus. Bukti lengkap ada di [docs/validation.md](docs/validation.md).
+GitHub Actions tidak digunakan. Jalankan backend Pint/PHPUnit/Composer validate+audit dan frontend lint/typecheck/Vitest/build/Playwright secara lokal sebelum review PR. Suite lokal fondasi lulus pada SQLite dan PostgreSQL17.9 dengan PHP8.4.26; PHP8.3 dan Linux belum diuji. Source toolchain Nuxt memiliki advisory upstream tanpa patch yang dicatat di security document; audit source dan artefak runtime tetap wajib serta hasilnya tidak disamarkan. Tidak mengklaim production-ready sebelum hosting, security, media/data recovery, content, privacy, provider, load dan UAT gates lulus. Perintah lengkap ada di [runbook](docs/runbook.md), bukti di [docs/validation.md](docs/validation.md).
 
 ## Workflow
 

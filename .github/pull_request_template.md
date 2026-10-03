@@ -12,7 +12,7 @@ Jelaskan trigger, perilaku sebelumnya, dan hasil perubahan.
 
 - Perintah yang benar-benar dijalankan dan hasil:
 - Negative/access/concurrency tests:
-- CI SQLite/PostgreSQL dan frontend:
+- Bukti validasi lokal SQLite/PostgreSQL, frontend, browser dan audit (runtime, hasil, keterbatasan):
 
 ## Data, operasi, dan risiko
 

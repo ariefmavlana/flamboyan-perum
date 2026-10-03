@@ -32,7 +32,7 @@ Tanggal 2026-10-03. Ketiga berkas dibaca: guideline 6.832 byte, PRD 29.559 byte,
 | R24 | API/error/pagination/versioning tidak ada | Frontend/backend tidak selaras | API_DOCS, version route, error codes, request_id, bounded lists |
 | R25 | Acceptance menggabungkan P0/P1 dan deployment final | Fondasi diklaim seluruh MVP | F0/F1/F2/production DoD terpisah; implementation-status |
 | R26 | Source provenance/infrastructure wording berulang | Pembaca sulit menentukan dokumen aktif | Original immutable, hierarchy dan changelog konsisten |
-| R27 | Belum ada workflow Git/CI/security secret rule | Feature langsung ke main, audit kurang | AGENTS, CONTRIBUTING, PR template, CI dan lockfiles |
+| R27 | Belum ada workflow kontribusi/validasi/security secret rule | Feature langsung ke main, audit kurang | AGENTS, CONTRIBUTING, PR template, bukti validasi lokal dan lockfiles; GitHub Actions tidak digunakan |
 | R28 | Social proof tanpa data sah dan optional media dianggap selalu ada | Klaim bisnis palsu/UI rusak | Konten terverifikasi saja; media optional dengan empty states |
 | R29 | Profile/CMS/account ownership terlalu umum | Scope meluas menjadi generic CMS | Nama profil sendiri; Admin akun; content terstruktur F1/F2 |
 | R30 | Tidak ada readiness/observability atau rollback konkret | Kegagalan tak terdeteksi | Health/error request_id F0; alert/readiness/deploy/restore gates runbook |
