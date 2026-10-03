@@ -31,10 +31,9 @@ const eventLabels: Record<string, string> = {
 }
 const user = ref<User | null>(null)
 const leads = ref<Paginated<Lead> | null>(null)
-const notices = ref<{
-  data: { id: string; kind: string; lead_id: number; read_at: string | null }[]
-  unread_count: number
-} | null>(null)
+const inbox = useNotificationInbox()
+const notices = inbox.notices
+const route = useRoute()
 const selected = ref<Lead | null>(null)
 const history = ref<Paginated<LeadHistory> | null>(null)
 const nextStatus = ref<LeadStatus>('FOLLOWED_UP')
@@ -75,10 +74,9 @@ async function load(page = 1) {
       api.request<Paginated<Lead>>(
         `/api/v1/leads?${new URLSearchParams({ page: String(page), ...(search.value ? { q: search.value } : {}), ...(filterStatus.value ? { status: filterStatus.value } : {}), ...(assigneeFilter.value ? { assigned_marketing_id: String(assigneeFilter.value) } : {}), ...(unassigned.value ? { unassigned: '1' } : {}) })}`,
       ),
-      api.request<NonNullable<typeof notices.value>>('/api/v1/notifications'),
+      inbox.refresh(),
     ])
     leads.value = results[0]
-    notices.value = results[1]
   } catch (error: unknown) {
     if ((error as { statusCode?: number }).statusCode === 401)
       await navigateTo('/login')
@@ -214,21 +212,34 @@ async function mutate(kind: 'status' | 'notes') {
 }
 async function readNotice(id: string) {
   try {
-    await api.request(`/api/v1/notifications/${id}/read`, { method: 'PATCH' })
-    await load(leads.value?.meta.current_page ?? 1)
+    await inbox.read(id)
   } catch {
     message.value = 'Notifikasi belum dapat diperbarui.'
   }
 }
-async function logout() {
+async function openNoticeLead(id: number) {
   try {
-    await api.request('/auth/logout', { method: 'POST' })
-    await navigateTo('/login')
+    if (drawer.value?.open) drawer.value.close()
+    const response = await api.request<{ data: Lead }>(`/api/v1/leads/${id}`)
+    await openLead(response.data)
   } catch {
-    message.value = 'Belum dapat keluar. Coba kembali.'
+    message.value =
+      'Lead tidak tersedia atau penugasannya telah berubah. Muat ulang daftar.'
   }
 }
-onMounted(() => load())
+watch(
+  () => route.query.lead,
+  (id) => {
+    if (typeof id === 'string' && /^[1-9]\d*$/.test(id) && user.value)
+      void openNoticeLead(Number(id))
+  },
+)
+onMounted(async () => {
+  await load()
+  const id = route.query.lead
+  if (typeof id === 'string' && /^[1-9]\d*$/.test(id) && user.value)
+    await openNoticeLead(Number(id))
+})
 </script>
 
 <template>
@@ -241,7 +252,6 @@ onMounted(() => load())
         <h1 class="page-title">Perjalanan calon pembeli.</h1>
         <p v-if="user" class="muted">{{ user.name }}</p>
       </div>
-      <button class="button secondary" @click="logout">Keluar</button>
     </div>
     <p v-if="message && !selected" role="alert" class="error-text">
       {{ message }}
@@ -350,24 +360,40 @@ onMounted(() => load())
           </button>
         </nav>
       </div>
-      <aside class="notifications">
+      <aside id="notifications" class="notifications">
         <h2>
           Notifikasi
           <span class="badge"
             >{{ notices?.unread_count ?? 0 }} belum dibaca</span
           >
         </h2>
-        <p class="muted">Muat ulang untuk melihat kabar terbaru.</p>
+        <p class="muted">
+          Notifikasi tersimpan di database. Sinkronisasi berkala tetap berjalan
+          saat push tidak tersedia.
+        </p>
+        <button
+          class="button secondary"
+          @click="
+            inbox.refresh(1).catch(() => {
+              message = 'Notifikasi belum dapat dimuat.'
+            })
+          "
+        >
+          Muat ulang notifikasi
+        </button>
         <ul>
           <li v-for="notice in notices?.data" :key="notice.id">
-            <p>
+            <NuxtLink
+              :to="{ path: '/backoffice', query: { lead: notice.lead_id } }"
+            >
               {{
                 notice.kind === 'LEAD_ASSIGNED'
                   ? 'Penugasan lead'
                   : 'Perubahan status lead'
               }}
               #{{ notice.lead_id }}
-            </p>
+            </NuxtLink>
+            <p class="muted">{{ date(notice.created_at) }}</p>
             <button
               v-if="!notice.read_at"
               class="text-button"
@@ -378,6 +404,33 @@ onMounted(() => load())
           </li>
         </ul>
         <p v-if="!notices?.data.length" class="muted">Belum ada notifikasi.</p>
+        <nav
+          v-if="notices && notices.meta.last_page > 1"
+          class="pagination"
+          aria-label="Halaman notifikasi"
+        >
+          <button
+            v-if="notices.meta.current_page > 1"
+            @click="
+              inbox.refresh(notices.meta.current_page - 1).catch(() => {
+                message = 'Notifikasi belum dapat dimuat.'
+              })
+            "
+          >
+            Sebelumnya</button
+          ><span
+            >{{ notices.meta.current_page }}/{{ notices.meta.last_page }}</span
+          ><button
+            v-if="notices.meta.current_page < notices.meta.last_page"
+            @click="
+              inbox.refresh(notices.meta.current_page + 1).catch(() => {
+                message = 'Notifikasi belum dapat dimuat.'
+              })
+            "
+          >
+            Berikutnya
+          </button>
+        </nav>
       </aside>
     </div>
     <dialog

@@ -18,7 +18,9 @@
     "audit:runtime": "npm audit --prefix .output/server --omit=dev"
   },
   "dependencies": {
+    "laravel-echo": "^2.5.0",
     "nuxt": "^4.5.2",
+    "pusher-js": "^8.6.0",
     "vue": "^3.5.40",
     "vue-router": "^5.2.0"
   },

@@ -7,6 +7,10 @@ export default defineNuxtConfig({
   typescript: { strict: true },
   nitro: {
     devProxy: {
+      '/api/v1/realtime': {
+        target: 'http://127.0.0.1:8000/api/v1/realtime',
+        changeOrigin: true,
+      },
       '/media/': { target: 'http://127.0.0.1:8000/media/', changeOrigin: true },
       '/auth/': { target: 'http://127.0.0.1:8000/auth/', changeOrigin: true },
       '/sanctum/': {
