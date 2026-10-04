@@ -36,7 +36,7 @@ const wa = computed(() =>
             .map((source) => `${source.url} ${source.width}w`)
             .join(',') || undefined
         "
-        sizes="(max-width: 540px) 100vw, (max-width: 900px) 50vw, 33vw"
+        sizes="(max-width: 540px) 100vw, 50vw"
         :alt="cover.alt"
         :width="cover.sources[0].width ?? undefined"
         :height="cover.sources[0].height ?? undefined"

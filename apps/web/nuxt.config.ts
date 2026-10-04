@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   ssr: true,
   devtools: { enabled: false },
   modules: ['@nuxt/eslint'],
-  css: ['~/assets/main.css'],
+  css: ['~/assets/main.css', '~/assets/editorial.css'],
   typescript: { strict: true },
   nitro: {
     devProxy: {
