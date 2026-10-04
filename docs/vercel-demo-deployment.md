@@ -13,7 +13,7 @@ Pengguna
 Vercel project "flamboyan-web" (Nuxt SSR, Nitro preset vercel)
   │  ├─ /                → halaman publik SSR
   │  ├─ /login /backoffice/** → staff workspace (SPA, cookie Sanctum)
-  │  └─ rewrite same-origin: /api/*, /auth/*, /sanctum/*, /media/*, /up
+  │  └─ proxy same-origin (routeRules Nitro): /api/*, /auth/*, /sanctum/*, /media/*, /up
   │                          │
   │  └─ SSR memanggil Laravel langsung via NUXT_API_BASE + signature HMAC
   ▼                          ▼
@@ -46,6 +46,10 @@ Konsekuensi demo: foto dan brosur yang sudah diproses lokal **tampil normal** di
 | Proxy function meneruskan body multipart | Terverifikasi dari paket | `vercel-php@0.9.0` `dist/launchers/builtin.js` mem-proxy body mentah; hitungan chunk tak berujung sehingga tidak dipotong |
 | Perilaku upload tanpa GD | Terverifikasi | Uji perilaku pada PHP 8.3 tanpa GD: `201` lalu `FAILED`/`IMAGE_PROCESSOR_UNAVAILABLE`, staging dipertahankan |
 | Perbaikan integritas media bagian 3.0 | Terverifikasi | Regresi baru gagal pada perilaku lama dan lulus pada perilaku baru |
+| Proxy same-origin Nitro pada artefak Vercel | Terverifikasi 2026-10-04 | Build `NITRO_PRESET=vercel` lalu jalankan function hasil build melawan API lokal: `/up` 200, `/sanctum/csrf-cookie` 204 + cookie, `/api/v1/properties` 200, `/media/{id}/640` 200 `image/webp`, `POST /auth/login` 200, lalu `/api/v1/me`, `/api/v1/leads`, `/api/v1/notifications`, `/api/v1/realtime` 200 dengan cookie sesi yang sama |
+| Guard `NUXT_API_BASE` | Terverifikasi | `VERCEL=1` tanpa `NUXT_API_BASE` menghentikan build dengan pesan eksplisit |
+| Argumen Composer runtime Vercel | Terverifikasi dari paket | `vercel-php@0.9.0` `dist/utils.js`: `composer install --profile --no-dev --no-interaction --no-scripts --ignore-platform-reqs` |
+| Ekstensi runtime Vercel tanpa `gd` | Terverifikasi dari daftar resmi | `phpshow.vercel.app/ext/` memuat `pdo_pgsql`, `pgsql`, `intl`, `zip`, `sodium`, `OPcache`; `gd` tidak ada |
 | Deploy nyata ke Vercel, koneksi Supabase/R2, routing cookie di produksi | **Belum diverifikasi** | Butuh akun dan kredensial Anda; ikuti checklist bagian 8 |
 | `SESSION_DOMAIN` pada deployment nyata | **Belum diverifikasi** | Tergantung perilaku Set-Cookie lintas domain Vercel; uji dan set hanya bila cookie ter-scope salah |
 | Ekstensi `intl`/`pdo_pgsql` pada runtime Vercel | Belum diverifikasi | Daftar ekstensi README runtime menyertakan `pdo_pgsql`/`pgsql`/`sodium`/`intl`/`zip`/`pcntl`/OPcache, `gd` **tidak ada**; konfirmasi dengan `api/phpinfo.php` sementara |
@@ -76,19 +80,34 @@ cd apps/api
 composer require league/flysystem-aws-s3-v3:^3.35
 ```
 
-Runtime `vercel-php` menjalankan `composer install --no-dev` saat build, jadi dependency ini otomatis terpasang di function. Jika Anda tidak ingin menambah dependency produksi, alternatifnya adalah meng-commit direktori `vendor/`; runtime mendeteksi `composer.json` dan melewati instalasi bila `vendor/` sudah ada. Pilih salah satu, jangan keduanya.
+Runtime `vercel-php` menjalankan `composer install --no-dev --no-scripts --ignore-platform-reqs` saat build, jadi dependency ini otomatis terpasang di function dan `ext-gd` tidak memblokir build (lihat 3.5). Jika Anda tidak ingin menambah dependency produksi, alternatifnya adalah meng-commit direktori `vendor/`; runtime mendeteksi `composer.json` dan melewati instalasi bila `vendor/` sudah ada. Pilih salah satu, jangan keduanya.
 
 ### 3.2 Cookies staff mengharuskan satu origin
 
-`useStaffApi.ts` memakai cookie `XSRF-TOKEN` dan `credentials: 'include'`. Karena itu halaman login dan seluruh `/backoffice/**` harus menuju API pada **hostname yang sama**, dan `SANCTUM_STATEFUL_DOMAINS` memuat host web tanpa skema. Rewrite di bagian 6 tidak opsional untuk fitur staff.
+`useStaffApi.ts` memakai cookie `XSRF-TOKEN` dan `credentials: 'include'`. Karena itu halaman login dan seluruh `/backoffice/**` harus menuju API pada **hostname yang sama**, dan `SANCTUM_STATEFUL_DOMAINS` memuat host web tanpa skema. Proxy di bagian 6 tidak opsional untuk fitur staff. `EnsureFrontendRequestsAreStateful` hanya mengenali host web dari header `Origin`/`Referer`, jadi nilai ini harus memuat host web persis (tanpa skema); host `*.vercel.app` yang belum terdaftar membuat login tampak berhasil tetapi sesi tidak dikenali pada request berikutnya.
 
 ### 3.3 `DemoSeeder` menolak `APP_ENV=production`
 
-`DemoSeeder::run()` menghentikan proses bila environment bukan `local`/`testing`. Deployment demo ini karena itu memakai `APP_ENV=local` dengan **`APP_DEBUG=false` wajib**. Dengan `APP_ENV=local`, guard `TRUSTED_HOSTS` di `EdgeSecurity` tidak aktif, jadi jangan pakai konfigurasi ini untuk data bisnis.
+`DemoSeeder::run()` menghentikan proses bila environment bukan `local`/`testing`. Deployment demo ini karena itu memakai `APP_ENV=local` dengan **`APP_DEBUG=false` wajib**. Dengan `APP_ENV=local`, guard `TRUSTED_HOSTS` di `EdgeSecurity` tidak aktif, jadi jangan pakai konfigurasi ini untuk data bisnis. `APP_ENV=local` juga membuat konfigurasi produksi di `OperationalHealth` (`production_configuration`) selalu bernilai benar, sehingga `/ready` hanya mengukur database, storage, dan backlog queue.
 
 ### 3.4 Filesystem ephemeral dan tanpa worker
 
 Function Vercel tidak punya disk persisten dan tidak punya proses latar. Karena itu semua state harus di Supabase/R2, `VIEW_COMPILED_PATH` serta cache config/route harus menunjuk `/tmp`, dan README/runbook bagian "Node persisten" tidak berlaku untuk topologi ini (Nitro dijalankan sebagai function, bukan proses Node persisten).
+
+### 3.5 Build Vercel mengabaikan `platform` dan `ext-gd`
+
+Sumber runtime `vercel-php@0.9.0` (`dist/utils.js`) menjalankan Composer dengan argumen tetap:
+
+```text
+composer install --profile --no-dev --no-interaction --no-scripts --ignore-platform-reqs
+```
+
+Dua implikasi yang tidak boleh diasumsikan sebaliknya:
+
+- `composer.json` mewajibkan `ext-gd` dan mengunci `config.platform.php` ke `8.3.0`, tetapi runtime menjalankan PHP 8.5; `--ignore-platform-reqs` membuat keduanya tidak pernah memblokir build.
+- `--no-scripts` berarti hook `post-autoload-dump` (termasuk `artisan package:discover`) **tidak dijalankan saat build**. Berkas tidak boleh bergantung pada penemuan paket di waktu build; provider didaftarkan lewat `bootstrap/providers.php` dan konfigurasi di-cache saat runtime.
+
+Runtime tidak menyediakan ekstensi `gd` (daftar resmi `phpshow.vercel.app/ext/` memuat `pdo_pgsql`, `pgsql`, `intl`, `zip`, `sodium`, `OPcache`, tetapi **tidak ada** `gd`), dan tidak ada ClamAV. Semua derivasi di Langkah 4 mengikuti batas ini.
 
 ## 4. Prasyarat
 
@@ -115,6 +134,7 @@ Seluruh berkas berikut sudah ada di `main`.
 | [apps/api/config/filesystems.php](../apps/api/config/filesystems.php) | Disk `media` dapat memakai driver `s3` via `MEDIA_DISK_DRIVER` |
 | [apps/api/config/view.php](../apps/api/config/view.php) | Mem-publish konfigurasi view agar `VIEW_COMPILED_PATH` dapat diarahkan ke `/tmp` |
 | [apps/web/vercel.json](../apps/web/vercel.json) | Konfigurasi build Nuxt di Vercel (`NITRO_PRESET=vercel`) |
+| [apps/web/nuxt.config.ts](../apps/web/nuxt.config.ts) | `routeRules` proxy same-origin ke `NUXT_API_BASE` saat `VERCEL=1`, plus guard build bila `NUXT_API_BASE` kosong |
 
 Perubahan ini tidak mengubah perilaku default: tanpa `MEDIA_DISK_DRIVER`, disk media tetap `local` dan seluruh suite tetap lulus (`php artisan test`: 80 test, 603 assertion pada `main`).
 
@@ -200,6 +220,7 @@ Storage Supabase tidak dipakai untuk media karena batas file Free 50 MB dan disk
 | `TRUSTED_HOSTS` | `<project-api>.vercel.app` |
 | `TRUSTED_PROXY_IPS` | kosong |
 | `MEDIA_SCANNER_BINARY` | kosong (brosur gagal tertutup) |
+| `REALTIME_ENABLED` | `false`; `true` tanpa kredensial Pusher membuat `/ready` gagal |
 | `ANALYTICS_ENABLED` | `false` |
 
 5. Deploy. Setelah selesai, uji `https://<project-api>.vercel.app/up` dan `https://<project-api>.vercel.app/api/v1/properties`.
@@ -263,7 +284,9 @@ Langkah 2 dan 3 memerlukan `vendor/` lokal (jalankan `composer install` di `apps
 $env:CURATE_DEMO_PHOTOS="1"; $env:DEMO_PASSWORD="<password-demo-privat>"; node scripts/curate-demo-photos.mjs
 ```
 
-Script menolak berjalan bila `APP_ENV` bukan local/testing, koneksi bukan SQLite, atau path DB bukan `.tools/dynamic-demo.sqlite` — jadi untuk database Supabase langkah ini memerlukan penyesuaian guard script dan itu **di luar cakupan PR ini**. Level A (ilustrasi sintetis) tidak memerlukannya.
+Script menolak berjalan bila `APP_ENV` bukan local/testing, koneksi bukan SQLite, atau path DB bukan `.tools/dynamic-demo.sqlite`. Karena itu kurasi foto **hanya** dapat dijalankan pada fixture SQLite lokal; setelah selesai, pindahkan `ready/` dan `content-logos/` ke bucket R2 dengan `aws s3 sync` atau rclone. Metadata `variants` menyimpan path `ready/<uuid>/...`, jadi cukup memindahkan struktur objek tanpa mengubah database. Level A (ilustrasi sintetis) tidak memerlukan ini.
+
+**Brosur dan logo bank.** Karena derivasi lokal memakai GD, unggahan BROCHURE dan `POST /api/v1/internal/content/{id}/logo` tetap dapat diproduksi dari mesin lokal selama API lokal menunjuk Supabase dan R2 yang sama. Untuk brosur, `MEDIA_SCANNER_BINARY` harus diarahkan ke ClamAV lokal, karena tanpa itu hasilnya `SCANNER_UNAVAILABLE`. Tidak ada pengganti proses ini di dalam function Vercel.
 
 ### Langkah 5 — Project Vercel untuk web
 
@@ -275,44 +298,44 @@ Script menolak berjalan bila `APP_ENV` bukan local/testing, koneksi bukan SQLite
 | `NUXT_API_BASE` | `https://<project-api>.vercel.app` |
 | `NUXT_API_PROXY_SECRET` | nilai **sama** dengan `API_PROXY_SECRET` API |
 | `NUXT_TRUSTED_PROXY_IPS` | kosong |
-| `NUXT_ALLOWED_HOSTS` | `<domain-web>`, dan tambahkan `<project-web>.vercel.app` |
+| `NUXT_ALLOWED_HOSTS` | `<domain-web>`, dan tambahkan `<project-web>.vercel.app`; host di luar daftar balas 400 |
 | `NUXT_TOUR_HOSTS` | `my.matterport.com` |
 | `NUXT_PUBLIC_SITE_URL` | `https://<domain-web>` |
 | `NUXT_PUBLIC_WHATSAPP_NUMBER` | nomor demo Anda (digit internasional tanpa `+`) |
 | `NUXT_PUBLIC_ANALYTICS_ENABLED` | `false` |
 
-`apps/web/vercel.json` di repo sudah mengeset `NITRO_PRESET=vercel` lewat build env, sehingga output Nitro menjadi function Vercel.
+`apps/web/vercel.json` di repo sudah mengeset `NITRO_PRESET=vercel` lewat build env, sehingga output Nitro menjadi function Vercel. `NUXT_API_BASE` wajib terisi pada build Production: build berhenti dengan pesan jelas bila kosong.
 
 ### Langkah 6 — Satukan origin untuk cookie staff
 
-Tambahkan rewrite same-origin pada `apps/web/vercel.json`, ganti `<project-api>` dengan URL API Anda:
+Tidak perlu mengedit `vercel.json`. Proxy same-origin sudah dikonfigurasi di [apps/web/nuxt.config.ts](../apps/web/nuxt.config.ts): ketika `VERCEL=1`, `routeRules` mem-proxy `/api/**`, `/auth/**`, `/sanctum/**`, `/media/**`, dan `/up` ke `NUXT_API_BASE` **pada runtime**, sehingga origin tetap milik host web.
 
-```json
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "nuxtjs",
-  "buildCommand": "npm run build",
-  "installCommand": "npm ci",
-  "build": { "env": { "NITRO_PRESET": "vercel" } },
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "https://<project-api>.vercel.app/api/:path*" },
-    { "source": "/auth/:path*", "destination": "https://<project-api>.vercel.app/auth/:path*" },
-    { "source": "/sanctum/:path*", "destination": "https://<project-api>.vercel.app/sanctum/:path*" },
-    { "source": "/media/:path*", "destination": "https://<project-api>.vercel.app/media/:path*" },
-    { "source": "/up", "destination": "https://<project-api>.vercel.app/up" }
-  ]
-}
-```
+Alasan memakai `routeRules`, bukan `rewrites` di `vercel.json`:
 
-Konsekuensi yang harus diuji, bukan diasumsikan:
+- Vercel **tidak melakukan substitusi environment variable** di dalam `vercel.json`. Menulis `https://<project-api>.vercel.app` secara literal akan mengirim permintaan ke host yang tidak ada.
+- Proxy Nitro berjalan sebelum SSR, jadi permintaan browser maupun permintaan SSR internal tetap sampai ke Laravel, sekaligus menjaga cookie Sanctum tetap ter-scope ke host web.
 
-- Cookie `XSRF-TOKEN` dan cookie session harus ter-set untuk host web (bukan host API) agar `useStaffApi.ts` dapat membacanya.
-- API harus melihat host asli web agar `TrustedHosts`/`Session` konsisten. Bila cookie tidak terbaca, opsi yang lebih andal adalah menaruh API di subdomain domain yang sama (mis. `api.demo.example`) dengan satu custom domain di project web, bukan memakai rewrite lintas domain.
-- Rewrite ke origin eksternal harus diuji: `/api/v1/properties`, `/sanctum/csrf-cookie`, lalu `POST /auth/login`.
+Build gagal lebih awal bila salah konfigurasi: dengan `VERCEL=1` dan `NUXT_API_BASE` kosong, build berhenti dengan pesan `NUXT_API_BASE wajib diset pada build Vercel agar proxy same-origin berfungsi.`
+
+Konsekuensi yang sudah diuji pada artefak build `NITRO_PRESET=vercel` (bukan asumsi):
+
+| Uji | Hasil |
+|---|---|
+| `GET /up` melalui proxy | 200 |
+| `GET /sanctum/csrf-cookie` | 204 dan cookie `XSRF-TOKEN` |
+| `GET /api/v1/properties` | 200, JSON data demo |
+| `GET /media/{id}/640` | 200 `image/webp` |
+| `POST /auth/login` (Origin/Referer host web) | 200 |
+| Cookie hasil login | `laravel-session` ter-set di host web |
+| `GET /api/v1/me`, `/api/v1/leads`, `/api/v1/notifications`, `/api/v1/realtime` dengan cookie itu | 200 |
+
+Yang **belum** teruji adalah perilaku cookie pada dua domain `*.vercel.app` nyata. Bila `/backoffice` berhenti bertahan setelah reload, pasang satu custom domain pada project web dan API di subdomain domain yang sama (mis. `api.demo.example`), bukan memakai rewrite lintas domain.
+
+Catatan: `/login` dan `/backoffice/**` di-render SPA (`ssr: false`) dan CSP memakai nonce per respons dari [apps/web/server/plugins/security.ts](../apps/web/server/plugins/security.ts). Bila halaman login tampak kosong di deployment, itu indikasi CSP/routeRules, bukan kegagalan backend.
 
 ### Langkah 7 — Deploy ulang dan uji
 
-Deploy ulang project web setelah menambahkan rewrites. Verifikasi dengan checklist bagian 8.
+Deploy ulang project web setelah `NUXT_API_BASE` terisi, lalu verifikasi dengan checklist bagian 8.
 
 ## 7. Rollback
 
@@ -325,16 +348,18 @@ Deploy ulang project web setelah menambahkan rewrites. Verifikasi dengan checkli
 
 Semua item harus dibuktikan di deployment nyata sebelum demo dibagikan:
 
-- [ ] `GET /up` pada project **API** mengembalikan 200.
-- [ ] `GET /api/v1/properties` (melalui host web) mengembalikan daftar properti demo.
+- [ ] `GET /up` pada project **API** mengembalikan 200, dan `GET /ready` mengembalikan 200 (readiness menulis dan menghapus objek uji di R2; 503 berarti kredensial atau bucket salah).
+- [ ] `GET /api/v1/properties` (melalui host web) mengembalikan daftar properti demo — membuktikan proxy `routeRules` aktif.
 - [ ] Beranda dan `/properti` merender SSR (lihat HTML sumber, bukan hanya setelah hydration).
 - [ ] Detail properti menampilkan foto dari R2 (`/media/{id}/640` mengembalikan `image/webp`).
 - [ ] `/konsultasi` mengirim lead dan barisnya muncul di `/backoffice`.
 - [ ] `GET /sanctum/csrf-cookie` men-set cookie pada host web; `POST /auth/login` dengan `admin@example.test` berhasil dan `/backoffice` dapat dibuka lalu bertahan setelah reload.
 - [ ] Perubahan data (mis. ubah harga properti) terlihat setelah reload halaman publik (membuktikan Supabase, bukan cache).
 - [ ] `APP_DEBUG=false` terbukti: memicu 404/500 tidak menampilkan stack trace.
+- [ ] Galeri detail, compare, simulasi KPR, laporan CRM, dan lonceng notifikasi dapat dibuka; lonceng menampilkan status sinkronisasi berkala (realtime nonaktif).
 - [ ] `php artisan flamboyan:media-verify` melaporkan `0` objek hilang (read-only; exit non-nol bila ada temuan). Jalankan sebelum demo dan setelah memindahkan storage ke R2.
-- [ ] `vercel-php` menyediakan ekstensi yang dibutuhkan: konfirmasi lewat `api/phpinfo.php` sementara (`pdo_pgsql`, `pgsql`, `sodium`, `mbstring`, `openssl`, `curl`), lalu **hapus berkas tersebut**.
+- [ ] Ekstensi runtime terkonfirmasi lewat `api/phpinfo.php` sementara (`pdo_pgsql`, `pgsql`, `sodium`, `mbstring`, `openssl`, `curl`) dan `gd` **tidak ada**, lalu **hapus berkas tersebut**.
+- [ ] Perilaku yang diharapkan gagal terdokumentasi, bukan dianggap sukses: unggah foto/denah/brosur dari UI deployment berakhir `FAILED` (`IMAGE_PROCESSOR_UNAVAILABLE` / `SCANNER_UNAVAILABLE`) dan unggah logo bank 503.
 - [ ] Tidak ada kredensial di repo: `git status` bersih dari `.env`, kunci R2, dan `DB_URL`.
 
 ## 9. Kuota gratis yang perlu dipantau
