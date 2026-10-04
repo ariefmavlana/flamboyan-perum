@@ -1,6 +1,6 @@
 # Status implementasi
 
-Tanggal 2026-10-03 · branch `codex/realtime-notifications` · F0 + workspace operasi + media + evaluasi/editorial + notifikasi; MVP/produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
+Tanggal 2026-10-03 · branch `codex/supervision-privacy` · F0 + workspace operasi + media + evaluasi/editorial + notifikasi + supervisi/privacy; produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
 
 | Requirement / fitur | Status F0 | Tahap berikutnya / batas |
 |---|---|---|
@@ -25,7 +25,7 @@ Tanggal 2026-10-03 · branch `codex/realtime-notifications` · F0 + workspace op
 | FR-CRM-001 Create lead | Implemented API | Manual Admin UI + normalized phone/unique perproperty; controlled audited contact correction |
 | FR-CRM-002 Assignment | Implemented API | Single active assignee/reassign reason/atomic notification; bounded searchable dropdown UI |
 | FR-CRM-003 Monitoring | Implemented basic | Scoped search/status/assignee/unassigned filters + labels + pagination; reports F2 |
-| FR-CRM-004 Reports | Planned | Cohort/median/pending definitions recorded, implementation F2 |
+| FR-CRM-004 Reports | Implemented | Admin cohort/current assignee vs follow-up actor, median sample/pending age; date/count bounds |
 | FR-MKT-001 Table | Implemented | Scoped list/pagination/read+status+notes; property/assignee human labels |
 | FR-MKT-002/003 Pipeline/notes | Implemented | Ordered transitions+LOST reason+terminal guard+versions |
 | FR-MKT-004/005 History drawer | Implemented | Native modal keyboard/Escape + descending history actor/status/note; reassignment event fields in API |
@@ -34,7 +34,7 @@ Tanggal 2026-10-03 · branch `codex/realtime-notifications` · F0 + workspace op
 | FR-RT-004 Read/unread | Implemented | Exact unread count, own recipient list/read idempotent |
 | SEO canonical/metadata | Implemented | Sitemap index/1000 published perfile, robots/query noindex, factual JSON-LD |
 | Validasi lokal / branch+PR | Implemented | GitHub Actions dihapus sesuai instruksi pengguna; bukti lokal wajib sebelum review; main protection belum dikonfigurasi |
-| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing55 tests/337 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
+| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing59 tests/389 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
 | Production/backups/privacy/performance | Gate open | Actual hosting/load/restore/retention/provider/content evidence required |
 
 ## Validasi F0 historis
@@ -74,3 +74,7 @@ Lihat evaluation-validation.md: PHPUnit49 tests/299 assertions masing-masing SQL
 ## Notifikasi terbaru
 
 Lihat realtime-validation.md:55 tests/337 assertions SQLite/PostgreSQL,11 unit tests,9 browser flows, lint/type/build/Composer passed; source11 high/runtime0. Echo/private push tersedia dengan provider nyata gated; laporan/analytics/privacy/operational acceptance masih dilanjutkan. Tidak ada merge/deployment.
+
+## Supervisi dan privasi terbaru
+
+Lihat supervision-validation.md:59 tests/389 assertions SQLite/PostgreSQL,11 unit tests,10 browser flows, lint/type/build/Composer passed; source11 high/runtime0. Reports/PII-free aggregates opt-in/read-only retention candidates/controlled CLI redaction implemented. Policy dan restore-ledger masih gate. Acceptance operasional dilanjutkan, tanpa merge/deployment.

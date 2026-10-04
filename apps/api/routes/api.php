@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\LeadController;
@@ -7,11 +8,14 @@ use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\RealtimeController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 Route::prefix('v1')->group(function () {
+    Route::post('analytics', [AnalyticsController::class, 'store'])->middleware('throttle:analytics')->withoutMiddleware(EnsureFrontendRequestsAreStateful::class);
     Route::middleware('throttle:public-api')->group(function () {
         Route::get('content', [ContentController::class, 'publicIndex']);
         Route::get('compare', [EvaluationController::class, 'compare']);
@@ -28,6 +32,8 @@ Route::prefix('v1')->group(function () {
         Route::post('internal/users', [UserController::class, 'store']);
         Route::patch('internal/users/{id}', [UserController::class, 'update'])->whereNumber('id');
         Route::get('internal/audit', [UserController::class, 'audit']);
+        Route::get('internal/reports', [ReportController::class, 'index']);
+        Route::get('internal/privacy', [ReportController::class, 'privacy']);
         Route::get('internal/content', [ContentController::class, 'index']);
         Route::post('internal/content', [ContentController::class, 'store']);
         Route::patch('internal/content/{id}', [ContentController::class, 'update'])->whereNumber('id');

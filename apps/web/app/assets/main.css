@@ -995,3 +995,22 @@ blockquote {
     padding: 1rem;
   }
 }
+
+.report-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+.report-metrics article {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.25rem;
+}
+.report-metrics h2 {
+  font-size: 1rem;
+}
+.report-metrics strong {
+  font-size: 1.8rem;
+  color: var(--green);
+}

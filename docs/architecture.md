@@ -63,3 +63,9 @@ SiteContent adalah tiga schema fixed HERO/TESTIMONIAL/BANK_RATE, Admin-only full
 ## Durable push delivery
 
 Pusher delivery adalah adapter konkret kecil untuk dua operasi protokol terdokumentasi, menggunakan PHP hash_hmac dan Laravel HTTP. Tidak ada event bus atau SDK backend baru. SDK resmi Echo/Pusher hanya dimuat pada client ketika konfigurasi enabled+ready. Database queue pada koneksi aplikasi menyimpan job di dalam transaksi CRM; worker hanya melihat committed rows. Provider HTTP tidak dipanggil dari transaksi. Source of truth tetap user_notifications, bukan WebSocket. UUID payload/no PII, optimistic CRM/history atomicity dan session revocation tetap berlaku.
+
+## Laporan dan minimisasi data
+
+LeadReport membaca satu cohort select≤50.000 rows tanpa kontak, exact median menyimpan durasi saja. Index created_at/id dan history lead_id/created_at/id, tidak membutuhkan warehouse/event bus. Cohort/current assignee berbeda dari actor follow-up. Daily funnel aggregate atomic bukan identitas/event stream/integrasi WhatsApp.
+
+LeadPrivacy merupakan CLI khusus redaksi terverifikasi, bukan API editing histori. Lock fresh Admin+lead/version; contact/historynotes/oldLEADaudittext+appendprivacylog atomik. Original status/time/actor retained; redacted_at menandai redaksi. Phone nullable menghapus identitas tanpa hash kontak yang masih bisa dilacak. Rows retained for metrics/FK, mutations blocked. Policy/backup redaction replay gate; execution defaultdisallowed.

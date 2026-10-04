@@ -34,6 +34,7 @@ const comparison = useComparison()
       </p>
     </aside>
     <footer class="site-footer container">
+      <NuxtLink to="/privasi">Informasi privasi</NuxtLink>
       <span>Flamboyan Perum</span
       ><span>Temukan ruang untuk cerita berikutnya.</span>
     </footer>

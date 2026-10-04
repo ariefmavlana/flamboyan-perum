@@ -28,6 +28,7 @@ const eventLabels: Record<string, string> = {
   STATUS_CHANGED: 'Perubahan status',
   NOTE_ADDED: 'Catatan ditambahkan',
   CONTACT_UPDATED: 'Koreksi kontak',
+  ANONYMIZED: 'Kontak dianonimkan',
 }
 const user = ref<User | null>(null)
 const leads = ref<Paginated<Lead> | null>(null)
@@ -96,7 +97,7 @@ async function openLead(lead: Lead) {
   assignReason.value = ''
   Object.assign(contact, {
     name: lead.name,
-    whatsapp_number: lead.whatsapp_number,
+    whatsapp_number: lead.whatsapp_number ?? '',
     reason: '',
   })
   drawer.value?.showModal()
@@ -318,7 +319,11 @@ onMounted(async () => {
             <tr v-for="lead in leads?.data" :key="lead.id">
               <td>
                 <strong>{{ lead.name }}</strong
-                ><br /><span class="muted">+{{ lead.whatsapp_number }}</span>
+                ><br /><span class="muted">{{
+                  lead.whatsapp_number
+                    ? `+${lead.whatsapp_number}`
+                    : 'Kontak dianonimkan'
+                }}</span>
               </td>
               <td>
                 {{ lead.property?.title ?? `#${lead.property_id}` }}<br /><span
@@ -472,7 +477,7 @@ onMounted(async () => {
             </button>
           </form>
         </details>
-        <details v-if="user?.role === 'ADMIN'">
+        <details v-if="user?.role === 'ADMIN' && !selected.anonymized_at">
           <summary>Koreksi kontak</summary>
           <form @submit.prevent="adminMutation('contact')">
             <label
@@ -507,7 +512,7 @@ onMounted(async () => {
               {{ labels[state] }}
             </option>
           </select></label
-        ><label
+        ><label v-if="!selected.anonymized_at"
           >Catatan / alasan<textarea v-model="note" rows="3" maxlength="2000" />
         </label>
         <div class="action-row">
@@ -519,6 +524,7 @@ onMounted(async () => {
           >
             Simpan status</button
           ><button
+            v-if="!selected.anonymized_at"
             class="button secondary"
             :disabled="busy || !note.trim()"
             @click="mutate('notes')"
@@ -539,6 +545,9 @@ onMounted(async () => {
               }}{{ labels[event.to_status] }}
             </p>
             <p v-if="event.note">{{ event.note }}</p>
+            <p v-else-if="event.redacted_at" class="muted">
+              Catatan direduksi melalui prosedur privasi.
+            </p>
             <p v-if="event.next_assignee">
               {{
                 event.previous_assignee

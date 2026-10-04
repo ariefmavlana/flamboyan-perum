@@ -1,0 +1,10 @@
+# Validasi supervisi dan privasi
+
+2026-10-03 Windows PHP8.4.26, PostgreSQL17.9 isolated, SQLite memory, Node24.21.0/Chrome. Migration000006 additive; actual legal policy/hosting masih gate.
+
+- Pint passed; PHPUnit59 tests/389 assertions masing-masing SQLite3.27s/PostgreSQL7.36s. Jakarta midnight boundaries, denominator/median/current owner vs actor, no contact report, stateless aggregate allowlist/published/default-off, dry-run/policy/terminal/password/version/redaction/audit fault rollback tested. CLI success uses private password prompt+explicit confirmation; real business data tidak dipakai.
+- Composer strict valid/audit0/route cache+clear passed. Frontend lint0/typecheck/Vitest11 passed0.281s. SSR build passed; source11 high/root2unpatched advisories, runtime0; DEP0155/tool color warnings retained.
+- Final Playwright10 flows1.2min passed including Admin reports/date error/readonly candidates, Marketing denied and public privacy template. Previous full run failed7 flows due stale Nuxt development config after branch switch plus race goto before login completed; direct Laravel public healthy. Restart verified workspace dev process+wait for login resolved. Retest6 impacted34.4s and final10passed. One initial constraint message hidden by generic422 fallback fixed to preserve backend message. These failures not counted as pass.
+- Earlier SQLite suite was accidentally pointed to private browser fixture, so RefreshDatabase rebuilt demo tables; no business database affected. Demo reseeded explicitly, final SQLite uses :memory:, PostgreSQL isolated test database. Actual consent/retention policy/rate references/hosting still require owner evidence.
+
+Privacy irreversible contact/notes redaction is CLI-only, not API history editing. Keep anonymized guards on rollback; otherwise maintenance/read-only. Migration down fails intentionally; expanded schema retained. Restore must replay private no-PII redaction ledger before opening traffic. Candidate list is not automatic retention execution and browser notice is not legal approval.

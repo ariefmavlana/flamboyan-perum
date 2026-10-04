@@ -24,6 +24,8 @@ if (!data.value)
     statusMessage: 'Properti belum dapat dimuat',
   })
 const property = computed(() => data.value!.data)
+const analytics = usePropertyAnalytics()
+onMounted(() => analytics.record(property.value.id, 'property_view'))
 const canonical = computed(
   () => `${config.public.siteUrl}/properti/${property.value.slug}`,
 )
@@ -140,6 +142,7 @@ useHead(() => ({
           class="button full"
           target="_blank"
           rel="noopener noreferrer"
+          @click="analytics.record(property.id, 'whatsapp_click')"
           >Hubungi Admin melalui WhatsApp ↗</a
         >
         <p class="muted">

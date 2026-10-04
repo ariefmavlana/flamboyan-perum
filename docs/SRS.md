@@ -141,3 +141,5 @@ F0: migrations/auth/public visibility/scoped CRM/atomic history/notification/ver
 Changelog: 1.1 2026-09-30 shared hosting/DB; 2.0 2026-10-03 menutup ambiguity baseline, physical schema/contracts/state/security/acceptance dan traceability, menjaga seluruh fitur sumber.
 
 FR-RT-003 sekarang implemented/config-gated: job persisten pada transaksi aplikasi, worker sesudah commit, private user channel authorization+CSRF, payload IDs/kind tanpa PII, bounded retry, dedup/reconnect/poll60s dan inbox navigation. Target≤5s wajib dibuktikan dengan worker persisten/provider/hosting nyata; simulated provider tests tidak membuktikan latency delivery produksi. Polling tetap menyelaraskan unread state saat WebSocket sehat.
+
+FR-CRM-004 implemented: cohort Admin UI/API, bounded range, denominator/sample/pending age dan current assignee vs firstfollow-up actor. Daily funnel opt-in/PII-free bukan atribusi pesan WhatsApp. Privacy candidates readonly+CLI policy/password/version/terminal-controlled redaction tersedia tanpa API mengedit histori. Retensi24 bulan masih proposed sampai owner mengesahkan; tidak ada otomatisasi redaksi data bisnis.

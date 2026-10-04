@@ -114,7 +114,8 @@ export type LeadStatus =
 export interface Lead {
   id: number
   name: string
-  whatsapp_number: string
+  whatsapp_number: string | null
+  anonymized_at?: string | null
   property_id: number
   assigned_marketing_id: number | null
   status: LeadStatus
@@ -128,8 +129,36 @@ export interface LeadHistory {
   from_status: LeadStatus | null
   to_status: LeadStatus | null
   note: string | null
+  redacted_at?: string | null
   created_at: string
   actor: { id: number; name: string }
   previous_assignee?: { id: number; name: string } | null
   next_assignee?: { id: number; name: string } | null
+}
+
+export interface LeadReport {
+  cohort_size: number
+  conversion_percent: number
+  statuses: Record<string, number>
+  follow_up: {
+    completed: number
+    median_seconds: number | null
+    not_followed_up: number
+    invalid_timing_count: number
+    pending_age: {
+      unassigned: number
+      under_1_day: number
+      '1_to_7_days': number
+      over_7_days: number
+    }
+  }
+  current_assignees: {
+    user_id: number | null
+    name: string
+    lead_count: number
+    deals: number
+    conversion_percent: number
+  }[]
+  first_follow_up_actors: { user_id: number; name: string; completed: number }[]
+  funnel: { enabled: boolean; property_view: number; whatsapp_click: number }
 }
