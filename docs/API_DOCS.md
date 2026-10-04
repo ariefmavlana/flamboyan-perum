@@ -166,3 +166,9 @@ POST /api/v1/internal/content/{id}/logo Admin aktif + session/CSRF: multipart fi
 GET /api/v1/content/{id}/logo public hanya BANK_PARTNER published+verified dan file tersedia; selain itu404. Output image/webp, nosniff, Cache-Control:no-store, CSP sandbox. Route diizinkan pada signed public proxy dengan ID numerik, tidak membuka internal routes. Public content.bank_partners hanya record eligible dengan file dan DTO {id,name,website,logo_url}; tidak membuat klaim rekanan dari data BANK_RATE. Pemilik wajib memverifikasi izin logo dan hubungan bank sebelum attestation.
 
 File logo terdahulu dipertahankan private setelah replacement, tidak dihidangkan oleh endpoint dan tidak dihapus otomatis. Rollback konten cukup unpublish atau unggah kembali aset yang disetujui memakai version terbaru; pemulihan filesystem/DB mengikuti backup operator. Inventaris dan pembersihan file lama memerlukan review backup/retensi operator, bukan cleanup media properti. Tidak ada hard-delete, logo fiktif, perubahan CRM/privacy, atau migrasi database. Catatan redesign terdahulu mengenai hero statis merupakan snapshot historis; hero yang dipilih CMS kini dikirim lewat field media di atas.
+
+### Media function (2026-10-05)
+
+GET /api/v1/internal/properties/{id}/media menambah process_in_request:boolean di envelope (bersama property_version/data/links/meta). GET hanya membaca.
+
+POST /api/v1/internal/properties/{id}/media/process: auth Sanctum, active account, throttle internal, CSRF dan scope properti seperti upload. Memproses maksimal satu job media durable bila property memiliki PROCESSING, mengembalikan204; Marketing lain404, mode worker terpisah409. Tidak mengubah property version, metadata atau publikasi. Job sukses mengisi READY/variants; kegagalan memakai kontrak processor existing. POST upload dan PATCH retry pada mode function dapat langsung mengembalikan READY/FAILED setelah commit; PROCESSING tetap hasil sah saat antrean mendahulukan job lain.

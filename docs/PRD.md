@@ -90,7 +90,7 @@ Baseline backup: harian DB+media, 7 harian/4 mingguan/3 bulanan di lokasi terpis
 
 ## 11. Traceability dan perubahan
 
-Untuk evaluasi lokal sebelum konten asli tersedia, gunakan dummy sintetis generatif yang disimpan di database dan dikelola melalui API/CRUD sebenarnya. Dataset tidak dibuat ulang pada setiap request/reload, tidak memakai katalog/CRM hardcoded, dan tidak menjadi fallback saat API gagal. Label demo wajib jelas; ilustrasi, testimonial persona, serta rate bank simulasi bukan bukti bisnis. Seed opt-in hanya local/testing pada database domain kosong, tanpa pengiriman notifikasi eksternal. Konten demo tidak memenuhi gate konten produksi.
+Untuk evaluasi lokal sebelum konten asli tersedia, gunakan dummy sintetis generatif yang disimpan di database dan dikelola melalui API/CRUD sebenarnya. Dataset tidak dibuat ulang pada setiap request/reload, tidak memakai katalog/CRM hardcoded, dan tidak menjadi fallback saat API gagal. Label ilustrasi wajib jelas; ilustrasi, testimonial persona, serta rate bank simulasi bukan bukti bisnis. Seed opt-in hanya local/testing pada database domain kosong, tanpa pengiriman notifikasi eksternal. Konten demo tidak memenuhi gate konten produksi.
 
 Guideline publik → P-01..P-08; back office → I-01..I-09; flows → §7; stack/deployment → §9–10 dan SRS. SRS menguraikan kontrak teknis dan ID source lama agar kebutuhan tidak hilang. `review.md` merekam gap dokumen awal; `implementation-status.md` memisahkan implemented/partial/planned. Original tidak diedit. Versi 1.1 (2026-09-30) diganti 2.0 dengan keputusan baseline, tahapan, acceptance, kualitas dan gate yang eksplisit.
 
@@ -111,3 +111,9 @@ Instruksi pengguna menetapkan pasar middle-to-high Indonesia dan lokasi perumaha
 Logo bank mitra dan referensi suku bunga merupakan dua konsep berbeda. Identitas/izin hubungan bank harus diverifikasi sebelum publikasi; tidak menganggap BANK_RATE sebagai bukti kemitraan. Aset foto/video pemilik belum diberikan; implementasi kemampuan upload/pemilihan tidak menutup gate konten. Video mengikuti baseline YouTube embed, bukan raw video upload.
 
 Tidak mengadaptasi newsletter/property alerts, layanan penjual/appraisal, direktori desainer, agen internasional atau Press tanpa kebutuhan dan bukti bisnis. Seluruh requirement inti katalog/CRM/notifikasi tetap berlaku. Gate hosting/provider/konten/privasi dan bukti pengujian aktual tetap membatasi pernyataan selesai.
+
+## Addendum 2026-10-05 — Operasi situs dan publikasi
+
+Instruksi pengguna menghapus istilah "demo" dari narasi yang ditampilkan aplikasi. Label ilustrasi dan atribusi tetap menjelaskan asal foto; testimonial persona dan rate simulasi tidak dipublikasikan sebagai bukti bisnis. Identitas resource cloud yang sudah dibuat boleh dipertahankan. CMS mencakup hero/pilihan media, testimonial, referensi rate dan logo bank; Admin mengelola dan memverifikasi publikasi, Marketing terbatas pada properti dan CRM sesuai assignment. Dua role kanonik tidak berubah.
+
+Perubahan konten lewat CMS tersimpan pada database dan terlihat tanpa deploy. Perubahan source memakai Git dan pemeriksaan build Vercel sebelum alias diperbarui. GitHub Actions tidak digunakan. Pemrosesan gambar cloud harus berjalan tanpa worker di komputer pengguna; brosur tetap memerlukan scanner malware yang tersedia.

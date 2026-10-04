@@ -2,7 +2,7 @@
 defineProps<{ alt?: string }>()
 </script>
 <template>
-  <span v-if="alt?.startsWith('Ilustrasi demo ·')" class="media-disclosure">
-    Foto ilustrasi demo
+  <span v-if="alt?.startsWith('Ilustrasi')" class="media-disclosure">
+    Foto ilustrasi
   </span>
 </template>

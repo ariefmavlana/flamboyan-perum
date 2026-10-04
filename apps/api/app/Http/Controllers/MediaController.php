@@ -23,7 +23,14 @@ class MediaController extends Controller
             $query->where('state', '!=', 'ARCHIVED');
         }
 
-        return JsonResource::collection($query->paginate($data['per_page'] ?? 20))->additional(['property_version' => $property->version]);
+        return JsonResource::collection($query->paginate($data['per_page'] ?? 20))->additional(['property_version' => $property->version, 'process_in_request' => (bool) config('media.process_in_request')]);
+    }
+
+    public function processPending(Request $request, int $id)
+    {
+        $this->operations->processPending($request->user(), $id);
+
+        return response()->noContent();
     }
 
     public function store(Request $request, int $id)

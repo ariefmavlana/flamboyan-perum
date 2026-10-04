@@ -147,3 +147,11 @@ Branch `chore/vercel-demo-deployment`. Perubahan berfokus pada kesiapan deploy d
 **Ruang lingkup PR ini.** Karena branch ini diturunkan dari `codex/bandung-buyer-experience` (PR #13) dan PR #12, merge ke `main` berbentuk fast-forward sehingga ikut mengintegrasikan seluruh pekerjaan buyer experience, kurasi foto, dan redesign editorial yang sudah divalidasi di [buyer-experience-validation.md](buyer-experience-validation.md). Perubahan spesifik jalur deploy ada pada `apps/api/api/index.php`, `api/index.php`, `apps/api/vercel.json`, `apps/web/vercel.json`, `apps/api/config/view.php`, `apps/api/app/Support/MediaDisk.php`, `apps/api/config/filesystems.php`, dan `docs/vercel-demo-deployment.md`.
 
 
+
+## Operasi cloud dan publikasi — 2026-10-05
+
+Branch codex/site-operations dari origin/main3257844, membawa perbaikan routing/same-origin PR#17 serta bounded worker media dan pemeriksaan build Git. Runtime cloud aktual mendukung GD: unggah logo via API cloud berhasil, memperbaiki asumsi lama yang bersumber dari daftar ekstensi contoh. MEDIA_PROCESS_IN_REQUEST menghilangkan kebutuhan worker komputer untuk gambar; PDF tanpa scanner tetap fail closed. Dua project Vercel sudah terhubung repo GitHub, tanpa GitHub Actions.
+
+Narasi aplikasi dan database dibersihkan sesuai instruksi pengguna. Foto kurasi tetap beratribusi dan berlabel ilustrasi. Testimonial persona dan rate sintetis dijadikan draft; nama resource cloud tidak diubah. Pemeliharaan terkontrol juga mengganti slug fixture dan catatan sintetis, dengan snapshot privat sebelum perubahan dan audit; endpoint histori tetap tidak menyediakan edit. Aset ilustrasi berteks lama diregenerasi di R2.
+
+Validasi lokal: PHP8.4.26, PostgreSQL17.9, Node24.21.0, 86 PHPUnit/637 assertions pada SQLite dan database PostgreSQL test terpisah (cluster dihentikan sesudah suite); Pint, Composer validate/audit, lint, typecheck,15 unit frontend dan build lulus. Source npm audit masih11 high dari dua advisory upstream tooling; audit artefak runtime0. Bukti deploy/pipeline dan browser dicatat pada site-operations-validation.md setelah selesai. Tidak ada migration/dependency baru atau seed otomatis.
