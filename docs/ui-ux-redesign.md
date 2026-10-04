@@ -57,4 +57,3 @@ Rollback melalui revert commit PR ini lalu build/restart Nuxt. Tidak ada databas
 ## Referensi implementasi
 
 Perilaku watcher route dan template refs mengikuti [Vue watchers](https://vuejs.org/guide/essentials/watchers) dan [Vue template refs](https://vuejs.org/guide/essentials/template-refs). Tidak menambahkan library navigasi atau ikon; ikon inline SVG satu komponen dengan himpunan nama bertipe.
-
