@@ -21,6 +21,8 @@ php artisan serve --host=127.0.0.1 --port=8000
 
 CLI provisioning meminta nama/email/role dan secret password/konfirmasi secara interaktif; tidak menyediakan registrasi publik. Untuk demo opt-in saja, set `DEMO_PASSWORD` ≥12 karakter pada environment atau `.env` lokal lalu `php artisan db:seed --class=DemoSeeder`. Demo akun `admin@example.test`/`marketing@example.test`; password hanya yang Anda berikan. Seed default tidak membuat account. Demo dilarang production/staging. Jangan menjalankan seed demo pada database bisnis.
 
+Jika memilih demo, lewati `flamboyan:create-user` pada langkah di atas: generator mensyaratkan seluruh tabel domain kosong dan menyediakan akun sendiri. Ikuti [demo-data.md](demo-data.md) untuk jumlah, media worker, persistensi, dan regenerasi aman. Install Composer dengan dev dependencies karena generator memakai Faker; dependency ini tidak diperlukan di produksi.
+
 Frontend dari `apps/web`:
 
 ```sh
@@ -52,6 +54,8 @@ npm run audit:source
 PHPUnit default menggunakan SQLite `:memory:`. Untuk PostgreSQL, buat database test khusus dan kredensial private, lalu set `DB_CONNECTION=pgsql`, `DB_DATABASE=<database-test>`, `DB_HOST`, `DB_PORT`, `DB_USERNAME`, dan `DB_PASSWORD` pada environment proses shell sebelum `php artisan test`. Nilai environment tersebut mengungguli default phpunit.xml. Gunakan nama database yang berbeda dari development/demo/bisnis: `RefreshDatabase` dapat menghapus dan membuat ulang tabel. Jangan menjalankan suite terhadap database produksi atau database development yang ingin dipertahankan. Jalankan suite pada kedua driver, catat versi database dan hasil; tutup cluster pengujian sementara setelah selesai. Konfigurasi test tidak di-commit.
 
 Playwright: backend local+DemoSeeder seeded harus berjalan, DEMO_PASSWORD environment sesuai seed, `npx playwright install chromium` lalu `npm run test:e2e`; config menjalankan/reuse frontend dev server. Windows boleh set PLAYWRIGHT_EXECUTABLE ke browser Chrome terpasang untuk local test. Test CRM menambahkan note pada demo lead, sehingga jangan menunjuk database produksi. Unit frontend tidak memuat Playwright specs. Bila database fixture/backend diatur melalui environment proses shell, jalankan `php artisan serve --no-reload --host=127.0.0.1 --port=8000`: mode reload Laravel dapat membuang override environment dan membaca ulang `.env`, sehingga seed dan server menunjuk database berbeda.
+
+Skenario browser membaca properti dan identitas Marketing dari API aktual, bukan judul/slug/harga fixture tetap. Login5/min dan internal120/min tetap aktif; menjalankan seluruh skenario beruntun dengan akun yang sama dapat mencapai429. Untuk isolasi suite pada **database demo khusus**, jalankan per berkas spec dan `php artisan cache:clear` di antara berkas dengan konfigurasi database/cache fixture yang sama. Jangan membersihkan cache aplikasi bisnis/produksi. Ini memisahkan counter antar-skenario; rate limiter tetap bekerja di dalam setiap skenario. Alternatif: beri jeda sampai window60 detik berakhir. Worker media harus aktif sepanjang suite. Bukti putaran dataset dinamis ada di dynamic-demo-validation.md.
 
 Audit artefak setelah build, dari `apps/web`:
 

@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { demoProperty } from './helpers'
 
 test('Admin monitors sanitized readiness and Marketing cannot read operations', async ({
   page,
@@ -47,6 +48,7 @@ test('production SSR nonce CSP permits hydration, calculator and comparison at 3
     !origin,
     'Requires separately running built SSR acceptance artifact',
   )
+  const fixture = await demoProperty(request, origin)
   const violations: string[] = []
   await page.addInitScript(() => {
     window.addEventListener('securitypolicyviolation', (event) => {
@@ -56,13 +58,13 @@ test('production SSR nonce CSP permits hydration, calculator and comparison at 3
   })
   page.on('pageerror', (error) => violations.push(error.message))
   await page.setViewportSize({ width: 320, height: 800 })
-  const response = await page.goto(`${origin}/properti/load-fixture-1`)
+  const response = await page.goto(`${origin}/properti/${fixture.slug}`)
   expect(response?.status()).toBe(200)
   const csp = response?.headers()['content-security-policy'] ?? ''
   expect(csp).toContain("script-src 'self' 'nonce-")
   expect(csp).not.toContain('unsafe-eval')
   await expect(
-    page.getByRole('heading', { name: 'Load Fixture 1', exact: true }),
+    page.getByRole('heading', { name: fixture.title, exact: true }),
   ).toBeVisible()
   await page.getByLabel('Skenario fixed lalu floating').check()
   await page.getByLabel('Asumsi bunga floating (%)').fill('12')
@@ -82,7 +84,7 @@ test('production SSR nonce CSP permits hydration, calculator and comparison at 3
     await page.evaluate(() => document.documentElement.dataset.cspViolation),
   ).toBeUndefined()
   expect(violations).toEqual([])
-  const second = await request.get(`${origin}/properti/load-fixture-1`)
+  const second = await request.get(`${origin}/properti/${fixture.slug}`)
   expect(second.headers()['content-security-policy']).not.toBe(csp)
   const recovery = await request.get(
     `${origin}/reset-password?token=synthetic-test`,

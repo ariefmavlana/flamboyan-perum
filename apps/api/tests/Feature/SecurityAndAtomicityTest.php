@@ -7,6 +7,7 @@ use App\Models\LeadHistory;
 use App\Models\Property;
 use App\Models\User;
 use App\Models\UserNotification;
+use App\Services\LeadWorkflow;
 use Database\Seeders\DemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
@@ -19,8 +20,11 @@ class SecurityAndAtomicityTest extends TestCase
     private function demo(): void
     {
         config(['app.env' => 'testing']);
-        putenv('DEMO_PASSWORD=Fixture-only-strong-password');
-        $this->seed(DemoSeeder::class);
+        $admin = User::factory()->create(['role' => 'ADMIN', 'is_active' => true]);
+        $marketing = User::factory()->create(['role' => 'MARKETING', 'is_active' => true]);
+        $property = Property::create(['owner_id' => $marketing->id, 'slug' => 'security-'.fake()->uuid(), 'title' => fake()->sentence(3), 'house_type' => '60', 'condition' => 'NEW', 'certificate' => 'SHM', 'location' => fake()->city(), 'address' => fake()->address(), 'description' => fake()->paragraph(), 'price_idr' => 900000000, 'land_area' => 90, 'building_area' => 60, 'bedrooms' => 3, 'bathrooms' => 2]);
+        $lead = app(LeadWorkflow::class)->create($admin, ['name' => fake()->name(), 'whatsapp_number' => '628000'.fake()->numerify('########'), 'property_id' => $property->id]);
+        app(LeadWorkflow::class)->assign($admin, $lead->id, ['marketing_id' => $marketing->id, 'version' => 1]);
     }
 
     public function test_session_login_logout_inactive_and_unsupported_token(): void

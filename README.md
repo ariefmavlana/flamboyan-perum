@@ -30,6 +30,8 @@ npm run dev
 
 Buka `http://127.0.0.1:3000`. Nomor WA sementara dari pengguna: `6287776734038`; konfirmasi kepemilikan sebelum rilis. Konfigurasi kosong menyembunyikan CTA. Konten bisnis asli belum disediakan. Seed default tidak membuat account. Demo memerlukan password yang dipilih sendiri dan tidak dapat dijalankan pada production.
 
+Untuk mencoba aplikasi dengan **dummy dinamis**, ikuti [panduan dataset demo](docs/demo-data.md). Generator membuat data sintetis acak sekali pada database kosong; halaman membaca API dan perubahan melalui back office tersimpan di database. Default: 24 properti, 72 lead, tiga Marketing, tujuh konten CMS, serta foto ilustrasi/denah generatif melalui worker media. Tidak ada array katalog/CRM hardcoded atau fallback mock saat API gagal.
+
 ## Cakupan implementasi
 
 Tersedia: home/list/detail SSR, full filter/sort/URL, compare, KPR fixed/floating dengan schedule/chart, galeri/denah/video/tour/brosur, maps/POI, sitemap/metadata; katalog dan CRM scoped dengan UI Admin/Marketing, akun/profil/recovery/CMS, histori/notifikasi/queue atomik, Echo private dengan polling, laporan cohort, analytics agregat opt-in, prosedur redaksi CLI, readiness/monitoring dan suite pengujian lokal.
@@ -48,4 +50,4 @@ GitHub Actions tidak digunakan. Jalankan backend Pint/PHPUnit/Composer validate+
 
 ## Workflow
 
-Setiap fitur/fix/refactor/dokumentasi memakai branch baru dari `main` terbaru, Conventional Commits dan PR komprehensif. Selama fondasi belum di-merge, PR lanjutan berbasis branch dependensi agar diff terbatas; urutan review/merge mengikuti PR #3 → #4 → #5 → #6 → #7 → #8 → #9. Tidak ada merge tanpa instruksi pengguna, tidak ada GitHub Actions. Main masih bootstrap sampai PR disetujui dan merge diinstruksikan.
+Setiap fitur/fix/refactor/dokumentasi memakai branch baru dari `main` terbaru, Conventional Commits dan PR komprehensif. Selama fondasi belum di-merge, PR lanjutan berbasis branch dependensi agar diff terbatas; urutan review/merge mengikuti PR #3 → #4 → #5 → #6 → #7 → #8 → #9 → [#10 dataset dinamis](https://github.com/ariefmavlana/flamboyan-perum/pull/10). Tidak ada merge tanpa instruksi pengguna, tidak ada GitHub Actions. Main masih bootstrap sampai PR disetujui dan merge diinstruksikan.

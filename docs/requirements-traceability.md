@@ -1,6 +1,6 @@
 # Traceability requirement dan bukti
 
-Baseline aktif PRD/SRS 2.1, 2026-10-03. Seluruh kelompok requirement sumber dipertahankan dalam SRS§11. Tabel ini memetakan implementasi dan batas bukti; status gate tidak diubah menjadi selesai hanya karena kode tersedia. Sumber awal tetap utuh di `original/`; review/resolusi awal ada di `review.md`.
+Baseline aktif PRD/SRS 2.2, 2026-10-04. Seluruh kelompok requirement sumber dipertahankan dalam SRS§11. Tabel ini memetakan implementasi dan batas bukti; status gate tidak diubah menjadi selesai hanya karena kode tersedia. Sumber awal tetap utuh di `original/`; review/resolusi awal ada di `review.md`.
 
 | PRD / ID sumber | Implementasi | Bukti lokal | Gate produksi |
 |---|---|---|---|
@@ -20,8 +20,9 @@ Baseline aktif PRD/SRS 2.1, 2026-10-03. Seluruh kelompok requirement sumber dipe
 | I-09, FR-BO-PROP-004 | Admin CMS fixed schemas/attestation/version/audit | EvaluationTest; editorial browser | Konten terverifikasi tanpa logo/testimoni/rate fiktif |
 | PRD§8/privacy | Daily PII-free aggregates defaultoff, read-only candidates, policy/password/version-controlled CLI redaction | SupervisionTest includes atomic redaction and mutation lock | Notice/policy/retention/hold/ledger/backup expiry disahkan owner |
 | NFR-SEO-001..005 | SSR specs, canonical/OG/JSON-LD, robots, published sitemap index | Evaluation/SSR browser; fixture published/draft checks | Domain canonical, Search Console dan crawl aktual |
-| NFR-UI-001..004 | Bahasa ID, IDR/m²/Jakarta, responsive320+, focus/labels/native drawer/consent | 12 browser flows including production CSP/320px; manual visual evidence earlier PRs | Full WCAG2.2AA/UAT; dua versi Chrome/Edge/Firefox/Safari belum seluruhnya diuji |
+| NFR-UI-001..004 | Bahasa ID, IDR/m²/Jakarta, responsive320+, focus/labels/native drawer/consent/hydration guard | 13 browser flows including production CSP/320px/gallery; manual visual evidence earlier PRs | Full WCAG2.2AA/UAT; dua versi Chrome/Edge/Firefox/Safari belum seluruhnya diuji |
 | Security/operations/performance | Signed per-client SSR proxy, exact trust/host, nonce CSP, JSON logs, ready/Admin ops, backup alert | OperationalTest/client-IP unit; browser production; bounded load and encrypted restore evidence | Linux/PHP8.3 chosen runtime, TLS/routing/storage/monitoring/offsite/RPO/RTO/upstream advisory |
-| Contribution | Separate Conventional Commit branches, PR stack, local validation, no Actions | PR #3→#9, validation documents; originals preserved | Review dan instruksi merge pengguna; branch protection setting |
+| Contribution | Separate Conventional Commit branches, PR stack, local validation, no Actions | PR #3→#10, validation documents; originals preserved | Review dan instruksi merge pengguna; branch protection setting |
+| Instruksi dummy 2026-10-04, PRD§11/SRS§12 | Generative persisted demo/real CRUD/workflows/SSR/native media; bounded counts/empty-domain guard/rollback | DemoDatasetTest; dynamic-demo/browser; dynamic-demo-validation.md | Local/testing only; simulasi CMS bukan verifikasi konten produksi |
 
 Referensi hasil final: `acceptance-validation.md`; bukti tiap tahap: `validation.md`, `operations-validation.md`, `media-validation.md`, `evaluation-validation.md`, `realtime-validation.md`, `supervision-validation.md`. Runbook menjelaskan konfigurasi dan rollback. Simulasi provider tidak membuktikan layanan produksi; backup fixture tidak membuktikan offsite atau retensi bisnis. Target yang membutuhkan keputusan/layanan eksternal tetap mempunyai pemilik di PRD§10.

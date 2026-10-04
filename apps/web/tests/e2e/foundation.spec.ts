@@ -1,19 +1,19 @@
 import { expect, test } from '@playwright/test'
+import { demoProperty } from './helpers'
 
 test('property specifications and canonical are present in SSR HTML', async ({
   request,
   page,
 }) => {
-  const response = await request.get('/properti/rumah-taman-demo')
+  const fixture = await demoProperty(request)
+  const response = await request.get(`/properti/${fixture.slug}`)
   expect(response.status()).toBe(200)
   const html = await response.text()
-  expect(html).toContain('Rumah Taman')
-  expect(html).toContain('90.00 m²')
+  expect(html).toContain(fixture.title)
+  expect(html).toContain(fixture.land_area + ' m²')
   expect(html).toContain('rel="canonical"')
-  await page.goto('/properti/rumah-taman-demo')
-  await expect(
-    page.getByRole('heading', { name: 'Rumah Taman — Demo' }),
-  ).toBeVisible()
+  await page.goto(`/properti/${fixture.slug}`)
+  await expect(page.getByRole('heading', { name: fixture.title })).toBeVisible()
   const missing = await request.get('/properti/tidak-ada')
   expect(missing.status()).toBe(404)
   const withoutCsrf = await request.post('/auth/login', {
@@ -28,20 +28,21 @@ test('property specifications and canonical are present in SSR HTML', async ({
 
 test('discovery filters preserve URL and mobile layout does not overflow', async ({
   page,
+  request,
 }) => {
+  const fixture = await demoProperty(request)
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
-  await page.getByLabel('Cari lokasi atau nama properti').fill('Rumah Taman')
+  await page.getByLabel('Cari lokasi atau nama properti').fill(fixture.title)
   await page.getByRole('button', { name: 'Jelajahi →' }).click()
-  await expect(page).toHaveURL(/properti\?q=Rumah/)
+  await expect(page).toHaveURL(/properti\?q=/)
+  expect(new URL(page.url()).searchParams.get('q')).toBe(fixture.title)
   await expect(
     page.getByRole('heading', {
       name: 'Rumah yang selaras dengan rencana Anda.',
     }),
   ).toBeVisible()
-  await expect(
-    page.getByRole('heading', { name: 'Rumah Taman — Demo' }),
-  ).toBeVisible()
+  await expect(page.getByRole('heading', { name: fixture.title })).toBeVisible()
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -64,18 +65,37 @@ test('session CSRF login, scoped lead drawer, notes, and logout', async ({
     .fill(process.env.DEMO_PASSWORD ?? '')
   await page.getByRole('button', { name: 'Masuk →' }).click()
   await expect(page).toHaveURL(/backoffice/)
-  await expect(page.getByText('Prospek Demo', { exact: true })).toBeVisible()
+  const lead = await page.evaluate(
+    async () =>
+      (
+        await (
+          await fetch('/api/v1/leads?per_page=1', { credentials: 'include' })
+        ).json()
+      ).data[0] as { id: number; name: string },
+  )
+  await expect(page.getByText(lead.name, { exact: true })).toBeVisible()
   await page
     .getByRole('row')
-    .filter({ hasText: 'Prospek Demo' })
+    .filter({ hasText: lead.name })
     .getByRole('button', { name: 'Lihat histori →' })
     .click()
   const dialog = page.getByRole('dialog')
+  await expect(dialog.getByRole('heading', { name: lead.name })).toBeVisible()
+  const history = await page.evaluate(
+    async (id) =>
+      (
+        await (
+          await fetch(`/api/v1/leads/${id}/history`, {
+            credentials: 'include',
+          })
+        ).json()
+      ).data as { actor: { name: string } }[],
+    lead.id,
+  )
+  expect(history.length).toBeGreaterThan(0)
+  await expect(dialog.locator('.timeline time')).toHaveCount(history.length)
   await expect(
-    dialog.getByRole('heading', { name: 'Prospek Demo' }),
-  ).toBeVisible()
-  await expect(
-    dialog.getByText('Assignment demo', { exact: true }),
+    dialog.getByText(history[0]!.actor.name, { exact: true }).first(),
   ).toBeVisible()
   const note = `Catatan pengujian ${Date.now()}`
   await dialog.getByLabel('Catatan / alasan').fill(note)
