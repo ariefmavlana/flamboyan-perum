@@ -450,8 +450,11 @@ textarea {
 }
 .detail-grid {
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
   gap: 50px;
+}
+.detail-grid > * {
+  min-width: 0;
 }
 .detail-visual {
   min-height: 350px;
@@ -459,6 +462,7 @@ textarea {
 }
 .description {
   white-space: pre-line;
+  overflow-wrap: anywhere;
 }
 .detail-summary {
   background: #fff;
@@ -708,7 +712,7 @@ th {
   .property-grid,
   .value-strip,
   .detail-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .section {
     padding-top: 35px;

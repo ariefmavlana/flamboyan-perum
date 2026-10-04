@@ -6,6 +6,7 @@ use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OperationsController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\RealtimeController;
 use App\Http\Controllers\ReportController;
@@ -34,6 +35,7 @@ Route::prefix('v1')->group(function () {
         Route::get('internal/audit', [UserController::class, 'audit']);
         Route::get('internal/reports', [ReportController::class, 'index']);
         Route::get('internal/privacy', [ReportController::class, 'privacy']);
+        Route::get('internal/operations', [OperationsController::class, 'metrics']);
         Route::get('internal/content', [ContentController::class, 'index']);
         Route::post('internal/content', [ContentController::class, 'store']);
         Route::patch('internal/content/{id}', [ContentController::class, 'update'])->whereNumber('id');

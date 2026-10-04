@@ -6,12 +6,12 @@ PR #3 fondasi masih terbuka; main belum memuat fondasi. Setiap tahap membuat bra
 
 | Tahap / PR | Requirement | Acceptance yang harus dibuktikan |
 |---|---|---|
-| Workspace operasi | I-01..I-06/I-09, FR-BO-PROP-001..003/005, CRM manual/assignment | UI CRUD katalog scoped, create/assign/reassign lead, property/assignee labels, search/filter/pagination; profile; Admin users, deactivation/workload/last-admin guard; recovery single-use/expiry/session revocation; perubahan audited/versioned |
-| Media properti | P-04/P-08, FR-PUB-022..025/028 | Staging private, validated/decode/strip EXIF/variants queue, limits/scoped/versioned mutations; video/tour allowlist; PDF signature+scanner gate/download nosniff; ordering/archive/history; public only sanitized/published media |
-| Evaluasi dan konten publik | P-01..P-08/I-09 | Full filter UI/URL, compare max3/missing states, KPR fixed+floating+schedule/chart/rate dates, Admin hero/testimonials/bank rates, maps consent/POI/sources, sitemap/robots/structured data/canonical/WA |
-| Notifikasi real-time | I-07/FR-RT-001..004 | Private user channels, after-commit queued push, payload tanpa PII, bounded retries/failure recovery, event dedup, reconnect refresh, polling60s fallback, notification navigation/read/pagination |
-| Supervisi dan privacy | I-08/FR-CRM-004, PRD§8/retention | Cohort/date/status/Marketing/conversion/first-follow-up metrics, pending age; scoped Admin API/UI; PII-free funnel events; controlled audited correction/anonymization/retention workflow |
-| Operasi dan acceptance akhir | SRS§7/10/NFR | Security headers/host/proxy, readiness/monitoring, backup/restore drill, bounded local load, keyboard/mobile/accessibility flows, PHP/database parity; requirement traceability dan seluruh status/API/runbook aktual |
+| Workspace operasi — implemented PR #4 | I-01..I-06/I-09, FR-BO-PROP-001..003/005, CRM manual/assignment | UI CRUD scoped/create/assign/reassign, account/profile/recovery/workload/audit; operations-validation.md |
+| Media properti — implemented PR #5 | P-04/P-08, FR-PUB-022..025/028 | Private staging/decode/WebP/queue/version, video/tour/PDF fail-closed/archive; media-validation.md |
+| Evaluasi/editorial — implemented PR #6 | P-01..P-08/I-09 | Filters/compare/floating KPR/CMS/maps/POI/SEO/WA; evaluation-validation.md |
+| Notifikasi — implemented PR #7 | I-07/FR-RT-001..004 | Private Echo/Pusher/durablequeue/IDs/retry/dedup/reconnect/poll/inbox; realtime-validation.md |
+| Supervisi/privacy — implemented PR #8 | I-08/FR-CRM-004, PRD§8/retention | Cohort/median/pending/PII-free aggregate/read-only candidates/controlled CLI; supervision-validation.md |
+| Operasi/acceptance — implemented PR #9 | SRS§7/10/NFR | Headers/host/signed proxy/readiness/JSONlogs/backup alert/load/restore/mobile320/database parity; acceptance-validation.md dan requirements-traceability.md |
 
 Setiap tahap menjalankan Pint, PHPUnit SQLite/PostgreSQL terisolasi, Composer validate/audit, frontend lint/typecheck/unit/build/browser, audit lengkap source+artefak; hasil dan runtime dicatat pada PR. Status berubah menjadi implemented hanya setelah perilaku diuji. Test/provider fakes membuktikan kontrak tetapi bukan bukti pengiriman SMTP/Pusher nyata.
 

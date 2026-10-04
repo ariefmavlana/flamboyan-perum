@@ -7,7 +7,7 @@ export async function publicApi(
   try {
     return await $fetch(`${useRuntimeConfig().apiBase}/api/v1/${path}`, {
       query: getQuery(event),
-      headers: { Accept: 'application/json' },
+      headers: publicHeaders(event, 'GET', `/api/v1/${path}`),
       timeout: 5000,
     })
   } catch (error: unknown) {

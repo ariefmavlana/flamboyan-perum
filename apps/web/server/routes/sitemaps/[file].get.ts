@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
         string
       >(`${useRuntimeConfig().apiBase}/api/v1/sitemap`, {
         query: { page },
-        headers: { Accept: 'application/json' },
+        headers: publicHeaders(event, 'GET', '/api/v1/sitemap'),
         timeout: 5000,
       })
     } catch {
