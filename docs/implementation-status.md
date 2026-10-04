@@ -2,6 +2,8 @@
 
 Tanggal 2026-10-04 · branch `main` · PR #3–#10 merged atas instruksi eksplisit pengguna · F0–F2 + acceptance operasional + dummy dinamis. Main memuat implementasi seluruh kelompok requirement yang dipetakan di requirements-traceability.md; produksi tetap gated. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi. Bagian historis merekam hasil masing-masing PR, bukan status fitur terkini. Bukti integrasi dan batas review ada di integration-review.md.
 
+Update 2026-10-05: demo nyata tersedia pada Vercel + Supabase + R2. Entry PHP Vercel menjaga prefix `/api/v1` melalui normalisasi metadata script; Nuxt mem-proxy route API/auth/media melalui origin web yang sama. Bukti regresi, 83 test/609 assertion pada SQLite dan PostgreSQL, browser Admin/Marketing, SSR/media/KPR serta batas worker/SMTP/polling ada di [vercel-demo-validation.md](vercel-demo-validation.md). Fix berada pada branch baru dari main dan membawa proxy yang dipakai web demo commit `6bbf027`. Deployment demo bukan kelulusan gate produksi dan tidak mengotorisasi merge.
+
 | Requirement / fitur | Status aktual | Batas / gate |
 |---|---|---|
 | Stack Nuxt4.5.2/Laravel13, lockfiles/runtime | Implemented | PHP8.3 compatible platform; hosting belum dipilih |
@@ -145,3 +147,15 @@ Branch `chore/vercel-demo-deployment`. Perubahan berfokus pada kesiapan deploy d
 **Ruang lingkup PR ini.** Karena branch ini diturunkan dari `codex/bandung-buyer-experience` (PR #13) dan PR #12, merge ke `main` berbentuk fast-forward sehingga ikut mengintegrasikan seluruh pekerjaan buyer experience, kurasi foto, dan redesign editorial yang sudah divalidasi di [buyer-experience-validation.md](buyer-experience-validation.md). Perubahan spesifik jalur deploy ada pada `apps/api/api/index.php`, `api/index.php`, `apps/api/vercel.json`, `apps/web/vercel.json`, `apps/api/config/view.php`, `apps/api/app/Support/MediaDisk.php`, `apps/api/config/filesystems.php`, dan `docs/vercel-demo-deployment.md`.
 
 
+
+## Operasi cloud dan publikasi — 2026-10-05
+
+Branch codex/site-operations dari origin/main3257844, membawa perbaikan routing/same-origin PR#17 serta bounded worker media dan pemeriksaan build Git. Runtime cloud aktual mendukung GD: unggah logo via API cloud berhasil, memperbaiki asumsi lama yang bersumber dari daftar ekstensi contoh. MEDIA_PROCESS_IN_REQUEST menghilangkan kebutuhan worker komputer untuk gambar; PDF tanpa scanner tetap fail closed. Dua project Vercel sudah terhubung repo GitHub, tanpa GitHub Actions.
+
+Narasi aplikasi dan database dibersihkan sesuai instruksi pengguna. Foto kurasi tetap beratribusi dan berlabel ilustrasi. Testimonial persona dan rate sintetis dijadikan draft; nama resource cloud tidak diubah. Pemeliharaan terkontrol juga mengganti slug fixture dan catatan sintetis, dengan snapshot privat sebelum perubahan dan audit; endpoint histori tetap tidak menyediakan edit. Aset ilustrasi berteks lama diregenerasi di R2.
+
+Validasi lokal: PHP8.4.26, PostgreSQL17.9, Node24.21.0, 86 PHPUnit/637 assertions pada SQLite dan database PostgreSQL test terpisah (cluster dihentikan sesudah suite); Pint, Composer validate/audit, lint, typecheck,15 unit frontend dan build lulus. Source npm audit masih11 high dari dua advisory upstream tooling; audit artefak runtime0. Bukti deploy/pipeline dan browser dicatat pada site-operations-validation.md setelah selesai. Tidak ada migration/dependency baru atau seed otomatis.
+
+Pengujian cloud tambahan menemukan sesi akun inactive ditolak403 tetapi stamp/login device masih tersisa, dan pemeriksaan terpisah mendapati error login melalui proxy menjadi HTML200. Perbaikan ActiveUser membersihkan sesi sebelum403; regresi gagal pada perilaku lama (stamp masih ada). Hasil suite akhir, deploy Git dan uji ulang dicatat pada site-operations-validation.md.
+
+Hasil akhir: source198acc1 deployed otomatis lewat Git ke kedua alias; native PHP8.5.2/88tes655assertion lulus.7browser cloud inti diulang setelah fix +6kelompok tambahan +4publik lulus;88tes lokal SQLite/PostgreSQL dan15unit frontend lulus, runtime audit0/source11high upstream tetap terbuka. Login salah dan akun inactive mengembalikan422 JSON lewat host web; sesi lama dicabut401, notifikasi recipient-scoped, semua foto beranda termuat. Data uji tambahan dipensiunkan setelah snapshot/audit, data awal tetap utuh. Bukti/detail operasional ada di site-operations-validation.md. PR#18 belum merge; production tracking sementara codex/site-operations.

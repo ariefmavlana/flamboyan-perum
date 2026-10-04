@@ -8,6 +8,8 @@ use App\Models\Property;
 use App\Models\PropertyMedia;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Queue\Worker;
+use Illuminate\Queue\WorkerOptions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -47,7 +49,7 @@ class MediaOperations
             }
         }
         try {
-            return DB::transaction(function () use ($actor, $propertyId, $data, $file, $path) {
+            $result = DB::transaction(function () use ($actor, $propertyId, $data, $file, $path) {
                 $property = $this->scoped($actor, $propertyId, true);
                 $limit = match ($data['kind']) {
                     'PHOTO' => 20, 'FLOOR_PLAN' => 5, default => 1
@@ -68,11 +70,17 @@ class MediaOperations
             }
             throw $exception;
         }
+        if ($path) {
+            $this->processNextJob();
+            $result['data']->refresh();
+        }
+
+        return $result;
     }
 
     public function update(User $actor, int $propertyId, int $id, array $data): array
     {
-        return DB::transaction(function () use ($actor, $propertyId, $id, $data) {
+        $result = DB::transaction(function () use ($actor, $propertyId, $id, $data) {
             $property = $this->scoped($actor, $propertyId, true);
             $media = $property->media()->whereKey($id)->lockForUpdate()->firstOrFail();
             abort_if($media->state === 'ARCHIVED', 409, 'Media telah diarsipkan.');
@@ -93,6 +101,35 @@ class MediaOperations
 
             return ['data' => $media->refresh(), 'property_version' => $property->version];
         }, 3);
+        if ($data['retry'] ?? false) {
+            $this->processNextJob();
+            $result['data']->refresh();
+        }
+
+        return $result;
+    }
+
+    public function processPending(User $actor, int $propertyId): void
+    {
+        $property = $this->scoped($actor, $propertyId);
+        abort_unless(config('media.process_in_request'), 409, 'Pemrosesan menggunakan worker terpisah.');
+        if ($property->media()->where('state', 'PROCESSING')->exists()) {
+            $this->processNextJob();
+        }
+    }
+
+    private function processNextJob(): void
+    {
+        if (! config('media.process_in_request')) {
+            return;
+        }
+        // The durable job is committed before a bounded worker consumes it.
+        // This also preserves retries when storage or processing is unavailable.
+        /** @var Worker $worker */
+        $worker = app('queue.worker');
+        $worker->runNextJob('database', config('media.queue'), new WorkerOptions(
+            name: 'media-request', backoff: 10, timeout: 45, sleep: 0, maxTries: 3,
+        ));
     }
 
     private function bump(Property $property, int $version): void

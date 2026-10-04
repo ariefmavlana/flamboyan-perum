@@ -2,6 +2,8 @@
 
 Base `/api/v1`, JSON, waktu UTC ISO8601. Production browser/API same origin; proxy hosting mengirim `/api`, `/auth`, `/sanctum` ke Laravel dan halaman lainnya ke Nuxt. Private routes hanya session Sanctum + user active ADMIN/MARKETING. Bearer token/public register tidak tersedia.
 
+Entry PHP Vercel menormalkan `SCRIPT_NAME`/`PHP_SELF` menjadi `/index.php` agar `/api` tetap bagian route aplikasi. URL publik tetap `/api/v1/...`, tanpa tambahan `/api` kedua. Kontrak auth, payload, dan otorisasi tidak berubah. Bukti deployment demo ada di [vercel-demo-validation.md](vercel-demo-validation.md).
+
 Dataset dummy lokal memakai kontrak yang sama: nilai katalog/CMS/CRM berasal dari database hasil generator, lalu dapat dikelola melalui endpoint scoped/versioned di bawah. Tidak ada endpoint mock atau fallback data statis. Nama, slug, harga, lokasi dan identitas Marketing berubah antar-database seed baru; konsumen tidak boleh mengandalkan nilai fixture tertentu. Login alias demo tetap untuk akses lokal, bukan identitas bisnis. Persiapan dan batas ada di demo-data.md; validasi perubahan nyata API→SSR→reload ada di dynamic-demo-validation.md.
 
 ## Endpoint yang diimplementasikan
@@ -164,3 +166,13 @@ POST /api/v1/internal/content/{id}/logo Admin aktif + session/CSRF: multipart fi
 GET /api/v1/content/{id}/logo public hanya BANK_PARTNER published+verified dan file tersedia; selain itu404. Output image/webp, nosniff, Cache-Control:no-store, CSP sandbox. Route diizinkan pada signed public proxy dengan ID numerik, tidak membuka internal routes. Public content.bank_partners hanya record eligible dengan file dan DTO {id,name,website,logo_url}; tidak membuat klaim rekanan dari data BANK_RATE. Pemilik wajib memverifikasi izin logo dan hubungan bank sebelum attestation.
 
 File logo terdahulu dipertahankan private setelah replacement, tidak dihidangkan oleh endpoint dan tidak dihapus otomatis. Rollback konten cukup unpublish atau unggah kembali aset yang disetujui memakai version terbaru; pemulihan filesystem/DB mengikuti backup operator. Inventaris dan pembersihan file lama memerlukan review backup/retensi operator, bukan cleanup media properti. Tidak ada hard-delete, logo fiktif, perubahan CRM/privacy, atau migrasi database. Catatan redesign terdahulu mengenai hero statis merupakan snapshot historis; hero yang dipilih CMS kini dikirim lewat field media di atas.
+
+### Media function (2026-10-05)
+
+GET /api/v1/internal/properties/{id}/media menambah process_in_request:boolean di envelope (bersama property_version/data/links/meta). GET hanya membaca.
+
+POST /api/v1/internal/properties/{id}/media/process: auth Sanctum, active account, throttle internal, CSRF dan scope properti seperti upload. Memproses maksimal satu job media durable bila property memiliki PROCESSING, mengembalikan204; Marketing lain404, mode worker terpisah409. Tidak mengubah property version, metadata atau publikasi. Job sukses mengisi READY/variants; kegagalan memakai kontrak processor existing. POST upload dan PATCH retry pada mode function dapat langsung mengembalikan READY/FAILED setelah commit; PROCESSING tetap hasil sah saat antrean mendahulukan job lain.
+
+Akun inactive/role tidak didukung: request internal tetap403; bila memiliki sesi, middleware mencabut login device tersebut, invalidasi sesi dan regenerasi CSRF. Permintaan login berikutnya diproses sebagai guest (akun inactive422), sehingga tidak mengembalikan redirect HTML seolah login berhasil. Security stamp tidak cocok tetap401 dan membersihkan sesi.
+
+Semua exception /auth/* selalu JSON, termasuk validation422, auth401, CSRF419 dan throttle429, walau Accept tidak diteruskan proxy atau client mengirim text/html. Response memakai allowlist message/errors/request_id existing; tidak ada redirect ke Referer sebagai pengganti error login/recovery.

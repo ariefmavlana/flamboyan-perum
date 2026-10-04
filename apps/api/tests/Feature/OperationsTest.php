@@ -120,6 +120,29 @@ class OperationsTest extends TestCase
         $this->withSession([])->actingAs($user)->getJson('/api/v1/me')->assertUnauthorized();
     }
 
+    public function test_inactive_account_denial_also_clears_the_stale_login_session(): void
+    {
+        $user = $this->user('MARKETING');
+        $user->forceFill(['is_active' => false])->save();
+        $this->withHeader('Origin', 'http://localhost:3000')
+            ->withSession(['account_security_stamp' => $user->remember_token])
+            ->actingAs($user)
+            ->getJson('/api/v1/me')
+            ->assertForbidden()
+            ->assertSessionMissing('account_security_stamp');
+        $this->assertGuest('web');
+    }
+
+    public function test_auth_errors_are_json_even_when_a_proxy_drops_the_accept_header(): void
+    {
+        $this->withHeader('Accept', 'text/html')->post('/auth/login', [
+            'email' => 'absent@example.test', 'password' => 'Incorrect-password-2026',
+        ])->assertUnprocessable()->assertHeader('Content-Type', 'application/json')->assertJsonValidationErrors('email');
+        foreach (['/auth/forgot-password', '/auth/reset-password'] as $path) {
+            $this->post($path, [])->assertUnprocessable()->assertHeader('Content-Type', 'application/json')->assertJsonValidationErrors('email');
+        }
+    }
+
     public function test_normal_logout_does_not_revoke_other_device_security_stamps(): void
     {
         $user = $this->user('MARKETING');

@@ -46,6 +46,7 @@ Route::prefix('v1')->group(function () {
         Route::post('internal/properties', [PropertyController::class, 'store']);
         Route::get('internal/properties/{id}/media', [MediaController::class, 'index'])->whereNumber('id');
         Route::post('internal/properties/{id}/media', [MediaController::class, 'store'])->whereNumber('id');
+        Route::post('internal/properties/{id}/media/process', [MediaController::class, 'processPending'])->whereNumber('id');
         Route::patch('internal/properties/{id}/media/{mediaId}', [MediaController::class, 'update'])->whereNumber(['id', 'mediaId']);
         Route::get('internal/media/{mediaId}/{variant}', [MediaController::class, 'internalFile'])->whereNumber('mediaId')->where('variant', '640|1280|1920|download');
         Route::get('internal/properties/{id}', [PropertyController::class, 'internalShow'])->whereNumber('id');

@@ -13,6 +13,8 @@ const url = ref('')
 const file = ref<File | null>(null)
 const message = ref('')
 const busy = ref(false)
+const processInRequest = ref(false)
+const polling = ref(false)
 const input = ref<HTMLInputElement | null>(null)
 const labels: Record<InternalMedia['state'], string> = {
   PROCESSING: 'Sedang diproses',
@@ -31,10 +33,13 @@ const isLink = computed(() => kind.value === 'VIDEO' || kind.value === 'TOUR')
 let poll: ReturnType<typeof setInterval> | undefined
 async function load(background = false) {
   try {
-    const result = await api.request<Paginated<InternalMedia>>(
+    const result = await api.request<
+      Paginated<InternalMedia> & { process_in_request: boolean }
+    >(
       `/api/v1/internal/properties/${props.propertyId}/media?page=${page.value}&include_archived=${includeArchived.value ? '1' : '0'}`,
     )
     lastPage.value = result.meta.last_page
+    processInRequest.value = result.process_in_request
     items.value = result.data.map((item) => {
       const current = background
         ? items.value.find((value) => value.id === item.id)
@@ -92,9 +97,8 @@ async function add() {
     file.value = null
     if (input.value) input.value.value = ''
     await load()
-    message.value = isLink.value
-      ? 'Media tersimpan.'
-      : 'Unggahan tersimpan privat dan menunggu pemrosesan.'
+    message.value =
+      'Media tersimpan. Tinjau status dan tampilkan ke publik setelah siap.'
   } catch (error) {
     message.value = staffError(error)
   } finally {
@@ -119,9 +123,26 @@ async function update(item: InternalMedia, changes: Record<string, unknown>) {
 }
 onMounted(() => {
   void load()
-  poll = setInterval(() => {
-    if (!busy.value && items.value.some((item) => item.state === 'PROCESSING'))
-      void load(true)
+  poll = setInterval(async () => {
+    if (
+      busy.value ||
+      polling.value ||
+      !items.value.some((item) => item.state === 'PROCESSING')
+    )
+      return
+    polling.value = true
+    try {
+      if (processInRequest.value)
+        await api.request(
+          `/api/v1/internal/properties/${props.propertyId}/media/process`,
+          { method: 'POST' },
+        )
+      await load(true)
+    } catch (error) {
+      message.value = staffError(error)
+    } finally {
+      polling.value = false
+    }
   }, 10000)
 })
 onBeforeUnmount(() => {
