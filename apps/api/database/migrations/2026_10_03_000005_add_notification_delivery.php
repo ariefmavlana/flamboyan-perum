@@ -1,0 +1,24 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('user_notifications', function (Blueprint $table) {
+            $table->timestamp('push_sent_at')->nullable();
+            $table->index(['push_sent_at', 'created_at']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('user_notifications', function (Blueprint $table) {
+            $table->dropIndex(['push_sent_at', 'created_at']);
+            $table->dropColumn('push_sent_at');
+        });
+    }
+};

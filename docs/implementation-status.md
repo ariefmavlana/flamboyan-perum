@@ -1,6 +1,6 @@
 # Status implementasi
 
-Tanggal 2026-10-03 · branch `codex/public-evaluation` · F0 + workspace operasi + media + evaluasi/editorial; MVP/produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
+Tanggal 2026-10-03 · branch `codex/realtime-notifications` · F0 + workspace operasi + media + evaluasi/editorial + notifikasi; MVP/produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
 
 | Requirement / fitur | Status F0 | Tahap berikutnya / batas |
 |---|---|---|
@@ -30,11 +30,11 @@ Tanggal 2026-10-03 · branch `codex/public-evaluation` · F0 + workspace operasi
 | FR-MKT-002/003 Pipeline/notes | Implemented | Ordered transitions+LOST reason+terminal guard+versions |
 | FR-MKT-004/005 History drawer | Implemented | Native modal keyboard/Escape + descending history actor/status/note; reassignment event fields in API |
 | FR-RT-001/002 Persistent notification | Implemented | Assignment→Marketing; status→Admin; recipient scope |
-| FR-RT-003 Push/Echo | Planned | No realtime claim; current manual refresh; queued provider+poll/reconnect F1 |
+| FR-RT-003 Push/Echo | Implemented/config-gated | Private Echo/Pusher+durable queue/retry/dedup/reconnect/poll60s; actual provider≤5s gate |
 | FR-RT-004 Read/unread | Implemented | Exact unread count, own recipient list/read idempotent |
 | SEO canonical/metadata | Implemented | Sitemap index/1000 published perfile, robots/query noindex, factual JSON-LD |
 | Validasi lokal / branch+PR | Implemented | GitHub Actions dihapus sesuai instruksi pengguna; bukti lokal wajib sebelum review; main protection belum dikonfigurasi |
-| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing49 tests/299 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
+| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing55 tests/337 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
 | Production/backups/privacy/performance | Gate open | Actual hosting/load/restore/retention/provider/content evidence required |
 
 ## Validasi F0 historis
@@ -71,3 +71,6 @@ Lihat media-validation.md:43 tests/252 assertions masing-masing SQLite/PostgreSQ
 ## Evaluasi/editorial terbaru
 
 Lihat evaluation-validation.md: PHPUnit49 tests/299 assertions masing-masing SQLite/PostgreSQL,8 browser flows55.6s,7 unit tests; final lint0/type/build passed, source11 high/runtime0 dan Composer0/cache fallback dicatat PR. Compare/fullfilters/KPR/CMS/maps/SEO tersedia dengan actual content/provider gates. PR #5 media terbuka sebagai dependensi; tidak ada merge. Push/report/analytics/privacy/operational acceptance masih harus diselesaikan sesuai implementation-plan.md.
+## Notifikasi terbaru
+
+Lihat realtime-validation.md:55 tests/337 assertions SQLite/PostgreSQL,11 unit tests,9 browser flows, lint/type/build/Composer passed; source11 high/runtime0. Echo/private push tersedia dengan provider nyata gated; laporan/analytics/privacy/operational acceptance masih dilanjutkan. Tidak ada merge/deployment.

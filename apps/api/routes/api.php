@@ -6,6 +6,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\RealtimeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,8 @@ Route::prefix('v1')->group(function () {
     });
     Route::middleware(['auth:sanctum', 'active', 'throttle:internal-api'])->group(function () {
         Route::get('me', fn (Request $request) => ['data' => $request->user()->only(['id', 'name', 'email', 'role', 'is_active', 'version', 'email_verified_at'])]);
+        Route::get('realtime', [RealtimeController::class, 'configuration']);
+        Route::post('realtime/auth', [RealtimeController::class, 'authorize']);
         Route::patch('me', [UserController::class, 'profile']);
         Route::get('internal/users', [UserController::class, 'index']);
         Route::post('internal/users', [UserController::class, 'store']);

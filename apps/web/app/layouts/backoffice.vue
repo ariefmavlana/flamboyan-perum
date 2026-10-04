@@ -1,6 +1,13 @@
 <script setup lang="ts">
 const session = useStaffSession()
 const message = ref('')
+async function logout() {
+  try {
+    await session.logout()
+  } catch {
+    message.value = 'Belum dapat keluar. Coba kembali.'
+  }
+}
 onMounted(async () => {
   try {
     await session.refresh()
@@ -25,7 +32,11 @@ onMounted(async () => {
         to="/backoffice/akun"
         >Akun tim</NuxtLink
       >
+      <button type="button" class="button secondary" @click="logout">
+        Keluar
+      </button>
     </nav>
+    <div class="container"><NotificationBell /></div>
     <p v-if="message" class="container error-text" role="alert">
       {{ message }}
     </p>
