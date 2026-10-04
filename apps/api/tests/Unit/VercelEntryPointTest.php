@@ -40,7 +40,7 @@ class VercelEntryPointTest extends TestCase
         $request = Illuminate\Http\Request::capture();
         echo json_encode(['path' => $request->getPathInfo(), 'base' => $request->getBaseUrl()]);
         PHP;
-        $process = new Process([PHP_BINARY, '-r', $code, $entry, $uri], dirname(__DIR__, 2), [
+        $process = new Process([PHP_BINARY, '-d', 'opcache.enable_cli=0', '-r', $code, $entry, $uri], dirname(__DIR__, 2), [
             'APP_ENV' => 'testing', 'APP_DEBUG' => 'false', 'DB_CONNECTION' => 'sqlite',
             'DB_DATABASE' => ':memory:', 'DB_URL' => '', 'CACHE_STORE' => 'array',
             'SESSION_DRIVER' => 'array', 'LOG_CHANNEL' => 'null',
