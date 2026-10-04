@@ -120,6 +120,19 @@ class OperationsTest extends TestCase
         $this->withSession([])->actingAs($user)->getJson('/api/v1/me')->assertUnauthorized();
     }
 
+    public function test_inactive_account_denial_also_clears_the_stale_login_session(): void
+    {
+        $user = $this->user('MARKETING');
+        $user->forceFill(['is_active' => false])->save();
+        $this->withHeader('Origin', 'http://localhost:3000')
+            ->withSession(['account_security_stamp' => $user->remember_token])
+            ->actingAs($user)
+            ->getJson('/api/v1/me')
+            ->assertForbidden()
+            ->assertSessionMissing('account_security_stamp');
+        $this->assertGuest('web');
+    }
+
     public function test_normal_logout_does_not_revoke_other_device_security_stamps(): void
     {
         $user = $this->user('MARKETING');
