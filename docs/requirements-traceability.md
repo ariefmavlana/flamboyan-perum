@@ -26,3 +26,19 @@ Baseline aktif PRD/SRS 2.2, 2026-10-04. Seluruh kelompok requirement sumber dipe
 | Instruksi dummy 2026-10-04, PRD§11/SRS§12 | Generative persisted demo/real CRUD/workflows/SSR/native media; bounded counts/empty-domain guard/rollback | DemoDatasetTest; dynamic-demo/browser; dynamic-demo-validation.md | Local/testing only; simulasi CMS bukan verifikasi konten produksi |
 
 Referensi hasil final: `acceptance-validation.md`; bukti tiap tahap: `validation.md`, `operations-validation.md`, `media-validation.md`, `evaluation-validation.md`, `realtime-validation.md`, `supervision-validation.md`. Runbook menjelaskan konfigurasi dan rollback. Simulasi provider tidak membuktikan layanan produksi; backup fixture tidak membuktikan offsite atau retensi bisnis. Target yang membutuhkan keputusan/layanan eksternal tetap mempunyai pemilik di PRD§10.
+
+## Addendum traceability — Bandung Timur dan adaptasi Aucoot, 2026-10-04
+
+| Sumber / ID | Implementasi baru atau diperkuat | Bukti dan batas |
+|---|---|---|
+| Instruksi persona/lokasi; P-09 | `/bandung-timur`, copy/navigasi/SEO publik konteks Bandung Timur | Source page dan buyer tests tersedia; alamat/koordinat/fasilitas nyata masih gate. |
+| Instruksi adaptasi Journal; P-10 | Indeks +3 panduan SSR, canonical/sitemap,404 unknownslug | `shared/content/buyer-guides.ts`, buyer unit/E2E; konten source terkurasi, bukan CMS artikel umum. |
+| P-05/P-11; flow original discovery→WhatsApp→Admin | `/konsultasi`, topik/pertanyaan/konteks properti; handoff WhatsApp | Buyer unit/E2E; tanpa pesan otomatis, lead otomatis, booking atau janji jadwal. |
+| FR-PUB-022..025/P-12 | Kelompok foto/denah, gallery dialog next/previous/keyboard, consent video/tour | Gallery E2E tersedia; backend positive tour/public scope. Galeri dan seluruh26alur browser final lulus; lihat buyer-experience-validation.md. |
+| P-12 Share | Native share→clipboard→manual canonical link | Buyer unit/E2E tersedia; kemampuan native mengikuti browser/perangkat. |
+| FR-PUB-001/FR-BO-PROP-004/I-10 | CMS HERO memilih PHOTO/VIDEO eligible, public hero.media, revoke-safe allowlist | EditorialAssetsTest; CMS assets E2E tersedia; asset asli dan provider embed tetap gate. |
+| FR-PUB-005/I-10 | BANK_PARTNER terpisah BANK_RATE; sanitized private logo upload + attestation/version/audit | EditorialAssetsTest; CMS assets E2E tersedia; izin dan hubungan bank asli belum dianggap tersedia. |
+| FR-PUB-028 | Download PDF attachment + nosniff diperkuat tes | MediaTest; scanner mock bukan bukti ClamAV produksi. |
+| Seluruh area Aucoot utama | Matriks home/buy/detail/sell/journal/directory/story/about/press/contact/international | aucoot-adaptation.md:11 halaman diamati langsung, termasuk Press dan detail properti. Tidak mengklaim integrasi/form submission Aucoot diuji atau seluruh model bisnisnya dibangun. |
+
+Snapshot validasi perubahan:77 tests/579 assertions masing-masing SQLite8.75s dan PostgreSQL15s; frontend lint/typecheck passed, unit15 tests427ms. Seluruh26alur browser final lulus; hasil dan batasnya ada di [buyer-experience-validation.md](buyer-experience-validation.md). Source advisory11high, provider/hosting/konten nyata tetap gate. Original requirement di docs/original tidak diedit.

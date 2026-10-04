@@ -1,6 +1,81 @@
 <script setup lang="ts">
 const session = useStaffSession()
 const message = ref('')
+const route = useRoute()
+const links = [
+  {
+    to: '/backoffice',
+    label: 'CRM',
+    icon: 'users',
+    admin: false,
+    group: 'Aktivitas',
+  },
+  {
+    to: '/backoffice/properti',
+    label: 'Katalog',
+    icon: 'home',
+    admin: false,
+    group: 'Aktivitas',
+  },
+  {
+    to: '/backoffice/laporan',
+    label: 'Laporan',
+    icon: 'chart',
+    admin: true,
+    group: 'Pengelolaan',
+  },
+  {
+    to: '/backoffice/konten',
+    label: 'Konten publik',
+    icon: 'file',
+    admin: true,
+    group: 'Pengelolaan',
+  },
+  {
+    to: '/backoffice/akun',
+    label: 'Akun tim',
+    icon: 'users',
+    admin: true,
+    group: 'Pengelolaan',
+  },
+  {
+    to: '/backoffice/privasi',
+    label: 'Retensi lead',
+    icon: 'shield',
+    admin: true,
+    group: 'Pengelolaan',
+  },
+  {
+    to: '/backoffice/operasi',
+    label: 'Operasi',
+    icon: 'settings',
+    admin: true,
+    group: 'Pengelolaan',
+  },
+  {
+    to: '/backoffice/profil',
+    label: 'Profil',
+    icon: 'user',
+    admin: false,
+    group: 'Akun',
+  },
+] as const
+const available = computed(() =>
+  links.filter(
+    (link) => !link.admin || session.account.value?.role === 'ADMIN',
+  ),
+)
+const groups = computed(() =>
+  ['Aktivitas', 'Pengelolaan', 'Akun']
+    .map((label) => ({
+      label,
+      links: available.value.filter((link) => link.group === label),
+    }))
+    .filter((group) => group.links.length),
+)
+const current = computed(
+  () => links.find((link) => link.to === route.path)?.label ?? 'Workspace',
+)
 async function logout() {
   try {
     await session.logout()
@@ -17,44 +92,50 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <NuxtLayout name="default">
-    <nav class="container workspace-nav" aria-label="Workspace tim">
-      <NuxtLink to="/backoffice">CRM</NuxtLink>
-      <NuxtLink to="/backoffice/properti">Katalog</NuxtLink>
-      <NuxtLink to="/backoffice/profil">Profil</NuxtLink>
-      <NuxtLink
-        v-if="session.account.value?.role === 'ADMIN'"
-        to="/backoffice/konten"
-        >Konten publik</NuxtLink
-      >
-      <NuxtLink
-        v-if="session.account.value?.role === 'ADMIN'"
-        to="/backoffice/akun"
-        >Akun tim</NuxtLink
-      >
-      <button type="button" class="button secondary" @click="logout">
-        Keluar
-      </button>
-      <NuxtLink
-        v-if="session.account.value?.role === 'ADMIN'"
-        to="/backoffice/laporan"
-        >Laporan</NuxtLink
-      >
-      <NuxtLink
-        v-if="session.account.value?.role === 'ADMIN'"
-        to="/backoffice/privasi"
-        >Retensi lead</NuxtLink
-      >
-      <NuxtLink
-        v-if="session.account.value?.role === 'ADMIN'"
-        to="/backoffice/operasi"
-        >Operasi</NuxtLink
-      >
-    </nav>
-    <div class="container"><NotificationBell /></div>
-    <p v-if="message" class="container error-text" role="alert">
-      {{ message }}
-    </p>
-    <slot />
-  </NuxtLayout>
+  <div class="workspace-shell">
+    <a class="skip-link" href="#main">Lewati ke konten</a>
+    <aside class="workspace-sidebar">
+      <BrandLogo />
+      <ResponsiveNav id="workspace-navigation" label="Workspace tim">
+        <div v-for="group in groups" :key="group.label" class="nav-group">
+          <p class="nav-label">{{ group.label }}</p>
+          <NuxtLink v-for="link in group.links" :key="link.to" :to="link.to">
+            <AppIcon :name="link.icon" />{{ link.label }}
+          </NuxtLink>
+        </div>
+        <div class="sidebar-bottom">
+          <NuxtLink to="/properti"
+            ><AppIcon name="arrow" />Lihat website</NuxtLink
+          ><button type="button" class="sidebar-logout" @click="logout">
+            <AppIcon name="logout" />Keluar
+          </button>
+        </div>
+      </ResponsiveNav>
+    </aside>
+    <div class="workspace-body">
+      <header class="workspace-topbar">
+        <p><span class="muted">Workspace /</span> {{ current }}</p>
+        <div class="staff-identity">
+          <span class="avatar" aria-hidden="true">{{
+            session.account.value?.name.slice(0, 1) ?? 'F'
+          }}</span
+          ><span
+            >{{ session.account.value?.name
+            }}<small>{{
+              session.account.value?.role === 'ADMIN'
+                ? 'Administrator'
+                : 'Marketing'
+            }}</small></span
+          >
+        </div>
+      </header>
+      <div class="workspace-inbox"><NotificationBell /></div>
+      <main id="main" tabindex="-1">
+        <p v-if="message" class="container error-text" role="alert">
+          {{ message }}
+        </p>
+        <slot />
+      </main>
+    </div>
+  </div>
 </template>

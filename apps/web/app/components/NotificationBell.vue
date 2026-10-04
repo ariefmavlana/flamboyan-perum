@@ -27,7 +27,7 @@ onBeforeUnmount(() => {
     <NuxtLink
       to="/backoffice#notifications"
       :aria-label="`Notifikasi, ${inbox.notices.value?.unread_count ?? 0} belum dibaca`"
-      ><span aria-hidden="true">🔔</span>
+      ><AppIcon name="bell" />
       {{ inbox.notices.value?.unread_count ?? 0 }} belum dibaca</NuxtLink
     ><small role="status">{{ realtime.state.value }}</small>
   </div>

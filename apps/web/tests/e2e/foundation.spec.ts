@@ -39,7 +39,7 @@ test('discovery filters preserve URL and mobile layout does not overflow', async
   expect(new URL(page.url()).searchParams.get('q')).toBe(fixture.title)
   await expect(
     page.getByRole('heading', {
-      name: 'Rumah yang selaras dengan rencana Anda.',
+      name: 'Temukan rumah yang tepat.',
     }),
   ).toBeVisible()
   await expect(page.getByRole('heading', { name: fixture.title })).toBeVisible()

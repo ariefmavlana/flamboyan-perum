@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PropertyMedia;
 use App\Services\MediaOperations;
+use App\Support\MediaDisk;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
@@ -62,9 +63,9 @@ class MediaController extends Controller
         abort_unless($source && Storage::disk('media')->exists($source['path']), 404);
         $headers = ['Content-Type' => $source['mime'], 'X-Content-Type-Options' => 'nosniff', 'Cache-Control' => 'no-store', 'Content-Security-Policy' => "default-src 'none'; sandbox"];
         if ($media->kind === 'BROCHURE') {
-            return response()->download(Storage::disk('media')->path($source['path']), 'brosur-properti.pdf', $headers);
+            return MediaDisk::downloadResponse($source['path'], 'brosur-properti.pdf', $headers);
         }
 
-        return response()->file(Storage::disk('media')->path($source['path']), $headers);
+        return MediaDisk::fileResponse($source['path'], $headers);
     }
 }

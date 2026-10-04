@@ -140,9 +140,15 @@ watch(
   <section class="section">
     <h3>Media properti</h3>
     <p class="muted">
-      Maksimal20 foto,5 denah,1 video,1 tour dan1 brosur aktif. Gambar
-      ≤5MiB/40MP; PDF ≤10MiB. Gambar diproses menjadi WebP tanpa metadata
-      sumber; brosur menunggu pemindaian malware.
+      Maksimal 20 foto, 5 denah, 1 video, 1 tour dan 1 brosur aktif. Gambar
+      JPEG, PNG, atau WebP maksimal 5 MiB / 40 megapiksel; PDF maksimal 10 MiB.
+      Gambar diproses menjadi WebP tanpa metadata sumber; brosur menunggu
+      pemindaian malware.
+    </p>
+    <p class="muted">
+      Foto siap dengan urutan terkecil menjadi sampul katalog. Aktifkan pilihan
+      tampil publik setelah meninjau foto dan deskripsinya. Denah diunggah
+      terpisah agar mudah dikenali.
     </p>
     <p v-if="message" role="status">{{ message }}</p>
     <form @submit.prevent="add">
@@ -173,8 +179,22 @@ watch(
               ? 'application/pdf'
               : 'image/jpeg,image/png,image/webp'
           "
-          @change="selectFile" /></label
-      ><button class="button secondary" :disabled="busy">Tambah media</button>
+          @change="selectFile"
+      /></label>
+      <p v-if="kind === 'VIDEO'" class="muted">
+        Unggah video milik Anda ke YouTube, lalu tempel tautan
+        youtube.com/watch?v=… atau youtu.be/…. File MP4 tidak diunggah langsung.
+        Video dimuat setelah persetujuan pengunjung.
+      </p>
+      <p v-else-if="kind === 'TOUR'" class="muted">
+        Gunakan tautan HTTPS dari penyedia virtual tour yang diizinkan pada
+        konfigurasi platform.
+      </p>
+      <p v-else-if="kind === 'BROCHURE'" class="muted">
+        Brosur hanya tersedia untuk pengunjung setelah pemindaian malware
+        berhasil.
+      </p>
+      <button class="button secondary" :disabled="busy">Tambah media</button>
     </form>
     <button class="text-button" type="button" :disabled="busy" @click="load()">
       Muat ulang media

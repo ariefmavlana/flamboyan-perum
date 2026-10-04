@@ -69,6 +69,25 @@ class MediaTest extends TestCase
         $this->assertSame(2, $property->fresh()->version);
     }
 
+    public function test_tour_links_are_public_only_while_media_and_property_are_published(): void
+    {
+        $property = $this->property();
+        $uri = '/api/v1/internal/properties/'.$property->id.'/media';
+        $this->postJson($uri, ['version' => 1, 'kind' => 'TOUR', 'alt' => 'Tour', 'url' => 'https://my.matterport.com.evil.test/show/?m=abcdefghijk'])->assertUnprocessable();
+        $this->postJson($uri, ['version' => 1, 'kind' => 'TOUR', 'alt' => 'Tour', 'url' => 'https://user:pass@my.matterport.com/show/?m=abcdefghijk'])->assertUnprocessable();
+        $created = $this->postJson($uri, ['version' => 1, 'kind' => 'TOUR', 'alt' => 'Tour', 'url' => 'https://my.matterport.com/show/?m=abcdefghijk'])->assertCreated()->assertJsonPath('data.state', 'READY');
+        $media = PropertyMedia::findOrFail($created->json('data.id'));
+        $this->getJson('/api/v1/properties/media-test')->assertJsonPath('data.media.0.url', 'https://my.matterport.com/show/?m=abcdefghijk')->assertJsonMissingPath('data.media.0.property_id')->assertJsonMissingPath('data.media.0.staging_path');
+        $media->update(['published' => false]);
+        $this->getJson('/api/v1/properties/media-test')->assertJsonCount(0, 'data.media');
+        $media->update(['published' => true]);
+        $property->update(['publication' => 'DRAFT']);
+        $this->getJson('/api/v1/properties/media-test')->assertNotFound();
+        $property->update(['publication' => 'PUBLISHED']);
+        $media->update(['state' => 'ARCHIVED']);
+        $this->getJson('/api/v1/properties/media-test')->assertJsonCount(0, 'data.media');
+    }
+
     public function test_brochures_fail_closed_when_scanner_is_unconfigured(): void
     {
         Storage::fake('media');
@@ -144,6 +163,28 @@ class MediaTest extends TestCase
         $this->assertDatabaseHas('activity_logs', ['subject_id' => $property->id, 'action' => 'MEDIA_ARCHIVED']);
     }
 
+    public function test_cleanup_keeps_ready_directories_that_are_still_referenced_by_variants(): void
+    {
+        Storage::fake('media');
+        Queue::fake();
+        $property = $this->property();
+        $response = $this->postJson('/api/v1/internal/properties/'.$property->id.'/media', ['version' => 1, 'kind' => 'PHOTO', 'alt' => 'Tetap dirujuk', 'file' => UploadedFile::fake()->image('photo.jpg', 400, 300)])->assertCreated();
+        $media = PropertyMedia::findOrFail($response->json('data.id'));
+        (new ProcessPropertyMedia($media->id))->handle(app(MediaProcessor::class));
+        $media->refresh();
+        $this->assertSame('READY', $media->state);
+        $directory = dirname($media->variants['640']['path']);
+        $this->assertNotEmpty($directory);
+        // Json encodes slashes as "\/", which a raw LIKE on the stored text cannot match.
+        Storage::disk('media')->assertExists($directory.'/640.webp');
+        $this->travel(31)->days();
+        $this->artisan('flamboyan:media-cleanup', ['--execute' => true])->assertSuccessful();
+        foreach ($media->variants as $size => $variant) {
+            Storage::disk('media')->assertExists($variant['path']);
+        }
+        $this->assertNull($media->fresh()->purged_at);
+    }
+
     public function test_brochure_scanner_clean_and_unsafe_contracts_are_enforced(): void
     {
         Storage::fake('media');
@@ -159,7 +200,7 @@ class MediaTest extends TestCase
         $this->patchJson('/api/v1/internal/properties/'.$property->id.'/media/'.$media->id, ['version' => 2, 'retry' => true])->assertOk();
         $scanner->shouldReceive('inspect')->once()->andReturn('CLEAN');
         (new ProcessPropertyMedia($media->id))->handle(new MediaProcessor($scanner));
-        $this->get('/media/'.$media->id.'/download')->assertOk()->assertHeader('Content-Type', 'application/pdf')->assertHeader('Content-Disposition', 'attachment; filename=brosur-properti.pdf');
+        $this->get('/media/'.$media->id.'/download')->assertOk()->assertHeader('Content-Type', 'application/pdf')->assertHeader('Content-Disposition', 'attachment; filename=brosur-properti.pdf')->assertHeader('X-Content-Type-Options', 'nosniff');
         // Mock proves the contract, not actual antivirus effectiveness or PDF validity.
     }
 

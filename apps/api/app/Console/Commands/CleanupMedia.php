@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\PropertyMedia;
+use App\Support\MediaDisk;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,6 +31,14 @@ class CleanupMedia extends Command
             }
         });
         $orphans = 0;
+        if (! MediaDisk::isLocal()) {
+            // Remote disks have no directory enumeration that maps to the local
+            // staging/ready layout, so orphan scanning only runs on local disks.
+            $this->info(($this->option('execute') ? 'Purged: ' : 'Eligible (dry run): ').$count);
+            $this->info('Unreferenced files/directories past grace: 0 (remote disk: not scanned)');
+
+            return self::SUCCESS;
+        }
         foreach (['staging', 'ready'] as $prefix) {
             $root = $disk->path($prefix);
             if (! is_dir($root)) {
@@ -42,9 +51,13 @@ class CleanupMedia extends Command
                     continue;
                 }
                 $key = $prefix.'/'.$name;
+                // JSON encodes "/" as "\/" by default, so matching the raw stored
+                // text against "ready/<uuid>/" never matches and made the sweep
+                // delete directories that are still in use. Match the decoded
+                // variants in PHP instead of the raw JSON string.
                 $referenced = $prefix === 'staging'
                     ? PropertyMedia::query()->where('staging_path', $key)->exists()
-                    : PropertyMedia::query()->whereRaw('CAST(variants AS TEXT) LIKE ?', ['%'.$key.'/%'])->exists();
+                    : $this->referencedReadyKey($key);
                 if ($referenced) {
                     continue;
                 }
@@ -65,5 +78,26 @@ class CleanupMedia extends Command
         }
 
         return self::SUCCESS;
+    }
+
+    /**
+     * A ready directory stays as long as any stored variant path points into it.
+     */
+    private function referencedReadyKey(string $key): bool
+    {
+        return PropertyMedia::query()
+            ->whereNotNull('variants')
+            ->pluck('variants')
+            ->contains(function ($variants) use ($key) {
+                $paths = is_array($variants) ? $variants : json_decode((string) $variants, true);
+
+                foreach ((array) $paths as $variant) {
+                    if (is_array($variant) && str_starts_with((string) ($variant['path'] ?? ''), $key.'/')) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
     }
 }

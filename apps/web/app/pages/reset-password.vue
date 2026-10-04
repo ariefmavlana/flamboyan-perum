@@ -57,9 +57,15 @@ async function submit() {
       <p v-if="message" role="alert">{{ message }}</p>
       <button class="button" :disabled="busy">Perbarui kata sandi</button>
     </form>
-    <p v-else role="alert">
-      Tautan pemulihan tidak lengkap.
-      <NuxtLink to="/forgot-password">Minta tautan baru</NuxtLink>.
-    </p>
+    <div v-else class="login-panel">
+      <p class="eyebrow">PEMULIHAN AKUN</p>
+      <h1>Periksa tautan pemulihan.</h1>
+      <p role="alert">
+        Tautan pemulihan tidak lengkap.
+        <NuxtLink class="text-link" to="/forgot-password"
+          >Minta tautan baru</NuxtLink
+        >.
+      </p>
+    </div>
   </section>
 </template>

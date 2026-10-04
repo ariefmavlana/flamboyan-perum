@@ -5,8 +5,9 @@ const props = withDefaults(
     kind: 'marketing' | 'property'
     label: string
     required?: boolean
+    publishedOnly?: boolean
   }>(),
-  { required: true },
+  { required: true, publishedOnly: false },
 )
 const selectId = useId()
 const model = defineModel<number | null>({ required: true })
@@ -22,6 +23,9 @@ async function load(page = 1) {
       ...(search.value.trim() ? { q: search.value.trim() } : {}),
       page: String(page),
       per_page: '20',
+      ...(props.kind === 'property' && props.publishedOnly
+        ? { publication: 'PUBLISHED' }
+        : {}),
       ...(props.kind === 'marketing'
         ? { role: 'MARKETING', is_active: '1' }
         : {}),

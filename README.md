@@ -1,6 +1,6 @@
 # Flamboyan Perum
 
-Katalog properti dan CRM leads terpusat: **Nuxt SSR + Laravel REST API**, PostgreSQL sebagai target produksi dan SQLite untuk lokal/instalasi ringan. Target deployment Hostinger/Rumahweb tanpa Docker membutuhkan paket dengan PHP dan proses Node persisten; paket dan domain belum dipilih.
+Katalog properti dan CRM leads terpusat: **Nuxt SSR + Laravel REST API**, PostgreSQL sebagai target produksi dan SQLite untuk lokal/instalasi ringan. Target deployment Hostinger/Rumahweb tanpa Docker membutuhkan paket dengan PHP dan proses Node persisten; paket dan domain belum dipilih. Untuk demo/portofolio, tersedia jalur deployment tanpa VPS di [docs/vercel-demo-deployment.md](docs/vercel-demo-deployment.md) (Vercel + Supabase + Cloudflare R2, dengan batas media yang dijelaskan di dokumen tersebut).
 
 ## Struktur
 

@@ -29,7 +29,22 @@ return [
     */
 
     'disks' => [
-        'media' => [
+        // The private media disk can be backed by the local filesystem (default)
+        // or by an S3-compatible bucket (Cloudflare R2, Supabase Storage). Set
+        // MEDIA_DISK_DRIVER=s3 plus the AWS_* credentials to use a bucket; the
+        // bucket stays private and files are always streamed through Laravel.
+        'media' => env('MEDIA_DISK_DRIVER', 'local') === 's3' ? [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION', 'auto'),
+            'bucket' => env('AWS_BUCKET'),
+            'endpoint' => env('AWS_ENDPOINT'),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'private',
+            'throw' => true,
+            'serve' => false,
+        ] : [
             'driver' => 'local',
             'root' => storage_path('app/media-private'),
             'visibility' => 'private',

@@ -4,6 +4,7 @@ import {
   availabilityLabels,
   formatIdr,
   whatsappLink,
+  propertyUrl,
 } from '#shared/utils/catalog'
 const route = useRoute()
 const config = useRuntimeConfig()
@@ -26,8 +27,8 @@ if (!data.value)
 const property = computed(() => data.value!.data)
 const analytics = usePropertyAnalytics()
 onMounted(() => analytics.record(property.value.id, 'property_view'))
-const canonical = computed(
-  () => `${config.public.siteUrl}/properti/${property.value.slug}`,
+const canonical = computed(() =>
+  propertyUrl(config.public.siteUrl, property.value.slug),
 )
 const wa = computed(() =>
   whatsappLink(
@@ -36,6 +37,15 @@ const wa = computed(() =>
     canonical.value,
   ),
 )
+const cover = computed(() =>
+  property.value.media?.find((media) => media.kind === 'PHOTO'),
+)
+const shareImage = computed(() => {
+  const source = cover.value?.sources.at(-1)?.url
+  return source ? new URL(source, config.public.siteUrl).href : undefined
+})
+const hasMedia = (kind: string) =>
+  property.value.media?.some((media) => media.kind === kind)
 useSeoMeta({
   title: () => `${property.value.title} — Flamboyan Perum`,
   description: () => property.value.description.slice(0, 155),
@@ -43,6 +53,9 @@ useSeoMeta({
   ogDescription: () => property.value.description.slice(0, 155),
   ogUrl: () => canonical.value,
   ogType: 'website',
+  ogImage: () => shareImage.value,
+  ogImageAlt: () => cover.value?.alt,
+  twitterCard: () => (shareImage.value ? 'summary_large_image' : 'summary'),
 })
 useHead(() => ({
   link: [{ rel: 'canonical', href: canonical.value }],
@@ -93,19 +106,39 @@ useHead(() => ({
         <h1 class="page-title">{{ property.title }}</h1>
         <p class="muted">{{ property.address }}</p>
       </div>
-      <span class="badge">{{ availabilityLabels[property.availability] }}</span>
+      <span class="badge" :data-state="property.availability">{{
+        availabilityLabels[property.availability]
+      }}</span>
     </div>
+    <nav class="detail-section-nav" aria-label="Jelajahi detail rumah">
+      <a v-if="hasMedia('PHOTO') || hasMedia('FLOOR_PLAN')" href="#galeri"
+        >Foto & denah</a
+      >
+      <a href="#tentang-rumah">Tentang rumah</a>
+      <a v-if="hasMedia('VIDEO')" href="#video-properti">Video</a>
+      <a v-if="hasMedia('TOUR')" href="#tur-properti">Virtual tour</a>
+      <a v-if="hasMedia('BROCHURE')" href="#brosur-properti">Brosur</a>
+      <a href="#lokasi-rumah">Lokasi</a><a href="#simulasi-kpr">Simulasi KPR</a>
+    </nav>
     <div class="detail-grid">
-      <div>
+      <div class="detail-gallery">
         <PropertyGallery :media="property.media ?? []" />
-        <h2>Tentang rumah ini</h2>
-        <p class="description">{{ property.description }}</p>
-        <PropertyLocation :property="property" />
       </div>
       <aside class="detail-summary">
-        <CompareButton :id="property.id" />
         <p class="eyebrow">HARGA PROPERTI</p>
         <p class="price detail-price">{{ formatIdr(property.price_idr) }}</p>
+        <a
+          v-if="wa"
+          :href="wa"
+          class="button full"
+          target="_blank"
+          rel="noopener noreferrer"
+          @click="analytics.record(property.id, 'whatsapp_click')"
+          >Hubungi Admin melalui WhatsApp ↗</a
+        >
+        <p class="muted">
+          Ketersediaan dan informasi transaksi dikonfirmasi bersama Admin.
+        </p>
         <dl class="spec-list">
           <div>
             <dt>Tipe rumah</dt>
@@ -136,20 +169,33 @@ useHead(() => ({
             <dd>{{ property.bathrooms }}</dd>
           </div>
         </dl>
-        <a
-          v-if="wa"
-          :href="wa"
-          class="button full"
-          target="_blank"
-          rel="noopener noreferrer"
-          @click="analytics.record(property.id, 'whatsapp_click')"
-          >Hubungi Admin melalui WhatsApp ↗</a
+        <div class="detail-secondary-actions">
+          <CompareButton :id="property.id" /><PropertyShare
+            :title="property.title"
+            :url="canonical"
+          />
+        </div>
+        <NuxtLink
+          v-if="wa && property.availability !== 'SOLD_OUT'"
+          class="text-link visit-link"
+          :to="{
+            path: '/konsultasi',
+            query: { properti: property.slug, tujuan: 'kunjungan' },
+          }"
+          >Rencanakan kunjungan →</NuxtLink
         >
-        <p class="muted">
-          Ketersediaan dan informasi transaksi dikonfirmasi bersama Admin.
-        </p>
+        <NuxtLink class="text-link" to="/panduan/kunjungan-rumah"
+          >Yang perlu diperiksa saat kunjungan →</NuxtLink
+        >
       </aside>
+      <div class="detail-content">
+        <h2 id="tentang-rumah">Tentang rumah ini</h2>
+        <p class="description">{{ property.description }}</p>
+        <PropertyLocation :property="property" />
+      </div>
     </div>
-    <MortgageCalculator :price="property.price_idr" />
+    <div id="simulasi-kpr">
+      <MortgageCalculator :price="property.price_idr" />
+    </div>
   </section>
 </template>

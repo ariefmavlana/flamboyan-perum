@@ -95,3 +95,19 @@ Untuk evaluasi lokal sebelum konten asli tersedia, gunakan dummy sintetis genera
 Guideline publik → P-01..P-08; back office → I-01..I-09; flows → §7; stack/deployment → §9–10 dan SRS. SRS menguraikan kontrak teknis dan ID source lama agar kebutuhan tidak hilang. `review.md` merekam gap dokumen awal; `implementation-status.md` memisahkan implemented/partial/planned. Original tidak diedit. Versi 1.1 (2026-09-30) diganti 2.0 dengan keputusan baseline, tahapan, acceptance, kualitas dan gate yang eksplisit.
 
 Versi2.1 melengkapi F0–F2/acceptance operasional; versi2.2 mengikuti instruksi pengguna untuk dummy dinamis persisten pada evaluasi lokal, tanpa mengganti gate konten/hosting produksi.
+
+## Addendum 2026-10-04 — Pengalaman pembeli Bandung Timur
+
+Instruksi pengguna menetapkan pasar middle-to-high Indonesia dan lokasi perumahan Bandung Timur, mempertahankan arah editorial premium yang sudah dipilih. Pengamatan Aucoot dan keputusan adaptasi tercatat di [aucoot-adaptation.md](aucoot-adaptation.md). Addendum ini melengkapi baseline2.2 tanpa mengubah arsip original.
+
+| ID tambahan | Perilaku / acceptance |
+|---|---|
+| P-09 Konteks kawasan | Halaman Bandung Timur menjelaskan evaluasi hunian, menghubungkan katalog/panduan/konsultasi; tidak membuat klaim alamat, akses, fasilitas atau waktu tempuh tanpa data terverifikasi. |
+| P-10 Panduan pembeli | Indeks dan tiga artikel SSR untuk kunjungan, lokasi dan pembiayaan, metadata/canonical/sitemap, slug tidak dikenal404; konten terkurasi source, bukan CMS artikel umum. |
+| P-11 Konsultasi | Topik dan pertanyaan opsional menyiapkan WhatsApp Admin; konteks properti hanya dari katalog published. Pengunjung mengirim sendiri, jadwal dikonfirmasi Admin; tanpa booking atau lead otomatis. |
+| P-12 Evaluasi visual/share | Foto dan denah terkelompok, dialog galeri bernavigasi/keyboard/fokus, video/tour setelah pilihan pengguna, share native dengan clipboard/manual fallback. |
+| I-10 Kesiapan hero/logo | Admin memilih foto/video properti siap untuk hero; logo mitra bank dapat diunggah aman dengan version/audit/attestation. Public allowlist tidak mengandung metadata private. |
+
+Logo bank mitra dan referensi suku bunga merupakan dua konsep berbeda. Identitas/izin hubungan bank harus diverifikasi sebelum publikasi; tidak menganggap BANK_RATE sebagai bukti kemitraan. Aset foto/video pemilik belum diberikan; implementasi kemampuan upload/pemilihan tidak menutup gate konten. Video mengikuti baseline YouTube embed, bukan raw video upload.
+
+Tidak mengadaptasi newsletter/property alerts, layanan penjual/appraisal, direktori desainer, agen internasional atau Press tanpa kebutuhan dan bukti bisnis. Seluruh requirement inti katalog/CRM/notifikasi tetap berlaku. Gate hosting/provider/konten/privasi dan bukti pengujian aktual tetap membatasi pernyataan selesai.

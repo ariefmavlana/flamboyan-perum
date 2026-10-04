@@ -1,3 +1,4 @@
+import { buyerGuides } from '#shared/content/buyer-guides'
 import { xmlEscape, sitemapOrigin } from '../../utils/sitemap'
 export default defineEventHandler(async (event) => {
   const file = getRouterParam(event, 'file') ?? ''
@@ -8,6 +9,12 @@ export default defineEventHandler(async (event) => {
       { url: origin },
       { url: `${origin}/properti` },
       { url: `${origin}/privasi` },
+      ...[
+        '/bandung-timur',
+        '/panduan',
+        '/konsultasi',
+        ...buyerGuides.map((guide) => `/panduan/${guide.slug}`),
+      ].map((path) => ({ url: origin + path })),
     ]
   else {
     const match = /^properties-([1-9]\d{0,3}|10000)\.xml$/.exec(file)

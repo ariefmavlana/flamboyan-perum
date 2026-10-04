@@ -123,7 +123,12 @@ onMounted(load)
         </li>
         <li>Usia &gt;7 hari: {{ report.follow_up.pending_age.over_7_days }}</li>
       </ul>
-      <div class="table-wrap">
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Tabel data, geser untuk melihat kolom lainnya"
+        tabindex="0"
+      >
         <table class="lead-table">
           <caption>
             Distribusi status cohort
@@ -142,7 +147,12 @@ onMounted(load)
           </tbody>
         </table>
       </div>
-      <div class="table-wrap">
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Tabel data, geser untuk melihat kolom lainnya"
+        tabindex="0"
+      >
         <table class="lead-table">
           <caption>
             Assignee saat ini
@@ -168,7 +178,12 @@ onMounted(load)
           </tbody>
         </table>
       </div>
-      <div class="table-wrap">
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Tabel data, geser untuk melihat kolom lainnya"
+        tabindex="0"
+      >
         <table class="lead-table">
           <caption>
             Aktor follow-up pertama, terpisah dari assignee saat ini

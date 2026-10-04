@@ -53,7 +53,12 @@ onMounted(() => load())
             : 'Policy belum ditandai disahkan'
         }}. Tidak ada penghapusan otomatis.
       </p>
-      <div class="table-wrap">
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Tabel data, geser untuk melihat kolom lainnya"
+        tabindex="0"
+      >
         <table class="lead-table">
           <caption>
             Kandidat tanpa data kontak
