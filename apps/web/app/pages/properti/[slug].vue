@@ -93,7 +93,9 @@ useHead(() => ({
         <h1 class="page-title">{{ property.title }}</h1>
         <p class="muted">{{ property.address }}</p>
       </div>
-      <span class="badge">{{ availabilityLabels[property.availability] }}</span>
+      <span class="badge" :data-state="property.availability">{{
+        availabilityLabels[property.availability]
+      }}</span>
     </div>
     <div class="detail-grid">
       <div>

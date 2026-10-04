@@ -165,7 +165,12 @@ onMounted(() => load())
           Tambah konten
         </button>
       </div>
-      <div class="table-scroll">
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Tabel data, geser untuk melihat kolom lainnya"
+        tabindex="0"
+      >
         <table>
           <caption>
             Konten editorial, termasuk draft dan rate kedaluwarsa
@@ -181,7 +186,15 @@ onMounted(() => load())
           </thead>
           <tbody>
             <tr v-for="record in results?.data" :key="record.id">
-              <td>{{ record.kind }}</td>
+              <td>
+                {{
+                  {
+                    HERO: 'Sorotan beranda',
+                    TESTIMONIAL: 'Testimonial',
+                    BANK_RATE: 'Referensi bank',
+                  }[record.kind]
+                }}
+              </td>
               <td>
                 {{
                   record.payload.title ??

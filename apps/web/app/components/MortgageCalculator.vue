@@ -210,7 +210,12 @@ const yearlyChart = computed(() =>
         <summary>
           Jadwal angsuran bulanan ({{ result.schedule.length }} bulan)
         </summary>
-        <div class="table-scroll">
+        <div
+          class="table-scroll"
+          role="region"
+          aria-label="Tabel data, geser untuk melihat kolom lainnya"
+          tabindex="0"
+        >
           <table>
             <caption>
               Angsuran, pokok, bunga, dan sisa pinjaman; tampilan dibulatkan ke

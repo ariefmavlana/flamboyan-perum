@@ -175,7 +175,12 @@ onMounted(() => load())
           Cari / muat ulang
         </button>
       </form>
-      <div class="table-scroll">
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Tabel data, geser untuk melihat kolom lainnya"
+        tabindex="0"
+      >
         <table>
           <caption class="sr-only">
             Akun internal
@@ -191,7 +196,9 @@ onMounted(() => load())
           <tbody>
             <tr v-for="account in result?.data" :key="account.id">
               <td>{{ account.name }}<br />{{ account.email }}</td>
-              <td>{{ account.role }}</td>
+              <td>
+                {{ account.role === 'ADMIN' ? 'Administrator' : 'Marketing' }}
+              </td>
               <td>
                 {{ account.is_active ? 'Aktif' : 'Nonaktif' }} ·
                 {{
