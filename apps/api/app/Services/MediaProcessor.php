@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\PropertyMedia;
+use App\Support\MediaDisk;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -26,7 +27,7 @@ class MediaProcessor
         $directory = 'ready/'.Str::uuid();
         $variants = [];
         if ($media->kind === 'BROCHURE') {
-            $verdict = $this->scanner->inspect($disk->path($media->staging_path));
+            $verdict = MediaDisk::withLocalPath($media->staging_path, fn (string $local) => $this->scanner->inspect($local));
             if ($verdict !== 'CLEAN') {
                 $this->reject($id, $verdict);
 

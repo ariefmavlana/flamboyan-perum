@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\PropertyMedia;
+use App\Support\MediaDisk;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,6 +31,14 @@ class CleanupMedia extends Command
             }
         });
         $orphans = 0;
+        if (! MediaDisk::isLocal()) {
+            // Remote disks have no directory enumeration that maps to the local
+            // staging/ready layout, so orphan scanning only runs on local disks.
+            $this->info(($this->option('execute') ? 'Purged: ' : 'Eligible (dry run): ').$count);
+            $this->info('Unreferenced files/directories past grace: 0 (remote disk: not scanned)');
+
+            return self::SUCCESS;
+        }
         foreach (['staging', 'ready'] as $prefix) {
             $root = $disk->path($prefix);
             if (! is_dir($root)) {

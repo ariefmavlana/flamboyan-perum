@@ -8,6 +8,7 @@ use App\Models\Property;
 use App\Models\SiteContent;
 use App\Models\User;
 use App\Services\ContentLogo;
+use App\Support\MediaDisk;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
@@ -71,7 +72,7 @@ class ContentController extends Controller
         $path = $record->payload['_logo']['path'] ?? null;
         abort_unless($path && Storage::disk('media')->exists($path), 404);
 
-        return response()->file(Storage::disk('media')->path($path), ['Content-Type' => 'image/webp', 'X-Content-Type-Options' => 'nosniff', 'Cache-Control' => 'no-store', 'Content-Security-Policy' => "default-src 'none'; sandbox"]);
+        return MediaDisk::fileResponse($path, ['Content-Type' => 'image/webp', 'X-Content-Type-Options' => 'nosniff', 'Cache-Control' => 'no-store', 'Content-Security-Policy' => "default-src 'none'; sandbox"]);
     }
 
     private function save(Request $request, ?int $id)
