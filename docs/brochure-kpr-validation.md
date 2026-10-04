@@ -28,6 +28,6 @@ Tujuh kelompok browser lokal lulus pada katalog hasil impor terisolasi: sembilan
 
 ## Rilis cloud
 
-Rilis memerlukan kedua deployment source main berstatus READY, migrasi aditif selesai, impor sembilan tipe melalui API live dan uji browser live. Source price list/brosur menyimpan batasan harga tanggal30Oktober, promo cash expired dan gambar ilustrasi. Hasil ID deployment/SHA, public/R2/role/CMS dan jumlah data akhir dicatat pada deskripsi PR setelah pelaksanaan; validasi lokal di atas tidak disebut sebagai hasil cloud.
+Rilis main69095d1 sudah READY pada kedua project; migrasi aditif selesai dan sembilan tipe diimpor melalui API live.20kelompok browser produksi lulus (7operasional/6auth-publik/7katalog-komersial-KPR),414varian R2 diperiksa tanpa objek hilang. Source price list/brosur mempertahankan batasan harga30Oktober, promo cash expired dan gambar ilustrasi. ID deployment/SHA, waktu, jumlah data dan batas pengujian ada di [brochure-main-release.md](brochure-main-release.md); validasi lokal di atas tetap terpisah dari hasil cloud.
 
 Rollback: revert PR source melalui main tanpa down migration, lalu redeploy; konten/availability/publication dapat dipulihkan dengan API versi terbaru dari snapshot privat. Archive24katalog awal tidak menghapus72lead/histori. Rate/fasilitas yang belum diperiksa ulang dapat di-unpublish. Tidak menjadikan batas BI sebagai keputusan kredit atau narasi bank mitra.

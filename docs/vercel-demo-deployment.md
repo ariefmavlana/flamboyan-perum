@@ -22,7 +22,7 @@ VIEW_COMPILED_PATH dan cache config/route/events/services/packages diarahkan ke 
 
 ## CI/CD tanpa GitHub Actions
 
-Kedua project terhubung repository ariefmavlana/flamboyan-perum melalui Vercel Git. Push membuat deployment dengan pemeriksaan build; hanya build yang sukses mengganti alias. Production branch awal main; konfigurasi branch aktif dan bukti push ada di site-operations-validation.md. Branch lainnya membuat Preview. Tidak ada reseed di build atau runtime.
+Kedua project terhubung repository ariefmavlana/flamboyan-perum melalui Vercel Git. Push membuat deployment dengan pemeriksaan build; hanya build yang sukses mengganti alias. Production branch aktif keduanya main; rilis69095d1 READY dan bukti integrasi ada di brochure-main-release.md. Branch lainnya membuat Preview. Tidak ada reseed di build atau runtime.
 
 Web: npm ci lalu npm run build:checked (lint, typecheck, unit, build). API: builder Composer menjalankan scripts/vercel-build.php setelah install production. Script memakai SQLite :memory: dan storage lokal/array untuk pengujian, tidak database/R2 cloud. Pint,PHPUnit, Composer validate/audit wajib sukses; dev dependencies dihapus kembali sebelum bundling. VERCEL_RUN_MIGRATIONS=1 production menjalankan migrate --force --isolated setelah validasi; Preview tidak memigrasi shared database. Gunakan migration forward compatible karena web/API deploy terpisah dan schema dapat maju sebelum alias baru aktif.
 
@@ -32,12 +32,12 @@ Workflow perubahan: branch baru dari main terbaru → commit Conventional Commit
 
 Buka /up dan /ready di API; uji SSR katalog/detail, image/webp dari R2, Admin/Marketing login/reload/logout, scope404/403, CRM/version/history/notifikasi, semua jenis CMS dan upload. Jalankan flamboyan:media-verify sebelum membagikan situs. Jangan menjalankan PHPUnit terhadap database cloud: RefreshDatabase menghapus tabel.
 
-Rollback memakai deployment Vercel sebelumnya pada web dan API. Schema maju tidak otomatis di-rollback; ambil backup sebelum migration berisiko dan gunakan perbaikan forward. Perubahan ini tidak menambah migration. Snapshot privat sebelum pembersihan narasi berada di .tools; jangan commit snapshot/credential, jangan restore data di atas perubahan baru tanpa review.
+Rollback memakai deployment Vercel sebelumnya pada web dan API. Schema maju tidak otomatis di-rollback; ambil backup sebelum migration berisiko dan gunakan perbaikan forward. Rilis katalog menambah migration komersial aditif; pertahankan kolom/data saat revert source. Snapshot privat sebelum pembersihan narasi dan impor katalog berada di .tools; jangan commit snapshot/credential, jangan restore data di atas perubahan baru tanpa review.
 
 ## Batas penggunaan
 
 Tetap paket Free/Hobby; tidak ada upgrade atau Pro trial. Hobby diperuntukkan penggunaan personal/noncommercial menurut ketentuan Vercel, sehingga presentasi portofolio tidak berarti izin hosting layanan client komersial. Supabase Free dapat pause saat tidak aktif; buka dan periksa readiness sebelum presentasi. R2 memiliki kuota gratis, bukan janji biaya nol tanpa batas. Pantau dashboard quota masing-masing provider.
 
-Email recovery/verification masih mail log sampai SMTP nyata dihubungkan; Admin dapat membuat/verifikasi akun melalui workflow berizin. Notifikasi aplikasi memakai polling dan tersimpan, realtime push belum diaktifkan. Backup terjadwal/restore terpantau dan scanner PDF belum tersedia pada topologi ini. Data masih ilustratif; menghapus kata "demo" tidak mengubahnya menjadi penawaran atau bukti bisnis nyata. Seed sintetis tetap opt-in local/testing dan dilarang production/staging.
+Email recovery/verification masih mail log sampai SMTP nyata dihubungkan; Admin dapat membuat/verifikasi akun melalui workflow berizin. Notifikasi aplikasi memakai polling dan tersimpan, realtime push belum diaktifkan. Backup terjadwal/restore terpantau dan scanner PDF belum tersedia pada topologi ini. Katalog aktif kini bersumber dari brosur pengguna; foto tetap ilustrasi,152unit merupakan rencana, stok/sertifikat/kondisi pembangunan/bank mitra belum dibuktikan.24katalog fixture diarsipkan agar72lead awal tetap mempunyai referensi. Seed sintetis tetap opt-in local/testing dan dilarang production/staging. Panduan pengelolaan: admin-catalog-financing.md.
 
 Sumber: https://vercel.com/docs/git, https://vercel.com/docs/git/vercel-for-github, https://github.com/vercel-community/php, https://vercel.com/docs/plans/hobby, https://supabase.com/pricing, https://developers.cloudflare.com/r2/pricing/.
