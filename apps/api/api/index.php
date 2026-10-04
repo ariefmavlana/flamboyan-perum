@@ -11,4 +11,9 @@
 |
 */
 
+// Vercel invokes /api/index.php even when the public request is /api/v1/...
+// Keep Symfony from treating /api as a mount point and removing that prefix.
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['PHP_SELF'] = '/index.php';
+
 require __DIR__.'/../public/index.php';
