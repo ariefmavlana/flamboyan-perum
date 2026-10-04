@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PublicPropertyResource;
+use App\Models\ActivityLog;
 use App\Models\Property;
+use App\Models\User;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -67,13 +69,51 @@ class PropertyController extends Controller
 
     public function internalIndex(Request $request)
     {
-        $request->validate(['page' => 'sometimes|integer|min:1', 'per_page' => 'sometimes|integer|between:1,48']);
-        $query = Property::query();
+        $data = $request->validate(['page' => 'sometimes|integer|min:1', 'per_page' => 'sometimes|integer|between:1,48', 'q' => 'sometimes|string|max:100', 'publication' => ['sometimes', Rule::in(['DRAFT', 'PUBLISHED', 'ARCHIVED'])]]);
+        $query = Property::query()->with('owner');
+        if ($request->user()->role !== 'ADMIN') {
+            $query->where('owner_id', $request->user()->id);
+        }
+        if (! empty($data['q'])) {
+            $pattern = '%'.str_replace(['!', '%', '_'], ['!!', '!%', '!_'], mb_strtolower($data['q'])).'%';
+            $query->where(fn ($q) => $q->whereRaw("LOWER(title) LIKE ? ESCAPE '!'", [$pattern])->orWhereRaw("LOWER(location) LIKE ? ESCAPE '!'", [$pattern]));
+        }
+        if (isset($data['publication'])) {
+            $query->where('publication', $data['publication']);
+        }
+
+        return JsonResource::collection($query->orderByDesc('id')->paginate($request->integer('per_page', 12)));
+    }
+
+    public function internalShow(Request $request, int $id)
+    {
+        $query = Property::query()->with('owner');
         if ($request->user()->role !== 'ADMIN') {
             $query->where('owner_id', $request->user()->id);
         }
 
-        return JsonResource::collection($query->orderByDesc('id')->paginate($request->integer('per_page', 12)));
+        return ['data' => $query->findOrFail($id)];
+    }
+
+    public function transferOwner(Request $request, int $id)
+    {
+        abort_unless($request->user()->role === 'ADMIN', 403);
+        $data = $request->validate(['version' => 'required|integer|min:1', 'owner_id' => 'required|integer', 'reason' => 'required|string|max:2000']);
+
+        return DB::transaction(function () use ($request, $id, $data) {
+            $property = Property::query()->whereKey($id)->lockForUpdate()->firstOrFail();
+            $owner = User::query()->whereKey($data['owner_id'])->lockForUpdate()->first();
+            abort_unless($request->user()->fresh()?->role === 'ADMIN' && $request->user()->fresh()?->is_active, 403);
+            if (! $owner || ! $owner->is_active || $owner->role !== 'MARKETING') {
+                throw ValidationException::withMessages(['owner_id' => 'Pilih Marketing aktif.']);
+            }
+            abort_if($property->owner_id === $owner->id, 409, 'Pemilik sudah sesuai.');
+            $count = Property::query()->whereKey($id)->where('version', $data['version'])->update(['owner_id' => $owner->id, 'version' => DB::raw('version + 1'), 'updated_at' => now()]);
+            abort_unless($count === 1, 409, 'Data berubah. Muat ulang sebelum melanjutkan.');
+            ActivityLog::create(['actor_id' => $request->user()->id, 'subject_type' => 'PROPERTY', 'subject_id' => $id, 'action' => 'OWNER_CHANGED', 'changes' => ['from_owner' => $property->owner_id, 'to_owner' => $owner->id], 'reason' => $data['reason']]);
+
+            return ['data' => $property->refresh()->load('owner')];
+        }, 3);
     }
 
     public function store(Request $request)
@@ -87,7 +127,16 @@ class PropertyController extends Controller
             $data['owner_id'] = $request->user()->id;
         }
         try {
-            return response()->json(['data' => Property::create($data)->refresh()], 201);
+            return DB::transaction(function () use ($request, $data) {
+                $owner = User::query()->whereKey($data['owner_id'])->lockForUpdate()->first();
+                abort_unless($owner?->is_active && $owner->role === 'MARKETING', 409, 'Pemilik harus Marketing aktif.');
+                $actor = $request->user()->fresh();
+                abort_unless($actor?->is_active && ($actor->role === 'ADMIN' || ($actor->role === 'MARKETING' && $actor->id === $owner->id)), 403);
+                $property = Property::create($data)->refresh();
+                ActivityLog::create(['actor_id' => $actor->id, 'subject_type' => 'PROPERTY', 'subject_id' => $property->id, 'action' => 'CREATED', 'changes' => ['owner_id' => $owner->id, 'publication' => $property->publication]]);
+
+                return response()->json(['data' => $property->load('owner')], 201);
+            }, 3);
         } catch (UniqueConstraintViolationException $exception) {
             abort(409, 'Slug properti sudah digunakan.');
         }
@@ -101,13 +150,21 @@ class PropertyController extends Controller
                 $query->where('owner_id', $request->user()->id);
             }
             $property = (clone $query)->lockForUpdate()->firstOrFail();
+            $actor = $request->user()->fresh();
+            abort_unless($actor?->is_active && in_array($actor->role, ['ADMIN', 'MARKETING'], true), 403);
+            abort_if($actor->role !== 'ADMIN' && $property->owner_id !== $actor->id, 404);
             $data = $request->validate(array_merge($this->rules(true), ['version' => 'required|integer|min:1', 'slug' => 'prohibited', 'owner_id' => 'prohibited']));
             $version = $data['version'];
             unset($data['version']);
+            if (($data['publication'] ?? $property->publication) !== 'ARCHIVED') {
+                $owner = User::query()->whereKey($property->owner_id)->lockForUpdate()->first();
+                abort_unless($owner?->is_active && $owner->role === 'MARKETING', 409, 'Alihkan properti kepada Marketing aktif sebelum mengaktifkannya.');
+            }
             $count = $query->where('version', $version)->update(array_merge($data, ['version' => DB::raw('version + 1'), 'updated_at' => now()]));
             abort_unless($count === 1, 409, 'Data sudah berubah. Muat ulang sebelum melanjutkan.');
+            ActivityLog::create(['actor_id' => $actor->id, 'subject_type' => 'PROPERTY', 'subject_id' => $id, 'action' => 'UPDATED', 'changes' => ['fields' => array_keys($data)]]);
 
-            return response()->json(['data' => $property->refresh()]);
+            return response()->json(['data' => $property->refresh()->load('owner')]);
         }, 3);
     }
 

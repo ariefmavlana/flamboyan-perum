@@ -1,13 +1,13 @@
 # Status implementasi
 
-Tanggal 2026-10-03 · branch `fix/foundation-validation` · F0 fondasi siap direview, MVP/produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
+Tanggal 2026-10-03 · branch `codex/operations-workspace` · F0 + workspace operasi; MVP/produksi belum lengkap. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi.
 
 | Requirement / fitur | Status F0 | Tahap berikutnya / batas |
 |---|---|---|
 | Stack Nuxt4.5.2/Laravel13, lockfiles/runtime | Implemented | PHP8.3 compatible platform; hosting belum dipilih |
 | FR-PUB-001 Hero | Implemented | Ilustrasi CSS orisinal; foto hero aktual F1/CMS |
 | FR-PUB-002 Search | Implemented basic | title/location/address; advanced filter UI F2 |
-| FR-PUB-003/029 WhatsApp | Implemented/config-gated | Link+context tested; nomor produksi harus owner isi |
+| FR-PUB-003/029 WhatsApp | Implemented/config-gated | Nomor sementara pengguna 6287776734038; link/context tested |
 | FR-PUB-004 Featured | Implemented | Hanya published featured; Admin UX flag F1 |
 | FR-PUB-005 Social proof | Planned | Konten sah + CMS F2; tidak membuat testimonial palsu |
 | FR-PUB-010 Listing/cards | Implemented | Semua spesifikasi inti + availability; tanpa identitas Marketing |
@@ -18,15 +18,15 @@ Tanggal 2026-10-03 · branch `fix/foundation-validation` · F0 fondasi siap dire
 | FR-PUB-026/027 Maps/POI | Planned | Editorial/provider/content gate F2 |
 | FR-PUB-028 Brochure | Planned | PDF pipeline/scan/content F1/F2 |
 | FR-PUB-030..035 KPR | Partial | Annuity kernel automated; no bank selection/floating/chart UI F2 |
-| FR-BO-PROP-001..003 Catalog/spec/availability | Implemented API | Scoped create/edit/version; no transfer/delete; full UX F1 |
+| FR-BO-PROP-001..003 Catalog/spec/availability | Implemented API + UI | Scoped create/edit/version/archive/featured; Admin audited owner transfer; no hard-delete |
 | FR-BO-PROP-004 CMS | Planned | Structured content, no generic CMS F2 |
-| FR-BO-PROP-005 Profile | Planned | Own-name profile/admin email-role workflow F1 |
-| Auth/active-user/role | Implemented | Cookie session/CSRF/login/logout/provision CLI; reset/recovery/deactivation UX F1 |
-| FR-CRM-001 Create lead | Implemented API | Manual Admin, normalized phone, unique perproperty; full form UX F1 |
-| FR-CRM-002 Assignment | Implemented API | Single active assignee/reassign reason/atomic notification; dropdown UX F1 |
-| FR-CRM-003 Monitoring | Implemented basic | Scoped list/status API + table; search/richer supervision F1/F2 |
+| FR-BO-PROP-005 Profile | Implemented | Own-name/password + current-password/session revoke; Admin email/role/activation workflow |
+| Auth/active-user/role | Implemented | Cookie session/CSRF/login/logout/provision CLI + users UI/recovery/deactivation guard; SMTP real-delivery gate |
+| FR-CRM-001 Create lead | Implemented API | Manual Admin UI + normalized phone/unique perproperty; controlled audited contact correction |
+| FR-CRM-002 Assignment | Implemented API | Single active assignee/reassign reason/atomic notification; bounded searchable dropdown UI |
+| FR-CRM-003 Monitoring | Implemented basic | Scoped search/status/assignee/unassigned filters + labels + pagination; reports F2 |
 | FR-CRM-004 Reports | Planned | Cohort/median/pending definitions recorded, implementation F2 |
-| FR-MKT-001 Table | Implemented | Scoped list/pagination/read+status+notes; basic property ID presentation |
+| FR-MKT-001 Table | Implemented | Scoped list/pagination/read+status+notes; property/assignee human labels |
 | FR-MKT-002/003 Pipeline/notes | Implemented | Ordered transitions+LOST reason+terminal guard+versions |
 | FR-MKT-004/005 History drawer | Implemented | Native modal keyboard/Escape + descending history actor/status/note; reassignment event fields in API |
 | FR-RT-001/002 Persistent notification | Implemented | Assignment→Marketing; status→Admin; recipient scope |
@@ -34,10 +34,10 @@ Tanggal 2026-10-03 · branch `fix/foundation-validation` · F0 fondasi siap dire
 | FR-RT-004 Read/unread | Implemented | Exact unread count, own recipient list/read idempotent |
 | SEO canonical/metadata | Implemented | Sitemap/robots/query policy/structured data F1/F2 |
 | Validasi lokal / branch+PR | Implemented | GitHub Actions dihapus sesuai instruksi pengguna; bukti lokal wajib sebelum review; main protection belum dikonfigurasi |
-| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing18 tests/95 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
+| DB/migration parity | SQLite + PostgreSQL17.9 validated locally/PHP8.4.26 | Masing-masing32 tests/167 assertions; PHP8.3/Linux belum diuji; runtime deployment harus diverifikasi sebelum produksi |
 | Production/backups/privacy/performance | Gate open | Actual hosting/load/restore/retention/provider/content evidence required |
 
-## Validasi lokal
+## Validasi F0 historis
 
 - PHPUnit: 18 tests,95 assertions lulus pada SQLite/PHP8.4.26, termasuk duplicate/owner/scoping/status/reassign/version/read-idempotency/transaction rollback dan demo-production guard.
 - Suite yang sama juga lulus18 tests/95 assertions pada PostgreSQL17.9 dengan cluster lokal terisolasi dan PHP8.4.26; tidak mengubah database instalasi yang sudah ada.
@@ -59,3 +59,7 @@ Tanggal 2026-10-03 · branch `fix/foundation-validation` · F0 fondasi siap dire
 7. `chore/production-readiness`: hosting evidence/load/UAT/security/restore/content/privacy/SEO checks.
 
 Nama branch berikutnya merupakan saran workflow, bukan branch yang sudah dibuat. Setiap pekerjaan baru dari main terbaru dan PR sendiri sesuai AGENTS; fondasi sekarang satu perubahan koheren dengan beberapa Conventional Commits.
+
+## Workspace operasi terbaru
+
+Lihat operations-validation.md untuk bukti branch saat ini: PHPUnit32 tests/167 assertions pada SQLite dan PostgreSQL17.9, Pint/Composer/lint/typecheck/unit/build, source audit11 high dan runtime0. Workspace akun/katalog/CRM/recovery tersedia; SMTP nyata dan seluruh fitur media/evaluasi/push/report/privacy tetap gate/tahap berikutnya. Rencana penuntasan lengkap ada di implementation-plan.md. Tidak ada merge PR atau deployment produksi.

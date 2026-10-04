@@ -29,7 +29,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Buka `http://127.0.0.1:3000`. Default Nitro devProxy private routes mengarah ke127.0.0.1:8000; public proxy memakai NUXT_API_BASE. Jika port/host backend berbeda, ubah devProxy config dan env sesuai. `NUXT_PUBLIC_SITE_URL` untuk canonical harus memakai origin frontend sebenarnya. `NUXT_PUBLIC_WHATSAPP_NUMBER` tanpa `+`; kosong menyembunyikan CTA. Default tidak berisi nomor/konten produksi. Sanctum local stateful domain mengizinkan localhost:3000 dan127.0.0.1:3000. `.env` production private APP_DEBUG=false, SESSION_SECURE_COOKIE=true, exact stateful domains, valid APP_URL/frontend URL.
+Buka `http://127.0.0.1:3000`. Default Nitro devProxy private routes mengarah ke127.0.0.1:8000; public proxy memakai NUXT_API_BASE. Jika port/host backend berbeda, ubah devProxy config dan env sesuai. `NUXT_PUBLIC_SITE_URL` untuk canonical harus memakai origin frontend sebenarnya. `NUXT_PUBLIC_WHATSAPP_NUMBER` tanpa `+`; kosong menyembunyikan CTA. Default nomor sementara pengguna 6287776734038; konten properti nyata tetap perlu diisi dan diverifikasi. Sanctum local stateful domain mengizinkan localhost:3000 dan127.0.0.1:3000. `.env` production private APP_DEBUG=false, SESSION_SECURE_COOKIE=true, exact stateful domains, valid APP_URL/frontend URL.
 
 ## Validasi
 
@@ -80,4 +80,10 @@ Rollback: gunakan artefak commit sebelumnya hanya jika schema compatible; jangan
 
 Cron schedule:run permenit; queued push/media F1 membutuhkan managed worker atau bounded cron queue:work dengan lock overlap. Push target≤5s membutuhkan worker persisten; cron-only interval60s tidak memenuhi itu. Monitor liveness `/up`, target readiness DB/storage/queue sebelum produksi, alert5xx>1%/5min, queue backlog>5min, missed backup>26h. Logs request_id/status/latency tanpa password/phone/body CRM. Retention dan alert channels disetujui owner sebelum go-live.
 
-Production database PostgreSQL lebih disukai; uji suite lokal+load nyata pada runtime deployment yang dipilih. SQLite hanya satu instalasi ringan; migrasikan saat kebutuhan multi-instance, lock-contention/latency atau kuota terlampaui. F0 tidak mempunyai push provider, media uploads, account recovery atau reports lengkap; status file menjadi checklist release. Dependency advisory terpisah di `dependency-security.md` wajib ditangani/review sebelum production approval.
+Production database PostgreSQL lebih disukai; uji suite lokal+load nyata pada runtime deployment yang dipilih. SQLite hanya satu instalasi ringan; migrasikan saat kebutuhan multi-instance, lock-contention/latency atau kuota terlampaui. F0 tidak mempunyai push provider, media uploads atau reports lengkap; recovery akun tersedia dan pengiriman SMTP produksi masih membutuhkan konfigurasi serta verifikasi; status file menjadi checklist release. Dependency advisory terpisah di `dependency-security.md` wajib ditangani/review sebelum production approval.
+
+## Workspace akun dan pemulihan
+
+Set FRONTEND_URL ke origin frontend trusted; konfigurasi SMTP private dan verifikasi pengiriman recovery pada akun test sebelum go-live. Admin menandai identity_verified hanya setelah memeriksa identitas melalui prosedur tim. Broker token berlaku60 menit dan sekali pakai; tautan menggunakan no-referrer/no-store/noindex. CLI bootstrap juga meminta attestation identitas, default tidak terverifikasi. Nomor sementara pengguna6287776734038 boleh dikosongkan melalui NUXT_PUBLIC_WHATSAPP_NUMBER agar CTA disembunyikan.
+
+Sebelum migration operasi, periksa duplikasi case-insensitive email secara privat dan selesaikan secara manual tanpa menghapus histori. Preflight migration menolak duplikasi sebelum perubahan schema. Backup konsisten wajib; audit tidak dihapus melalui API. Demotion/deactivation Marketing diblokir bila masih memiliki katalog non-ARCHIVED atau assigned lead nonterminal; transfer/archive dan reassign/resolve dahulu. Admin aktif terakhir tidak dapat dicabut. Detail migrasi/rollback ada di operations-validation.md.

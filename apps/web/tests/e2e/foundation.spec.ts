@@ -65,7 +65,11 @@ test('session CSRF login, scoped lead drawer, notes, and logout', async ({
   await page.getByRole('button', { name: 'Masuk →' }).click()
   await expect(page).toHaveURL(/backoffice/)
   await expect(page.getByText('Prospek Demo', { exact: true })).toBeVisible()
-  await page.getByRole('button', { name: 'Lihat histori →' }).click()
+  await page
+    .getByRole('row')
+    .filter({ hasText: 'Prospek Demo' })
+    .getByRole('button', { name: 'Lihat histori →' })
+    .click()
   const dialog = page.getByRole('dialog')
   await expect(
     dialog.getByRole('heading', { name: 'Prospek Demo' }),

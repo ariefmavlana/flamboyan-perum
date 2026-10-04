@@ -4,9 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Lead extends Model
 {
+    public function property(): BelongsTo
+    {
+        return $this->belongsTo(Property::class)->select(['id', 'title', 'slug']);
+    }
+
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_marketing_id')->select(['id', 'name']);
+    }
+
     protected $fillable = ['name', 'whatsapp_number', 'property_id', 'assigned_marketing_id'];
 
     protected function casts(): array

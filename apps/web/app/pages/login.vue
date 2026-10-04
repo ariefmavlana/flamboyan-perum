@@ -59,6 +59,10 @@ async function login() {
       <button class="button full" :disabled="busy || !hydrated" type="submit">
         {{ busy ? 'Memproses…' : 'Masuk →' }}
       </button>
+      <NuxtLink to="/forgot-password">Lupa kata sandi?</NuxtLink>
+      <p v-if="$route.query.updated" role="status">
+        Kata sandi diperbarui. Silakan masuk kembali.
+      </p>
     </form>
   </section>
 </template>
