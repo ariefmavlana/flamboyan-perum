@@ -169,3 +169,5 @@ MEDIA_PROCESS_IN_REQUEST opt-in (default false). Setelah transaksi media/job dat
 Build web menjalankan lint/typecheck/unit/build. Hook Composer vercel menginstal dev tools sementara, menjalankan Pint/PHPUnit SQLite terisolasi/validate/audit, menghapus dev tools sebelum bundle, lalu migration forward --force --isolated hanya bila VERCEL_ENV=production dan VERCEL_RUN_MIGRATIONS=1. Preview tidak memigrasi database. Full PostgreSQL/browser/dependency audits tetap gate lokal pada PR. Tidak ada reseed di build atau runtime; seed sintetis tetap dilarang di production.
 
 Sesi akun inactive/role tidak didukung harus dibersihkan saat request internal ditolak403, termasuk auth device, payload sesi dan token CSRF. Denial tidak boleh menyisakan state yang membuat guest login dialihkan seolah login sukses; security-stamp mismatch tetap401.
+
+Endpoint /auth/* merupakan API JSON meskipun ditempatkan pada web middleware untuk sesi/CSRF. Exception tidak bergantung header Accept; proxy yang membuang header tersebut tidak boleh mengubah error login/recovery menjadi redirect HTML200.
