@@ -35,6 +35,9 @@ $testEnvironment = [
 ];
 
 $run = function (array $args, ?array $environment = null) use ($root): void {
+    // The native runtime caches CLI bytecode without timestamp checks. Composer
+    // rewrites autoload files between dev and production installs in this build.
+    array_splice($args, 1, 0, ['-d', 'opcache.enable_cli=0']);
     $process = new Process($args, $root, $environment);
     $process->setTimeout(300);
     $process->mustRun(fn ($type, $buffer) => print ($buffer));
