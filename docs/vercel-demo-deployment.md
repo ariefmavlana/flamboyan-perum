@@ -53,13 +53,18 @@ Konsekuensi demo: foto dan brosur yang sudah diproses lokal **tampil normal** di
 
 ### 3.0 Bug integritas media (sudah ditambal di branch ini)
 
-`flamboyan:media-cleanup` sebelumnya mencocokkan direktori `ready/{uuid}` ke kolom `variants` lewat `LIKE` pada teks JSON mentah, sedangkan JSON menulis garis miring sebagai `\/`. Pencocokan itu tidak pernah berhasil, sehingga direktori media yang masih dipakai dianggap sampah dan dihapus setelah masa grace 30 hari. Fixture demo lokal sudah mengalami dua kehilangan varian WebP pada media berstatus `READY` yang `published`; halaman publik menerima `404` untuk varian tersebut.
+`flamboyan:media-cleanup` sebelumnya mencocokkan direktori `ready/{uuid}` ke kolom `variants` lewat `LIKE` pada teks JSON mentah, sedangkan JSON menulis garis miring sebagai `\/`. Pencocokan itu tidak pernah berhasil. Pengukuran pada fixture demo lokal: dari **134** direktori `ready`, logika lama mengenali **0** sebagai terpakai, sedangkan logika hasil decode mengenali **127**.
+
+Konsekuensinya: menjalankan `flamboyan:media-cleanup --execute` pada perilaku lama akan **menghapus seluruh 134 direktori** setelah masa grace, termasuk 127 direktori yang masih dirujuk media `READY`/`published`. Perbaikan di branch ini mengganti pencocokan teks mentah dengan pencocokan path hasil decode.
 
 Yang harus dilakukan:
 
-- Jangan jalankan `flamboyan:media-cleanup --execute` pada perilaku lama.
-- Periksa data yang sudah terlanjur dibersihkan dengan membandingkan path varian di `property_media` terhadap berkas yang benar-benar ada, lalu proses ulang atau ganti media yang hilang. Tidak ada pemulihan otomatis.
+- Jangan jalankan `flamboyan:media-cleanup --execute` pada versi lama kode ini.
+- Setelah memakai versi baru, jalankan tanpa `--execute` lebih dulu dan periksa jumlah *unreferenced* sebelum menghapus apa pun.
+- Periksa dampak yang sudah terjadi: bandingkan path varian di `property_media` terhadap berkas yang benar-benar ada. Tidak ada pemulihan otomatis; media yang hilang perlu diproses ulang atau diganti.
 - Saat memindahkan fixture demo ke R2, unggah media yang sudah terbukti ada agar bucket dan metadata tetap sinkron.
+
+Catatan investigasi terbuka: pada fixture demo, `media 54` (varian 1920) dan `media 117` (varian 1280) memang hilang dan mengembalikan 404. Direktori keduanya berubah pada `2026-10-04T09:53:35Z` dengan 2 dari 3 berkas tersisa. Penyebabnya belum terbukti dan **bukan** perintah cleanup (perintah itu menghapus satu direktori penuh, bukan satu berkas). Penyelidikan dipisahkan dari perbaikan ini.
 
 ### 3.1 Adapter S3 wajib ada di bundle
 
@@ -323,7 +328,7 @@ Semua item harus dibuktikan di deployment nyata sebelum demo dibagikan:
 - [ ] `GET /sanctum/csrf-cookie` men-set cookie pada host web; `POST /auth/login` dengan `admin@example.test` berhasil dan `/backoffice` dapat dibuka lalu bertahan setelah reload.
 - [ ] Perubahan data (mis. ubah harga properti) terlihat setelah reload halaman publik (membuktikan Supabase, bukan cache).
 - [ ] `APP_DEBUG=false` terbukti: memicu 404/500 tidak menampilkan stack trace.
-- [ ] Media yang tampil sudah diverifikasi: tidak ada `404` pada `/media/{id}/{variant}` untuk properti publik mana pun (lihat 3.0).
+- [ ] Media yang tampil sudah diverifikasi: tidak ada `404` pada `/media/{id}/{variant}` untuk properti publik mana pun (lihat 3.0). Catatan: fixture demo lokal saat ini masih memiliki 2 varian hilang pada `media 54` dan `media 117` yang harus diperbaiki sebelum demo.
 - [ ] `vercel-php` menyediakan ekstensi yang dibutuhkan: konfirmasi lewat `api/phpinfo.php` sementara (`pdo_pgsql`, `pgsql`, `sodium`, `mbstring`, `openssl`, `curl`), lalu **hapus berkas tersebut**.
 - [ ] Tidak ada kredensial di repo: `git status` bersih dari `.env`, kunci R2, dan `DB_URL`.
 
