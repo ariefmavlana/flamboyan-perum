@@ -2,6 +2,8 @@
 
 Tanggal 2026-10-04 · branch `main` · PR #3–#10 merged atas instruksi eksplisit pengguna · F0–F2 + acceptance operasional + dummy dinamis. Main memuat implementasi seluruh kelompok requirement yang dipetakan di requirements-traceability.md; produksi tetap gated. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi. Bagian historis merekam hasil masing-masing PR, bukan status fitur terkini. Bukti integrasi dan batas review ada di integration-review.md.
 
+Update 2026-10-05: demo nyata tersedia pada Vercel + Supabase + R2. Entry PHP Vercel menjaga prefix `/api/v1` melalui normalisasi metadata script; Nuxt mem-proxy route API/auth/media melalui origin web yang sama. Bukti regresi, 83 test/609 assertion pada SQLite dan PostgreSQL, browser Admin/Marketing, SSR/media/KPR serta batas worker/SMTP/polling ada di [vercel-demo-validation.md](vercel-demo-validation.md). Fix berada pada branch baru dari main dan membawa proxy yang dipakai web demo commit `6bbf027`. Deployment demo bukan kelulusan gate produksi dan tidak mengotorisasi merge.
+
 | Requirement / fitur | Status aktual | Batas / gate |
 |---|---|---|
 | Stack Nuxt4.5.2/Laravel13, lockfiles/runtime | Implemented | PHP8.3 compatible platform; hosting belum dipilih |
