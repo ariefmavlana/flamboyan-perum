@@ -64,7 +64,7 @@ Yang harus dilakukan:
 - Periksa dampak yang sudah terjadi: bandingkan path varian di `property_media` terhadap berkas yang benar-benar ada. Tidak ada pemulihan otomatis; media yang hilang perlu diproses ulang atau diganti.
 - Saat memindahkan fixture demo ke R2, unggah media yang sudah terbukti ada agar bucket dan metadata tetap sinkron.
 
-Catatan investigasi terbuka: pada fixture demo, `media 54` (varian 1920) dan `media 117` (varian 1280) memang hilang dan mengembalikan 404. Direktori keduanya berubah pada `2026-10-04T09:53:35Z` dengan 2 dari 3 berkas tersisa. Penyebabnya belum terbukti dan **bukan** perintah cleanup (perintah itu menghapus satu direktori penuh, bukan satu berkas). Penyelidikan dipisahkan dari perbaikan ini.
+Catatan investigasi: pada fixture demo pernah ditemukan `media 54` (varian 1920) dan `media 117` (varian 1280) hilang sehingga mengembalikan 404. Direktori keduanya berubah pada `2026-10-04T09:53:35Z` dengan 2 dari 3 berkas tersisa. Penyebabnya **tidak terbukti** dan bukan perintah `media-cleanup` (perintah itu menghapus satu direktori penuh, bukan satu berkas); tidak ada berkas lain di storage yang berubah pada rentang waktu tersebut. Kedua varian sudah diregenerasi dengan pipeline GD yang sama (ukuran dan kualitas identik), dan `flamboyan:media-verify` sekarang melaporkan `381` varian diperiksa dengan `0` objek hilang. Gunakan perintah itu (read-only, exit non-nol bila ada temuan) sebelum demo dan setelah setiap pemulihan/pemindahan storage.
 
 ### 3.1 Adapter S3 wajib ada di bundle
 
@@ -328,7 +328,7 @@ Semua item harus dibuktikan di deployment nyata sebelum demo dibagikan:
 - [ ] `GET /sanctum/csrf-cookie` men-set cookie pada host web; `POST /auth/login` dengan `admin@example.test` berhasil dan `/backoffice` dapat dibuka lalu bertahan setelah reload.
 - [ ] Perubahan data (mis. ubah harga properti) terlihat setelah reload halaman publik (membuktikan Supabase, bukan cache).
 - [ ] `APP_DEBUG=false` terbukti: memicu 404/500 tidak menampilkan stack trace.
-- [ ] Media yang tampil sudah diverifikasi: tidak ada `404` pada `/media/{id}/{variant}` untuk properti publik mana pun (lihat 3.0). Catatan: fixture demo lokal saat ini masih memiliki 2 varian hilang pada `media 54` dan `media 117` yang harus diperbaiki sebelum demo.
+- [ ] `php artisan flamboyan:media-verify` melaporkan `0` objek hilang (read-only; exit non-nol bila ada temuan). Jalankan sebelum demo dan setelah memindahkan storage ke R2.
 - [ ] `vercel-php` menyediakan ekstensi yang dibutuhkan: konfirmasi lewat `api/phpinfo.php` sementara (`pdo_pgsql`, `pgsql`, `sodium`, `mbstring`, `openssl`, `curl`), lalu **hapus berkas tersebut**.
 - [ ] Tidak ada kredensial di repo: `git status` bersih dari `.env`, kunci R2, dan `DB_URL`.
 
