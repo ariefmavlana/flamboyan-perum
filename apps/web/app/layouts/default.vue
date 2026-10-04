@@ -59,6 +59,18 @@ const wa = computed(() =>
       </p>
     </aside>
     <footer class="footer-wrap">
+      <div class="container footer-invitation">
+        <p class="eyebrow">LANGKAH BERIKUTNYA</p>
+        <h2>Mari temukan<br />ruang Anda.</h2>
+        <a
+          v-if="wa"
+          :href="wa"
+          class="button"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Bicarakan dengan Admin <AppIcon name="arrow"
+        /></a>
+      </div>
       <div class="container footer-main">
         <div>
           <BrandLogo />

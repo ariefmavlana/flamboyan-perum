@@ -75,6 +75,17 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
     .fill(process.env.DEMO_PASSWORD ?? '')
   await page.getByRole('button', { name: 'Masuk →' }).click()
   await expect(page).toHaveURL(/backoffice/)
+  await expect(page.getByText(/lead sesuai filter saat ini/)).toBeVisible()
+  const primaryRequest: Record<string, string> = {
+    '/backoffice': '/api/v1/leads',
+    '/backoffice/properti': '/api/v1/internal/properties',
+    '/backoffice/konten': '/api/v1/internal/content',
+    '/backoffice/akun': '/api/v1/internal/users',
+    '/backoffice/laporan': '/api/v1/internal/reports',
+    '/backoffice/privasi': '/api/v1/internal/privacy',
+    '/backoffice/operasi': '/api/v1/internal/operations',
+    '/backoffice/profil': '/api/v1/me',
+  }
   const apiFailures: number[] = []
   page.on('response', (response) => {
     if (response.url().includes('/api/v1/') && response.status() >= 400)
@@ -93,6 +104,11 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
       '/backoffice/profil',
     ]) {
       if (new URL(page.url()).pathname !== path) {
+        const ready = page.waitForResponse(
+          (response) =>
+            new URL(response.url()).pathname === primaryRequest[path] &&
+            response.request().method() === 'GET',
+        )
         if (width <= 900)
           await page.getByRole('button', { name: 'Menu', exact: true }).click()
         await page
@@ -100,10 +116,41 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
           .locator('a[href="' + path + '"]')
           .click()
         await expect(page).toHaveURL('http://127.0.0.1:3000' + path)
+        const response = await ready
+        expect(response.ok()).toBe(true)
+        await response.finished()
       }
       await page.waitForLoadState('networkidle')
       await expect(page.locator('main input:disabled')).toHaveCount(0)
       await expect(page.locator('main h1')).toBeVisible()
+      if (path === '/backoffice') {
+        await expect(
+          page.getByText(/lead sesuai filter saat ini/),
+        ).toBeVisible()
+        await expect(
+          page.getByText('Memuat workspace…', { exact: true }),
+        ).not.toBeVisible()
+      } else if (
+        [
+          '/backoffice/properti',
+          '/backoffice/konten',
+          '/backoffice/akun',
+        ].includes(path)
+      ) {
+        await expect(page.locator('main tbody tr').first()).toBeVisible()
+      } else if (path === '/backoffice/laporan') {
+        await expect(page.locator('.report-metrics')).toBeVisible()
+      } else if (path === '/backoffice/privasi') {
+        await expect(
+          page.getByText('Kandidat tanpa data kontak', { exact: true }),
+        ).toBeVisible()
+      } else if (path === '/backoffice/operasi') {
+        await expect(page.locator('main .spec-grid').first()).toBeVisible()
+      } else {
+        await expect(page.getByLabel('Nama', { exact: true })).not.toHaveValue(
+          '',
+        )
+      }
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth,
@@ -238,4 +285,60 @@ test('mobile detail places price and contact before description and location', a
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true)
+})
+
+test('editorial images load and testimonial blocks do not overlap across viewports', async ({
+  page,
+}) => {
+  for (const width of [320, 768, 1440]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+    await page.evaluate(() => document.fonts.ready)
+    await expect(
+      page.getByAltText(
+        'Inspirasi suasana hunian tropis dengan taman; foto ilustrasi, bukan unit dalam katalog.',
+      ),
+    ).toBeVisible()
+    for (const photo of await page.locator('main img').all()) {
+      await photo.scrollIntoViewIfNeeded()
+      await expect
+        .poll(() =>
+          photo.evaluate((element) => {
+            const image = element as HTMLImageElement
+            return image.complete && image.naturalWidth > 0
+          }),
+        )
+        .toBe(true)
+    }
+    const quotes = page.locator('.testimonials figure')
+    const boxes = await quotes.evaluateAll((elements) =>
+      elements.map((element) => {
+        const { x, y, width, height } = element.getBoundingClientRect()
+        return { x, y, width, height }
+      }),
+    )
+    expect(boxes.length).toBeGreaterThan(1)
+    for (let i = 0; i < boxes.length; i++) {
+      for (let j = i + 1; j < boxes.length; j++) {
+        const a = boxes[i]!
+        const b = boxes[j]!
+        expect(
+          a.x + a.width <= b.x + 1 ||
+            b.x + b.width <= a.x + 1 ||
+            a.y + a.height <= b.y + 1 ||
+            b.y + b.height <= a.y + 1,
+        ).toBe(true)
+      }
+    }
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true)
+    await page.screenshot({
+      path: test.info().outputPath(`editorial-full-${width}.png`),
+      fullPage: true,
+    })
+  }
 })

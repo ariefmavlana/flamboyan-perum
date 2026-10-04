@@ -1,18 +1,18 @@
-/* Flamboyan design foundation: neutral surfaces, restrained forest accent. */
+/* Shared layout and controls; editorial identity lives in editorial.css. */
 :root {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  color: #202a28;
-  background: #fafbf9;
+  font-family: 'Manrope', Arial, sans-serif;
+  color: #292823;
+  background: #f7f5ef;
   font-synthesis: none;
   color-scheme: light;
   line-height: 1.6;
-  --green: #245747;
-  --ink: #202a28;
-  --muted: #626e68;
-  --line: #dce2dc;
-  --cream: #f0f3ee;
+  --green: #873f2d;
+  --ink: #292823;
+  --muted: #706e65;
+  --line: #d8d5cb;
+  --cream: #eeebe2;
   --surface: #fff;
-  --radius: 10px;
+  --radius: 2px;
 }
 * {
   box-sizing: border-box;
@@ -730,7 +730,7 @@ details > summary:hover {
 .detail-content > h2:first-child {
   margin-top: 0;
 }
-.detail-summary {
+.detail-grid > .detail-summary {
   grid-area: summary;
 }
 .detail-grid > * {

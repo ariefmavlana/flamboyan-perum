@@ -37,20 +37,38 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
 
 <template>
   <div>
-    <section class="hero container">
-      <div class="hero-copy">
-        <p class="eyebrow">{{ hero?.eyebrow ?? 'KATALOG HUNIAN FLAMBOYAN' }}</p>
-        <h1>
-          {{ hero?.title ?? 'Rumah yang tepat. Untuk langkah berikutnya.' }}
-        </h1>
-        <p class="hero-description">
-          {{
-            hero?.description ??
-            'Jelajahi pilihan rumah, bandingkan detailnya, dan rencanakan pembiayaan sesuai kebutuhan Anda.'
-          }}
-        </p>
+    <section class="editorial-hero" aria-label="Selamat datang di Flamboyan">
+      <img
+        class="editorial-hero-photo"
+        src="/images/editorial-garden-1920.webp"
+        srcset="
+          /images/editorial-garden-960.webp   960w,
+          /images/editorial-garden-1920.webp 1920w
+        "
+        sizes="100vw"
+        width="1920"
+        height="1280"
+        fetchpriority="high"
+        alt="Inspirasi suasana hunian tropis dengan taman; foto ilustrasi, bukan unit dalam katalog."
+      />
+      <div class="editorial-hero-content">
+        <div class="editorial-headline">
+          <p class="eyebrow">
+            {{ hero?.eyebrow ?? 'FLAMBOYAN · PROPERTI & HUNIAN' }}
+          </p>
+          <h1>{{ hero?.title ?? 'Ruang untuk cerita berikutnya.' }}</h1>
+          <p>
+            {{
+              hero?.description ??
+              'Temukan rumah yang terasa tepat. Jelajahi ruang, kenali lokasinya, dan rencanakan langkah berikutnya bersama kami.'
+            }}
+          </p>
+          <NuxtLink class="editorial-link" to="/properti"
+            >Temukan pilihan Anda <AppIcon name="arrow"
+          /></NuxtLink>
+        </div>
         <form
-          class="hero-search"
+          class="editorial-search"
           @submit.prevent="
             navigateTo({
               path: '/properti',
@@ -58,78 +76,59 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
             })
           "
         >
-          <AppIcon name="search" /><label class="sr-only" for="home-search"
-            >Cari lokasi atau nama properti</label
-          ><input
-            id="home-search"
-            v-model="search"
-            :disabled="!hydrated"
-            placeholder="Lokasi atau nama properti"
-            maxlength="100"
-          /><button type="submit" :disabled="!hydrated">Jelajahi →</button>
+          <label for="home-search">Cari lokasi atau nama properti</label>
+          <div class="editorial-search-control">
+            <input
+              id="home-search"
+              v-model="search"
+              :disabled="!hydrated"
+              placeholder="Di mana Anda ingin tinggal?"
+              maxlength="100"
+            /><button
+              type="submit"
+              :disabled="!hydrated"
+              aria-label="Jelajahi →"
+            >
+              <AppIcon name="arrow" />
+            </button>
+          </div>
+          <p>Lokasi yang Anda pilih. Ruang yang Anda butuhkan.</p>
         </form>
+      </div>
+      <p class="photo-credit">
+        Foto ilustrasi ·
+        <a
+          href="https://unsplash.com/photos/Pfp0MP8QB7M"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Sergei Bezzubov / Unsplash ↗</a
+        >
+      </p>
+    </section>
+    <section class="editorial-intro container">
+      <p class="eyebrow">SEBUAH TEMPAT UNTUK PULANG</p>
+      <h2>Lebih dari alamat.<br />Tentang cara Anda hidup.</h2>
+      <div>
+        <p>
+          Mulai dari lokasi yang dekat dengan keseharian, ruang yang cukup untuk
+          tumbuh, hingga anggaran yang terasa nyaman. Setiap detail membantu
+          Anda menemukan pilihan.
+        </p>
         <a
           v-if="wa"
           :href="wa"
           class="text-link"
           target="_blank"
           rel="noopener noreferrer"
-          >Konsultasikan pilihan dengan Admin ↗</a
-        >
-      </div>
-      <div class="hero-media">
-        <template v-if="heroCover && hero?.property">
-          <img
-            class="hero-photo"
-            :src="heroCover.url"
-            :width="heroCover.width ?? undefined"
-            :height="heroCover.height ?? undefined"
-            :alt="hero.property.title"
-            fetchpriority="high"
-          />
-          <NuxtLink class="hero-caption" :to="`/properti/${hero.property.slug}`"
-            ><div>
-              <small>DALAM KATALOG</small>{{ hero.property.title
-              }}<small>{{ formatIdr(hero.property.price_idr) }}</small>
-            </div>
-            <AppIcon name="arrow"
-          /></NuxtLink>
-        </template>
-        <div v-else class="hero-placeholder">
-          <AppIcon name="home" />
-          <p class="eyebrow">MULAI DARI KEBUTUHAN ANDA</p>
-          <h2>Lokasi, ruang, dan anggaran.</h2>
-          <p class="muted">Lihat informasi setiap rumah dalam satu katalog.</p>
-          <NuxtLink class="text-link" to="/properti"
-            >Lihat pilihan properti →</NuxtLink
-          >
-        </div>
+          >Bicarakan rencana Anda <AppIcon name="arrow"
+        /></a>
       </div>
     </section>
-    <div class="discovery-strip">
-      <section class="value-strip container" aria-label="Langkah memilih rumah">
-        <div>
-          <span class="step">01</span>
-          <h3>Temukan pilihan</h3>
-          <p>Cari berdasarkan lokasi dan anggaran.</p>
-        </div>
-        <div>
-          <span class="step">02</span>
-          <h3>Bandingkan detail</h3>
-          <p>Pertimbangkan spesifikasi dan estimasi KPR.</p>
-        </div>
-        <div>
-          <span class="step">03</span>
-          <h3>Bicarakan rencana</h3>
-          <p>Hubungi Admin untuk langkah selanjutnya.</p>
-        </div>
-      </section>
-    </div>
-    <section class="section container">
+    <section class="section container featured-collection">
       <div class="section-heading">
         <div>
           <p class="eyebrow">PILIHAN FLAMBOYAN</p>
-          <h2>Rumah untuk dipertimbangkan.</h2>
+          <h2>Pilihan untuk langkah berikutnya.</h2>
           <p class="muted">Kenali lokasi, harga, dan ruang yang ditawarkan.</p>
         </div>
         <NuxtLink class="text-link" to="/properti">Seluruh properti →</NuxtLink>
@@ -148,6 +147,75 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
       <p v-else class="notice">
         Pilihan properti akan tampil setelah katalog tersedia.
       </p>
+    </section>
+    <section v-if="hero?.property" class="editorial-spotlight container">
+      <NuxtLink
+        v-if="heroCover"
+        :to="'/properti/' + hero.property.slug"
+        class="spotlight-image"
+        ><img
+          :src="heroCover.url"
+          :alt="hero.property.title"
+          :width="heroCover.width ?? undefined"
+          :height="heroCover.height ?? undefined"
+          loading="lazy"
+      /></NuxtLink>
+      <div class="spotlight-copy">
+        <p class="eyebrow">SOROTAN KATALOG</p>
+        <h2>{{ hero.property.title }}</h2>
+        <p class="price">{{ formatIdr(hero.property.price_idr) }}</p>
+        <p>
+          Kenali spesifikasi, lihat setiap ruang, dan pertimbangkan
+          kemungkinannya untuk keseharian Anda.
+        </p>
+        <NuxtLink class="text-link" :to="'/properti/' + hero.property.slug"
+          >Kenali rumah ini <AppIcon name="arrow"
+        /></NuxtLink>
+      </div>
+    </section>
+    <section
+      class="editorial-guide container"
+      aria-label="Langkah memilih rumah"
+    >
+      <div class="section-heading">
+        <p class="eyebrow">DARI PILIHAN MENJADI RENCANA</p>
+        <h2>Langkah yang lebih terarah.</h2>
+      </div>
+      <div class="value-strip">
+        <div>
+          <span class="step">01</span>
+          <h3>Temukan ruang Anda</h3>
+          <p>
+            Telusuri lokasi, anggaran, dan spesifikasi yang sesuai kebutuhan.
+          </p>
+          <NuxtLink class="text-link" to="/properti"
+            >Jelajahi katalog →</NuxtLink
+          >
+        </div>
+        <div>
+          <span class="step">02</span>
+          <h3>Lihat lebih dekat</h3>
+          <p>
+            Bandingkan hingga tiga rumah dan pelajari estimasi pembiayaannya.
+          </p>
+          <NuxtLink class="text-link" to="/bandingkan"
+            >Bandingkan pilihan →</NuxtLink
+          >
+        </div>
+        <div>
+          <span class="step">03</span>
+          <h3>Mulai percakapan</h3>
+          <p>Diskusikan ketersediaan dan rencana kunjungan bersama Admin.</p>
+          <a
+            v-if="wa"
+            class="text-link"
+            :href="wa"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Hubungi Admin ↗</a
+          >
+        </div>
+      </div>
     </section>
     <p v-if="contentError" class="container notice">
       Konten referensi belum dapat dimuat.

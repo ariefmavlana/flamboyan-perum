@@ -6,20 +6,20 @@
 
 Layout publik sebelumnya dipakai kembali untuk backoffice. Navigasi tim memanjang, hierarki heading menyerupai landing page, bentuk panel berbeda-beda, beberapa ringkasan operasi tidak memiliki style, dan tabel laporan tidak memiliki area scroll yang konsisten. Placeholder dekoratif serta campuran label teknis membuat produk terasa tidak utuh.
 
-Layout publik sekarang memiliki header, menu responsif, footer terstruktur, dan tray perbandingan. Beranda mengutamakan pencarian dan katalog sebelum testimonial/rate. Media hero tetap berasal dari CMS/API; jika tidak ada media, tampil panel informasi yang jujur. Kartu memiliki foto bertautan, status, lokasi, harga, spesifikasi dan tindakan yang konsisten. Detail, simulasi KPR, compare, login, recovery, privasi, dan halaman error mengikuti sistem visual yang sama.
+Layout publik sekarang memiliki header, menu responsif, footer terstruktur, dan tray perbandingan. Beranda mengutamakan pencarian dan katalog sebelum testimonial/rate. Judul/deskripsi hero tetap dari CMS. Pada revisi editorial final, foto suasana berlisensi diberi label ilustrasi; properti hero dari CMS tampil sebagai sorotan terpisah dengan media API yang sebenarnya. Kartu memiliki foto bertautan, status, lokasi, harga, spesifikasi dan tindakan yang konsisten. Detail, simulasi KPR, compare, login, recovery, privasi, dan halaman error mengikuti sistem visual yang sama.
 
 Workspace mempunyai sidebar tersendiri, navigasi sesuai role, identitas tim, notifikasi, heading yang lebih padat, filter dan tabel konsisten, serta modal editor. Label publikasi/ketersediaan/peran/jenis konten tampil dalam bahasa pengguna. Kesehatan layanan memakai grid ringkasan; profil memakai form dengan lebar terkontrol. Data, version guard, otorisasi dan transaksi tetap ditangani API yang sama.
 
 ## Aturan visual dan interaksi
 
-- Font sistem Segoe UI/Arial, tanpa ketergantungan font eksternal. Teks utama gelap, permukaan putih/netral, aksen hijau untuk tindakan. Token warna dan kontrol berada di `apps/web/app/assets/main.css`.
-- Tombol/form minimum 44px; input mobile 16px. Grid katalog 3/2/1 kolom. Konten publik maksimum1328px; sidebar desktop228px; pada≤900px workspace memakai menu disclosure.
+- Font DM Serif Display dan Manrope berlisensi OFL disajikan lokal. Palet gading–arang dengan aksen terakota. Fondasi kontrol berada di `apps/web/app/assets/main.css`, identitas editorial di `apps/web/app/assets/editorial.css`; sumber/aset tercatat di `editorial-direction.md`.
+- Tombol/form minimum 44px; input mobile 16px. Grid katalog 2/1 kolom; koleksi beranda memberi penekanan horizontal pada pilihan pertama. Konten publik maksimum1536px; sidebar desktop228px; pada≤900px workspace memakai menu disclosure.
 - Menu memiliki label, `aria-expanded`, `aria-controls`, close setelah perpindahan route, Escape dan pemulihan fokus. Tombol SSR menunggu hydration agar klik pertama tidak hilang. Menu disclosure tidak bertindak sebagai modal/focus trap.
 - Modal native mempertahankan Escape/fokus, backdrop, scroll sendiri dan scroll-lock halaman. Tabel memiliki region berlabel dan tabindex untuk akses keyboard; pada layar sempit dapat digeser di dalam region, disertai petunjuk.
 - Focus ring terlihat, skip link, reduced motion, state loading/error/empty, status berlabel teks. Warna bukan satu-satunya petunjuk status. Galeri, embed consent, brochure, KPR, compare dan histori mempertahankan perilaku sebelumnya.
 - Tidak menambahkan foto palsu, testimonial, metrik, kemitraan bank atau fallback dataset. Ilustrasi dan teks demo dari database tetap berlabel sintetis; kualitas konten demo bukan bukti konten bisnis produksi.
 
-## Validasi
+## Validasi awal — sebelum revisi editorial
 
 Runtime aktual: Windows, PHP8.4.26, Node24.21.0, Nuxt4.5.2, Vue3.5.43, PostgreSQL17.9, Chrome terpasang melalui Playwright. Hasil akhir berikut sudah dijalankan pada branch ini. Pengujian menggunakan database demo lokal `.tools/dynamic-demo.sqlite`, PHPUnit SQLite `:memory:`, dan PostgreSQL17.9 cluster khusus `.tools/ui-pg-data`/database `ui_redesign_test` pada127.0.0.1:15432. Seluruh runtime, screenshot, log dan credential berada di ignored paths.
 
@@ -58,7 +58,7 @@ Rollback melalui revert commit PR ini lalu build/restart Nuxt. Tidak ada databas
 
 Perilaku watcher route dan template refs mengikuti [Vue watchers](https://vuejs.org/guide/essentials/watchers) dan [Vue template refs](https://vuejs.org/guide/essentials/template-refs). Tidak menambahkan library navigasi atau ikon; ikon inline SVG satu komponen dengan himpunan nama bertipe.
 
-## Referensi template dan penyesuaian persona
+## Referensi template awal dan penyesuaian persona
 
 Ditinjau pada 2026-10-04 dari sumber resmi:
 
@@ -78,3 +78,15 @@ Masih pada runtime Windows/Node24.21.0/Nuxt4.5.2/Vue3.5.43/Chrome dan fixture lo
 Regresi terkait diulang per spec dengan cache fixture terisolasi: foundation3 tests/7.5s, evaluation2/10.4s, operations2/10.0s, acceptance2/7.0s. Acceptance memakai build baru pada3102. Total14 alur browser lulus pada putaran penyempurnaan ini; bukti backend dan4 alur browser lain dari putaran awal tetap berlaku karena kode backend tidak berubah. Tidak mengklaim backend diulang pada putaran ini.
 
 Run awal matrix gagal karena reload penuh24 halaman internal menabrak limiter120request/menit; trace mengonfirmasi429. Test diperbaiki memakai navigasi menu dan pemeriksaan status API, tanpa mengubah limiter. Test filter awal memiliki locator label ambigu dan diperbaiki dengan exact match. Satu transformasi sementara test harness menghasilkan sintaks tidak valid; sudah diperbaiki sebelum run final. Lint awal melarang dynamic delete; query sekarang disusun dengan filter entri. Semua hasil gagal ini tidak dihitung sebagai passed.
+
+## Revisi editorial final — 2026-10-04
+
+Arah pilihan pengguna dan temuan situs nyata diterapkan ke struktur beranda, wordmark, font, warna, komposisi kartu, galeri detail, footer dan workspace. Lihat [arah editorial](editorial-direction.md) untuk Aucoot/Inigo/Modern House Australia/Pinhome, sumber foto dan lisensi font, serta penjelasan perubahan copy fixture. Tidak ada perubahan backend, dependency package, migrasi, otorisasi atau endpoint.
+
+Validasi final pada Windows/Node24.21.0/Nuxt4.5.2/Vue3.5.43/Chrome: lint0warning, typecheck,13unit tests/396ms, SSR build passed. Audit artefak runtime final0advisory; source lockfile tetap sama dengan audit11high yang sudah tercatat. Build masih menampilkan upstreamDEP0155.
+
+Seluruh19alur browser dari9spec lulus tanpa skip: UI6tests/42.7s, foundation3/8.1s, evaluation2/12.4s, operations2/10.6s, media1/16.2s, dynamic-demo1/6.0s, realtime1/6.7s, supervision1/6.2s, acceptance2/6.9s (durasi runner). API8000, dev3000, artefak SSR baru3102 dan media worker nyata; cache fixture diisolasi antar-spec dengan verifikasi path database. Bukti runtime/log/screenshot di ignored .tools/editorial-e2e dan .tools/editorial-e2e-results.json. Backend tidak berubah sejak pemeriksaan Pint/PHPUnitSQLite+PostgreSQL/Composer di awal branch; tidak mengklaim pemeriksaan tersebut diulang pada putaran editorial.
+
+UI matrix mencakup48kombinasi halaman/viewport, menu/Escape/fokus/modal, filter/Back/reset,404, dan hierarki harga/kontak. Regresi tambahan memverifikasi pemuatan seluruh gambar home dan blok testimonial tidak overlap pada320/768/1440px. Screenshot ditinjau untuk hero desktop/mobile, katalog desktop, testimonial dan workspace. Satu overlap akibat grid-area summary yang terlalu luas ditemukan lewat screenshot dan diperbaiki dengan scope detail-grid. Screenshot workspace awal masih bisa menangkap fase loading pada navigasi SPA; harness diperketat dengan menunggu respons data utama sebelum screenshot, kemudian matrix internal diulang. Ini bukan audit WCAG lengkap atau pengujian Safari/Firefox/iOS nyata.
+
+Matrix workspace final diulang setelah menunggu indikator data yang telah dirender (termasuk request lead/notifikasi paralel):1test passed,12.4s runner. Screenshot CRM final sudah memuat data dan tabel, tersimpan di `.tools/editorial-e2e/workspace-rendered`. Lint0warning/typecheck diulang setelah perubahan harness. Kode aplikasi tidak berubah pada putaran verifikasi screenshot ini.
