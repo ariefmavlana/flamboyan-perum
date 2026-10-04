@@ -111,3 +111,7 @@ Penyempurnaan referensi template pada PR #12: pola Nuxt Dashboard resmi (MIT) da
 ## Arah editorial premium — revisi visual menyeluruh
 
 Pengguna memilih foto besar, tipografi tegas dan layout lapang. Arah terbaru menggantikan tampilan hijau/netral awal dengan identitas editorial: DM Serif Display/Manrope lokal, gading–arang/terakota, hero foto berlisensi berlabel ilustrasi, wordmark baru, koleksi asimetris dan kartu dua kolom, galeri lebar, footer kontak, serta workspace yang diselaraskan. Referensi visual utama adalah Aucoot, Inigo dan Modern House Australia; Pinhome menjadi pembanding alur pencarian Indonesia. Detail amati/adaptasi, sumber dan lisensi ada di `editorial-direction.md`. Seluruh kontrol/kontrak data tetap berfungsi; gambar unit tetap dari API.
+
+## Fotografi editorial dan katalog demo — 2026-10-04
+
+Selesai pada branch redesign: fotografi berlisensi dengan tone hunian tropis, foto interior editorial responsif, cover pada perbandingan, dan label ilustrasi pada media demo. Seluruh24 properti fixture lokal memiliki3 foto terproses dari API (72 entri), termasuk yang draft/archived tanpa mengubah publikasinya. Script kurasi opt-in hanya mendukung database SQLite demo lokal. Sumber, batas penggunaan, dan rollback: [photo-curation.md](photo-curation.md). Data dan foto tetap ilustrasi demo, bukan penawaran nyata. Belum merge/deploy.

@@ -149,3 +149,7 @@ Redesign `codex/ui-ux-redesign` menggunakan endpoint, request, DTO allowlist, pa
 Label filter aktif pada katalog dibentuk dari parameter query yang sudah didukung API. Menghapus satu label hanya membuang parameter tersebut dan `page`, sambil mempertahankan filter lain serta `sort`; reset menghapus seluruh query katalog. Tidak mengubah validation/allowlist API. Nilai IDR dan enum tetap memakai kontrak lama; format ramah pengguna hanya untuk tampilan.
 
 Revisi editorial mengubah komposisi media: foto suasana berlisensi pada hero diberi label ilustrasi dan disajikan sebagai aset lokal; `hero.property` dari API tetap tampil sebagai sorotan katalog dengan media/harga/slug sebenarnya. Judul/deskripsi/eyebrow tetap dari CMS. Tidak ada foto stok yang disisipkan sebagai foto unit pada public DTO. Referensi aset ada di `editorial-direction.md`.
+
+### Penyajian foto demo terkurasi (2026-10-04)
+
+Tidak ada endpoint/field baru. Foto demo memakai POST/PATCH media internal existing, CSRF, version guard dan worker. Katalog/compare memakai cover existing; detail memakai galeri existing. UI memberi label pada alt berawalan `Ilustrasi demo ·`; bukan flag otorisasi atau aturan pemilihan unit. Metadata kredit disimpan pada alt≤240 karakter. Foto produksi tidak diberi fallback stok. Impor hanya fixture lokal opt-in; lihat [photo-curation.md](photo-curation.md).

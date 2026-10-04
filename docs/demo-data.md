@@ -47,3 +47,7 @@ Untuk menghasilkan dataset baru, hentikan server/worker demo, buat **database ko
 `DemoDatasetTest` memeriksa workflow, perubahan API, public allowlist, laporan, penolakan reseed, media native, rollback rows/jobs/files, serta pemulihan clock/config. Playwright membaca properti/Marketing dari API aktual; skenario `dynamic-demo.spec.ts` mengubah judul/harga melalui UI, membuktikan raw SSR+reload, lalu memulihkan nilai lewat API versioned.
 
 Gunakan fixture browser khusus dan worker aktif. Rate limiter aplikasi tetap login5/min dan internal120/min. Untuk suite cepat, pisahkan per berkas spec dan bersihkan cache **fixture khusus** di antara berkas, atau tunggu window60 detik. Jangan membersihkan cache bisnis. Perintah dan hasil aktual ada di dynamic-demo-validation.md; mock provider protocol/fault injection pada pengujian bukan data mock produk.
+
+## Fotografi demo terkurasi (2026-10-04)
+
+Foto berlisensi untuk seluruh24 properti fixture lokal telah diimpor melalui API media normal, tiga foto per properti. Gambar sintetis PHOTO lama disimpan tidak dipublikasikan; denah tetap berlabel demo. Kurasi opt-in, sumber/lisensi, pengulangan dan rollback ada di [photo-curation.md](photo-curation.md). Ini tidak mengubah seed default offline atau data produksi.

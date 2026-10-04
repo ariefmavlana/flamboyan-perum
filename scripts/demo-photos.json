@@ -1,0 +1,62 @@
+{
+  "license": "https://unsplash.com/license",
+  "reviewed": "2026-10-04",
+  "photos": [
+    {
+      "key": "tropical-facade",
+      "cdn": "https://images.unsplash.com/photo-1757840362270-10042c8861d2",
+      "author": "Duc Van",
+      "source": "https://unsplash.com/photos/ivCOe4FjNVA",
+      "description": "Teras rumah di antara taman tropis",
+      "role": "exterior"
+    },
+    {
+      "key": "garden-residence",
+      "cdn": "https://images.unsplash.com/photo-1768721301742-80de5237d91c",
+      "author": "You Le",
+      "source": "https://unsplash.com/photos/I7fSJgJh3w8",
+      "description": "Fasad putih dengan taman hijau",
+      "role": "exterior"
+    },
+    {
+      "key": "waterfront",
+      "cdn": "https://images.unsplash.com/photo-1754905081480-57d094671a27",
+      "author": "Rodrigo Rodrigues",
+      "source": "https://unsplash.com/photos/Oh921Hu-V48",
+      "description": "Rumah modern dengan balkon dan pohon palem",
+      "role": "exterior"
+    },
+    {
+      "key": "bali-bedroom",
+      "cdn": "https://images.unsplash.com/photo-1613553474179-e1eda3ea5734",
+      "author": "Marvin Meyer",
+      "source": "https://unsplash.com/photos/fBdlytm6Hp8",
+      "description": "Kamar tidur bernuansa batu, rotan, dan linen",
+      "role": "interior"
+    },
+    {
+      "key": "bali-living",
+      "cdn": "https://images.unsplash.com/photo-1668277155881-9d3bccb1683a",
+      "author": "Polina Kuzovkova",
+      "source": "https://unsplash.com/photos/iq2CirhoVck",
+      "description": "Ruang duduk dengan cahaya sore yang hangat",
+      "role": "interior"
+    },
+    {
+      "key": "lombok-bedroom",
+      "cdn": "https://images.unsplash.com/photo-1661069540645-fda115a217ae",
+      "author": "Alexander Davies",
+      "source": "https://unsplash.com/photos/bZiEqGxDtAw",
+      "description": "Kamar tidur dengan kayu alami dan kanopi linen",
+      "role": "interior"
+    },
+    {
+      "key": "bali-courtyard",
+      "cdn": "https://images.unsplash.com/photo-1613553497126-a44624272024",
+      "author": "Marvin Meyer",
+      "source": "https://unsplash.com/photos/cjhuXRtRT0Y",
+      "description": "Halaman dalam rumah dengan kolam dan material alami",
+      "role": "exterior"
+    }
+  ]
+}

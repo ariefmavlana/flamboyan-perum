@@ -45,6 +45,7 @@ const wa = computed(() =>
       <div v-else class="property-visual">
         <AppIcon name="home" /><small>Foto belum tersedia</small>
       </div>
+      <MediaDisclosure :alt="cover?.alt" />
       <span class="badge" :data-state="property.availability">{{
         availabilityLabels[property.availability]
       }}</span>

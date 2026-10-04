@@ -90,3 +90,18 @@ Seluruh19alur browser dari9spec lulus tanpa skip: UI6tests/42.7s, foundation3/8.
 UI matrix mencakup48kombinasi halaman/viewport, menu/Escape/fokus/modal, filter/Back/reset,404, dan hierarki harga/kontak. Regresi tambahan memverifikasi pemuatan seluruh gambar home dan blok testimonial tidak overlap pada320/768/1440px. Screenshot ditinjau untuk hero desktop/mobile, katalog desktop, testimonial dan workspace. Satu overlap akibat grid-area summary yang terlalu luas ditemukan lewat screenshot dan diperbaiki dengan scope detail-grid. Screenshot workspace awal masih bisa menangkap fase loading pada navigasi SPA; harness diperketat dengan menunggu respons data utama sebelum screenshot, kemudian matrix internal diulang. Ini bukan audit WCAG lengkap atau pengujian Safari/Firefox/iOS nyata.
 
 Matrix workspace final diulang setelah menunggu indikator data yang telah dirender (termasuk request lead/notifikasi paralel):1test passed,12.4s runner. Screenshot CRM final sudah memuat data dan tabel, tersimpan di `.tools/editorial-e2e/workspace-rendered`. Lint0warning/typecheck diulang setelah perubahan harness. Kode aplikasi tidak berubah pada putaran verifikasi screenshot ini.
+
+## Validasi fotografi — 2026-10-04
+
+Runtime: Windows, Node24.21.0, PHP8.4.26, Chrome lokal, Nuxt4.5.2. Backend dan dependency aplikasi tidak berubah.
+
+- `npm run lint`, `npm run typecheck`, `npm test`: lulus,13 unit test/413ms. `npm run build`: lulus; warning upstreamDEP0155 yang sudah tercatat masih muncul.
+- Regresi yang relevan mencakup11 alur unik: UI6, evaluation2, media1, acceptance2. Run gabungan pertama8pass/1fail; trace menunjukkan429 internal/content akibat rate-limit setelah impor. Run berikutnya mengonfirmasi workspace lulus tetapi pemeriksaan gambar mencapai429 media setelah matrix browser. Pemeriksaan gambar diulang terpisah sesudah cache fixture dibersihkan:1pass/11.8s. Acceptance dengan E2E_PRODUCTION_ORIGIN3102:2pass/6.8s. Batas rate-limit aplikasi tidak diubah.
+- Script inspeksi visual:12 kombinasi beranda/katalog/detail/compare pada320/390/1440px, semua gambar terlihat decode, tidak ada overflow atau pageerror, tiga cover compare tampil, thumbnail/modal/Escape galeri bekerja. Dialog gambar tertutup dikecualikan dari scroll/decode setelah run awal harness mencoba menggulir elemen tersembunyi.
+- Foto3×24 properti berhasil melalui worker. Run ulang final:0uploads/72reused. Opt-in guard menolak invocation tanpa flag. `node --check scripts/curate-demo-photos.mjs` lulus. Tidak ada foto unggahan atau database yang di-commit.
+- Audit source:11high upstream,0critical; runtime artefak:0advisory. Tidak ada perubahan lockfile/dependency. Backend Pint/PHPUnit SQLite+PostgreSQL/Composer memakai hasil branch terdahulu; tidak diklaim dijalankan ulang untuk patch fotografi.
+- Dev preview direstart setelah build karena Nuxt dev/build berbagi cache dan sempat mengeluarkan referensi CSS usang404. Built SSR diperiksa terpisah. Capture lokal dan log berada di ignored .tools/curated-photos dan .tools/photos-*.
+
+Tidak mengklaim browser Safari/Firefox atau UAT produksi. Foto katalog ini khusus data demo, bukan foto unit nyata. Rincian sumber dan rollback ada di [photo-curation.md](photo-curation.md).
+
+Setelah review diff, label ilustrasi dipastikan berada pada gambar sorotan, bukan CTA hero. Lint/typecheck/build dijalankan ulang dan lulus. Pemeriksaan gambar serta production SSR di artefak akhir:2passed/12.8s.
