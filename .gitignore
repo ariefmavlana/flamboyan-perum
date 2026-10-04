@@ -7,6 +7,8 @@ node_modules/
 .output/
 vendor/
 coverage/
+test-results/
+playwright-report/
 *.log
 *.sqlite
 *.sqlite-*
