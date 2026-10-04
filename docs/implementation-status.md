@@ -1,6 +1,6 @@
 # Status implementasi
 
-Tanggal 2026-10-04 · branch `codex/dynamic-demo-data` · F0–F2 + acceptance operasional + dummy dinamis sesuai instruksi pengguna. Kode seluruh kelompok requirement tersedia dan dipetakan di requirements-traceability.md; produksi tetap gated. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi. Bagian historis merekam hasil masing-masing PR, bukan status fitur terkini.
+Tanggal 2026-10-04 · branch `main` · PR #3–#10 merged atas instruksi eksplisit pengguna · F0–F2 + acceptance operasional + dummy dinamis. Main memuat implementasi seluruh kelompok requirement yang dipetakan di requirements-traceability.md; produksi tetap gated. Implemented berarti kode+validasi lokal yang disebut di bawah tersedia; tidak berarti semua kebutuhan rilis terpenuhi. Bagian historis merekam hasil masing-masing PR, bukan status fitur terkini. Bukti integrasi dan batas review ada di integration-review.md.
 
 | Requirement / fitur | Status aktual | Batas / gate |
 |---|---|---|
@@ -82,16 +82,22 @@ Lihat realtime-validation.md:55 tests/337 assertions SQLite/PostgreSQL,11 unit t
 
 Lihat supervision-validation.md:59 tests/389 assertions SQLite/PostgreSQL,11 unit tests,10 browser flows, lint/type/build/Composer passed; source11 high/runtime0. Reports/PII-free aggregates opt-in/read-only retention candidates/controlled CLI redaction implemented. Policy dan restore-ledger masih gate. Acceptance operasional dilanjutkan, tanpa merge/deployment.
 
-## Acceptance operasional (PR #9)
+## Acceptance operasional historis (PR #9)
 
 Lihat acceptance-validation.md dan requirements-traceability.md:66 tests/453assertions SQLite+PostgreSQL,13 unit tests,12 browser flows termasuk production CSP/320px, lint/type/build/Pint/Composer/cache passed. Dataset10kproperty/50klead;15min/20scheduledrps/18krequests/0errors, API p95≤165.85ms/SSR≤428.19ms pada8nativePHPworkers+OPCache/PostgreSQL lokal. Native encrypted consistent SQLite+media restore dan PG isolated restore lulus. Tidak mengklaim throughput SQLite/shared-hosting, uptime99.5%, fullWCAG/cross-browser, realSMTP/Pusher/ClamAV/offsite/policy.
 
 PR #3 fondasi, #4 workspace, #5 media, #6 evaluasi, #7 realtime, #8 supervisi/privacy dan #9 acceptance membentuk stack review. Main masih bootstrap, tidak ada merge/deployment/Actions. Nomor sementara pengguna6287776734038; hostingHostinger/Rumahweb paket/domain belum dipilih. Runtime audit0/Composer0; source11high dari dua upstream advisories tetap gate. Source originals unchangedSHA; app artifacts/runtime/private fixtures/keys/passwords tidak dicommit.
 
-## Dataset dinamis terbaru (PR #10)
+## Dataset dinamis (snapshot PR #10 sebelum integrasi)
 
 Lihat demo-data.md dan dynamic-demo-validation.md. Default generator menyediakan24properties/72leads/3Marketing/7CMS/48media generatif yang diproses worker native pada database demo baru. E2E boleh menambah/mengubah data sehingga jumlah workspace setelah pengujian berbeda. Data tetap tersimpan dan berubah melalui UI/API; tidak ada katalog/CRM hardcoded, reseed saat reload, atau fallback mock. Semua konten diberi label sintetis; attestation CMS lokal bukan verifikasi bisnis. Seed menolak domain berisi data dan production/staging; rollback rows/jobs/staging dan pemulihan clock/config diuji.
 
 Validasi final: Pint,71tests/504assertions masing-masingSQLite5.78s/PostgreSQL12.24s,Composer strict/audit0,routecache/clear; lint0/typecheck/build,13unit299ms, seluruh13browser flows pada8spec dengan cache fixture diisolasi antar-berkas dan worker aktif. Gallery SSR controls sekarang menunggu hydration; test histori tidak mengandalkan catatan seed tertentu. Audit source11high/exit1, runtime0/exit0; warning build upstreamDEP0155 tetap dicatat. Tidak ada migrasi/API breaking change, dependency baru, merge, deployment atau Actions. PR dataset bergantung pada PR #9 agar diff review tetap terfokus.
 
 [PR #10](https://github.com/ariefmavlana/flamboyan-perum/pull/10) terbuka siap review pada branch baru `codex/dynamic-demo-data`, base `codex/operational-acceptance`. Workflow stack #3→#10 belum di-merge. Konektor GitHub tidak memiliki izin membuat PR (403); PR berhasil dibuat melalui GitHub API dengan kredensial Git lokal yang sudah digunakan untuk push, tanpa menyimpan/menampilkan token.
+
+## Integrasi main terbaru
+
+Pada2026-10-04 pengguna menginstruksikan pemeriksaan seluruh open PR dan merge jika tidak ada blocker/conflict. PR #3–#10 diperiksa, diarahkan ke main sesuai urutan dependensi, dan seluruhnya merged melalui merge commits dengan expected head SHA. Tidak ada unresolved review thread, changes requested, draft, konflik atau required status check yang menghambat; GitHub merge state CLEAN sebelum setiap merge. Tidak ada bypass, fake approval, GitHub Actions atau deployment.
+
+Main setelah PR #10 adalah `e2e1ccd9a82796d32e57105aed0b062f5701a9e7`; tree `0e7178e2a8e8f6fdf0c0bba18b65c90483bf60ea` persis sama dengan final PR #10 `ee3cec7` yang validasinya dicatat di atas. Branch bootstrap telah digantikan implementasi lengkap. Sinkronisasi dokumentasi mengikuti branch/PR tersendiri dari main terbaru, tanpa perubahan kode aplikasi. Source11high dan hosting/provider/content/privacy/UAT tetap gate produksi. Detail SHA per PR dan pemeriksaan ada di integration-review.md.
