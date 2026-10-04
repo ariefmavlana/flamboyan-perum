@@ -34,7 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
             return false;
         });
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
+            fn (Request $request) => $request->is('api/*', 'auth/*') || $request->expectsJson(),
         );
         $exceptions->respond(function ($response) {
             if ($response instanceof JsonResponse && $response->getStatusCode() >= 400) {
