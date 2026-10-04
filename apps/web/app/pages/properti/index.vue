@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Paginated, Property } from '#shared/types'
+import { availabilityLabels, formatIdr } from '#shared/utils/catalog'
 const route = useRoute()
 const interactive = ref(false)
 onMounted(() => {
@@ -51,6 +52,42 @@ const keys = [
   'condition',
   'availability',
 ]
+const filterLabels: Record<string, string> = Object.fromEntries([
+  ...textFields.map((field) => [field.key, field.label]),
+  ...numberFields.map((field) => [field.key, field.label]),
+  ['condition', 'Kondisi'],
+  ['availability', 'Ketersediaan'],
+])
+const activeFilters = computed(() =>
+  keys
+    .filter(
+      (key) =>
+        key !== 'sort' &&
+        typeof route.query[key] === 'string' &&
+        route.query[key] !== '',
+    )
+    .map((key) => {
+      const raw = String(route.query[key])
+      const value =
+        key.endsWith('_price') && Number.isFinite(Number(raw))
+          ? formatIdr(raw)
+          : key === 'condition'
+            ? ({ NEW: 'Baru', RESALE: 'Bekas' }[raw] ?? raw)
+            : key === 'availability'
+              ? (availabilityLabels[raw as keyof typeof availabilityLabels] ??
+                raw)
+              : raw
+      return { key, label: filterLabels[key], value }
+    }),
+)
+function withoutFilter(key: string) {
+  const query = Object.fromEntries(
+    Object.entries(route.query).filter(
+      ([name]) => name !== key && name !== 'page',
+    ),
+  )
+  return { path: '/properti', query }
+}
 const form = reactive<Record<string, string>>({})
 watch(
   () => route.query,
@@ -125,7 +162,7 @@ useHead({
       Sesuaikan lokasi, anggaran, dan spesifikasi. Bandingkan hingga 3 pilihan
       rumah.
     </p>
-    <form @submit.prevent="filter">
+    <form class="catalog-filters" @submit.prevent="filter">
       <fieldset
         class="hydration-controls"
         :disabled="!interactive"
@@ -194,17 +231,50 @@ useHead({
           </div>
           <button class="button" type="submit">Terapkan spesifikasi</button>
         </details>
-        <NuxtLink class="text-link" to="/properti">Reset filter</NuxtLink>
         <p v-if="message" class="error-text" role="alert">{{ message }}</p>
       </fieldset>
     </form>
-    <p v-if="status === 'pending'" role="status">Memuat katalog…</p>
+    <div class="results-heading">
+      <div>
+        <p class="eyebrow">PILIHAN RUMAH</p>
+        <h2>Hasil pencarian</h2>
+      </div>
+      <p class="muted" role="status">
+        {{
+          status === 'pending'
+            ? 'Memuat katalog…'
+            : error
+              ? 'Katalog belum tersedia'
+              : (data?.meta.total ?? 0) + ' properti ditemukan'
+        }}
+      </p>
+    </div>
+    <div
+      v-if="activeFilters.length"
+      class="active-filters"
+      aria-label="Filter aktif"
+    >
+      <NuxtLink
+        v-for="item in activeFilters"
+        :key="item.key"
+        class="filter-chip"
+        :to="withoutFilter(item.key)"
+        :aria-label="'Hapus filter ' + item.label"
+      >
+        <span
+          >{{ item.label }}: <strong>{{ item.value }}</strong></span
+        ><AppIcon name="close" />
+      </NuxtLink>
+      <NuxtLink class="text-link" to="/properti">Reset filter</NuxtLink>
+    </div>
+    <p v-if="status === 'pending'" class="notice">
+      Sedang mencari pilihan yang sesuai…
+    </p>
     <div v-else-if="error" class="notice" role="alert">
       <p>Katalog belum dapat dimuat. Periksa filter atau coba lagi.</p>
       <button class="button secondary" @click="refresh()">Coba lagi</button>
     </div>
-    <template v-else
-      ><p class="muted">{{ data?.meta.total ?? 0 }} properti ditemukan</p>
+    <template v-else>
       <div v-if="data?.data.length" class="property-grid">
         <PropertyCard
           v-for="property in data.data"

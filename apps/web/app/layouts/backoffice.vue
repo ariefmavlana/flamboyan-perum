@@ -3,34 +3,75 @@ const session = useStaffSession()
 const message = ref('')
 const route = useRoute()
 const links = [
-  { to: '/backoffice', label: 'CRM', icon: 'users', admin: false },
-  { to: '/backoffice/properti', label: 'Katalog', icon: 'home', admin: false },
-  { to: '/backoffice/laporan', label: 'Laporan', icon: 'chart', admin: true },
+  {
+    to: '/backoffice',
+    label: 'CRM',
+    icon: 'users',
+    admin: false,
+    group: 'Aktivitas',
+  },
+  {
+    to: '/backoffice/properti',
+    label: 'Katalog',
+    icon: 'home',
+    admin: false,
+    group: 'Aktivitas',
+  },
+  {
+    to: '/backoffice/laporan',
+    label: 'Laporan',
+    icon: 'chart',
+    admin: true,
+    group: 'Pengelolaan',
+  },
   {
     to: '/backoffice/konten',
     label: 'Konten publik',
     icon: 'file',
     admin: true,
+    group: 'Pengelolaan',
   },
-  { to: '/backoffice/akun', label: 'Akun tim', icon: 'users', admin: true },
+  {
+    to: '/backoffice/akun',
+    label: 'Akun tim',
+    icon: 'users',
+    admin: true,
+    group: 'Pengelolaan',
+  },
   {
     to: '/backoffice/privasi',
     label: 'Retensi lead',
     icon: 'shield',
     admin: true,
+    group: 'Pengelolaan',
   },
   {
     to: '/backoffice/operasi',
     label: 'Operasi',
     icon: 'settings',
     admin: true,
+    group: 'Pengelolaan',
   },
-  { to: '/backoffice/profil', label: 'Profil', icon: 'user', admin: false },
+  {
+    to: '/backoffice/profil',
+    label: 'Profil',
+    icon: 'user',
+    admin: false,
+    group: 'Akun',
+  },
 ] as const
 const available = computed(() =>
   links.filter(
     (link) => !link.admin || session.account.value?.role === 'ADMIN',
   ),
+)
+const groups = computed(() =>
+  ['Aktivitas', 'Pengelolaan', 'Akun']
+    .map((label) => ({
+      label,
+      links: available.value.filter((link) => link.group === label),
+    }))
+    .filter((group) => group.links.length),
 )
 const current = computed(
   () => links.find((link) => link.to === route.path)?.label ?? 'Workspace',
@@ -56,10 +97,12 @@ onMounted(async () => {
     <aside class="workspace-sidebar">
       <BrandLogo />
       <ResponsiveNav id="workspace-navigation" label="Workspace tim">
-        <p class="nav-label">WORKSPACE TIM</p>
-        <NuxtLink v-for="link in available" :key="link.to" :to="link.to"
-          ><AppIcon :name="link.icon" />{{ link.label }}</NuxtLink
-        >
+        <div v-for="group in groups" :key="group.label" class="nav-group">
+          <p class="nav-label">{{ group.label }}</p>
+          <NuxtLink v-for="link in group.links" :key="link.to" :to="link.to">
+            <AppIcon :name="link.icon" />{{ link.label }}
+          </NuxtLink>
+        </div>
         <div class="sidebar-bottom">
           <NuxtLink to="/properti"
             ><AppIcon name="arrow" />Lihat website</NuxtLink

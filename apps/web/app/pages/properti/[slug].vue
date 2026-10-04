@@ -98,16 +98,24 @@ useHead(() => ({
       }}</span>
     </div>
     <div class="detail-grid">
-      <div>
+      <div class="detail-gallery">
         <PropertyGallery :media="property.media ?? []" />
-        <h2>Tentang rumah ini</h2>
-        <p class="description">{{ property.description }}</p>
-        <PropertyLocation :property="property" />
       </div>
       <aside class="detail-summary">
-        <CompareButton :id="property.id" />
         <p class="eyebrow">HARGA PROPERTI</p>
         <p class="price detail-price">{{ formatIdr(property.price_idr) }}</p>
+        <a
+          v-if="wa"
+          :href="wa"
+          class="button full"
+          target="_blank"
+          rel="noopener noreferrer"
+          @click="analytics.record(property.id, 'whatsapp_click')"
+          >Hubungi Admin melalui WhatsApp ↗</a
+        >
+        <p class="muted">
+          Ketersediaan dan informasi transaksi dikonfirmasi bersama Admin.
+        </p>
         <dl class="spec-list">
           <div>
             <dt>Tipe rumah</dt>
@@ -138,19 +146,13 @@ useHead(() => ({
             <dd>{{ property.bathrooms }}</dd>
           </div>
         </dl>
-        <a
-          v-if="wa"
-          :href="wa"
-          class="button full"
-          target="_blank"
-          rel="noopener noreferrer"
-          @click="analytics.record(property.id, 'whatsapp_click')"
-          >Hubungi Admin melalui WhatsApp ↗</a
-        >
-        <p class="muted">
-          Ketersediaan dan informasi transaksi dikonfirmasi bersama Admin.
-        </p>
+        <CompareButton :id="property.id" />
       </aside>
+      <div class="detail-content">
+        <h2>Tentang rumah ini</h2>
+        <p class="description">{{ property.description }}</p>
+        <PropertyLocation :property="property" />
+      </div>
     </div>
     <MortgageCalculator :price="property.price_idr" />
   </section>
