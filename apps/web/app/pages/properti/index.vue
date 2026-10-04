@@ -120,9 +120,11 @@ useHead({
 <template>
   <section class="container section">
     <p class="eyebrow">KATALOG PROPERTI</p>
-    <h1 class="page-title">
-      Rumah yang selaras<br />dengan <em>rencana Anda.</em>
-    </h1>
+    <h1 class="page-title">Temukan rumah yang tepat.</h1>
+    <p class="muted">
+      Sesuaikan lokasi, anggaran, dan spesifikasi. Bandingkan hingga 3 pilihan
+      rumah.
+    </p>
     <form @submit.prevent="filter">
       <fieldset
         class="hydration-controls"

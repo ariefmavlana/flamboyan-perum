@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import type { InternalProperty, Paginated } from '#shared/types'
+import { availabilityLabels } from '#shared/utils/catalog'
+const publicationLabels = {
+  DRAFT: 'Draft',
+  PUBLISHED: 'Publik',
+  ARCHIVED: 'Arsip',
+}
 definePageMeta({ layout: 'backoffice' })
 useSeoMeta({ title: 'Katalog tim — Flamboyan', robots: 'noindex, nofollow' })
 const api = useStaffApi()
@@ -146,7 +152,7 @@ onMounted(() => load())
         >Publikasi<select v-model="publication">
           <option value="">Semua publikasi</option>
           <option value="DRAFT">Draft</option>
-          <option value="PUBLISHED">Published</option>
+          <option value="PUBLISHED">Publik</option>
           <option value="ARCHIVED">Arsip</option>
         </select></label
       ><button class="button secondary" :disabled="busy">
@@ -155,7 +161,12 @@ onMounted(() => load())
     </form>
     <p v-if="message && !editor?.open" role="status">{{ message }}</p>
     <p v-if="busy" role="status">Memproses…</p>
-    <div class="table-scroll">
+    <div
+      class="table-scroll"
+      role="region"
+      aria-label="Tabel data, geser untuk melihat kolom lainnya"
+      tabindex="0"
+    >
       <table>
         <caption class="sr-only">
           Katalog sesuai hak akses Anda
@@ -182,7 +193,14 @@ onMounted(() => load())
               }}
             </td>
             <td>{{ property.owner?.name }}</td>
-            <td>{{ property.publication }} / {{ property.availability }}</td>
+            <td>
+              <span class="badge">{{
+                publicationLabels[property.publication]
+              }}</span>
+              <span class="badge" :data-state="property.availability">{{
+                availabilityLabels[property.availability]
+              }}</span>
+            </td>
             <td>
               <button class="text-button" @click="open(property)">
                 Edit properti</button
@@ -302,7 +320,7 @@ onMounted(() => load())
           ><label
             >Publikasi<select v-model="form.publication">
               <option value="DRAFT">Draft</option>
-              <option value="PUBLISHED">Published</option>
+              <option value="PUBLISHED">Publik</option>
               <option value="ARCHIVED">Arsip</option>
             </select></label
           ><label

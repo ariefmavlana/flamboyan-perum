@@ -250,9 +250,17 @@ onMounted(async () => {
         <p class="eyebrow">
           WORKSPACE · {{ user?.role === 'ADMIN' ? 'ADMIN' : 'MARKETING' }}
         </p>
-        <h1 class="page-title">Perjalanan calon pembeli.</h1>
+        <h1 class="page-title">Kelola calon pembeli.</h1>
         <p v-if="user" class="muted">{{ user.name }}</p>
       </div>
+
+      <button
+        v-if="user?.role === 'ADMIN'"
+        class="button"
+        @click="openCreateLead"
+      >
+        Catat lead baru
+      </button>
     </div>
     <p v-if="message && !selected" role="alert" class="error-text">
       {{ message }}
@@ -291,18 +299,20 @@ onMounted(async () => {
         </button>
       </div>
     </details>
-    <button
-      v-if="user?.role === 'ADMIN'"
-      class="button"
-      @click="openCreateLead"
-    >
-      Catat lead baru
-    </button>
+
     <button class="text-button" @click="load(leads?.meta.current_page ?? 1)">
       Muat ulang data ↻
     </button>
+    <p v-if="leads" class="muted">
+      {{ leads.meta.total }} lead sesuai filter saat ini
+    </p>
     <div class="workspace-grid">
-      <div class="table-scroll">
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Tabel data, geser untuk melihat kolom lainnya"
+        tabindex="0"
+      >
         <table>
           <caption class="sr-only">
             Daftar lead sesuai hak akses Anda
@@ -332,7 +342,9 @@ onMounted(async () => {
                 >
               </td>
               <td>
-                <span class="badge">{{ labels[lead.status] }}</span>
+                <span class="badge" :data-state="lead.status">{{
+                  labels[lead.status]
+                }}</span>
               </td>
               <td>
                 <button class="text-button" @click="openLead(lead)">
@@ -373,8 +385,8 @@ onMounted(async () => {
           >
         </h2>
         <p class="muted">
-          Notifikasi tersimpan di database. Sinkronisasi berkala tetap berjalan
-          saat push tidak tersedia.
+          Pantau penugasan dan perubahan status lead. Pembaruan tetap berjalan
+          secara berkala.
         </p>
         <button
           class="button secondary"
@@ -451,7 +463,9 @@ onMounted(async () => {
             Tutup
           </button>
         </div>
-        <p class="badge">{{ labels[selected.status] }}</p>
+        <p class="badge" :data-state="selected.status">
+          {{ labels[selected.status] }}
+        </p>
         <p>
           {{ selected.property?.title }} ·
           {{ selected.assignee?.name ?? 'Belum ditugaskan' }}
