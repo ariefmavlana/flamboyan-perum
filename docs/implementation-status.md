@@ -128,7 +128,7 @@ Bukti terkonfirmasi saat snapshot ini: PHPUnit77 tests/579 assertions SQLite8.75
 
 ## Audit deploy demo dan perbaikan integritas media â€” 2026-10-04
 
-Branch `chore/vercel-demo-deployment`. Perubahan berfokus pada kesiapan deploy demo serverless (Vercel + Supabase + Cloudflare R2) dan satu bug integritas data yang ditemukan saat audit.
+Branch `chore/vercel-demo-deployment`, diintegrasikan ke `main` lewat PR #15 dan [#16](https://github.com/ariefmavlana/flamboyan-perum/pull/16) pada 2026-10-04. Perubahan berfokus pada kesiapan deploy demo serverless (Vercel + Supabase + Cloudflare R2) dan satu bug integritas data yang ditemukan saat audit.
 
 **Bug integritas media (diperbaiki).** `flamboyan:media-cleanup` mencocokkan direktori `ready/{uuid}` ke kolom `variants` memakai `CAST(variants AS TEXT) LIKE '%ready/{uuid}/%'`. JSON menyimpan garis miring sebagai `\/`, sehingga pola itu **tidak pernah cocok**. Pengukuran pada fixture demo lokal: dari134 direktori `ready` di disk, pencocokan lama mengenali **0** sebagai terpakai sementara pencocokan hasil decode mengenali127. Artinya menjalankan `flamboyan:media-cleanup --execute` pada perilaku lama akan menghapus seluruh134 direktori setelah masa grace, termasuk127 yang masih dirujuk media `READY`/`published`. Perbaikan mengganti pencocokan teks mentah dengan pencocokan path hasil decode di PHP, dan regresi `test_cleanup_keeps_ready_directories_that_are_still_referenced_by_variants` gagal pada perilaku lama serta lulus pada perilaku baru. Pemindaian orphan diuji ulang dengan `--execute` pada database demo: 7 direktori benar-benar tidak dirujuk dan belum dihapus.
 
@@ -145,3 +145,13 @@ Branch `chore/vercel-demo-deployment`. Perubahan berfokus pada kesiapan deploy d
 **Ruang lingkup PR ini.** Karena branch ini diturunkan dari `codex/bandung-buyer-experience` (PR #13) dan PR #12, merge ke `main` berbentuk fast-forward sehingga ikut mengintegrasikan seluruh pekerjaan buyer experience, kurasi foto, dan redesign editorial yang sudah divalidasi di [buyer-experience-validation.md](buyer-experience-validation.md). Perubahan spesifik jalur deploy ada pada `apps/api/api/index.php`, `api/index.php`, `apps/api/vercel.json`, `apps/web/vercel.json`, `apps/api/config/view.php`, `apps/api/app/Support/MediaDisk.php`, `apps/api/config/filesystems.php`, dan `docs/vercel-demo-deployment.md`.
 
 
+
+## Koreksi akurasi panduan deploy demo — 2026-10-04
+
+Branch `docs/vercel-demo-deployment-accuracy`, dokumentasi saja, tanpa perubahan kode.
+
+**Masalah.** [vercel-demo-deployment.md](vercel-demo-deployment.md) masih menyebut pekerjaan berada di branch `chore/vercel-demo-deployment` yang sudah tidak ada, meminta pembaca membuat `apps/api/vercel.json` yang sudah ada di repo sejak PR #15, dan menyatakan "PHP lokal tidak dipakai" padahal toolchain `.tools/php` proyek ini lengkap (`gd`, `pdo_pgsql`, `pgsql`, `sqlite3`, `zip`) dan sudah dijalankan untuk suit perilaku serta demo lokal. Judul bagian 3.0 juga memakai kata "branch ini" untuk perbaikan yang sudah di-merge.
+
+**Perubahan.** Bagian 4 (prasyarat) memuat keadaan branch saat ini, penambahan kontainer sebagai opsional, dan deskripsi toolchain `.tools/php`; bagian 5 memberi judul netral, menambahkan `VerifyMedia.php`, dan menyatakan berkas sudah ada di `main`; Langkah 3 mengarahkan verifikasi berkas yang sudah ada; Langkah 4 memberi alternatif tanpa kontainer dan mencantumkan ekstensi wajib; judul bagian 3.0 serta klaim status suite diperbarui.
+
+**Verifikasi.** `git diff --stat` menyentuh `docs/` saja. Tidak ada perintah build/test yang perlu dijalankan untuk perubahan dokumentasi. Status verifikasi stack lokal pada tabel bagian 2 ("Stack lokal dua server") diambil dari pengukuran pada `main` di mesin pembuat: `/up` 200, `/api/v1/properties` 200 (12 properti), `/properti` beserta detail SSR 200, `/media/2/640` 200 `image/webp`, `POST /auth/login` Admin dan Marketing 200, dan `php artisan test` 80 test/603 assertion lulus.

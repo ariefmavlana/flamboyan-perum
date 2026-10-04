@@ -38,24 +38,25 @@ Konsekuensi demo: foto dan brosur yang sudah diproses lokal **tampil normal** di
 | Item | Status | Bukti |
 |---|---|---|
 | Nitro build preset `vercel` | Terverifikasi | `NITRO_PRESET=vercel npm run build` sukses, menghasilkan `.vercel/output` (fungsi `__fallback.func`) |
-| Suite PHP setelah perubahan path media | Terverifikasi | `phpunit`: 78 test, 588 assertion, OK pada PHP 8.3.35 + GD (Docker) |
+| Suite PHP pada `main` | Terverifikasi ulang 2026-10-04 | `php artisan test`: 80 test, 603 assertion, OK pada PHP 8.4.26 + GD (toolchain lokal `.tools/php`) |
+| Stack lokal dua server (API 8000, web 3000) | Terverifikasi ulang 2026-10-04 | `/up` 200, `/api/v1/properties` 200, `/properti` dan detail SSR 200, `/media/{id}/640` 200 `image/webp`, login Admin dan Marketing 200 |
 | Format kode backend | Terverifikasi | `vendor/bin/pint --test` PASS pada semua file yang diubah |
 | Lint/typecheck/unit frontend | Terverifikasi | `npm run lint`, `npm run typecheck`, `npm test` (15 test) lulus |
 | Disk `media` beralih ke driver s3 | Terverifikasi | `MEDIA_DISK_DRIVER=s3` memilih driver s3; tanpa adapter muncul error jelas (lihat 3.1) |
 | Proxy function meneruskan body multipart | Terverifikasi dari paket | `vercel-php@0.9.0` `dist/launchers/builtin.js` mem-proxy body mentah; hitungan chunk tak berujung sehingga tidak dipotong |
 | Perilaku upload tanpa GD | Terverifikasi | Uji perilaku pada PHP 8.3 tanpa GD: `201` lalu `FAILED`/`IMAGE_PROCESSOR_UNAVAILABLE`, staging dipertahankan |
-| Perbaikan bug cleanup media | Terverifikasi | Regresi baru gagal pada perilaku lama dan lulus pada perilaku baru |
+| Perbaikan integritas media bagian 3.0 | Terverifikasi | Regresi baru gagal pada perilaku lama dan lulus pada perilaku baru |
 | Deploy nyata ke Vercel, koneksi Supabase/R2, routing cookie di produksi | **Belum diverifikasi** | Butuh akun dan kredensial Anda; ikuti checklist bagian 8 |
 | `SESSION_DOMAIN` pada deployment nyata | **Belum diverifikasi** | Tergantung perilaku Set-Cookie lintas domain Vercel; uji dan set hanya bila cookie ter-scope salah |
 | Ekstensi `intl`/`pdo_pgsql` pada runtime Vercel | Belum diverifikasi | Daftar ekstensi README runtime menyertakan `pdo_pgsql`/`pgsql`/`sodium`/`intl`/`zip`/`pcntl`/OPcache, `gd` **tidak ada**; konfirmasi dengan `api/phpinfo.php` sementara |
 
 ## 3. Batasan yang wajib diterima sebelum mulai
 
-### 3.0 Bug integritas media (sudah ditambal di branch ini)
+### 3.0 Integritas media: perbaikan yang sudah di `main`
 
 `flamboyan:media-cleanup` sebelumnya mencocokkan direktori `ready/{uuid}` ke kolom `variants` lewat `LIKE` pada teks JSON mentah, sedangkan JSON menulis garis miring sebagai `\/`. Pencocokan itu tidak pernah berhasil. Pengukuran pada fixture demo lokal: dari **134** direktori `ready`, logika lama mengenali **0** sebagai terpakai, sedangkan logika hasil decode mengenali **127**.
 
-Konsekuensinya: menjalankan `flamboyan:media-cleanup --execute` pada perilaku lama akan **menghapus seluruh 134 direktori** setelah masa grace, termasuk 127 direktori yang masih dirujuk media `READY`/`published`. Perbaikan di branch ini mengganti pencocokan teks mentah dengan pencocokan path hasil decode.
+Konsekuensinya: menjalankan `flamboyan:media-cleanup --execute` pada perilaku lama akan **menghapus seluruh 134 direktori** setelah masa grace, termasuk 127 direktori yang masih dirujuk media `READY`/`published`. Perbaikan yang mengganti pencocokan teks mentah dengan pencocokan path hasil decode sudah ada di `main` (`7b984bd`, diintegrasikan lewat PR #15/#16).
 
 Yang harus dilakukan:
 
@@ -93,10 +94,13 @@ Function Vercel tidak punya disk persisten dan tidak punya proses latar. Karena 
 
 - Akun Vercel (plan Hobby), akun Supabase (plan Free), akun Cloudflare (R2, plan Free).
 - Repositori `ariefmavlana/flamboyan-perum` terhubung ke Vercel.
-- Docker Desktop di mesin Anda untuk provisioning data demo (butuh GD). PHP lokal tidak dipakai karena image Docker sudah menyediakan PHP 8.3 + GD.
-- Git remote dan branch: pekerjaan ini ada di branch `chore/vercel-demo-deployment`.
+- Docker Desktop (atau runtime kontainer lain) di mesin Anda untuk provisioning data demo, karena function Vercel tidak punya GD.
+- Git: seluruh pekerjaan ini sudah ada di `main` (PR #15 dan #16). Jalankan `git pull` pada `main` sebelum mengikuti panduan.
+- Alternatif tanpa kontainer: toolchain PHP lokal yang punya ekstensi `gd`, `pdo_pgsql`, `pgsql`, `sqlite3`, `zip`, `intl` seperti `.tools/php` yang dipakai proyek ini. Ini hanya alat pengujian mesin pembuat, bukan bagian instalasi otomatis ([runbook](runbook.md) bagian prasyarat). Perintah di Langkah 4 dapat dijalankan dengan `php` lokal tersebut alih-alih Docker.
 
-## 5. Perubahan kode yang sudah disiapkan di branch ini
+## 5. Perubahan kode yang menyiapkan jalur deploy
+
+Seluruh berkas berikut sudah ada di `main`.
 
 | File | Perubahan |
 |---|---|
@@ -107,11 +111,12 @@ Function Vercel tidak punya disk persisten dan tidak punya proses latar. Karena 
 | [apps/api/app/Http/Controllers/ContentController.php](../apps/api/app/Http/Controllers/ContentController.php) | Idem untuk logo bank |
 | [apps/api/app/Services/MediaProcessor.php](../apps/api/app/Services/MediaProcessor.php) | Scanner memakai berkas sementara pada disk remote |
 | [apps/api/app/Console/Commands/CleanupMedia.php](../apps/api/app/Console/Commands/CleanupMedia.php) | Pemindaian orphan hanya pada disk lokal, dan pencocokan direktori `ready` memakai path hasil decode (perbaikan kehilangan media) |
+| [apps/api/app/Console/Commands/VerifyMedia.php](../apps/api/app/Console/Commands/VerifyMedia.php) | Pemeriksaan integritas media read-only yang dipakai di checklist bagian 8 |
 | [apps/api/config/filesystems.php](../apps/api/config/filesystems.php) | Disk `media` dapat memakai driver `s3` via `MEDIA_DISK_DRIVER` |
 | [apps/api/config/view.php](../apps/api/config/view.php) | Mem-publish konfigurasi view agar `VIEW_COMPILED_PATH` dapat diarahkan ke `/tmp` |
 | [apps/web/vercel.json](../apps/web/vercel.json) | Konfigurasi build Nuxt di Vercel (`NITRO_PRESET=vercel`) |
 
-Perubahan ini tidak mengubah perilaku default: tanpa `MEDIA_DISK_DRIVER`, disk media tetap `local` dan seluruh suite tetap lulus.
+Perubahan ini tidak mengubah perilaku default: tanpa `MEDIA_DISK_DRIVER`, disk media tetap `local` dan seluruh suite tetap lulus (`php artisan test`: 80 test, 603 assertion pada `main`).
 
 ## 6. Langkah deploy
 
@@ -145,7 +150,7 @@ Storage Supabase tidak dipakai untuk media karena batas file Free 50 MB dan disk
 
 1. **Add New → Project**, pilih repo yang sama.
 2. **Root Directory: `apps/api`**. framework preset: **Other**.
-3. Tambahkan `apps/api/vercel.json` (buat berkasnya):
+3. `apps/api/vercel.json` sudah ada di repo (runtime `vercel-php@0.9.0`, semua route ke `api/index.php`). Verifikasi isinya:
 
 ```json
 {
@@ -208,9 +213,9 @@ $_SERVER['PHP_SELF'] = '/index.php';
 
 Catat di PR bila perbaikan ini benar-benar diperlukan.
 
-### Langkah 4 — Provisioning data demo (dari mesin lokal, memakai Docker)
+### Langkah 4 — Provisioning data demo (dari mesin lokal, butuh GD)
 
-Seluruh perintah di bawah dijalankan dari **root repo**, memakai image PHP dengan GD. Database dan media yang sama dipakai API di Vercel.
+Seluruh perintah di bawah dijalankan dari **root repo** dengan proses yang punya ekstensi GD. Database dan media yang sama dipakai API di Vercel. Pilih salah satu jalur: kontainer dari image `flamboyan-php-test` di bawah, atau PHP lokal yang ekstensinya lengkap (toolchain `.tools/php` proyek ini sudah terbukti menjalankan `migrate`, seed, dan worker pada demo lokal).
 
 ```powershell
 # 1. Migrasi schema ke Supabase
@@ -239,7 +244,7 @@ docker run --rm -e APP_ENV=local -e APP_KEY=<app-key> -e DB_CONNECTION=pgsql `
   php artisan queue:work database --queue=media --stop-when-empty --tries=3 --timeout=60
 ```
 
-`flamboyan-php-test` adalah image lokal dengan GD; buat dengan `Dockerfile` berikut lalu `docker build -t flamboyan-php-test .`:
+`flamboyan-php-test` adalah image lokal dengan GD. Ekstensi yang wajib ada agar perintah 1–3 berhasil: `gd` (WebP), `pdo_pgsql`, `pgsql`, `mbstring`, `openssl`, `curl`, `zip`, `intl`. Buat image berikut, lalu `docker build -t flamboyan-php-test .`. Image contoh ini hanya menambahkan GD di atas basis resmi; sesuaikan bila runtime dasar tidak menyertakan `pdo_pgsql`/`intl`.
 
 ```dockerfile
 FROM php:8.3-cli
