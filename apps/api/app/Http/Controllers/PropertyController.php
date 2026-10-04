@@ -27,7 +27,7 @@ class PropertyController extends Controller
             'condition' => ['sometimes', Rule::in(['NEW', 'RESALE'])], 'certificate' => 'sometimes|string|max:80',
             'location' => 'sometimes|string|max:160', 'availability' => ['sometimes', Rule::in(['AVAILABLE', 'BOOKED', 'SOLD_OUT'])], 'featured' => 'sometimes|boolean',
         ]);
-        $query = Property::query()->where('publication', 'PUBLISHED');
+        $query = Property::query()->with('coverMedia')->where('publication', 'PUBLISHED');
         if (! empty($data['q'])) {
             $pattern = '%'.str_replace(['!', '%', '_'], ['!!', '!%', '!_'], mb_strtolower($data['q'])).'%';
             $query->where(fn ($q) => $q->whereRaw("LOWER(title) LIKE ? ESCAPE '!'", [$pattern])->orWhereRaw("LOWER(location) LIKE ? ESCAPE '!'", [$pattern])->orWhereRaw("LOWER(address) LIKE ? ESCAPE '!'", [$pattern]));
@@ -64,7 +64,7 @@ class PropertyController extends Controller
 
     public function show(string $slug): PublicPropertyResource
     {
-        return new PublicPropertyResource(Property::query()->where('publication', 'PUBLISHED')->where('slug', $slug)->firstOrFail());
+        return new PublicPropertyResource(Property::query()->with('publicMedia')->where('publication', 'PUBLISHED')->where('slug', $slug)->firstOrFail());
     }
 
     public function internalIndex(Request $request)

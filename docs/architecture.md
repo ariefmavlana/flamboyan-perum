@@ -53,4 +53,6 @@ API validation422 tidak mengubah data. Version/transition/duplicate409 tidak men
 
 ## Scaling path
 
+Media menggunakan private disk, PropertyMedia registry dan job database dalam transaksi yang sama dengan version/audit; worker visibility sesudah commit. Decode+WebP variants640/1280/1920; public file handler memeriksa publication/state/flag pada setiap request dan tidak mengirim path sumber. PDF scanner terpisah concrete service agar contract dapat diuji, bukan generic repository/interface. List eager-load single photo cover melalui aggregate position/id; detail eager-load gallery bounded, internal media paginated. Cleanup/recovery CLI eksplisit, grace30 hari/audit dipertahankan. Media storage belum memakai S3/CDN sehingga tidak memerlukan SDK tambahan.
+
 Pertama ukur p95/error/query volume; batasi payload, perbaiki indeks, optimalkan media. PostgreSQL dapat dipindahkan ke managed service, Nuxt ke Node hosting terpisah, media ke object storage melalui Laravel filesystem ketika kebutuhan nyata muncul. Horizontal Laravel memerlukan shared session/cache/queue serta database bersama. SQLite hanya satu instalasi ringan; tidak untuk multi-instance. Redis/full text/worker service ditambahkan berdasarkan evidence, bukan persiapan spekulatif.

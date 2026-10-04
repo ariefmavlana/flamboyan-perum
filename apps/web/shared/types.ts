@@ -1,4 +1,5 @@
 export interface Property {
+  media?: PublicMedia[]
   id: number
   slug: string
   title: string
@@ -15,6 +16,25 @@ export interface Property {
   bathrooms: number
   availability: 'AVAILABLE' | 'BOOKED' | 'SOLD_OUT'
   featured: boolean
+}
+export interface PublicMedia {
+  id: number
+  kind: 'PHOTO' | 'FLOOR_PLAN' | 'VIDEO' | 'TOUR' | 'BROCHURE'
+  alt: string
+  position: number
+  url: string | null
+  width: number | null
+  height: number | null
+  sources: { url: string; width: number | null; height: number | null }[]
+}
+export interface InternalMedia {
+  id: number
+  kind: PublicMedia['kind']
+  alt: string
+  position: number
+  state: 'PROCESSING' | 'READY' | 'FAILED' | 'ARCHIVED'
+  published: boolean
+  failure_code: string | null
 }
 export interface Paginated<T> {
   data: T[]

@@ -3,7 +3,7 @@ export function useStaffApi() {
     path: string,
     options: {
       method?: 'GET' | 'POST' | 'PATCH'
-      body?: Record<string, unknown>
+      body?: Record<string, unknown> | FormData
     } = {},
   ): Promise<T> {
     if (options.method && options.method !== 'GET')

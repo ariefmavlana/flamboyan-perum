@@ -7,6 +7,9 @@ import {
 } from '#shared/utils/catalog'
 const props = defineProps<{ property: Property }>()
 const config = useRuntimeConfig()
+const cover = computed(() =>
+  props.property.media?.find((item) => item.kind === 'PHOTO'),
+)
 const wa = computed(() =>
   whatsappLink(
     config.public.whatsappNumber,
@@ -18,7 +21,16 @@ const wa = computed(() =>
 
 <template>
   <article class="property-card">
-    <div class="property-visual" aria-hidden="true">
+    <img
+      v-if="cover?.sources[0]"
+      class="card-photo"
+      :src="cover.sources[0].url"
+      :alt="cover.alt"
+      :width="cover.sources[0].width ?? undefined"
+      :height="cover.sources[0].height ?? undefined"
+      loading="lazy"
+    />
+    <div v-else class="property-visual" aria-hidden="true">
       <span>{{ property.house_type }}</span>
       <div class="house-line" />
       <small>Foto belum tersedia</small>

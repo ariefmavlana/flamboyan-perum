@@ -222,6 +222,7 @@ onMounted(() => load())
       ref="editor"
       class="history-drawer"
       aria-labelledby="property-editor-title"
+      @close="selected = null"
     >
       <div class="section-heading">
         <h2 id="property-editor-title">
@@ -340,6 +341,13 @@ onMounted(() => load())
         </p>
         <button class="button" :disabled="busy">Simpan properti</button>
       </form>
+      <MediaManager
+        v-if="selected"
+        :key="selected.id"
+        :property-id="selected.id"
+        :version="selected.version"
+        @version="selected.version = $event"
+      />
       <form
         v-if="selected && session.account.value?.role === 'ADMIN'"
         class="section"

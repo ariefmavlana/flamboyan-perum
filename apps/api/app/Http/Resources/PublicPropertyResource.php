@@ -9,6 +9,8 @@ class PublicPropertyResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        return $this->resource->only(['id', 'slug', 'title', 'house_type', 'condition', 'certificate', 'location', 'address', 'description', 'price_idr', 'land_area', 'building_area', 'bedrooms', 'bathrooms', 'availability', 'featured']);
+        $media = $this->resource->relationLoaded('publicMedia') ? $this->publicMedia : collect($this->resource->relationLoaded('coverMedia') && $this->coverMedia ? [$this->coverMedia] : []);
+
+        return array_merge($this->resource->only(['id', 'slug', 'title', 'house_type', 'condition', 'certificate', 'location', 'address', 'description', 'price_idr', 'land_area', 'building_area', 'bedrooms', 'bathrooms', 'availability', 'featured']), ['media' => $media->map(fn ($item) => $item->publicData())->all()]);
     }
 }

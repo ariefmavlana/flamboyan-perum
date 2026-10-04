@@ -58,10 +58,7 @@ useHead(() => ({ link: [{ rel: 'canonical', href: canonical.value }] }))
     </div>
     <div class="detail-grid">
       <div>
-        <div class="detail-visual property-visual">
-          <div class="house-line" aria-hidden="true" />
-          <p>Foto properti belum tersedia.</p>
-        </div>
+        <PropertyGallery :media="property.media ?? []" />
         <h2>Tentang rumah ini</h2>
         <p class="description">{{ property.description }}</p>
       </div>
