@@ -31,21 +31,35 @@ Runtime `vercel-php` yang dipakai **tidak menyediakan ekstensi GD**, dan `config
 - **Pembuatan media (upload → staging → WebP → publikasi) hanya berjalan lokal** memakai Docker yang punya GD.
 - **Vercel hanya membaca** media yang sudah ada di R2 melalui endpoint `/media/{id}/{variant}` dan `/api/v1/content/{id}/logo`.
 
-Konsekuensi demo: staf **tidak bisa menambah foto baru** dari UI di deployment Vercel (akan masuk `FAILED` dengan kode `IMAGE_PROCESSOR_UNAVAILABLE`). Semua alur lain (katalog, filter, compare, KPR, CRM, histori, notifikasi, CMS teks) tetap berfungsi karena tidak butuh GD.
+Konsekuensi demo: foto dan brosur yang sudah diproses lokal **tampil normal** di Vercel, tetapi staf **tidak dapat menghasilkan media baru** dari UI deployment. Unggahan akan diterima (HTTP 201) lalu gagal saat diproses dengan `state FAILED` dan `failure_code IMAGE_PROCESSOR_UNAVAILABLE` (atau `SCANNER_UNAVAILABLE` untuk brosur), dan berkas staging sengaja dipertahankan agar tombol coba ulang tetap bekerja. Perilaku ini terbukti lewat uji perilaku pada PHP 8.3 tanpa GD, bukan asumsi. Semua alur lain (katalog, filter, compare, KPR, CRM, histori, notifikasi, CMS teks) tetap berfungsi karena tidak butuh GD.
 
 ## 2. Status verifikasi
 
 | Item | Status | Bukti |
 |---|---|---|
 | Nitro build preset `vercel` | Terverifikasi | `NITRO_PRESET=vercel npm run build` sukses, menghasilkan `.vercel/output` (fungsi `__fallback.func`) |
-| Suite PHP setelah perubahan path media | Terverifikasi | `phpunit`: 77 test, 579 assertion, OK pada PHP 8.3.35 + GD (Docker) |
+| Suite PHP setelah perubahan path media | Terverifikasi | `phpunit`: 78 test, 588 assertion, OK pada PHP 8.3.35 + GD (Docker) |
 | Format kode backend | Terverifikasi | `vendor/bin/pint --test` PASS pada semua file yang diubah |
 | Lint/typecheck/unit frontend | Terverifikasi | `npm run lint`, `npm run typecheck`, `npm test` (15 test) lulus |
 | Disk `media` beralih ke driver s3 | Terverifikasi | `MEDIA_DISK_DRIVER=s3` memilih driver s3; tanpa adapter muncul error jelas (lihat 3.1) |
+| Proxy function meneruskan body multipart | Terverifikasi dari paket | `vercel-php@0.9.0` `dist/launchers/builtin.js` mem-proxy body mentah; hitungan chunk tak berujung sehingga tidak dipotong |
+| Perilaku upload tanpa GD | Terverifikasi | Uji perilaku pada PHP 8.3 tanpa GD: `201` lalu `FAILED`/`IMAGE_PROCESSOR_UNAVAILABLE`, staging dipertahankan |
+| Perbaikan bug cleanup media | Terverifikasi | Regresi baru gagal pada perilaku lama dan lulus pada perilaku baru |
 | Deploy nyata ke Vercel, koneksi Supabase/R2, routing cookie di produksi | **Belum diverifikasi** | Butuh akun dan kredensial Anda; ikuti checklist bagian 8 |
-| Ekstensi `gd`/`intl`/`pdo_pgsql` pada runtime Vercel | Belum diverifikasi | Daftar ekstensi README runtime menyertakan `pdo_pgsql`/`pgsql`/`sodium`/`intl`/`zip`/`pcntl`/OPcache, `gd` **tidak ada**; konfirmasi dengan `api/phpinfo.php` sementara |
+| `SESSION_DOMAIN` pada deployment nyata | **Belum diverifikasi** | Tergantung perilaku Set-Cookie lintas domain Vercel; uji dan set hanya bila cookie ter-scope salah |
+| Ekstensi `intl`/`pdo_pgsql` pada runtime Vercel | Belum diverifikasi | Daftar ekstensi README runtime menyertakan `pdo_pgsql`/`pgsql`/`sodium`/`intl`/`zip`/`pcntl`/OPcache, `gd` **tidak ada**; konfirmasi dengan `api/phpinfo.php` sementara |
 
 ## 3. Batasan yang wajib diterima sebelum mulai
+
+### 3.0 Bug integritas media (sudah ditambal di branch ini)
+
+`flamboyan:media-cleanup` sebelumnya mencocokkan direktori `ready/{uuid}` ke kolom `variants` lewat `LIKE` pada teks JSON mentah, sedangkan JSON menulis garis miring sebagai `\/`. Pencocokan itu tidak pernah berhasil, sehingga direktori media yang masih dipakai dianggap sampah dan dihapus setelah masa grace 30 hari. Fixture demo lokal sudah mengalami dua kehilangan varian WebP pada media berstatus `READY` yang `published`; halaman publik menerima `404` untuk varian tersebut.
+
+Yang harus dilakukan:
+
+- Jangan jalankan `flamboyan:media-cleanup --execute` pada perilaku lama.
+- Periksa data yang sudah terlanjur dibersihkan dengan membandingkan path varian di `property_media` terhadap berkas yang benar-benar ada, lalu proses ulang atau ganti media yang hilang. Tidak ada pemulihan otomatis.
+- Saat memindahkan fixture demo ke R2, unggah media yang sudah terbukti ada agar bucket dan metadata tetap sinkron.
 
 ### 3.1 Adapter S3 wajib ada di bundle
 
@@ -87,7 +101,7 @@ Function Vercel tidak punya disk persisten dan tidak punya proses latar. Karena 
 | [apps/api/app/Http/Controllers/MediaController.php](../apps/api/app/Http/Controllers/MediaController.php) | Memakai `MediaDisk` (sebelumnya `Storage::disk('media')->path()`) |
 | [apps/api/app/Http/Controllers/ContentController.php](../apps/api/app/Http/Controllers/ContentController.php) | Idem untuk logo bank |
 | [apps/api/app/Services/MediaProcessor.php](../apps/api/app/Services/MediaProcessor.php) | Scanner memakai berkas sementara pada disk remote |
-| [apps/api/app/Console/Commands/CleanupMedia.php](../apps/api/app/Console/Commands/CleanupMedia.php) | Pemindaian orphan hanya pada disk lokal; pada disk remote dilaporkan sebagai `not scanned` |
+| [apps/api/app/Console/Commands/CleanupMedia.php](../apps/api/app/Console/Commands/CleanupMedia.php) | Pemindaian orphan hanya pada disk lokal, dan pencocokan direktori `ready` memakai path hasil decode (perbaikan kehilangan media) |
 | [apps/api/config/filesystems.php](../apps/api/config/filesystems.php) | Disk `media` dapat memakai driver `s3` via `MEDIA_DISK_DRIVER` |
 | [apps/api/config/view.php](../apps/api/config/view.php) | Mem-publish konfigurasi view agar `VIEW_COMPILED_PATH` dapat diarahkan ke `/tmp` |
 | [apps/web/vercel.json](../apps/web/vercel.json) | Konfigurasi build Nuxt di Vercel (`NITRO_PRESET=vercel`) |
@@ -167,6 +181,7 @@ Storage Supabase tidak dipakai untuk media karena batas file Free 50 MB dan disk
 | `SESSION_SECURE_COOKIE` | `true` |
 | `SESSION_SAME_SITE` | `lax` |
 | `SANCTUM_STATEFUL_DOMAINS` | host web tanpa skema, mis. `flamboyan-demo.vercel.app` |
+| `SESSION_DOMAIN` | **set hanya bila perlu** — biarkan kosong agar host-only; isi host web tanpa skema (mis. `flamboyan-demo.vercel.app`) hanya jika cookie tidak ter-scope dengan benar |
 | `MEDIA_DISK_DRIVER` | `s3` |
 | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | kredensial R2 |
 | `AWS_BUCKET` / `AWS_ENDPOINT` / `AWS_DEFAULT_REGION` | dari Langkah 2 (`auto`) |
@@ -308,6 +323,7 @@ Semua item harus dibuktikan di deployment nyata sebelum demo dibagikan:
 - [ ] `GET /sanctum/csrf-cookie` men-set cookie pada host web; `POST /auth/login` dengan `admin@example.test` berhasil dan `/backoffice` dapat dibuka lalu bertahan setelah reload.
 - [ ] Perubahan data (mis. ubah harga properti) terlihat setelah reload halaman publik (membuktikan Supabase, bukan cache).
 - [ ] `APP_DEBUG=false` terbukti: memicu 404/500 tidak menampilkan stack trace.
+- [ ] Media yang tampil sudah diverifikasi: tidak ada `404` pada `/media/{id}/{variant}` untuk properti publik mana pun (lihat 3.0).
 - [ ] `vercel-php` menyediakan ekstensi yang dibutuhkan: konfirmasi lewat `api/phpinfo.php` sementara (`pdo_pgsql`, `pgsql`, `sodium`, `mbstring`, `openssl`, `curl`), lalu **hapus berkas tersebut**.
 - [ ] Tidak ada kredensial di repo: `git status` bersih dari `.env`, kunci R2, dan `DB_URL`.
 

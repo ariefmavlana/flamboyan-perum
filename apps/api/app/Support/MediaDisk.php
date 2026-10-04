@@ -87,19 +87,19 @@ class MediaDisk
 
     public static function fileResponse(string $path, array $headers = []): BinaryFileResponse
     {
-        return self::disposable(response()->file(self::localPath($path)['path'], $headers), $path);
+        return self::disposable(response()->file(self::localPath($path)['path'], $headers));
     }
 
     public static function downloadResponse(string $path, string $name, array $headers = []): BinaryFileResponse
     {
-        return self::disposable(response()->download(self::localPath($path)['path'], $name, $headers), $path);
+        return self::disposable(response()->download(self::localPath($path)['path'], $name, $headers));
     }
 
     /**
      * Temporary copies must survive until the response has been sent. Paths that
      * live on the private disk itself must never be deleted after sending.
      */
-    private static function disposable(BinaryFileResponse $response, string $path): BinaryFileResponse
+    private static function disposable(BinaryFileResponse $response): BinaryFileResponse
     {
         return self::isLocal()
             ? $response

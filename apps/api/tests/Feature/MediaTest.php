@@ -163,6 +163,28 @@ class MediaTest extends TestCase
         $this->assertDatabaseHas('activity_logs', ['subject_id' => $property->id, 'action' => 'MEDIA_ARCHIVED']);
     }
 
+    public function test_cleanup_keeps_ready_directories_that_are_still_referenced_by_variants(): void
+    {
+        Storage::fake('media');
+        Queue::fake();
+        $property = $this->property();
+        $response = $this->postJson('/api/v1/internal/properties/'.$property->id.'/media', ['version' => 1, 'kind' => 'PHOTO', 'alt' => 'Tetap dirujuk', 'file' => UploadedFile::fake()->image('photo.jpg', 400, 300)])->assertCreated();
+        $media = PropertyMedia::findOrFail($response->json('data.id'));
+        (new ProcessPropertyMedia($media->id))->handle(app(MediaProcessor::class));
+        $media->refresh();
+        $this->assertSame('READY', $media->state);
+        $directory = dirname($media->variants['640']['path']);
+        $this->assertNotEmpty($directory);
+        // Json encodes slashes as "\/", which a raw LIKE on the stored text cannot match.
+        Storage::disk('media')->assertExists($directory.'/640.webp');
+        $this->travel(31)->days();
+        $this->artisan('flamboyan:media-cleanup', ['--execute' => true])->assertSuccessful();
+        foreach ($media->variants as $size => $variant) {
+            Storage::disk('media')->assertExists($variant['path']);
+        }
+        $this->assertNull($media->fresh()->purged_at);
+    }
+
     public function test_brochure_scanner_clean_and_unsafe_contracts_are_enforced(): void
     {
         Storage::fake('media');
