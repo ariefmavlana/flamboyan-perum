@@ -27,6 +27,24 @@ class MediaTest extends TestCase
         return Property::create(['owner_id' => $owner->id, 'slug' => 'media-test', 'title' => 'Properti Media', 'house_type' => '60', 'condition' => 'NEW', 'certificate' => 'SHM', 'location' => 'Bogor', 'address' => 'Alamat test', 'description' => 'Data pengujian', 'price_idr' => 900000000, 'land_area' => 90, 'building_area' => 60, 'bedrooms' => 3, 'bathrooms' => 2, 'publication' => 'PUBLISHED']);
     }
 
+    public function test_masterplan_is_a_separate_image_kind_with_private_processing_and_single_asset_limit(): void
+    {
+        Storage::fake('media');
+        Queue::fake();
+        $property = $this->property();
+        $path = '/api/v1/internal/properties/'.$property->id.'/media';
+        $file = UploadedFile::fake()->image('masterplan.jpg', 800, 600);
+        $result = $this->postJson($path, ['version' => 1, 'kind' => 'MASTERPLAN', 'alt' => 'Rencana kawasan, bukan denah rumah', 'file' => $file])->assertCreated();
+        $id = $result->json('data.id');
+        $this->get('/media/'.$id.'/640')->assertNotFound();
+        $this->postJson($path, ['version' => 2, 'kind' => 'MASTERPLAN', 'alt' => 'Duplikat', 'file' => $file])->assertConflict();
+        (new ProcessPropertyMedia($id))->handle(app(MediaProcessor::class));
+        $this->getJson('/api/v1/properties/media-test')->assertJsonPath('data.media.0.kind', 'MASTERPLAN')->assertJsonMissingPath('data.media.0.variants');
+        $this->get('/media/'.$id.'/640')->assertOk()->assertHeader('Content-Type', 'image/webp');
+        $this->patchJson($path.'/'.$id, ['version' => 2, 'published' => false])->assertOk();
+        $this->get('/media/'.$id.'/640')->assertNotFound();
+    }
+
     public function test_images_are_private_until_decoded_reencoded_and_published(): void
     {
         Storage::fake('media');

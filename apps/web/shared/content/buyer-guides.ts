@@ -114,7 +114,7 @@ export const buyerGuides: BuyerGuide[] = [
       },
       {
         title: 'Perhatikan periode bunga',
-        text: 'Tanyakan berapa lama bunga tetap berlaku dan bagaimana bunga setelah periode itu ditentukan. Skenario floating pada kalkulator memakai angka yang Anda masukkan, bukan ramalan suku bunga.',
+        text: 'Periksa setiap tahap bunga fixed, tenor minimum, dan mekanisme bunga setelahnya. Referensi bank bertanggal dapat mempunyai bunga berjenjang; cicilan dihitung ulang dari sisa pokok dan tenor pada setiap tahap. Floating pada kalkulator adalah skenario, bukan ramalan atau janji bank.',
         checklist: [
           'Periode fixed dan syarat program.',
           'Mekanisme peninjauan bunga setelah fixed.',
@@ -123,7 +123,7 @@ export const buyerGuides: BuyerGuide[] = [
       },
       {
         title: 'Minta rincian biaya tertulis',
-        text: 'Selain cicilan, pembiayaan dapat melibatkan biaya administrasi, appraisal, asuransi, notaris, dan biaya lain sesuai produk. Konfirmasikan rincian, syarat, dan keputusan pembiayaan langsung kepada bank.',
+        text: 'Selain cicilan, ada provisi, administrasi, appraisal, asuransi, notaris, pajak, dan biaya sesuai produk. Program biaya developer perlu dikonfirmasi cakupan dan pengecualiannya agar tidak dihitung dua kali dengan biaya bank. Tanda jadi berbeda dari DP; klaim tanpa DP tetap membutuhkan keputusan kredit bank. Nilai biaya kosong belum diketahui, bukan gratis.',
         checklist: [
           'Minta ringkasan informasi produk yang berlaku.',
           'Tanyakan biaya awal dan biaya pelunasan dipercepat.',
@@ -133,7 +133,7 @@ export const buyerGuides: BuyerGuide[] = [
     ],
     reference: {
       title: 'Contoh informasi resmi biaya dan periode bunga KPR — BCA',
-      url: 'https://rumahsaya.bca.co.id/id/info-kpr/Sukubunga-kpr',
+      url: 'https://www.bca.co.id/id/individu/produk/pinjaman/kpr/kpr-first',
     },
   },
 ]

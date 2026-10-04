@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import type { EditorialContent, InternalMedia, Paginated } from '#shared/types'
+import type {
+  EditorialContent,
+  InternalMedia,
+  Paginated,
+  RatePhase,
+} from '#shared/types'
 definePageMeta({ layout: 'backoffice' })
 useSeoMeta({ title: 'Konten publik — Flamboyan', robots: 'noindex, nofollow' })
 const api = useStaffApi()
@@ -13,9 +18,26 @@ const kind = ref<EditorialContent['kind']>('HERO')
 const form = reactive({
   published: false,
   position: 0,
-  payload: {} as EditorialContent['payload'],
+  payload: {} as Record<string, string | number | null>,
 })
 const verified = ref(false)
+const phases = ref<RatePhase[]>([])
+watch(
+  phases,
+  () => {
+    verified.value = false
+  },
+  { deep: true, flush: 'sync' },
+)
+function removePhase(index: number) {
+  phases.value.splice(index, 1)
+}
+function addPhase() {
+  phases.value.push({
+    months: 12,
+    annual_rate: Number(form.payload.annual_rate),
+  })
+}
 const heroProperty = ref<number | null>(null)
 const heroMediaId = ref<number | null>(null)
 const heroMediaOptions = ref<InternalMedia[]>([])
@@ -105,7 +127,72 @@ const schemas = {
     { key: 'name', label: 'Nama bank mitra', type: 'text', max: 120 },
     { key: 'website', label: 'Situs resmi bank HTTPS', type: 'url', max: 2048 },
   ],
+  DEVELOPMENT: [
+    { key: 'name', label: 'Nama kawasan', type: 'text', max: 160 },
+    { key: 'developer', label: 'Developer', type: 'text', max: 160 },
+    { key: 'address', label: 'Alamat kawasan', type: 'text', max: 500 },
+    {
+      key: 'whatsapp',
+      label: 'WhatsApp survei (format 62…)',
+      type: 'text',
+      max: 15,
+    },
+    { key: 'website', label: 'Situs developer HTTPS', type: 'url', max: 2048 },
+    {
+      key: 'planned_units',
+      label: 'Total rencana unit (bukan stok)',
+      type: 'number',
+      max: 100000,
+    },
+    { key: 'house_types', label: 'Jumlah tipe', type: 'number', max: 1000 },
+    {
+      key: 'facilities',
+      label: 'Fasilitas kawasan (satu per baris)',
+      type: 'textarea',
+      max: 3000,
+    },
+    {
+      key: 'nearby',
+      label: 'Fasilitas sekitar (satu per baris, tanpa jarak perkiraan)',
+      type: 'textarea',
+      max: 3000,
+    },
+    { key: 'source_name', label: 'Dokumen sumber', type: 'text', max: 200 },
+    {
+      key: 'source_date',
+      label: 'Tanggal dokumen sumber',
+      type: 'date',
+      max: 0,
+    },
+    {
+      key: 'notes',
+      label: 'Ketentuan kawasan / verifikasi fasilitas',
+      type: 'textarea',
+      max: 2000,
+    },
+  ],
   BANK_RATE: [
+    {
+      key: 'min_principal_idr',
+      label: 'Plafon minimum (IDR)',
+      type: 'number',
+      max: 1000000000000,
+      optional: true,
+    },
+    {
+      key: 'max_principal_idr',
+      label: 'Plafon maksimum (IDR)',
+      type: 'number',
+      max: 1000000000000,
+      optional: true,
+    },
+    {
+      key: 'max_ltv_percent',
+      label: 'LTV maksimum produk (%) — isi hanya dengan ketentuan bank',
+      type: 'number',
+      max: 100,
+      optional: true,
+    },
     { key: 'bank', label: 'Nama bank', type: 'text', max: 120 },
     { key: 'product', label: 'Nama produk', type: 'text', max: 160 },
     { key: 'annual_rate', label: 'Bunga tahunan (%)', type: 'number', max: 30 },
@@ -127,7 +214,90 @@ const schemas = {
       type: 'date',
       max: 0,
     },
-    { key: 'source_url', label: 'Sumber bank HTTPS', type: 'url', max: 2048 },
+    {
+      key: 'source_url',
+      label: 'Sumber resmi bank HTTPS',
+      type: 'url',
+      max: 2048,
+    },
+    {
+      key: 'floating_rate',
+      label: 'Floating saat diperiksa (%) — bukan jaminan masa depan',
+      type: 'number',
+      max: 30,
+      optional: true,
+    },
+    {
+      key: 'min_tenor_months',
+      label: 'Tenor minimum (bulan)',
+      type: 'number',
+      max: 360,
+      optional: true,
+    },
+    {
+      key: 'max_tenor_months',
+      label: 'Tenor maksimum (bulan)',
+      type: 'number',
+      max: 360,
+      optional: true,
+    },
+    {
+      key: 'checked_date',
+      label: 'Tanggal pemeriksaan sumber bank',
+      type: 'date',
+      max: 0,
+      optional: true,
+    },
+    {
+      key: 'conditions',
+      label:
+        'Syarat produk, kelompok nasabah, plafon, developer dan biaya yang belum tercakup',
+      type: 'textarea',
+      max: 2500,
+      optional: true,
+    },
+    {
+      key: 'provision_percent',
+      label: 'Provisi (% plafon)',
+      type: 'number',
+      max: 10,
+      optional: true,
+    },
+    {
+      key: 'admin_percent',
+      label: 'Administrasi (% plafon)',
+      type: 'number',
+      max: 10,
+      optional: true,
+    },
+    {
+      key: 'admin_min_idr',
+      label: 'Administrasi minimum / tetap (IDR)',
+      type: 'number',
+      max: 1000000000000,
+      optional: true,
+    },
+    {
+      key: 'admin_max_idr',
+      label: 'Administrasi maksimum (IDR)',
+      type: 'number',
+      max: 1000000000000,
+      optional: true,
+    },
+    {
+      key: 'appraisal_min_idr',
+      label: 'Appraisal minimum (IDR)',
+      type: 'number',
+      max: 1000000000000,
+      optional: true,
+    },
+    {
+      key: 'appraisal_max_idr',
+      label: 'Appraisal maksimum (IDR)',
+      type: 'number',
+      max: 1000000000000,
+      optional: true,
+    },
   ],
 } as const
 watch(
@@ -169,16 +339,25 @@ function open(record?: EditorialContent) {
   kind.value = record?.kind ?? kind.value
   form.published = record?.published ?? false
   form.position = record?.position ?? 0
+  phases.value = Array.isArray(record?.payload.phases)
+    ? JSON.parse(JSON.stringify(record.payload.phases))
+    : []
   form.payload = record
-    ? JSON.parse(JSON.stringify(record.payload))
+    ? (Object.fromEntries(
+        Object.entries(record.payload).filter(
+          ([key, value]) => key !== 'phases' && !Array.isArray(value),
+        ),
+      ) as Record<string, string | number | null>)
     : Object.fromEntries(
         schemas[kind.value].map((field) => [
           field.key,
-          field.type === 'number'
-            ? field.key === 'fixed_months'
-              ? 36
-              : 0
-            : '',
+          'optional' in field && field.optional
+            ? ''
+            : field.type === 'number'
+              ? field.key === 'fixed_months'
+                ? 36
+                : 0
+              : '',
         ]),
       )
   heroProperty.value =
@@ -206,9 +385,20 @@ async function save() {
         ? { property_id: heroProperty.value, media_id: heroMediaId.value }
         : {}),
     }
-    for (const field of schemas[kind.value])
-      if (field.type === 'number')
+    for (const field of schemas[kind.value]) {
+      if (
+        'optional' in field &&
+        field.optional &&
+        (payload[field.key] === '' ||
+          payload[field.key] === undefined ||
+          payload[field.key] === null)
+      )
+        Reflect.deleteProperty(payload, field.key)
+      else if (field.type === 'number')
         payload[field.key] = Number(payload[field.key])
+    }
+    if (kind.value === 'BANK_RATE' && phases.value.length)
+      payload.phases = phases.value
     const result = await api.request<{ data: EditorialContent }>(
       `/api/v1/internal/content${selected.value ? `/${selected.value.id}` : ''}`,
       {
@@ -256,6 +446,7 @@ onMounted(() => load())
             <option value="TESTIMONIAL">Testimonial</option>
             <option value="BANK_RATE">Rate bank</option>
             <option value="BANK_PARTNER">Bank mitra</option>
+            <option value="DEVELOPMENT">Kawasan & kontak</option>
           </select></label
         ><button class="button" :disabled="busy" @click="open()">
           Tambah konten
@@ -289,6 +480,7 @@ onMounted(() => load())
                     TESTIMONIAL: 'Testimonial',
                     BANK_RATE: 'Referensi bank',
                     BANK_PARTNER: 'Bank mitra',
+                    DEVELOPMENT: 'Kawasan & kontak',
                   }[record.kind]
                 }}
               </td>
@@ -344,11 +536,11 @@ onMounted(() => load())
             }}<textarea
               v-if="field.type === 'textarea'"
               v-model="form.payload[field.key]"
-              required
+              :required="!('optional' in field && field.optional)"
               :maxlength="field.max" /><input
               v-else
               v-model="form.payload[field.key]"
-              required
+              :required="!('optional' in field && field.optional)"
               :type="field.type"
               :maxlength="
                 field.type === 'text' || field.type === 'url'
@@ -364,7 +556,9 @@ onMounted(() => load())
                     : undefined
               "
               :step="
-                field.key === 'annual_rate'
+                field.key === 'annual_rate' ||
+                field.key.endsWith('_rate') ||
+                field.key.endsWith('_percent')
                   ? '0.01'
                   : field.type === 'number'
                     ? '1'
@@ -380,6 +574,51 @@ onMounted(() => load())
               required
           /></label>
         </div>
+        <section v-if="kind === 'BANK_RATE'">
+          <h3>Bunga fixed berjenjang (opsional)</h3>
+          <p>
+            Jumlah bulan tahapan harus sama dengan masa fixed. Bunga tahap
+            pertama harus sama dengan bunga awal. Kosongkan untuk fixed satu
+            tahap. Angka biaya yang kosong berarti belum diketahui, bukan
+            gratis.
+          </p>
+          <div v-for="(phase, index) in phases" :key="index" class="form-grid">
+            <label
+              >Durasi tahap {{ index + 1 }} (bulan)<input
+                v-model.number="phase.months"
+                type="number"
+                min="1"
+                max="360"
+                required
+                @input="verified = false"
+            /></label>
+            <label
+              >Bunga efektif tahap {{ index + 1 }} (% per tahun)<input
+                v-model.number="phase.annual_rate"
+                type="number"
+                min="0"
+                max="30"
+                step="0.01"
+                required
+                @input="verified = false"
+            /></label>
+            <button
+              type="button"
+              class="button secondary"
+              @click="removePhase(index)"
+            >
+              Hapus tahap {{ index + 1 }}
+            </button>
+          </div>
+          <button
+            type="button"
+            class="button secondary"
+            :disabled="phases.length >= 10"
+            @click="addPhase"
+          >
+            Tambah tahap bunga
+          </button>
+        </section>
         <StaffPicker
           v-if="kind === 'HERO'"
           v-model="heroProperty"

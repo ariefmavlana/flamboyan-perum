@@ -25,9 +25,9 @@ class PropertyController extends Controller
             'min_building_area' => 'sometimes|numeric|min:0|max:1000000', 'max_building_area' => 'sometimes|numeric|min:0|max:1000000',
             'bedrooms' => 'sometimes|integer|between:0,50', 'bathrooms' => 'sometimes|integer|between:1,50',
             'condition' => ['sometimes', Rule::in(['NEW', 'RESALE'])], 'certificate' => 'sometimes|string|max:80',
-            'location' => 'sometimes|string|max:160', 'availability' => ['sometimes', Rule::in(['AVAILABLE', 'BOOKED', 'SOLD_OUT'])], 'featured' => 'sometimes|boolean',
+            'location' => 'sometimes|string|max:160', 'availability' => ['sometimes', Rule::in(['AVAILABLE', 'BOOKED', 'SOLD_OUT', 'CHECK_REQUIRED'])], 'featured' => 'sometimes|boolean',
         ]);
-        $query = Property::query()->with('coverMedia')->where('publication', 'PUBLISHED');
+        $query = Property::query()->select('properties.*')->selectRaw(Property::PRICE_SQL.' AS current_price_idr', Property::priceDates())->with('coverMedia')->where('publication', 'PUBLISHED');
         if (! empty($data['q'])) {
             $pattern = '%'.str_replace(['!', '%', '_'], ['!!', '!%', '!_'], mb_strtolower($data['q'])).'%';
             $query->where(fn ($q) => $q->whereRaw("LOWER(title) LIKE ? ESCAPE '!'", [$pattern])->orWhereRaw("LOWER(location) LIKE ? ESCAPE '!'", [$pattern])->orWhereRaw("LOWER(address) LIKE ? ESCAPE '!'", [$pattern]));
@@ -43,7 +43,11 @@ class PropertyController extends Controller
             }
             foreach (['min' => '>=', 'max' => '<='] as $bound => $operator) {
                 if (isset($data[$bound.'_'.$param])) {
-                    $query->where($column, $operator, $data[$bound.'_'.$param]);
+                    if ($param === 'price') {
+                        $query->whereRaw('('.Property::PRICE_SQL.') '.$operator.' CAST(? AS BIGINT)', [...Property::priceDates(), $data[$bound.'_'.$param]]);
+                    } else {
+                        $query->where($column, $operator, $data[$bound.'_'.$param]);
+                    }
                 }
             }
         }
@@ -53,7 +57,7 @@ class PropertyController extends Controller
             }
         }
         [$column, $direction] = match ($data['sort'] ?? 'newest') {
-            'price_asc' => ['price_idr', 'asc'], 'price_desc' => ['price_idr', 'desc'],
+            'price_asc' => ['current_price_idr', 'asc'], 'price_desc' => ['current_price_idr', 'desc'],
             'land_asc' => ['land_area', 'asc'], 'land_desc' => ['land_area', 'desc'],
             'building_asc' => ['building_area', 'asc'], 'building_desc' => ['building_area', 'desc'],
             default => ['created_at', 'desc'],
@@ -179,7 +183,7 @@ class PropertyController extends Controller
             'price_idr' => $prefix.'integer|between:1,1000000000000', 'land_area' => $prefix.'numeric|decimal:0,2|min:0.01|max:1000000',
             'building_area' => $prefix.'numeric|decimal:0,2|min:0.01|max:1000000', 'bedrooms' => $prefix.'integer|between:0,50', 'bathrooms' => $prefix.'integer|between:1,50',
             'publication' => ['sometimes', Rule::in(['DRAFT', 'PUBLISHED', 'ARCHIVED'])],
-            'availability' => ['sometimes', Rule::in(['AVAILABLE', 'BOOKED', 'SOLD_OUT'])], 'featured' => 'sometimes|boolean',
+            'availability' => ['sometimes', Rule::in(['AVAILABLE', 'BOOKED', 'SOLD_OUT', 'CHECK_REQUIRED'])], 'featured' => 'sometimes|boolean',
         ];
         if (! $partial) {
             $rules['slug'] = 'required|string|max:160|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/';

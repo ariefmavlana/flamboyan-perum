@@ -2,9 +2,10 @@
 import { whatsappLink } from '#shared/utils/catalog'
 const comparison = useComparison()
 const config = useRuntimeConfig()
+const { whatsappNumber } = await useDevelopment()
 const wa = computed(() =>
   whatsappLink(
-    config.public.whatsappNumber,
+    whatsappNumber.value,
     'properti Flamboyan',
     config.public.siteUrl,
   ),

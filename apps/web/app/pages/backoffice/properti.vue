@@ -202,7 +202,7 @@ onMounted(() => load())
               }}</span>
             </td>
             <td>
-              <button class="text-button" @click="open(property)">
+              <button class="text-button" :disabled="busy" @click="open(property)">
                 Edit properti</button
               ><NuxtLink
                 v-if="property.publication === 'PUBLISHED'"
@@ -325,6 +325,7 @@ onMounted(() => load())
             </select></label
           ><label
             >Ketersediaan<select v-model="form.availability">
+              <option value="CHECK_REQUIRED">Konfirmasi unit</option>
               <option value="AVAILABLE">Tersedia</option>
               <option value="BOOKED">Booked</option>
               <option value="SOLD_OUT">Sold out</option>
@@ -359,6 +360,12 @@ onMounted(() => load())
         </p>
         <button class="button" :disabled="busy">Simpan properti</button>
       </form>
+      <CommercialEditor
+        v-if="selected && session.account.value?.role === 'ADMIN'"
+        :key="'commercial-' + selected.id"
+        :property="selected"
+        @saved="selected = $event"
+      />
       <LocationEditor
         v-if="selected"
         :key="selected.id"

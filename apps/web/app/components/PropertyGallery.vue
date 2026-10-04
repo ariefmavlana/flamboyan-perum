@@ -5,11 +5,13 @@ const hydrated = ref(false)
 onMounted(() => {
   hydrated.value = true
 })
-type ImageKind = 'PHOTO' | 'FLOOR_PLAN'
+type ImageKind = 'PHOTO' | 'FLOOR_PLAN' | 'MASTERPLAN'
 const images = computed(() =>
   props.media.filter(
     (item) =>
-      (item.kind === 'PHOTO' || item.kind === 'FLOOR_PLAN') &&
+      (item.kind === 'PHOTO' ||
+        item.kind === 'FLOOR_PLAN' ||
+        item.kind === 'MASTERPLAN') &&
       item.sources.length > 0,
   ),
 )
@@ -18,6 +20,7 @@ const groups = computed(() =>
     [
       { kind: 'PHOTO', label: 'Foto' },
       { kind: 'FLOOR_PLAN', label: 'Denah' },
+      { kind: 'MASTERPLAN', label: 'Masterplan' },
     ] as const
   )
     .map((group) => ({
@@ -142,7 +145,10 @@ const srcset = (item: PublicMedia) =>
       <button
         ref="opener"
         class="gallery-main"
-        :class="{ 'is-plan': selected.kind === 'FLOOR_PLAN' }"
+        :class="{
+          'is-plan':
+            selected.kind === 'FLOOR_PLAN' || selected.kind === 'MASTERPLAN',
+        }"
         type="button"
         aria-label="Perbesar gambar properti"
         :disabled="!hydrated"

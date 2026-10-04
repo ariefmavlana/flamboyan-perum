@@ -8,6 +8,7 @@ import {
 } from '#shared/utils/catalog'
 const route = useRoute()
 const config = useRuntimeConfig()
+const { whatsappNumber } = await useDevelopment()
 const { data, error } = await useFetch<{ data: Property }>(
   `/api/v1/properties/${encodeURIComponent(String(route.params.slug))}`,
 )
@@ -31,11 +32,7 @@ const canonical = computed(() =>
   propertyUrl(config.public.siteUrl, property.value.slug),
 )
 const wa = computed(() =>
-  whatsappLink(
-    config.public.whatsappNumber,
-    property.value.title,
-    canonical.value,
-  ),
+  whatsappLink(whatsappNumber.value, property.value.title, canonical.value),
 )
 const cover = computed(() =>
   property.value.media?.find((media) => media.kind === 'PHOTO'),
@@ -72,7 +69,11 @@ useHead(() => ({
           '@type': 'Offer',
           price: property.value.price_idr,
           priceCurrency: 'IDR',
-          availability: `https://schema.org/${property.value.availability === 'AVAILABLE' ? 'InStock' : property.value.availability === 'SOLD_OUT' ? 'SoldOut' : 'Reserved'}`,
+          ...(property.value.availability === 'CHECK_REQUIRED'
+            ? {}
+            : {
+                availability: `https://schema.org/${property.value.availability === 'AVAILABLE' ? 'InStock' : property.value.availability === 'SOLD_OUT' ? 'SoldOut' : 'Reserved'}`,
+              }),
           itemOffered: {
             '@type': 'House',
             name: property.value.title,
@@ -111,7 +112,11 @@ useHead(() => ({
       }}</span>
     </div>
     <nav class="detail-section-nav" aria-label="Jelajahi detail rumah">
-      <a v-if="hasMedia('PHOTO') || hasMedia('FLOOR_PLAN')" href="#galeri"
+      <a
+        v-if="
+          hasMedia('PHOTO') || hasMedia('FLOOR_PLAN') || hasMedia('MASTERPLAN')
+        "
+        href="#galeri"
         >Foto & denah</a
       >
       <a href="#tentang-rumah">Tentang rumah</a>
@@ -191,6 +196,10 @@ useHead(() => ({
       <div class="detail-content">
         <h2 id="tentang-rumah">Tentang rumah ini</h2>
         <p class="description">{{ property.description }}</p>
+        <PropertyCommercial
+          v-if="property.commercial"
+          :commercial="property.commercial"
+        />
         <PropertyLocation :property="property" />
       </div>
     </div>

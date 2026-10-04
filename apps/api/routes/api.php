@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\CommercialController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\LeadController;
@@ -42,6 +43,7 @@ Route::prefix('v1')->group(function () {
         Route::post('internal/content/{id}/logo', [ContentController::class, 'uploadLogo'])->whereNumber('id');
         Route::patch('internal/content/{id}', [ContentController::class, 'update'])->whereNumber('id');
         Route::patch('internal/properties/{id}/location', [EvaluationController::class, 'location'])->whereNumber('id');
+        Route::patch('internal/properties/{id}/commercial', [CommercialController::class, 'update'])->whereNumber('id');
         Route::get('internal/properties', [PropertyController::class, 'internalIndex']);
         Route::post('internal/properties', [PropertyController::class, 'store']);
         Route::get('internal/properties/{id}/media', [MediaController::class, 'index'])->whereNumber('id');

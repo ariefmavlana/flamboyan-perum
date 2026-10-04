@@ -17,8 +17,64 @@ export interface Property {
   building_area: string
   bedrooms: number
   bathrooms: number
-  availability: 'AVAILABLE' | 'BOOKED' | 'SOLD_OUT'
+  availability: 'AVAILABLE' | 'BOOKED' | 'SOLD_OUT' | 'CHECK_REQUIRED'
   featured: boolean
+  commercial?: PublicCommercial | null
+}
+export interface PaymentPlan {
+  title: string
+  kind: 'CASH' | 'INSTALLMENT'
+  upfront_idr: number
+  months: number
+  monthly_idr: number
+  total_idr: number
+  valid_from: string
+  valid_until: string
+  quota: number
+  source_name: string
+  notes: string
+}
+export interface CommercialSettings {
+  floors: number
+  lot_dimensions: string
+  planned_units: number
+  features: string[]
+  source_name: string
+  source_date: string
+  notes: string
+  fee_notes: string
+  program_fee_idr: number | null
+  program_fee_start: string | null
+  program_fee_until: string | null
+  next_fee_idr: number | null
+  next_fee_start: string | null
+  payment_plans: PaymentPlan[]
+}
+export interface PublicCommercial extends Omit<
+  CommercialSettings,
+  'program_fee_start' | 'program_fee_until' | 'next_fee_idr' | 'next_fee_start'
+> {
+  normal_price_idr: string
+  offer_until: string | null
+}
+export interface Development {
+  id: number
+  name: string
+  developer: string
+  address: string
+  whatsapp: string
+  website: string
+  planned_units: number
+  house_types: number
+  facilities: string
+  nearby: string
+  source_name: string
+  source_date: string
+  notes: string
+}
+export interface RatePhase {
+  months: number
+  annual_rate: number
 }
 export interface PointOfInterest {
   name: string
@@ -36,8 +92,24 @@ export interface BankRate {
   valid_until: string
   fixed_months: number
   source_url: string
+  floating_rate?: number
+  min_tenor_months?: number
+  max_tenor_months?: number
+  checked_date?: string
+  conditions?: string
+  min_principal_idr?: number
+  max_principal_idr?: number
+  max_ltv_percent?: number
+  phases?: RatePhase[]
+  provision_percent?: number
+  admin_percent?: number
+  admin_min_idr?: number
+  admin_max_idr?: number
+  appraisal_min_idr?: number
+  appraisal_max_idr?: number
 }
 export interface PublicContent {
+  development?: Development | null
   hero: {
     id: number
     title: string
@@ -59,8 +131,8 @@ export interface PublicContent {
 }
 export interface EditorialContent {
   id: number
-  kind: 'HERO' | 'TESTIMONIAL' | 'BANK_RATE' | 'BANK_PARTNER'
-  payload: Record<string, string | number | null>
+  kind: 'HERO' | 'TESTIMONIAL' | 'BANK_RATE' | 'BANK_PARTNER' | 'DEVELOPMENT'
+  payload: Record<string, string | number | null | RatePhase[]>
   published: boolean
   position: number
   version: number
@@ -69,7 +141,7 @@ export interface EditorialContent {
 }
 export interface PublicMedia {
   id: number
-  kind: 'PHOTO' | 'FLOOR_PLAN' | 'VIDEO' | 'TOUR' | 'BROCHURE'
+  kind: 'PHOTO' | 'FLOOR_PLAN' | 'MASTERPLAN' | 'VIDEO' | 'TOUR' | 'BROCHURE'
   alt: string
   position: number
   url: string | null
@@ -107,7 +179,13 @@ export interface StaffAccount extends User {
   version: number
   email_verified_at: string | null
 }
-export interface InternalProperty extends Property {
+export interface InternalProperty extends Omit<Property, 'commercial'> {
+  commercial?: CommercialSettings | null
+  offer_price_idr?: string | null
+  offer_start?: string | null
+  offer_end?: string | null
+  next_price_idr?: string | null
+  next_price_start?: string | null
   owner_id: number
   owner: { id: number; name: string }
   publication: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'

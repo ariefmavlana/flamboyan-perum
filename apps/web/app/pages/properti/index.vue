@@ -223,6 +223,7 @@ useHead({
                 aria-label="Ketersediaan"
               >
                 <option value="">Semua</option>
+                <option value="CHECK_REQUIRED">Konfirmasi unit</option>
                 <option value="AVAILABLE">Tersedia</option>
                 <option value="BOOKED">Dipesan</option>
                 <option value="SOLD_OUT">Terjual</option>
