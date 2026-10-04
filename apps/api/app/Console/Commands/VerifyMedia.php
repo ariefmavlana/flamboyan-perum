@@ -28,6 +28,11 @@ class VerifyMedia extends Command
 
         PropertyMedia::query()->orderBy('id')->chunkById(100, function ($items) use ($disk, &$missing, &$checked) {
             foreach ($items as $media) {
+                // Purged media keep their variant paths in the record while the
+                // objects are intentionally gone, so they are not a defect.
+                if ($media->purged_at !== null) {
+                    continue;
+                }
                 if ($media->staging_path && $media->state === 'PROCESSING' && ! $disk->exists($media->staging_path)) {
                     $missing[] = ['media_id' => $media->id, 'property_id' => $media->property_id, 'state' => $media->state, 'published' => (bool) $media->published, 'object' => $media->staging_path, 'variant' => 'staging'];
                 }

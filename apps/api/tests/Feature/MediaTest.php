@@ -208,6 +208,29 @@ class MediaTest extends TestCase
         $this->assertSame('READY', $media->state);
     }
 
+    public function test_media_verify_ignores_media_whose_objects_were_purged_intentionally(): void
+    {
+        Storage::fake('media');
+        Queue::fake();
+        $property = $this->property();
+        $response = $this->postJson('/api/v1/internal/properties/'.$property->id.'/media', ['version' => 1, 'kind' => 'PHOTO', 'alt' => 'Dipurgasi', 'file' => UploadedFile::fake()->image('photo.jpg', 400, 300)])->assertCreated();
+        $media = PropertyMedia::findOrFail($response->json('data.id'));
+        (new ProcessPropertyMedia($media->id))->handle(app(MediaProcessor::class));
+        $media->refresh();
+        $this->assertSame('READY', $media->state);
+        $this->artisan('flamboyan:media-verify')->assertSuccessful();
+
+        // Archiving and purging is the supported lifecycle: files go away while
+        // the record keeps its variant paths and is stamped purged_at.
+        $this->patchJson('/api/v1/internal/properties/'.$property->id.'/media/'.$media->id, ['version' => 2, 'archived' => true])->assertOk();
+        $this->travel(31)->days();
+        $this->artisan('flamboyan:media-cleanup', ['--execute' => true])->assertSuccessful();
+        Storage::disk('media')->assertMissing($media->variants['640']['path']);
+
+        $this->assertNotNull($media->fresh()->purged_at);
+        $this->artisan('flamboyan:media-verify')->assertSuccessful();
+    }
+
     public function test_brochure_scanner_clean_and_unsafe_contracts_are_enforced(): void
     {
         Storage::fake('media');
