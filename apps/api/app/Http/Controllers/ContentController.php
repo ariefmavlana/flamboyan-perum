@@ -8,6 +8,7 @@ use App\Models\Property;
 use App\Models\SiteContent;
 use App\Models\User;
 use App\Services\ContentLogo;
+use App\Support\FinancingContent;
 use App\Support\MediaDisk;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -37,13 +38,13 @@ class ContentController extends Controller
         }
         $today = now('Asia/Jakarta')->toDateString();
 
-        return ['data' => ['hero' => $heroData, 'bank_partners' => (clone $query)->where('kind', 'BANK_PARTNER')->limit(50)->get()->filter(fn ($item) => isset($item->payload['_logo']['path']) && Storage::disk('media')->exists($item->payload['_logo']['path']))->map->publicData()->values(), 'testimonials' => (clone $query)->where('kind', 'TESTIMONIAL')->limit(12)->get()->map->publicData(), 'bank_rates' => (clone $query)->where('kind', 'BANK_RATE')->whereDate('effective_date', '<=', $today)->whereDate('valid_until', '>=', $today)->limit(50)->get()->map->publicData()]];
+        return ['data' => ['development' => (clone $query)->where('kind', 'DEVELOPMENT')->first()?->publicData(), 'hero' => $heroData, 'bank_partners' => (clone $query)->where('kind', 'BANK_PARTNER')->limit(50)->get()->filter(fn ($item) => isset($item->payload['_logo']['path']) && Storage::disk('media')->exists($item->payload['_logo']['path']))->map->publicData()->values(), 'testimonials' => (clone $query)->where('kind', 'TESTIMONIAL')->limit(12)->get()->map->publicData(), 'bank_rates' => (clone $query)->where('kind', 'BANK_RATE')->whereDate('effective_date', '<=', $today)->whereDate('valid_until', '>=', $today)->limit(50)->get()->map->publicData()]];
     }
 
     public function index(Request $request)
     {
         abort_unless($request->user()->role === 'ADMIN', 403);
-        $data = $request->validate(['kind' => ['sometimes', Rule::in(['HERO', 'TESTIMONIAL', 'BANK_RATE', 'BANK_PARTNER'])], 'page' => 'sometimes|integer|min:1']);
+        $data = $request->validate(['kind' => ['sometimes', Rule::in(['HERO', 'TESTIMONIAL', 'BANK_RATE', 'BANK_PARTNER', 'DEVELOPMENT'])], 'page' => 'sometimes|integer|min:1']);
 
         return JsonResource::collection(SiteContent::query()->when(isset($data['kind']), fn ($q) => $q->where('kind', $data['kind']))->orderBy('kind')->orderBy('position')->orderBy('id')->paginate(20));
     }
@@ -78,14 +79,19 @@ class ContentController extends Controller
     private function save(Request $request, ?int $id)
     {
         abort_unless($request->user()->role === 'ADMIN', 403);
-        $data = $request->validate(['kind' => ['required', Rule::in(['HERO', 'TESTIMONIAL', 'BANK_RATE', 'BANK_PARTNER'])], 'published' => 'required|boolean', 'position' => 'required|integer|between:0,1000', 'verified' => 'sometimes|boolean', 'version' => $id ? 'required|integer|min:1' : 'prohibited', 'payload' => 'required|array']);
+        $data = $request->validate(['kind' => ['required', Rule::in(['HERO', 'TESTIMONIAL', 'BANK_RATE', 'BANK_PARTNER', 'DEVELOPMENT'])], 'published' => 'required|boolean', 'position' => 'required|integer|between:0,1000', 'verified' => 'sometimes|boolean', 'version' => $id ? 'required|integer|min:1' : 'prohibited', 'payload' => 'required|array']);
         $rules = match ($data['kind']) {
             'HERO' => ['payload' => 'array:title,description,eyebrow,property_id,media_id', 'payload.title' => 'required|string|max:160', 'payload.description' => 'required|string|max:1000', 'payload.eyebrow' => 'required|string|max:100', 'payload.property_id' => ['present', 'nullable', 'integer', Rule::exists('properties', 'id')], 'payload.media_id' => 'sometimes|nullable|integer|min:1'],
             'BANK_PARTNER' => ['payload' => 'array:name,website', 'payload.name' => 'required|string|max:120', 'payload.website' => 'required|url:https|max:2048'],
             'TESTIMONIAL' => ['payload' => 'array:name,quote,context', 'payload.name' => 'required|string|max:160', 'payload.quote' => 'required|string|max:2000', 'payload.context' => 'required|string|max:160'],
-            'BANK_RATE' => ['payload' => 'array:bank,product,annual_rate,effective_date,valid_until,fixed_months,source_url', 'payload.bank' => 'required|string|max:120', 'payload.product' => 'required|string|max:160', 'payload.annual_rate' => 'required|numeric|between:0,30', 'payload.effective_date' => 'required|date_format:Y-m-d', 'payload.valid_until' => 'required|date_format:Y-m-d|after_or_equal:payload.effective_date', 'payload.fixed_months' => 'required|integer|between:1,360', 'payload.source_url' => 'required|url:https|max:2048'],
+            'BANK_RATE' => FinancingContent::rules(),
+            'DEVELOPMENT' => ['payload' => 'array:name,developer,address,whatsapp,website,planned_units,house_types,facilities,nearby,source_name,source_date,notes', 'payload.name' => 'required|string|max:160', 'payload.developer' => 'required|string|max:160', 'payload.address' => 'required|string|max:500', 'payload.whatsapp' => 'required|regex:/^62[0-9]{8,13}$/', 'payload.website' => 'required|url:https|max:2048', 'payload.planned_units' => 'required|integer|between:1,100000', 'payload.house_types' => 'required|integer|between:1,1000', 'payload.facilities' => 'required|string|max:3000', 'payload.nearby' => 'required|string|max:3000', 'payload.source_name' => 'required|string|max:200', 'payload.source_date' => 'required|date_format:Y-m-d|before_or_equal:'.now('Asia/Jakarta')->toDateString(), 'payload.notes' => 'required|string|max:2000'],
         };
         $payload = $request->validate($rules)['payload'];
+        if ($data['kind'] === 'BANK_RATE') {
+            FinancingContent::validate($payload);
+            $payload = FinancingContent::normalize($payload);
+        }
         if ($data['published']) {
             $request->validate(['verified' => 'required|accepted']);
         }

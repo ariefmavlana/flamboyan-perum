@@ -29,29 +29,29 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       '/api/v1/realtime': {
-        target: 'http://127.0.0.1:8000/api/v1/realtime',
+        target: `${apiOrigin}/api/v1/realtime`,
         changeOrigin: true,
       },
-      '/media/': { target: 'http://127.0.0.1:8000/media/', changeOrigin: true },
-      '/auth/': { target: 'http://127.0.0.1:8000/auth/', changeOrigin: true },
+      '/media/': { target: `${apiOrigin}/media/`, changeOrigin: true },
+      '/auth/': { target: `${apiOrigin}/auth/`, changeOrigin: true },
       '/sanctum/': {
-        target: 'http://127.0.0.1:8000/sanctum/',
+        target: `${apiOrigin}/sanctum/`,
         changeOrigin: true,
       },
       '/api/v1/me': {
-        target: 'http://127.0.0.1:8000/api/v1/me',
+        target: `${apiOrigin}/api/v1/me`,
         changeOrigin: true,
       },
       '/api/v1/leads': {
-        target: 'http://127.0.0.1:8000/api/v1/leads',
+        target: `${apiOrigin}/api/v1/leads`,
         changeOrigin: true,
       },
       '/api/v1/notifications': {
-        target: 'http://127.0.0.1:8000/api/v1/notifications',
+        target: `${apiOrigin}/api/v1/notifications`,
         changeOrigin: true,
       },
       '/api/v1/internal/': {
-        target: 'http://127.0.0.1:8000/api/v1/internal/',
+        target: `${apiOrigin}/api/v1/internal/`,
         changeOrigin: true,
       },
     },
@@ -64,7 +64,7 @@ export default defineNuxtConfig({
     tourHosts: 'my.matterport.com',
     public: {
       siteUrl: 'http://localhost:3000',
-      whatsappNumber: '6287776734038',
+      whatsappNumber: '62895375894848',
       analyticsEnabled: false,
     },
   },

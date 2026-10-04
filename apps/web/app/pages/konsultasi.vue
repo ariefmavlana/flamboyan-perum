@@ -2,6 +2,7 @@
 import type { Property } from '#shared/types'
 import { consultationLink, propertyUrl } from '#shared/utils/catalog'
 const config = useRuntimeConfig()
+const { whatsappNumber } = await useDevelopment()
 const route = useRoute()
 const slug = computed(() =>
   typeof route.query.properti === 'string' &&
@@ -51,7 +52,7 @@ const handoff = computed(() => {
   )
     return null
   const link = consultationLink(
-    config.public.whatsappNumber,
+    whatsappNumber.value,
     purposes[purpose.value],
     property.value?.title ?? '',
     contextUrl.value,

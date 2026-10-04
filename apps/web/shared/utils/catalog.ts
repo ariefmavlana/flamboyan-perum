@@ -17,6 +17,7 @@ export const availabilityLabels = {
   AVAILABLE: 'Tersedia',
   BOOKED: 'Dipesan',
   SOLD_OUT: 'Terjual',
+  CHECK_REQUIRED: 'Konfirmasi unit',
 } as const
 export function propertyUrl(siteUrl: string, slug: string): string {
   return `${siteUrl.replace(/\/+$/, '')}/properti/${encodeURIComponent(slug)}`

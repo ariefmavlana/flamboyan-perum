@@ -1,5 +1,13 @@
 # Product Requirements Document — Flamboyan Perum
 
+## Pembaruan katalog dan pembiayaan — 2026-10-05
+
+Katalog Bukit Flamboyan Indah 2 mengikuti sumber pengguna: sembilan tipe, 152 unit rencana, harga dan masa berlaku terdokumentasi. Jumlah rencana tidak menyatakan stok tersedia; sertifikat, kesiapan fasilitas, bank rekanan dan persetujuan kredit tidak diasumsikan. Masterplan terpisah dari denah bangunan. Foto brosur disebut ilustrasi. Template, layout dan tema editorial dipertahankan.
+
+Admin mengelola spesifikasi tambahan, sumber, harga program bertanggal, harga berikutnya, biaya program dan skema pembayaran pengembang melalui editor komersial properti. CMS DEVELOPMENT mengelola kontak WhatsApp, pengembang, alamat, fasilitas kawasan dan fasilitas sekitar. Referensi KPR mengelola tenor, batas plafon/LTV bila diketahui, tahapan bunga, floating dan komponen biaya yang memiliki sumber bank resmi. Publik hanya menerima konten terverifikasi yang berlaku; simulasi anuitas bukan keputusan kredit. Nilai belum diketahui tidak ditampilkan sebagai nol atau gratis. Skema pengembang terpisah dari KPR bank.
+
+Rekonsiliasi harga/tanggal dan sumber regulator/bank: [brochure-kpr-research.md](brochure-kpr-research.md). Produksi mengikuti merge PR ke `main` melalui integrasi Git Vercel; validasi lokal dan build otomatis wajib, tanpa GitHub Actions.
+
 Versi 2.2 · 2026-10-04 · Kontrak produk F0–F2 dan evaluasi dummy dinamis; implementasi dan gate rilis tercatat terpisah.
 
 ## 1. Produk dan masalah

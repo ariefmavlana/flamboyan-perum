@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { whatsappLink } from '../shared/utils/catalog'
-import { simulateMortgage } from '../shared/utils/mortgage'
+import { simulateMortgage, estimateBankFees } from '../shared/utils/mortgage'
 
 describe('WhatsApp handoff', () => {
   it('includes the property context safely', () => {
@@ -22,6 +22,54 @@ describe('WhatsApp handoff', () => {
   })
 })
 describe('Mortgage kernel', () => {
+  it('recalculates multiple fixed phases and subsequent floating without losing principal', () => {
+    const changes = [
+      { afterMonths: 36, annualRate: 7.99 },
+      { afterMonths: 72, annualRate: 9.99 },
+      { afterMonths: 120, annualRate: 11 },
+    ]
+    const result = simulateMortgage(456700000, 0, 20, 4, undefined, changes)
+    for (const change of changes) {
+      const remaining = result.schedule[change.afterMonths - 1]!.balance
+      const r = change.annualRate / 1200
+      expect(result.schedule[change.afterMonths]!.payment).toBeCloseTo(
+        (remaining * r) / (1 - (1 + r) ** -(240 - change.afterMonths)),
+        2,
+      )
+    }
+    expect(
+      result.schedule.reduce((sum, row) => sum + row.principal, 0),
+    ).toBeCloseTo(456700000, 2)
+    expect(result.schedule.at(-1)?.balance).toBe(0)
+    expect(() =>
+      simulateMortgage(456700000, 0, 10, 4, undefined, changes),
+    ).toThrow(RangeError)
+    expect(() =>
+      simulateMortgage(456700000, 0, 20, 4, undefined, [
+        changes[1]!,
+        changes[0]!,
+      ]),
+    ).toThrow(RangeError)
+  })
+  it('uses published bank fee floors and caps and preserves unknown costs', () => {
+    const terms = {
+      provision_percent: 1,
+      admin_percent: 0.1,
+      admin_min_idr: 500000,
+      admin_max_idr: 3000000,
+      appraisal_min_idr: 1100000,
+      appraisal_max_idr: 1500000,
+    }
+    expect(estimateBankFees(456700000, terms)).toEqual({
+      provision: 4567000,
+      administration: 500000,
+      appraisalMin: 1100000,
+      appraisalMax: 1500000,
+    })
+    expect(estimateBankFees(1000000000, terms).administration).toBe(1000000)
+    expect(estimateBankFees(4000000000, terms).administration).toBe(3000000)
+    expect(estimateBankFees(456700000, {}).provision).toBeNull()
+  })
   it('recalculates floating payments from the remaining balance and term', () => {
     const result = simulateMortgage(500000000, 100000000, 20, 5, {
       afterMonths: 36,

@@ -1,5 +1,13 @@
 # Deployment Flamboyan: Vercel + Supabase + Cloudflare R2
 
+## Rilis melalui main
+
+Production branch kedua project harus `main`. Perubahan aplikasi memakai branch baru dari main terbaru, validasi lokal, PR, kemudian merge yang diotorisasi pengguna; push/merge ke main memicu Vercel Git deployment otomatis. Tidak menggunakan GitHub Actions. Backend menjalankan Pint, PHPUnit SQLite terisolasi, Composer validate/audit sebelum install production dan migrasi aditif; frontend buildCommand `npm run build:checked`, installCommand `npm ci` menjalankan lint/typecheck/unit/build. Validasi PostgreSQL/browser/audit source dilakukan lokal dan dicatat pada PR; tidak mengklaim pemeriksaan itu ada dalam Vercel build.
+
+`VERCEL_RUN_MIGRATIONS=1` hanya production; APP_ENV=production; test build memakai database SQLite in-memory dan cache terpisah, tidak memakai database Supabase. Test dibangun dengan CLI opcache dinonaktifkan agar perubahan autoload native runtime tidak tertahan cache bytecode. Git project root tetap apps/api dan apps/web. Jangan mengembalikan production branch ke branch fitur atau memakai helper lama yang mengubah APP_ENV menjadi local.
+
+Perubahan isi Admin/CMS tersimpan langsung di Supabase/R2 dan tidak membutuhkan commit/deploy. Katalog brosur diimpor melalui API yang telah terdeploy setelah migrasi, memakai upload media private dan audit; bukan DemoSeeder produksi. Snapshot privat sebelum impor menjaga konfigurasi harga/katalog lama. Archive katalog lama mempertahankan referensi72lead. Rollback source melalui PR revert ke main dan redeploy; unpublish/restore isi via API versi terbaru bila diperlukan. Kolom aditif dipertahankan saat rollback agar konfigurasi komersial tidak hilang; jangan menjalankan down migration atau reseed produksi otomatis.
+
 Situs: https://flamboyan-web.vercel.app. Backend: https://flamboyan-api.vercel.app. Nuxt SSR dan Laravel API memakai project Vercel berbeda, root apps/web dan apps/api. Data, session, cache dan antrean berada di PostgreSQL Supabase; file berada di bucket R2 privat. Tidak ada state persisten pada filesystem function.
 
 ## Konfigurasi

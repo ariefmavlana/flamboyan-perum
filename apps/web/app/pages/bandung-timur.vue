@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
+const { development } = await useDevelopment()
 useSeoMeta({
   title: 'Hunian Bandung Timur — Flamboyan',
   description:
@@ -47,6 +48,48 @@ useHead({
           >
         </figcaption>
       </figure>
+    </section>
+    <section v-if="development" class="container section place-priorities">
+      <p class="eyebrow">{{ development.developer }}</p>
+      <h2>{{ development.name }}</h2>
+      <p>{{ development.address }}</p>
+      <p>
+        {{ development.house_types }} tipe ·
+        {{ development.planned_units }} rencana unit. Ketersediaan aktual
+        dikonfirmasi ke Admin.
+      </p>
+      <div class="value-strip">
+        <div>
+          <h3>Fasilitas kawasan</h3>
+          <ul>
+            <li
+              v-for="item in development.facilities.split('\n').filter(Boolean)"
+              :key="item"
+            >
+              {{ item }}
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3>Fasilitas sekitar</h3>
+          <ul>
+            <li
+              v-for="item in development.nearby.split('\n').filter(Boolean)"
+              :key="item"
+            >
+              {{ item }}
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3>Sebelum berkunjung</h3>
+          <p>{{ development.notes }}</p>
+          <p class="muted">
+            Sumber: {{ development.source_name }} ·
+            {{ development.source_date }}.
+          </p>
+        </div>
+      </div>
     </section>
     <section class="container section place-priorities">
       <p class="eyebrow">BERANGKAT DARI KEBUTUHAN ANDA</p>

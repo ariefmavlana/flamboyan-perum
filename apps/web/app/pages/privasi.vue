@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { whatsappLink } from '#shared/utils/catalog'
 const config = useRuntimeConfig()
+const { whatsappNumber } = await useDevelopment()
 useSeoMeta({
   title: 'Informasi privasi — Flamboyan Perum',
   description:
     'Informasi penggunaan data kontak dan interaksi katalog Flamboyan Perum.',
 })
 const contact = whatsappLink(
-  config.public.whatsappNumber,
+  whatsappNumber.value,
   'permintaan informasi privasi',
   `${config.public.siteUrl}/privasi`,
 )

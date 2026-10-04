@@ -2,6 +2,7 @@
 import type { Paginated, Property, PublicContent } from '#shared/types'
 import { formatIdr, whatsappLink } from '#shared/utils/catalog'
 const config = useRuntimeConfig()
+const { whatsappNumber } = await useDevelopment()
 const search = ref('')
 const { data: content, error: contentError } = await useFetch<{
   data: PublicContent
@@ -21,7 +22,7 @@ const { data, error, refresh } = await useFetch<Paginated<Property>>(
 )
 const wa = computed(() =>
   whatsappLink(
-    config.public.whatsappNumber,
+    whatsappNumber.value,
     'properti Flamboyan',
     config.public.siteUrl,
   ),

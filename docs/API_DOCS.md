@@ -1,5 +1,21 @@
 # REST API — katalog, workspace dan operasi
 
+## Katalog komersial dan CMS pembiayaan — 2026-10-05
+
+Availability menambah CHECK_REQUIRED. PublicProperty menambah commercial nullable, hanya untuk metadata yang telah diverifikasi. price_idr publik adalah harga pada tanggal Asia/Jakarta, konsisten untuk listing/filter/sort/detail/compare; harga normal internal tetap price_idr. Internal property menambah commercial JSON, offer_price_idr/offer_start/offer_end, next_price_idr/next_price_start. Nominal kolom harga nullable string integer IDR; tanggal nullable YYYY-MM-DD.
+
+PATCH `/api/v1/internal/properties/{id}/commercial`: ADMIN aktif + Sanctum/CSRF; semua fields berikut wajib hadir (nullable sesuai aturan), version integer≥1, verified accepted. offer_price_idr/next_price_idr nullable integer1..10^12; tanggal program wajib jika harga program diisi, end≥start; next_price_start wajib jika harga berikut diisi dan setelah offer_end bila keduanya ada. commercial fixed keys:
+
+- floors1..20,lot_dimensions≤80,planned_units1..100000,features array≤20 string≤200,source_name≤200,source_date≤hari Asia/Jakarta,notes≤2000,fee_notes≤1500.
+- program_fee_idr/next_fee_idr nullable integer0..10^12,program_fee_start/program_fee_until/next_fee_start nullable tanggal. Periode program wajib saat nominal diketahui, akhir≥awal; periode berikut setelah periode sebelumnya.
+- payment_plans array≤8; keys title≤120,kind CASH/INSTALLMENT,upfront_idr/monthly_idr0..10^12,total_idr1..10^12,months0..360,valid_from/valid_until (akhir≥awal),quota1..100000,source_name≤200,notes≤1000. Total harus tepat upfront+months×monthly. CASH bulan/angsuran0; INSTALLMENT bulan≥1.
+
+Unknown keys422; Marketing403, missing404, stale409; transaction fresh actor/property lock, version increment, ActivityLog COMMERCIAL_UPDATED. Response200 `{data:InternalProperty}`. Publik hanya floors,lot_dimensions,planned_units,features,source_name,source_date,notes,fee_notes,normal_price_idr,offer_until,program_fee_idr dan payment_plans yang berlaku. Jadwal mentah/metadata aktor verifikasi tidak keluar. Kuota adalah batas program, bukan inventaris tersisa. MASTERPLAN menambah kind media gambar dengan single limit, upload/process/publish/revoke sama dengan media private existing.
+
+GET `/content` menambah `development:null|{name,developer,address,whatsapp,website,planned_units,house_types,facilities,nearby,source_name,source_date,notes}`. Internal CMS kind DEVELOPMENT, fixed payload, verified/published/version/audit existing; fields wajib: teks name/developer≤160,address≤500,WhatsApp regex `^62[0-9]{8,13}$`,website HTTPS≤2048,planned_units1..100000,house_types1..1000,facilities/nearby multiline≤3000,source_name≤200,source_date≤hari Asia/Jakarta,notes≤2000. Public mengambil record eligible pertama position/id. Tidak ada koordinat/jarak/waktu tempuh hasil asumsi.
+
+BANK_RATE mempertahankan fields wajib existing; fields opsional baru: floating_rate0..30,min_tenor_months/max_tenor_months12..360,checked_date≤hari Asia/Jakarta,conditions≤2500,phases array1..10 `{months:1..360,annual_rate:0..30}`,provision_percent/admin_percent0..10,admin_min_idr/admin_max_idr/appraisal_min_idr/appraisal_max_idr0..10^12,min_principal_idr0..10^12,max_principal_idr1..10^12,max_ltv_percent>0..100. Jumlah bulan phases sama dengan fixed_months; bunga pertama sama dengan annual_rate; fixed_months≤max_tenor bila diketahui. Min/max diperiksa saat keduanya hadir. Numeric dinormalisasi; unknown/nested unknown ditolak. Field opsional yang belum diketahui dihilangkan, bukan diberi nol. Public menambah allowlist fields ini dan phases hanya months/annual_rate; tanggal aktif/expiry existing tetap berlaku. Tidak ada endpoint pengajuan bank atau klaim kemitraan.
+
 Base `/api/v1`, JSON, waktu UTC ISO8601. Production browser/API same origin; proxy hosting mengirim `/api`, `/auth`, `/sanctum` ke Laravel dan halaman lainnya ke Nuxt. Private routes hanya session Sanctum + user active ADMIN/MARKETING. Bearer token/public register tidak tersedia.
 
 Entry PHP Vercel menormalkan `SCRIPT_NAME`/`PHP_SELF` menjadi `/index.php` agar `/api` tetap bagian route aplikasi. URL publik tetap `/api/v1/...`, tanpa tambahan `/api` kedua. Kontrak auth, payload, dan otorisasi tidak berubah. Bukti deployment demo ada di [vercel-demo-validation.md](vercel-demo-validation.md).

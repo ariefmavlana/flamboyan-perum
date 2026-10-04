@@ -1,5 +1,13 @@
 # Arsitektur fondasi
 
+## Perluasan katalog berbasis sumber — 2026-10-05
+
+CommercialController mempertahankan modular monolith/Eloquent: transaksi khusus Admin untuk kolom jadwal harga dan JSON commercial, fresh lock, optimistic version dan ActivityLog. Property menyediakan ekspresi harga portabel SQLite/PostgreSQL agar public resource, filter, sort, detail dan compare memakai tanggal Asia/Jakarta yang sama. Public commercial dan payment_plans mempunyai allowlist tersendiri; metadata verifikasi tidak keluar. CHECK_REQUIRED tidak menyatakan stok. MASTERPLAN melewati MediaProcessor/MediaDisk existing dan tetap memiliki revocation checks.
+
+SiteContent menambah DEVELOPMENT fixed schema dan FinancingContent memusatkan validasi/normalisasi BANK_RATE. Kontak/fasilitas publik diambil dari CMS melalui composable Nuxt. Kernel simulasi anuitas pure mendukung reset bunga bertahap berdasarkan sisa saldo, tanpa koneksi bank, pengajuan kredit, atau layanan baru. CommercialEditor dan PropertyCommercial memakai komponen/form/layout yang sudah ada; tema/CSS editorial tidak diganti.
+
+Vercel Git build memvalidasi kode sebelum publish. Produksi mengikuti `main`; Laravel migrasi aditif dijalankan sesudah check build, tanpa seed. PostgreSQL Supabase dan R2 private tetap sumber persisten; perubahan CMS tidak memerlukan rebuild. GitHub Actions tidak digunakan. Rekonsiliasi data dan batas sumber: brochure-kpr-research.md.
+
 Modular monolith dengan Nuxt SSR terpisah dari Laravel, satu database dan struktur Eloquent standar. Service hanya dipakai ketika sebuah operasi bisnis membutuhkan transaksi/otorisasi/concurrency; tidak menambah generic repository atau interface untuk implementasi tunggal.
 
 ```mermaid

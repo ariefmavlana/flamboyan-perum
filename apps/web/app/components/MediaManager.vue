@@ -25,6 +25,7 @@ const labels: Record<InternalMedia['state'], string> = {
 const kinds: Record<PublicMedia['kind'], string> = {
   PHOTO: 'Foto',
   FLOOR_PLAN: 'Denah',
+  MASTERPLAN: 'Masterplan kawasan',
   VIDEO: 'YouTube',
   TOUR: 'Virtual tour',
   BROCHURE: 'Brosur PDF',
@@ -249,7 +250,9 @@ watch(
         ><img
           v-if="
             item.state === 'READY' &&
-            (item.kind === 'PHOTO' || item.kind === 'FLOOR_PLAN')
+            (item.kind === 'PHOTO' ||
+              item.kind === 'FLOOR_PLAN' ||
+              item.kind === 'MASTERPLAN')
           "
           :src="`/api/v1/internal/media/${item.id}/640`"
           :alt="item.alt"

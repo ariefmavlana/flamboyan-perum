@@ -1,5 +1,15 @@
 # Software Requirements Specification — Flamboyan Perum
 
+## Perluasan kontrak komersial — 2026-10-05
+
+Availability menambah CHECK_REQUIRED: stok belum dikonfirmasi dan structured data tidak mengarang ketersediaan. Properties menambah JSON commercial, offer_price_idr/start/end dan next_price_idr/start melalui migrasi aditif. Harga publik, filter, sort dan compare memakai harga pada hari Asia/Jakarta: program inklusif tanggal mulai/akhir, kemudian harga berikutnya jika sudah mulai, selain itu harga normal. Tidak ada perpanjangan promo otomatis. Nilai IDR integer; area decimal. Publik memakai allowlist eksplisit, tanpa aktor verifikasi atau identitas Marketing.
+
+PATCH commercial hanya ADMIN aktif; verified eksplisit, version guard, fresh actor/property lock, increment version dan audit dalam transaksi. Periode harga/biaya berikutnya harus setelah program; total pembayaran pengembang harus tepat sama dengan pembayaran awal + bulan × angsuran. Skema kedaluwarsa dipertahankan internal, disembunyikan publik. Marketing tidak mengubah konfigurasi ini. MASTERPLAN memakai pipeline gambar private existing dengan batas satu per properti; bukan FLOOR_PLAN.
+
+CMS DEVELOPMENT adalah schema fixed Admin-only, plain text dan WhatsApp berformat 62. BANK_RATE menambah tahapan bulan/bunga, floating, tanggal pemeriksaan, syarat, tenor/plafon/LTV dan biaya opsional; unknown keys ditolak. Jumlah bulan tahapan sama dengan fixed_months dan bunga pertama sama dengan annual_rate. Min/max diperiksa hanya jika keduanya diketahui. Sumber HTTPS; pemeriksaan sumber tidak boleh di masa depan menurut Asia/Jakarta; attestation wajib setiap publikasi/perubahan. Tidak ada klaim bank rekanan dari referensi rate.
+
+Kalkulator memakai anuitas bulanan (bunga tahunan/12); setiap perubahan bunga menghitung ulang dari sisa pokok dan sisa tenor. Floating masa depan adalah asumsi editable. Biaya bank yang diketahui diperlihatkan per komponen; biaya pengembang tidak dijumlahkan otomatis karena potensi tumpang tindih. Batas LTV regulasi bukan persetujuan bank; appraisal pengguna hanya asumsi. Batas sumber tercatat di brochure-kpr-research.md.
+
 Versi 2.2 · 2026-10-04 · Kontrak F0–F2 dan demo dinamis; bukti aktual di implementation-status/acceptance-validation/dynamic-demo-validation.
 
 ## 1. Otoritas, stack, dan scope

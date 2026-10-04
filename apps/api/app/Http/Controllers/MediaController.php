@@ -36,7 +36,7 @@ class MediaController extends Controller
     public function store(Request $request, int $id)
     {
         $this->operations->scoped($request->user(), $id);
-        $data = $request->validate(['version' => 'required|integer|min:1', 'kind' => ['required', Rule::in(['PHOTO', 'FLOOR_PLAN', 'VIDEO', 'TOUR', 'BROCHURE'])], 'alt' => 'required|string|max:240', 'file' => 'required_if:kind,PHOTO,FLOOR_PLAN,BROCHURE|prohibited_if:kind,VIDEO,TOUR|file|max:10240', 'url' => 'required_if:kind,VIDEO,TOUR|prohibited_if:kind,PHOTO,FLOOR_PLAN,BROCHURE|string|max:2048|url:https']);
+        $data = $request->validate(['version' => 'required|integer|min:1', 'kind' => ['required', Rule::in(['PHOTO', 'FLOOR_PLAN', 'MASTERPLAN', 'VIDEO', 'TOUR', 'BROCHURE'])], 'alt' => 'required|string|max:240', 'file' => 'required_if:kind,PHOTO,FLOOR_PLAN,MASTERPLAN,BROCHURE|prohibited_if:kind,VIDEO,TOUR|file|max:10240', 'url' => 'required_if:kind,VIDEO,TOUR|prohibited_if:kind,PHOTO,FLOOR_PLAN,MASTERPLAN,BROCHURE|string|max:2048|url:https']);
 
         return response()->json($this->operations->create($request->user(), $id, $data, $request->file('file')), 201);
     }
