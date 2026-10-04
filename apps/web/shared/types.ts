@@ -1,4 +1,7 @@
 export interface Property {
+  latitude?: string | null
+  longitude?: string | null
+  pois?: PointOfInterest[]
   media?: PublicMedia[]
   id: number
   slug: string
@@ -16,6 +19,44 @@ export interface Property {
   bathrooms: number
   availability: 'AVAILABLE' | 'BOOKED' | 'SOLD_OUT'
   featured: boolean
+}
+export interface PointOfInterest {
+  name: string
+  category: 'TRANSPORT' | 'EDUCATION' | 'HEALTH' | 'SHOPPING' | 'OTHER'
+  distance_m: number
+  source_url: string
+  source_date: string
+}
+export interface BankRate {
+  id: number
+  bank: string
+  product: string
+  annual_rate: number
+  effective_date: string
+  valid_until: string
+  fixed_months: number
+  source_url: string
+}
+export interface PublicContent {
+  hero: {
+    id: number
+    title: string
+    description: string
+    eyebrow: string
+    property_id: number | null
+    property?: Property | null
+  } | null
+  testimonials: { id: number; name: string; quote: string; context: string }[]
+  bank_rates: BankRate[]
+}
+export interface EditorialContent {
+  id: number
+  kind: 'HERO' | 'TESTIMONIAL' | 'BANK_RATE'
+  payload: Record<string, string | number | null>
+  published: boolean
+  position: number
+  version: number
+  verified_at: string | null
 }
 export interface PublicMedia {
   id: number

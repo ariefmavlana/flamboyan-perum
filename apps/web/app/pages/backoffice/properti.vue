@@ -341,6 +341,12 @@ onMounted(() => load())
         </p>
         <button class="button" :disabled="busy">Simpan properti</button>
       </form>
+      <LocationEditor
+        v-if="selected"
+        :key="selected.id"
+        :property="selected"
+        @saved="selected = $event"
+      />
       <MediaManager
         v-if="selected"
         :key="selected.id"

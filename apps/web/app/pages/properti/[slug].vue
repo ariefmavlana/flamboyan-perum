@@ -42,7 +42,44 @@ useSeoMeta({
   ogUrl: () => canonical.value,
   ogType: 'website',
 })
-useHead(() => ({ link: [{ rel: 'canonical', href: canonical.value }] }))
+useHead(() => ({
+  link: [{ rel: 'canonical', href: canonical.value }],
+  script: [
+    {
+      type: 'application/ld+json',
+      textContent: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'RealEstateListing',
+        name: property.value.title,
+        description: property.value.description,
+        url: canonical.value,
+        offers: {
+          '@type': 'Offer',
+          price: property.value.price_idr,
+          priceCurrency: 'IDR',
+          availability: `https://schema.org/${property.value.availability === 'AVAILABLE' ? 'InStock' : property.value.availability === 'SOLD_OUT' ? 'SoldOut' : 'Reserved'}`,
+          itemOffered: {
+            '@type': 'House',
+            name: property.value.title,
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: property.value.address,
+              addressLocality: property.value.location,
+              addressCountry: 'ID',
+            },
+            floorSize: {
+              '@type': 'QuantitativeValue',
+              value: Number(property.value.building_area),
+              unitCode: 'MTK',
+            },
+            numberOfBedrooms: property.value.bedrooms,
+            numberOfBathroomsTotal: property.value.bathrooms,
+          },
+        },
+      }).replace(/</g, '\\u003c'),
+    },
+  ],
+}))
 </script>
 
 <template>
@@ -61,8 +98,10 @@ useHead(() => ({ link: [{ rel: 'canonical', href: canonical.value }] }))
         <PropertyGallery :media="property.media ?? []" />
         <h2>Tentang rumah ini</h2>
         <p class="description">{{ property.description }}</p>
+        <PropertyLocation :property="property" />
       </div>
       <aside class="detail-summary">
+        <CompareButton :id="property.id" />
         <p class="eyebrow">HARGA PROPERTI</p>
         <p class="price detail-price">{{ formatIdr(property.price_idr) }}</p>
         <dl class="spec-list">
@@ -108,5 +147,6 @@ useHead(() => ({ link: [{ rel: 'canonical', href: canonical.value }] }))
         </p>
       </aside>
     </div>
+    <MortgageCalculator :price="property.price_idr" />
   </section>
 </template>

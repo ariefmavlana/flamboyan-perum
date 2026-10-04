@@ -17,6 +17,11 @@ onMounted(async () => {
       <NuxtLink to="/backoffice/profil">Profil</NuxtLink>
       <NuxtLink
         v-if="session.account.value?.role === 'ADMIN'"
+        to="/backoffice/konten"
+        >Konten publik</NuxtLink
+      >
+      <NuxtLink
+        v-if="session.account.value?.role === 'ADMIN'"
         to="/backoffice/akun"
         >Akun tim</NuxtLink
       >

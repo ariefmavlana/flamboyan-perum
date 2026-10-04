@@ -868,3 +868,119 @@ th {
   max-width: 100%;
   object-fit: contain;
 }
+.advanced-filter,
+.location-panel,
+.mortgage-panel,
+.location-editor {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.hydration-controls {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+summary {
+  cursor: pointer;
+  padding: 0.6rem 0;
+  font-weight: 600;
+}
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.comparison-tray {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 1rem;
+  background: var(--green);
+  color: white;
+  border-radius: 8px;
+}
+.comparison-tray a {
+  color: white;
+  font-weight: 600;
+}
+.property-card .button {
+  display: block;
+  margin-bottom: 1rem;
+}
+.map-frame {
+  width: 100%;
+  height: 350px;
+  border: 0;
+  margin: 1rem 0;
+}
+.poi-list {
+  padding-left: 1.2rem;
+}
+.poi-list li {
+  margin-bottom: 1rem;
+}
+.poi-editor {
+  border: 1px solid var(--line);
+  margin: 1rem 0;
+}
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.mortgage-chart {
+  list-style: none;
+  padding: 0;
+}
+.mortgage-chart li {
+  display: grid;
+  grid-template-columns: 80px minmax(80px, 1fr) 170px;
+  gap: 1rem;
+  margin: 0.8rem 0;
+  align-items: center;
+}
+.mortgage-bar {
+  background: #e7be6f;
+  height: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.mortgage-bar span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+}
+.hero-photo {
+  width: 100%;
+  height: 100%;
+  max-height: 600px;
+  object-fit: cover;
+  border-radius: 180px 180px 16px 16px;
+}
+blockquote {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+}
+@media (max-width: 760px) {
+  .compare-grid {
+    grid-template-columns: 1fr;
+  }
+  .mortgage-chart li {
+    grid-template-columns: 70px minmax(50px, 1fr);
+    gap: 0.5rem;
+  }
+  .mortgage-chart li > span:last-child {
+    grid-column: 2;
+  }
+  .mortgage-panel,
+  .location-panel,
+  .advanced-filter {
+    padding: 1rem;
+  }
+}
