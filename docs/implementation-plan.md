@@ -1,8 +1,8 @@
 # Rencana penuntasan requirement
 
-2026-10-03. Instruksi pengguna: seluruh requirement dokumentasi diselesaikan, tanpa GitHub Actions. Nomor WhatsApp sementara yang diberikan pengguna: `6287776734038`. Kandidat hosting: Hostinger/Rumahweb; paket, domain, SMTP dan push credentials belum ditetapkan.
+Rencana2026-10-03 · status integrasi2026-10-04. Instruksi pengguna: seluruh requirement dokumentasi diselesaikan, tanpa GitHub Actions. Nomor WhatsApp sementara yang diberikan pengguna: `6287776734038`. Kandidat hosting: Hostinger/Rumahweb; paket, domain, SMTP dan push credentials belum ditetapkan.
 
-PR #3 fondasi masih terbuka; main belum memuat fondasi. Setiap tahap membuat branch baru dari main terbaru, membawa dependensi melalui fast-forward cherry-pick, dan membuka PR terhadap branch tahap sebelumnya agar diff review terbatas. Tidak melakukan merge PR tanpa instruksi pengguna. Urutan review/merge mengikuti dependensi, bukan menutup proposal sebelumnya.
+PR #3–#10 sudah merged ke main secara berurutan pada2026-10-04 setelah pengguna menginstruksikan pemeriksaan dan merge; main memuat fondasi hingga dummy dinamis. Saat pengembangan stack, setiap tahap dibuat dari main terbaru dengan dependensi fast-forward cherry-pick dan PR terhadap tahap sebelumnya agar diff terbatas. Pekerjaan berikutnya membuat branch baru dari main terbaru dan PR ke main. Merge tetap memerlukan instruksi pengguna; catatan pemeriksaan/tree/SHA ada di integration-review.md.
 
 | Tahap / PR | Requirement | Acceptance yang harus dibuktikan |
 |---|---|---|
