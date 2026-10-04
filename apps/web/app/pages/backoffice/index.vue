@@ -300,12 +300,14 @@ onMounted(async () => {
       </div>
     </details>
 
-    <button class="text-button" @click="load(leads?.meta.current_page ?? 1)">
-      Muat ulang data ↻
-    </button>
-    <p v-if="leads" class="muted">
-      {{ leads.meta.total }} lead sesuai filter saat ini
-    </p>
+    <div class="results-heading compact">
+      <p v-if="leads" class="muted" role="status">
+        {{ leads.meta.total }} lead sesuai filter saat ini
+      </p>
+      <button class="text-button" @click="load(leads?.meta.current_page ?? 1)">
+        Muat ulang data ↻
+      </button>
+    </div>
     <div class="workspace-grid">
       <div
         class="table-scroll"

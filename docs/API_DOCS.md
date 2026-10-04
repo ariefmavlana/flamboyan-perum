@@ -145,3 +145,5 @@ Laravel baseline nosniff/frameDENY/no-referrer/Permissions-Policy dan HSTS1tahun
 ## Catatan kompatibilitas UI/UX — 2026-10-04
 
 Redesign `codex/ui-ux-redesign` menggunakan endpoint, request, DTO allowlist, pagination, version guard dan error HTTP yang sama. Tidak ada endpoint atau response field baru. Label publikasi/ketersediaan/peran/jenis konten diterjemahkan hanya di frontend; nilai enum request/response tetap. Menu dan sidebar tidak menggantikan otorisasi backend. Halaman error frontend tetap mempertahankan status404/503 dan tidak menampilkan detail exception mentah. Bukti validasi antarmuka ada di `ui-ux-redesign.md`.
+
+Label filter aktif pada katalog dibentuk dari parameter query yang sudah didukung API. Menghapus satu label hanya membuang parameter tersebut dan `page`, sambil mempertahankan filter lain serta `sort`; reset menghapus seluruh query katalog. Tidak mengubah validation/allowlist API. Nilai IDR dan enum tetap memakai kontrak lama; format ramah pengguna hanya untuk tampilan.

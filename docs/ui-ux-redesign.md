@@ -57,3 +57,24 @@ Rollback melalui revert commit PR ini lalu build/restart Nuxt. Tidak ada databas
 ## Referensi implementasi
 
 Perilaku watcher route dan template refs mengikuti [Vue watchers](https://vuejs.org/guide/essentials/watchers) dan [Vue template refs](https://vuejs.org/guide/essentials/template-refs). Tidak menambahkan library navigasi atau ikon; ikon inline SVG satu komponen dengan himpunan nama bertipe.
+
+## Referensi template dan penyesuaian persona
+
+Ditinjau pada 2026-10-04 dari sumber resmi:
+
+- [Nuxt UI Dashboard](https://dashboard-template.nuxt.dev/customers), dengan [lisensi MIT di repository resmi](https://github.com/nuxt-ui-templates/dashboard/blob/main/LICENSE). Acuan workspace: navigasi yang berkelompok, heading/tindakan utama yang jelas, toolbar dekat dengan hasil, serta tabel yang mudah dipindai. Implementasi Flamboyan tetap menggunakan komponen Vue yang ada dan kontrol 44px.
+- [Houzez listing templates](https://houzez.co/listing-templates/) dan [property detail](https://houzez.co/features/property-detail-page/), produk properti dari vendor resminya. Acuan susunan informasi bagi calon pembeli: pencarian, hasil, galeri, harga, spesifikasi dan kontak. Ini hanya referensi pola UX; tidak mengambil source, foto, ikon, font atau aset berbayar Houzez, serta tidak memasang WordPress/Elementor.
+
+Tidak menyalin kode template ataupun menambahkan dependensi. Brand Flamboyan tetap menggunakan warna hijau tenang, permukaan netral, tipografi sistem, bahasa Indonesia, harga IDR, dan kontak Admin. Profil agen/identitas Marketing dari template tidak diterapkan karena public allowlist melarangnya. Fitur template yang belum tersedia di Flamboyan tidak ditampilkan.
+
+Penyempurnaan dalam PR yang sama: filter utama dan spesifikasi berada dalam satu panel; hasil mempunyai heading/jumlah yang jelas dan label filter aktif yang dapat dihapus satu per satu. Penghapusan mempertahankan filter lain dan sort, menghapus page agar hasil kembali ke halaman pertama, serta mendukung Back. Harga/kontak berada sebelum deskripsi/lokasi dalam urutan mobile dan DOM; di desktop ringkasan tetap menempel di kolom kanan. Sidebar membedakan Aktivitas, Pengelolaan dan Akun sesuai role. Jumlah lead dan reload ditempatkan dalam satu baris di atas tabel.
+
+### Validasi penyempurnaan template
+
+Masih pada runtime Windows/Node24.21.0/Nuxt4.5.2/Vue3.5.43/Chrome dan fixture lokal yang sama. `npm run lint` (0 warning), `npm run typecheck`, `npm test` (13 tests,400ms), serta `npm run build` lulus. Build masih melaporkan upstream DEP0155. Audit source diulang:11 high/0 critical; audit artefak runtime baru:0 advisory. Tidak ada dependency/source lockfile yang berubah.
+
+`npx playwright test tests/e2e/ui-design.spec.ts` final:5 tests lulus dalam34.7s. Matrix48 kombinasi tetap diperiksa; navigasi workspace sekarang menggunakan menu aplikasi dan mengharuskan tidak ada respons API error. Dua regresi baru menguji hapus satu filter/preservasi filter lain/sort/reset page/Back/reset seluruh query, serta posisi harga/kontak sebelum deskripsi di320px. Screenshot final ada di ignored `.tools/ui-refinement/design-final`; desktop katalog/detail/CRM dan mobile katalog/panel harga diperiksa visual.
+
+Regresi terkait diulang per spec dengan cache fixture terisolasi: foundation3 tests/7.5s, evaluation2/10.4s, operations2/10.0s, acceptance2/7.0s. Acceptance memakai build baru pada3102. Total14 alur browser lulus pada putaran penyempurnaan ini; bukti backend dan4 alur browser lain dari putaran awal tetap berlaku karena kode backend tidak berubah. Tidak mengklaim backend diulang pada putaran ini.
+
+Run awal matrix gagal karena reload penuh24 halaman internal menabrak limiter120request/menit; trace mengonfirmasi429. Test diperbaiki memakai navigasi menu dan pemeriksaan status API, tanpa mengubah limiter. Test filter awal memiliki locator label ambigu dan diperbaiki dengan exact match. Satu transformasi sementara test harness menghasilkan sintaks tidak valid; sudah diperbaiki sebelum run final. Lint awal melarang dynamic delete; query sekarang disusun dengan filter entri. Semua hasil gagal ini tidak dihitung sebagai passed.

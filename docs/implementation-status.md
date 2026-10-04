@@ -105,3 +105,5 @@ Main setelah PR #10 adalah `e2e1ccd9a82796d32e57105aed0b062f5701a9e7`; tree `0e7
 ## Redesign UI/UX (branch PR tersendiri, 2026-10-04)
 
 Layout publik dan workspace sekarang terpisah. Sistem visual baru mencakup beranda/katalog/detail/compare/KPR/auth/recovery/privasi, sidebar tim, tabel/form/modal, label status, ringkasan operasi, dan halaman error. Menu mobile memiliki guard hydration, Escape/fokus dan close setelah route berubah; tabel responsif memiliki region scroll keyboard. Konten tetap berasal dari API/DB, dengan label demo dipertahankan. Tidak ada perubahan kontrak REST, migration, otorisasi, dependency, merge atau deployment. Rincian dan bukti validasi branch ada di `ui-ux-redesign.md`; status produksi/content/advisory upstream tetap gated.
+
+Penyempurnaan referensi template pada PR #12: pola Nuxt Dashboard resmi (MIT) dan Houzez resmi (referensi UX saja, tanpa kode/aset vendor) diadaptasi untuk workspace dan pembeli properti. Filter aktif dapat dihapus secara independen, jumlah hasil jelas, panel harga/kontak mendahului deskripsi di mobile, dan sidebar dikelompokkan sesuai tugas/role. Catatan sumber dan validasi lanjutan ada di `ui-ux-redesign.md`.
