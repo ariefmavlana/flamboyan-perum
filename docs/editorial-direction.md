@@ -29,7 +29,7 @@ Screenshot desktop/mobile ditinjau untuk keempat sumber. The Modern House UK jug
 
 Foto oleh **Sergei Bezzubov**, [Modern house surrounded by lush tropical foliage](https://unsplash.com/photos/modern-house-surrounded-by-lush-tropical-foliage-Pfp0MP8QB7M). Halaman sumber menyatakan free under [Unsplash License](https://unsplash.com/license); ditinjau 2026-10-04. Dipakai sebagai foto suasana merek, **bukan foto unit dijual**. Caption terlihat dan alt menyatakan ilustrasi, dengan tautan kredit.
 
-Berkas lokal: `apps/web/public/images/editorial-garden-1920.webp` dan `editorial-garden-960.webp`. Sumber pengiriman: `images.unsplash.com/photo-1766937754720-4d30de201fd1`, varian WebP1920/q85 dan960/q80. Tidak menggunakan generator gambar AI. Foto/media properti tetap berasal dari API dan tidak diganti oleh foto stok.
+Berkas lokal: `apps/web/public/images/editorial-garden-1920.webp` dan `editorial-garden-960.webp`. Sumber pengiriman: `images.unsplash.com/photo-1766937754720-4d30de201fd1`, varian WebP1920/q85 dan960/q80. Tidak menggunakan generator gambar AI. Foto/media properti tetap berasal dari API. Kurasi foto stok untuk fixture demo lokal ditambahkan melalui API media normal sesuai permintaan berikutnya; lihat photo-curation.md. Tidak ada fallback stok bagi unit bisnis.
 
 ### Font
 
@@ -43,6 +43,9 @@ Copy hero pada database fixture `.tools/dynamic-demo.sqlite` diperbarui melalui 
 
 Rincian hasil aktual ada pada bagian editorial di `ui-ux-redesign.md`. Screenshot hero diperiksa pada1440/390/320px; gambar lazy-load diperiksa setelah discroll, bukan hanya melalui screenshot halaman panjang yang belum memuat gambar. Overlap testimonial ditemukan dan diperbaiki dengan membatasi grid-area summary hanya di detail-grid. Regresi browser mencakup pemuatan foto dan pemisahan blok testimonial pada320/768/1440px.
 
-Data listing, nama, testimonial, bank rate dan ilustrasi rumah yang terlihat tetap dataset sintetis, bukan materi bisnis produksi. Desain tidak mengubah klaim tersebut. Tidak ada font/gambar pesaing yang disalin. Tidak ada dependency aplikasi, migration, endpoint atau otorisasi baru.
+Data listing, nama, testimonial dan bank rate tetap dataset sintetis. Foto rumah fixture kemudian diganti dengan fotografi ilustrasi terkurasi, berlabel demo; bukan materi bisnis produksi. Desain tidak mengubah klaim tersebut. Tidak ada font/gambar pesaing yang disalin. Tidak ada dependency aplikasi, migration, endpoint atau otorisasi baru.
 
 Rollback: revert commit editorial dan build ulang Nuxt; jika perlu, kembalikan tiga field copy hero fixture melalui CMS menggunakan snapshot lokal. Tidak perlu rollback database/schema/media listing.
+
+
+Kurasi fotografi lanjutan: [sumber, lisensi, importer dan rollback fixture](photo-curation.md). Hasil UI final menambahkan foto interior editorial, cover perbandingan dan label ilustrasi.

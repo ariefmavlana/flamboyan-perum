@@ -7,11 +7,10 @@ const { data: content, error: contentError } = await useFetch<{
   data: PublicContent
 }>('/api/v1/content')
 const hero = computed(() => content.value?.data.hero)
-const heroCover = computed(
-  () =>
-    hero.value?.property?.media?.find((media) => media.kind === 'PHOTO')
-      ?.sources[0],
+const heroMedia = computed(() =>
+  hero.value?.property?.media?.find((media) => media.kind === 'PHOTO'),
 )
+const heroCover = computed(() => heroMedia.value?.sources[0])
 const hydrated = ref(false)
 onMounted(() => {
   hydrated.value = true
@@ -106,22 +105,47 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
       </p>
     </section>
     <section class="editorial-intro container">
-      <p class="eyebrow">SEBUAH TEMPAT UNTUK PULANG</p>
-      <h2>Lebih dari alamat.<br />Tentang cara Anda hidup.</h2>
-      <div>
-        <p>
-          Mulai dari lokasi yang dekat dengan keseharian, ruang yang cukup untuk
-          tumbuh, hingga anggaran yang terasa nyaman. Setiap detail membantu
-          Anda menemukan pilihan.
-        </p>
-        <a
-          v-if="wa"
-          :href="wa"
-          class="text-link"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Bicarakan rencana Anda <AppIcon name="arrow"
-        /></a>
+      <figure class="editorial-interior">
+        <img
+          src="/images/editorial-living-1920.webp"
+          srcset="
+            /images/editorial-living-960.webp   960w,
+            /images/editorial-living-1920.webp 1920w
+          "
+          sizes="(max-width: 760px) 100vw, 45vw"
+          width="1920"
+          height="2880"
+          loading="lazy"
+          alt="Inspirasi ruang duduk di Bali dengan cahaya sore dan material alami; foto ilustrasi."
+        />
+        <figcaption>
+          Foto ilustrasi ·
+          <a
+            href="https://unsplash.com/photos/iq2CirhoVck"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Polina Kuzovkova / Unsplash ↗</a
+          >
+        </figcaption>
+      </figure>
+      <div class="intro-copy">
+        <p class="eyebrow">SEBUAH TEMPAT UNTUK PULANG</p>
+        <h2>Lebih dari alamat.<br />Tentang cara Anda hidup.</h2>
+        <div>
+          <p>
+            Mulai dari lokasi yang dekat dengan keseharian, ruang yang cukup
+            untuk tumbuh, hingga anggaran yang terasa nyaman. Setiap detail
+            membantu Anda menemukan pilihan.
+          </p>
+          <a
+            v-if="wa"
+            :href="wa"
+            class="text-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Bicarakan rencana Anda <AppIcon name="arrow"
+          /></a>
+        </div>
       </div>
     </section>
     <section class="section container featured-collection">
@@ -155,10 +179,17 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
         class="spotlight-image"
         ><img
           :src="heroCover.url"
-          :alt="hero.property.title"
+          :alt="heroMedia?.alt ?? hero.property.title"
+          :srcset="
+            heroMedia?.sources
+              .filter((source) => source.width)
+              .map((source) => `${source.url} ${source.width}w`)
+              .join(',')
+          "
+          sizes="(max-width: 760px) 100vw, 50vw"
           :width="heroCover.width ?? undefined"
           :height="heroCover.height ?? undefined"
-          loading="lazy"
+          loading="lazy" /><MediaDisclosure :alt="heroMedia?.alt"
       /></NuxtLink>
       <div class="spotlight-copy">
         <p class="eyebrow">SOROTAN KATALOG</p>

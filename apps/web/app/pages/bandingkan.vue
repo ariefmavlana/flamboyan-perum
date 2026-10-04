@@ -69,6 +69,26 @@ useSeoMeta({
           :key="property.id"
           class="detail-summary"
         >
+          <NuxtLink
+            v-if="property.media?.find((media) => media.kind === 'PHOTO')"
+            :to="'/properti/' + property.slug"
+            class="compare-photo"
+            :aria-label="'Lihat ' + property.title"
+          >
+            <img
+              :src="
+                property.media.find((media) => media.kind === 'PHOTO')
+                  ?.sources[0]?.url
+              "
+              :alt="property.media.find((media) => media.kind === 'PHOTO')?.alt"
+              width="640"
+              height="427"
+              loading="lazy"
+            />
+            <MediaDisclosure
+              :alt="property.media.find((media) => media.kind === 'PHOTO')?.alt"
+            />
+          </NuxtLink>
           <h2>
             <NuxtLink :to="`/properti/${property.slug}`">{{
               property.title
