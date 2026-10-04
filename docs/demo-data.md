@@ -28,7 +28,7 @@ Jalankan frontend `npm run dev` dari `apps/web`, lalu buka `http://127.0.0.1:300
 
 Satu Admin dan tim Marketing memakai alias login lokal `admin@example.test`, `marketing@example.test`, lalu `marketing-2@example.test` dan seterusnya. Nama mereka dihasilkan generator; password hanya nilai private yang Anda set. Alias login sengaja stabil agar demo dapat dibuka, sementara data bisnis tidak bergantung pada nilai fixture tetap.
 
-Properti memiliki judul/slug/lokasi/alamat/harga/spesifikasi acak, owner, variasi publication/availability/featured. Lead sintetis memiliki nomor dummy, variasi enam status, sebagian belum ditugaskan, histori, versi dan notifikasi persisten yang dibangun melalui `LeadWorkflow`. Tidak ada pengiriman pesan WhatsApp; seed menonaktifkan push eksternal sementara lalu memulihkan konfigurasi. Inbox tetap terisi melalui workflow normal.
+Properti memiliki judul/slug/harga/spesifikasi acak, owner, variasi publication/availability/featured. Lokasi konsisten `Bandung Timur (demo)`; alamat secara eksplisit merupakan ilustrasi dengan titik lokasi belum diverifikasi, bukan alamat perumahan nyata. Lead sintetis memiliki nomor dummy, variasi enam status, sebagian belum ditugaskan, histori, versi dan notifikasi persisten yang dibangun melalui `LeadWorkflow`. Tidak ada pengiriman pesan WhatsApp; seed menonaktifkan push eksternal sementara lalu memulihkan konfigurasi. Inbox tetap terisi melalui workflow normal.
 
 Default media: dua ilustrasi baru per properti (PHOTO dan FLOOR_PLAN). GD menggambar bentuk/warna/label sintetis berbeda; pipeline upload/staging/job database/worker normal menghasilkan WebP sanitized. Media baru tampil publik setelah READY dan published sesuai allowlist. Ini ilustrasi, bukan foto properti atau denah bersertifikat.
 
@@ -51,3 +51,11 @@ Gunakan fixture browser khusus dan worker aktif. Rate limiter aplikasi tetap log
 ## Fotografi demo terkurasi (2026-10-04)
 
 Foto berlisensi untuk seluruh24 properti fixture lokal telah diimpor melalui API media normal, tiga foto per properti. Gambar sintetis PHOTO lama disimpan tidak dipublikasikan; denah tetap berlabel demo. Kurasi opt-in, sumber/lisensi, pengulangan dan rollback ada di [photo-curation.md](photo-curation.md). Ini tidak mengubah seed default offline atau data produksi.
+
+## Penyelarasan pasar demo Bandung Timur (2026-10-04)
+
+Seed berikutnya memakai lokasi Bandung Timur dengan label demo dan alamat ilustrasi. Untuk fixture lama khusus `.tools/dynamic-demo.sqlite`, jalankan `node scripts/localize-demo-market.mjs` dengan environment proses `LOCALIZE_DEMO_MARKET=1` dan `DEMO_PASSWORD` private, saat API8000 dan frontend3000 aktif. Script menolak lingkungan selain local/testing, database/path lain, atau jumlah identitas seed yang bukan tepat24. Jangan menaruh password pada command argument.
+
+Script menyimpan snapshot asli `.tools/demo-market-before.json` sebelum PATCH API memakai version. Hanya location/address pada identitas seed `demo-…` + judul `Rumah Demo …` + deskripsi `DATA DEMO` yang berubah; properti E2E lain dilewati. Pengulangan idempotent, konflik409 menghentikan proses, dan snapshot awal tidak ditimpa. Koordinat, POI, slug, harga, status dan media tidak diubah. Koordinat/POI yang pernah diisi untuk pengujian tetap data uji, bukan bukti lokasi Bandung Timur.
+
+Rollback melalui PATCH API Admin untuk pasangan id/slug yang sama: baca version terbaru, kembalikan location/address dari snapshot. Jangan mengembalikan seluruh database atau memakai version snapshot yang sudah lama. Data runtime/snapshot tidak boleh di-commit.

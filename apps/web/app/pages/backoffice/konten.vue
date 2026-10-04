@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { EditorialContent, Paginated } from '#shared/types'
+import type { EditorialContent, InternalMedia, Paginated } from '#shared/types'
 definePageMeta({ layout: 'backoffice' })
 useSeoMeta({ title: 'Konten publik — Flamboyan', robots: 'noindex, nofollow' })
 const api = useStaffApi()
@@ -17,6 +17,74 @@ const form = reactive({
 })
 const verified = ref(false)
 const heroProperty = ref<number | null>(null)
+const heroMediaId = ref<number | null>(null)
+const heroMediaOptions = ref<InternalMedia[]>([])
+const mediaLoading = ref(false)
+const mediaError = ref('')
+const logoFile = ref<File | null>(null)
+const logoVerified = ref(false)
+const logoInput = ref<HTMLInputElement | null>(null)
+let mediaRequest = 0
+async function loadHeroMedia(propertyId: number | null) {
+  const request = ++mediaRequest
+  heroMediaOptions.value = []
+  mediaError.value = ''
+  if (!propertyId) {
+    mediaLoading.value = false
+    return
+  }
+  mediaLoading.value = true
+  try {
+    const media: InternalMedia[] = []
+    let page = 1
+    let lastPage = 1
+    do {
+      const result = await api.request<Paginated<InternalMedia>>(
+        '/api/v1/internal/properties/' + propertyId + '/media?page=' + page,
+      )
+      media.push(...result.data)
+      lastPage = result.meta.last_page
+      page++
+    } while (page <= lastPage && request === mediaRequest)
+    if (request === mediaRequest)
+      heroMediaOptions.value = media.filter(
+        (item) =>
+          item.state === 'READY' &&
+          item.published &&
+          (item.kind === 'PHOTO' || item.kind === 'VIDEO'),
+      )
+  } catch (error) {
+    if (request === mediaRequest) mediaError.value = staffError(error)
+  } finally {
+    if (request === mediaRequest) mediaLoading.value = false
+  }
+}
+async function uploadLogo() {
+  if (!selected.value || !logoFile.value) return
+  busy.value = true
+  message.value = ''
+  try {
+    const body = new FormData()
+    body.append('file', logoFile.value)
+    body.append('version', String(selected.value.version))
+    body.append('verified', logoVerified.value ? '1' : '0')
+    const result = await api.request<{ data: EditorialContent }>(
+      '/api/v1/internal/content/' + selected.value.id + '/logo',
+      { method: 'POST', body },
+    )
+    selected.value = result.data
+    logoFile.value = null
+    logoVerified.value = false
+    if (logoInput.value) logoInput.value.value = ''
+    await load()
+    message.value =
+      'Logo tersimpan. Tinjau konten dan aktifkan Publikasikan untuk menampilkannya di beranda.'
+  } catch (error) {
+    message.value = staffError(error)
+  } finally {
+    busy.value = false
+  }
+}
 const schemas = {
   HERO: [
     { key: 'title', label: 'Judul hero', type: 'text', max: 160 },
@@ -32,6 +100,10 @@ const schemas = {
     { key: 'name', label: 'Nama publik berizin', type: 'text', max: 160 },
     { key: 'quote', label: 'Testimonial berizin', type: 'textarea', max: 2000 },
     { key: 'context', label: 'Keterangan publik', type: 'text', max: 160 },
+  ],
+  BANK_PARTNER: [
+    { key: 'name', label: 'Nama bank mitra', type: 'text', max: 120 },
+    { key: 'website', label: 'Situs resmi bank HTTPS', type: 'url', max: 2048 },
   ],
   BANK_RATE: [
     { key: 'bank', label: 'Nama bank', type: 'text', max: 120 },
@@ -65,7 +137,16 @@ watch(
   },
   { deep: true, flush: 'sync' },
 )
-watch(heroProperty, () => {
+watch(
+  heroProperty,
+  (propertyId) => {
+    verified.value = false
+    heroMediaId.value = null
+    void loadHeroMedia(propertyId)
+  },
+  { flush: 'sync' },
+)
+watch(heroMediaId, () => {
   verified.value = false
 })
 async function load(page = 1) {
@@ -104,6 +185,14 @@ function open(record?: EditorialContent) {
     typeof record?.payload.property_id === 'number'
       ? record.payload.property_id
       : null
+  heroMediaId.value =
+    typeof record?.payload.media_id === 'number'
+      ? record.payload.media_id
+      : null
+  if (kind.value === 'HERO') void loadHeroMedia(heroProperty.value)
+  logoFile.value = null
+  logoVerified.value = false
+  if (logoInput.value) logoInput.value.value = ''
   verified.value = false
   message.value = ''
   dialog.value?.showModal()
@@ -113,12 +202,14 @@ async function save() {
   try {
     const payload: EditorialContent['payload'] = {
       ...form.payload,
-      ...(kind.value === 'HERO' ? { property_id: heroProperty.value } : {}),
+      ...(kind.value === 'HERO'
+        ? { property_id: heroProperty.value, media_id: heroMediaId.value }
+        : {}),
     }
     for (const field of schemas[kind.value])
       if (field.type === 'number')
         payload[field.key] = Number(payload[field.key])
-    await api.request(
+    const result = await api.request<{ data: EditorialContent }>(
       `/api/v1/internal/content${selected.value ? `/${selected.value.id}` : ''}`,
       {
         method: selected.value ? 'PATCH' : 'POST',
@@ -132,9 +223,13 @@ async function save() {
         },
       },
     )
-    dialog.value?.close()
+    if (kind.value === 'BANK_PARTNER') selected.value = result.data
+    else dialog.value?.close()
     await load()
-    message.value = 'Konten tersimpan.'
+    message.value =
+      kind.value === 'BANK_PARTNER' && !selected.value?.logo_uploaded
+        ? 'Konten tersimpan. Unggah logo berizin di bawah, lalu publikasikan setelah ditinjau.'
+        : 'Konten tersimpan.'
   } catch (error) {
     message.value = staffError(error)
   } finally {
@@ -160,6 +255,7 @@ onMounted(() => load())
             <option value="HERO">Hero</option>
             <option value="TESTIMONIAL">Testimonial</option>
             <option value="BANK_RATE">Rate bank</option>
+            <option value="BANK_PARTNER">Bank mitra</option>
           </select></label
         ><button class="button" :disabled="busy" @click="open()">
           Tambah konten
@@ -192,6 +288,7 @@ onMounted(() => load())
                     HERO: 'Sorotan beranda',
                     TESTIMONIAL: 'Testimonial',
                     BANK_RATE: 'Referensi bank',
+                    BANK_PARTNER: 'Bank mitra',
                   }[record.kind]
                 }}
               </td>
@@ -287,9 +384,51 @@ onMounted(() => load())
           v-if="kind === 'HERO'"
           v-model="heroProperty"
           kind="property"
+          :published-only="true"
           :required="false"
-          label="Properti hero (opsional, foto published saja)"
-        /><label class="checkbox-label"
+          label="Properti hero (opsional, properti publik saja)"
+        />
+        <template v-if="kind === 'HERO' && heroProperty">
+          <label
+            >Foto atau video hero<select
+              v-model="heroMediaId"
+              :disabled="mediaLoading || busy"
+            >
+              <option :value="null">Gunakan foto sampul properti</option>
+              <option
+                v-if="
+                  heroMediaId &&
+                  !heroMediaOptions.some((item) => item.id === heroMediaId)
+                "
+                :value="heroMediaId"
+                disabled
+              >
+                Media pilihan tidak tersedia — pilih ulang
+              </option>
+              <option
+                v-for="item in heroMediaOptions"
+                :key="item.id"
+                :value="item.id"
+              >
+                {{ item.kind === 'VIDEO' ? 'Video YouTube' : 'Foto' }} ·
+                {{ item.alt }}
+              </option>
+            </select></label
+          >
+          <p v-if="mediaLoading" role="status">Memuat media siap tayang…</p>
+          <p v-if="mediaError" role="alert">{{ mediaError }}</p>
+          <p class="muted">
+            Hanya foto dan video siap yang diaktifkan untuk publik dari properti
+            ini. Unggah melalui Katalog → Edit properti → Media properti. Video
+            diputar setelah pengunjung memilihnya; foto sampul menjadi poster.
+          </p>
+        </template>
+        <p v-if="kind === 'BANK_PARTNER'" class="notice">
+          Logo mitra hanya tampil setelah logo diunggah, izin kemitraan
+          diverifikasi, dan konten dipublikasikan. Referensi suku bunga bukan
+          bukti kemitraan.
+        </p>
+        <label class="checkbox-label"
           ><input v-model="form.published" type="checkbox" />
           Publikasikan</label
         ><label class="checkbox-label"
@@ -313,6 +452,51 @@ onMounted(() => load())
           </button>
         </div>
         <p v-if="message" role="alert">{{ message }}</p>
+      </form>
+      <form
+        v-if="kind === 'BANK_PARTNER' && selected"
+        class="section"
+        @submit.prevent="uploadLogo"
+      >
+        <h3>Logo bank mitra</h3>
+        <p>
+          {{
+            selected.logo_uploaded
+              ? 'Logo sudah diunggah. Unggahan baru mengganti logo sebelumnya.'
+              : 'Belum ada logo. Konten tanpa logo tidak ditampilkan di beranda.'
+          }}
+        </p>
+        <p class="muted">
+          PNG, JPEG, atau WebP; maksimal 2 MiB / 4 megapiksel. Gunakan logo
+          resmi dengan izin publikasi. Simpan perubahan nama dan situs sebelum
+          mengganti logo.
+        </p>
+        <label
+          >File logo bank<input
+            ref="logoInput"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            required
+            :disabled="busy"
+            @change="
+              logoFile = ($event.target as HTMLInputElement).files?.[0] ?? null
+            "
+        /></label>
+        <label class="checkbox-label"
+          ><input
+            v-model="logoVerified"
+            type="checkbox"
+            required
+            :disabled="busy"
+          />Saya telah memverifikasi izin logo dan hubungan kemitraan bank
+          ini.</label
+        >
+        <button
+          class="button secondary"
+          :disabled="busy || !logoFile || !logoVerified"
+        >
+          Unggah logo bank
+        </button>
       </form>
     </dialog>
   </section>

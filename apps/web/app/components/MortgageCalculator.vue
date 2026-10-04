@@ -189,9 +189,13 @@ const yearlyChart = computed(() =>
         </div>
       </dl>
       <h3>Komposisi angsuran per tahun</h3>
+      <div class="mortgage-legend" aria-label="Legenda grafik">
+        <span><i class="principal-swatch" aria-hidden="true" />Pokok</span
+        ><span><i class="interest-swatch" aria-hidden="true" />Bunga</span>
+      </div>
       <p class="muted">
-        Hijau: pokok. Kuning: bunga. Floating adalah skenario tetap setelah
-        reset, bukan prediksi perubahan suku bunga.
+        Floating adalah skenario tetap setelah reset, bukan prediksi perubahan
+        suku bunga.
       </p>
       <ol class="mortgage-chart" aria-label="Grafik pokok dan bunga">
         <li v-for="year in yearlyChart" :key="year.year">

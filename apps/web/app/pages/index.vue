@@ -27,9 +27,9 @@ const wa = computed(() =>
   ),
 )
 useSeoMeta({
-  title: 'Flamboyan Perum — Temukan rumah yang tepat',
+  title: 'Flamboyan Perum — Hunian di Bandung Timur',
   description:
-    'Jelajahi katalog rumah, pahami spesifikasinya, dan temukan properti yang sesuai dengan kebutuhan Anda.',
+    'Kenali pilihan hunian Flamboyan di Bandung Timur. Jelajahi rumah, bandingkan spesifikasi, dan rencanakan kunjungan bersama tim kami.',
 })
 useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
 </script>
@@ -37,18 +37,9 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
 <template>
   <div>
     <section class="editorial-hero" aria-label="Selamat datang di Flamboyan">
-      <img
-        class="editorial-hero-photo"
-        src="/images/editorial-garden-1920.webp"
-        srcset="
-          /images/editorial-garden-960.webp   960w,
-          /images/editorial-garden-1920.webp 1920w
-        "
-        sizes="100vw"
-        width="1920"
-        height="1280"
-        fetchpriority="high"
-        alt="Inspirasi suasana hunian tropis dengan taman; foto ilustrasi, bukan unit dalam katalog."
+      <EditorialHeroMedia
+        :media="hero?.media ?? heroMedia"
+        :poster="heroMedia"
       />
       <div class="editorial-hero-content">
         <div class="editorial-headline">
@@ -94,15 +85,6 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
           <p>Lokasi yang Anda pilih. Ruang yang Anda butuhkan.</p>
         </form>
       </div>
-      <p class="photo-credit">
-        Foto ilustrasi ·
-        <a
-          href="https://unsplash.com/photos/Pfp0MP8QB7M"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Sergei Bezzubov / Unsplash ↗</a
-        >
-      </p>
     </section>
     <section class="editorial-intro container">
       <figure class="editorial-interior">
@@ -251,6 +233,7 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
     <p v-if="contentError" class="container notice">
       Konten referensi belum dapat dimuat.
     </p>
+    <BuyerGuidePreview />
     <section v-if="content?.data.testimonials.length" class="testimonials">
       <div class="container section">
         <div class="section-heading">
@@ -271,6 +254,7 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
         </div>
       </div>
     </section>
+    <BankPartners :partners="content?.data.bank_partners ?? []" />
     <section v-if="content?.data.bank_rates.length" class="container section">
       <p class="eyebrow">RENCANA PEMBIAYAAN</p>
       <h2>Referensi pembiayaan</h2>

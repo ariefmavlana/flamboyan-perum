@@ -295,11 +295,10 @@ test('editorial images load and testimonial blocks do not overlap across viewpor
     await page.goto('/')
     await page.waitForLoadState('networkidle')
     await page.evaluate(() => document.fonts.ready)
-    await expect(
-      page.getByAltText(
-        'Inspirasi suasana hunian tropis dengan taman; foto ilustrasi, bukan unit dalam katalog.',
-      ),
-    ).toBeVisible()
+    // Hero now comes from verified CMS media; its caption is not a fixed stock asset.
+    const hero = page.locator('.editorial-hero-photo')
+    await expect(hero).toBeVisible()
+    await expect(hero).toHaveAttribute('alt', /\S+/)
     for (const photo of await page.locator('main img').all()) {
       await photo.scrollIntoViewIfNeeded()
       await expect

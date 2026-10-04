@@ -18,7 +18,7 @@ class EdgeSecurity
             $ip = (string) $request->header('X-Flamboyan-Client-IP');
             $time = (string) $request->header('X-Flamboyan-Proxy-Time');
             $path = '/'.$request->path();
-            $public = preg_match('#^/api/v1/(properties(/[^/]+)?|content|compare|sitemap|analytics)$#', $path);
+            $public = preg_match('#^/api/v1/(properties(/[^/]+)?|content(/[0-9]+/logo)?|compare|sitemap|analytics)$#', $path);
             abort_unless($public && strlen($secret) >= 32 && filter_var($ip, FILTER_VALIDATE_IP) && ctype_digit($time) && abs(now()->timestamp - (int) $time) <= 30, 403);
             $expected = hash_hmac('sha256', $request->method()."\n".$path."\n".$time."\n".$ip, $secret);
             abort_unless(hash_equals($expected, (string) $request->header('X-Flamboyan-Proxy-Signature')), 403);

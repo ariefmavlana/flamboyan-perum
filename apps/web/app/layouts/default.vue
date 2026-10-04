@@ -19,6 +19,8 @@ const wa = computed(() =>
         <ResponsiveNav id="public-navigation" label="Navigasi utama">
           <NuxtLink to="/">Beranda</NuxtLink>
           <NuxtLink to="/properti">Jelajahi properti</NuxtLink>
+          <NuxtLink to="/bandung-timur">Bandung Timur</NuxtLink>
+          <NuxtLink to="/panduan">Panduan</NuxtLink>
           <NuxtLink
             :to="{
               path: '/bandingkan',
@@ -28,6 +30,7 @@ const wa = computed(() =>
             }"
             >Bandingkan</NuxtLink
           >
+          <NuxtLink to="/konsultasi">Konsultasi</NuxtLink>
           <a
             v-if="wa"
             :href="wa"
@@ -74,20 +77,20 @@ const wa = computed(() =>
       <div class="container footer-main">
         <div>
           <BrandLogo />
-          <p>
-            Informasi rumah yang Anda butuhkan.<br />Langkah berikutnya yang
-            lebih terarah.
-          </p>
+          <p>Hunian di Bandung Timur.<br />Ruang untuk cerita berikutnya.</p>
         </div>
         <nav aria-label="Navigasi footer">
           <NuxtLink to="/properti">Katalog properti</NuxtLink
           ><NuxtLink to="/bandingkan">Bandingkan rumah</NuxtLink
+          ><NuxtLink to="/bandung-timur">Tentang Bandung Timur</NuxtLink
+          ><NuxtLink to="/panduan">Panduan memilih rumah</NuxtLink
+          ><NuxtLink to="/konsultasi">Konsultasi & kunjungan</NuxtLink
           ><NuxtLink to="/privasi">Informasi privasi</NuxtLink
           ><NuxtLink to="/login">Tim Flamboyan ↗</NuxtLink>
         </nav>
       </div>
       <div class="container site-footer">
-        <span>Flamboyan Perum</span
+        <span>Flamboyan Perum · Bandung Timur</span
         ><span>Temukan rumah. Rencanakan langkah berikutnya.</span>
       </div>
     </footer>

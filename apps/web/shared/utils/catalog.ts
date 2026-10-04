@@ -18,3 +18,15 @@ export const availabilityLabels = {
   BOOKED: 'Dipesan',
   SOLD_OUT: 'Terjual',
 } as const
+export function propertyUrl(siteUrl: string, slug: string): string {
+  return `${siteUrl.replace(/\/+$/, '')}/properti/${encodeURIComponent(slug)}`
+}
+export function consultationLink(
+  number: string,
+  intent: string,
+  title: string,
+  url: string,
+): string | null {
+  if (!/^[1-9]\d{7,14}$/.test(number)) return null
+  return `https://wa.me/${number}?text=${encodeURIComponent(`Halo Admin Flamboyan, saya ingin berdiskusi tentang ${intent.toLowerCase()}${title ? ` untuk ${title}` : ' di Bandung Timur'}. Mohon informasi dan konfirmasi langkah berikutnya. ${url}`)}`
+}

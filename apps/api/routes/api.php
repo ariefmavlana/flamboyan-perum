@@ -19,6 +19,7 @@ Route::prefix('v1')->group(function () {
     Route::post('analytics', [AnalyticsController::class, 'store'])->middleware('throttle:analytics')->withoutMiddleware(EnsureFrontendRequestsAreStateful::class);
     Route::middleware('throttle:public-api')->group(function () {
         Route::get('content', [ContentController::class, 'publicIndex']);
+        Route::get('content/{id}/logo', [ContentController::class, 'publicLogo'])->whereNumber('id');
         Route::get('compare', [EvaluationController::class, 'compare']);
         Route::get('sitemap', [EvaluationController::class, 'sitemap']);
         Route::get('properties', [PropertyController::class, 'index']);
@@ -38,6 +39,7 @@ Route::prefix('v1')->group(function () {
         Route::get('internal/operations', [OperationsController::class, 'metrics']);
         Route::get('internal/content', [ContentController::class, 'index']);
         Route::post('internal/content', [ContentController::class, 'store']);
+        Route::post('internal/content/{id}/logo', [ContentController::class, 'uploadLogo'])->whereNumber('id');
         Route::patch('internal/content/{id}', [ContentController::class, 'update'])->whereNumber('id');
         Route::patch('internal/properties/{id}/location', [EvaluationController::class, 'location'])->whereNumber('id');
         Route::get('internal/properties', [PropertyController::class, 'internalIndex']);

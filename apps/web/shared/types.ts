@@ -45,18 +45,27 @@ export interface PublicContent {
     eyebrow: string
     property_id: number | null
     property?: Property | null
+    media_id?: number | null
+    media?: PublicMedia | null
   } | null
   testimonials: { id: number; name: string; quote: string; context: string }[]
   bank_rates: BankRate[]
+  bank_partners?: {
+    id: number
+    name: string
+    website: string
+    logo_url: string
+  }[]
 }
 export interface EditorialContent {
   id: number
-  kind: 'HERO' | 'TESTIMONIAL' | 'BANK_RATE'
+  kind: 'HERO' | 'TESTIMONIAL' | 'BANK_RATE' | 'BANK_PARTNER'
   payload: Record<string, string | number | null>
   published: boolean
   position: number
   version: number
   verified_at: string | null
+  logo_uploaded?: boolean
 }
 export interface PublicMedia {
   id: number

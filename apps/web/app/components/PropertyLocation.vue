@@ -38,7 +38,7 @@ const categories = {
 }
 </script>
 <template>
-  <section class="location-panel">
+  <section id="lokasi-rumah" class="location-panel">
     <h2>Lokasi dan fasilitas sekitar</h2>
     <p>{{ property.address }}</p>
     <template v-if="mapUrl"

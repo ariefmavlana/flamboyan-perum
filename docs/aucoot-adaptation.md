@@ -1,0 +1,46 @@
+# Adaptasi Aucoot untuk Flamboyan Bandung Timur
+
+Tanggal 2026-10-04. Branch `codex/bandung-buyer-experience` dibuat dari main terbaru `4816063`; perubahan desain PR #12 dibawa melalui cherry-pick sebagai dasar. Dokumen ini mencatat pengamatan, keputusan produk dan kemampuan yang benar-benar tersedia. Dokumen original di `docs/original/` tidak diubah.
+
+Pengguna menyukai arah editorial premium dan meminta pengembangan untuk pembeli middle-to-high Indonesia, dengan lokasi perumahan Bandung Timur. Tujuan pengalaman: memahami rumah dan lingkungan, membandingkan pilihan, mempertimbangkan pembiayaan, lalu memulai percakapan yang jelas dengan Admin. Foto dan video asli akan diberikan setelah fungsi siap; alamat, koordinat, akses, fasilitas dan waktu tempuh belum boleh dianggap terverifikasi.
+
+## Cakupan pengamatan
+
+Browser mengunjungi home, buy, sell, journal, design directory, story of a sale, about, press, contact dan international sales serta detail Spruce Hills Road dengan response200. Bukti lokal berupa `.tools/design-research/aucoot-feature-audit.json`, `.tools/design-research/aucoot-final-audit.json`, screenshot `aucoot-audit-*.png` dan `aucoot-final-{press,detail-spruce-hills}.png`; artefak penelitian tersebut tidak dicommit. Audit terakhir mengonfirmasi isi Press dan detail langsung melalui Chrome headless setelah web fetch sempat timeout. Pengamatan mencakup konten, hierarki dan kontrol yang terlihat, bukan pengujian pengiriman formulir atau integrasi layanan Aucoot. Pembacaan web beberapa URL sempat timeout; sumber resmi terindeks dan bukti browser digunakan bersama. Tidak ada kode, foto, logo, tulisan atau testimoni Aucoot disalin menjadi aset Flamboyan.
+
+| Area Aucoot / sumber resmi | Pola yang diamati | Adaptasi Flamboyan dan batas |
+|---|---|---|
+| [Home](https://aucoot.com/) | Sorotan properti berbasis foto, pengenalan identitas, katalog unggulan, cerita dan testimonial, ajakan kontak, newsletter | Foto besar dan tipografi editorial; hero dari CMS; kartu properti, sorotan, panduan dan CTA konsultasi. Newsletter tidak dibangun. |
+| [Buy](https://aucoot.com/buy/) | Search, filter lokasi/harga/kamar/desain/status, sorting, featured, daftar dengan status penawaran | Search/filter/sort/availability existing dipertahankan. Harga IDR, tanah/bangunan m², sertifikat, kondisi, compare dan KPR relevan untuk Indonesia. Tidak membuat kategori desain tanpa data. |
+| [Detail Spruce Hills Road](https://aucoot.com/property/spruce-hills-road-london-modern-1930s-house/) | Galeri, uraian rumah, spesifikasi, informasi arsitek/tenure, share, denah dan brosur | Navigasi bagian detail, kelompok foto/denah, dialog galeri dengan next/previous/keyboard, share native/clipboard/manual, lokasi, brosur dan konteks WhatsApp. Atribut hanya dari data katalog; tidak mengarang penghargaan/arsitek/legalitas. |
+| [Sell](https://aucoot.com/sell/) | Penjelasan proses layanan penjual, appraisal, bukti penjualan dan ajakan menghubungi | Pola penjelasan langkah diterapkan pada proses pembeli dan konsultasi. Jasa appraisal, formulir penjual dan laporan pencapaian penjualan tidak dibangun. |
+| [Journal](https://aucoot.com/journal/) | Cerita dengan kategori dan foto, featured stories, hubungan editorial dengan properti | `/panduan` dan tiga artikel SSR: kunjungan rumah, memilih lokasi, merencanakan pembiayaan. Konten tersimpan dalam source terkurasi, belum berupa CMS artikel umum. |
+| [Design Directory](https://aucoot.com/design-directory/) | Direktori desainer/arsitek dengan kategori dan sorting | Tidak dibuat: bukan kebutuhan katalog satu perumahan dan belum ada jaringan mitra terverifikasi. Prinsip kategori yang jelas digunakan pada panduan. |
+| [Story of a Sale](https://aucoot.com/testimonials/) | Cerita transaksi, kutipan pelanggan, metrik kasus | CMS testimonial berizin dipertahankan. Tidak mempublikasikan studi kasus atau angka konversi pemasaran tanpa bukti. CRM dan laporan operasional tetap privat. |
+| [About](https://aucoot.com/about/) | Identitas, pendekatan layanan, tim dan ajakan kontak | Halaman `/bandung-timur` menjelaskan cara mengevaluasi hunian dan mengarahkan ke katalog/panduan/konsultasi. Bukan profil legal developer; identitas Marketing individual tetap tidak dipublikasikan. |
+| [Press](https://aucoot.com/press/) | Liputan media dengan label penerbit, featured press, sorting terbaru/terlama/A–Z, load more dan ajakan melihat katalog | Tidak dibuat. Belum ada liputan atau aset pers Flamboyan terverifikasi; pola kredibilitas tidak diganti dengan logo media atau penghargaan fiktif. |
+| [Contact](https://aucoot.com/contact/) | Kanal pertanyaan, informasi kunjungan kantor dan peta | `/konsultasi` menyiapkan topik, pertanyaan dan konteks rumah ke WhatsApp Admin. Tidak mencantumkan alamat kantor yang belum diberikan dan tidak mengonfirmasi booking otomatis. |
+| [International](https://aucoot.com/international-sales/) | Koleksi lintas negara, cerita dan pilihan mata uang | Tidak dibuat. Fokus Bandung Timur, Bahasa Indonesia, IDR dan ukuran m²; tidak perlu pilihan negara/mata uang atau layanan agen internasional. |
+
+## Pengalaman yang diimplementasikan
+
+- Navigasi publik menghubungkan Hunian, Bandung Timur, Panduan dan konsultasi. Detail tetap mendukung seluruh atribut publik, compare, kalkulator KPR, WhatsApp dan SEO yang tersedia sebelumnya.
+- `/bandung-timur` memberi konteks kebutuhan keluarga dan evaluasi lokasi. Gambar suasana berlabel ilustrasi; tidak ada klaim titik lokasi, kedekatan tol, sekolah, bebas banjir atau waktu tempuh tanpa sumber aktual.
+- `/panduan` memuat tiga artikel yang dapat dibuka dan dibaca melalui SSR; slug tak dikenal404. Metadata/canonical dan sitemap memasukkan halaman publik baru. Artikel pembiayaan mengarahkan pengguna memahami asumsi, biaya dan konfirmasi ke bank, bukan menawarkan kredit.
+- `/konsultasi` menerima slug properti published dan topik kunjungan/ketersediaan/pembiayaan. Pertanyaan maksimal600 karakter hanya digunakan di perangkat untuk menyusun tautan WhatsApp. Pengguna meninjau dan mengirim sendiri di WhatsApp; belum ada booking, lead otomatis, penyimpanan pertanyaan di CRM, atau pengiriman server. Error data properti menahan CTA kontekstual dan menawarkan retry/percakapan tanpa pilihan rumah.
+- Share menggunakan Web Share API bila tersedia, kemudian clipboard, lalu input readonly untuk salin manual bila izin clipboard ditolak. URL yang dibagikan berasal dari canonical konfigurasi aplikasi.
+- Galeri memisahkan foto dan denah; dialog mendukung tombol sebelumnya/berikutnya, panah keyboard, Escape dan pengembalian fokus. Denah ditampilkan utuh. Video/tour dimuat setelah pilihan pengguna; brosur tampil hanya jika sumber tersedia.
+
+## Kesiapan aset pemilik
+
+Foto/denah tetap melalui upload scoped properti, worker dan varian WebP private-to-public. CMS HERO dapat memilih PHOTO atau VIDEO READY/published dari properti PUBLISHED. Media dan properti yang dicabut tidak dibocorkan oleh public DTO. Video adalah tautan YouTube tervalidasi dan dibuka setelah pilihan pengguna, tanpa autoplay atau upload MP4 langsung. Cover foto properti menyediakan poster untuk video; kode tetap menyediakan ilustrasi editorial berlabel ketika konten belum tersedia. Kemampuan ini tidak berarti foto/video asli perumahan sudah masuk.
+
+CMS `BANK_PARTNER` terpisah dari `BANK_RATE`: nama/website, upload logo JPEG/PNG/WebP≤2MiB/4MP, sanitasi WebP dan attestation Admin. Partner baru tampil bila published, verified dan logo tersedia. Tidak ada bank mitra fiktif yang di-seed. Metadata filesystem tidak ada pada DTO internal/publik; stale version dan kegagalan audit tidak boleh menghasilkan perubahan parsial. File logo terdahulu dipertahankan private untuk review backup/rollback. Detail endpoint dan batas penyimpanan ada di [API_DOCS.md](API_DOCS.md).
+
+## Bukti validasi dan batas rilis
+
+Validasi yang telah dikonfirmasi pada tahap pencatatan ini: PHP8.4.26, PHPUnit77 tests/579 assertions pada SQLite8.75s dan PostgreSQL15s; frontend lint dan typecheck lulus; unit15 tests427ms. Suite backend mencakup selection/scope/revocation hero, logo role/attestation/version/audit rollback/replacement/metadata/signed public path, tour public scope dan header PDF. Seluruh26alur browser final lulus, termasuk CMS/galeri/konsultasi dan regresi CRM. Lint/typecheck/build final lulus; unit15tests399ms. Rincian perintah, fixture, kegagalan assertion lama dan rerun ada di [buyer-experience-validation.md](buyer-experience-validation.md).
+
+Provider SMTP/Pusher/ClamAV nyata, hosting/domain/HTTPS/worker, media/konten asli berizin, alamat/koordinat/POI dan keputusan privasi tetap gate produksi. Audit source sebelumnya11 high tetap gate; jangan menyamakannya dengan hasil runtime atau mengklaim advisory terselesaikan. Tidak ada deployment, merge atau GitHub Actions dalam tahap ini. Hasil browser akhir tercatat pada buyer-experience-validation.md; hasil historis PR #12 bukan bukti otomatis untuk perubahan baru.
+
+Rollback kode melalui revert perubahan branch pada schema yang sama; tidak ada migrasi. Hapus publikasi hero/partner yang salah lewat CMS dengan version terbaru. Data demo lokal tetap berlabel dan terpisah dari fakta bisnis; koreksi fixture melalui API tidak memberi izin mengubah properti produksi.

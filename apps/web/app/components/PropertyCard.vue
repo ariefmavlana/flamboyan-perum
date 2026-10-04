@@ -4,9 +4,11 @@ import {
   availabilityLabels,
   formatIdr,
   whatsappLink,
+  propertyUrl,
 } from '#shared/utils/catalog'
 const props = defineProps<{ property: Property }>()
 const config = useRuntimeConfig()
+const analytics = usePropertyAnalytics()
 const cover = computed(() =>
   props.property.media?.find((item) => item.kind === 'PHOTO'),
 )
@@ -14,7 +16,7 @@ const wa = computed(() =>
   whatsappLink(
     config.public.whatsappNumber,
     props.property.title,
-    `${config.public.siteUrl}/properti/${props.property.slug}`,
+    propertyUrl(config.public.siteUrl, props.property.slug),
   ),
 )
 </script>
@@ -86,6 +88,7 @@ const wa = computed(() =>
           class="text-link"
           target="_blank"
           rel="noopener noreferrer"
+          @click="analytics.record(property.id, 'whatsapp_click')"
           >Hubungi Admin ↗</a
         ><NuxtLink v-else :to="`/properti/${property.slug}`" class="text-link"
           >Lihat detail →</NuxtLink
