@@ -73,6 +73,10 @@ for (const role of ['admin', 'marketing']) {
     await expect(page.locator('.staff-identity')).toContainText(
       role === 'admin' ? 'Administrator' : 'Marketing',
     )
+    await expect(
+      page.getByText('Memuat workspace…', { exact: true }),
+    ).toHaveCount(0)
+    await expect(page.getByRole('row').nth(1)).toBeVisible()
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth + 1,

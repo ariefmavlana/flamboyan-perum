@@ -29,7 +29,7 @@ Windows, Node24.21.0, PHP8.4.26, PostgreSQL17, Chrome lokal via Playwright. API 
 | Perintah/pemeriksaan | Hasil |
 |---|---|
 | Playwright `session-return.spec.ts --grep 'admin: active'` sebelum fix | Gagal sesuai bug: `/me`200 tetapi footer berakhir di `/login` |
-| Playwright `session-return.spec.ts` setelah fix | 6 lulus, 25,8s |
+| Playwright `session-return.spec.ts` setelah fix | 6 lulus, 26,7s; termasuk data CRM termuat setelah kembali |
 | `php vendor/bin/pint --test` | Lulus |
 | `php artisan test`, SQLite | 94 test /713 assertion, 10,20s |
 | `php artisan test`, PostgreSQL test isolated15533 | 94 test /713 assertion, 17,79s |
