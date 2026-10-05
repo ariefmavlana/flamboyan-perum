@@ -1,0 +1,528 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-05",
+  "source": "https://rumahrajasa.com/",
+  "properties": [
+    {
+      "house_type": "36/60",
+      "slug": "bukit-flamboyan-indah-2-36-60"
+    },
+    {
+      "house_type": "36/72",
+      "slug": "bukit-flamboyan-indah-2-36-72"
+    },
+    {
+      "house_type": "36/90",
+      "slug": "bukit-flamboyan-indah-2-36-90"
+    },
+    {
+      "house_type": "62/70",
+      "slug": "bukit-flamboyan-indah-2-62-70"
+    },
+    {
+      "house_type": "62/84",
+      "slug": "bukit-flamboyan-indah-2-62-84"
+    },
+    {
+      "house_type": "69/80",
+      "slug": "bukit-flamboyan-indah-2-69-80"
+    },
+    {
+      "house_type": "56/90",
+      "slug": "bukit-flamboyan-indah-2-56-90"
+    },
+    {
+      "house_type": "56/108",
+      "slug": "bukit-flamboyan-indah-2-56-108"
+    },
+    {
+      "house_type": "62/140",
+      "slug": "bukit-flamboyan-indah-2-62-140"
+    }
+  ],
+  "assets": [
+    {
+      "key": "156213",
+      "url": "https://rumahrajasa.com/foto_iklan/big_156213_bfi-2-t-tipe62-84.webp",
+      "sha256": "76ac74210f016393586c764f4c4d90e31642d7ce075f3eab828f74f476b83739",
+      "bytes": 30092,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-73-hunian-modern-potensi-pengembangan-belakang-24-m-amankan-unit-eksklusif-promo-allin-cuma-5-juta"
+      ],
+      "house_type": "62/84",
+      "action": "import",
+      "position": 0,
+      "alt": "Fasad depan · tipe 62/84. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:156213]"
+    },
+    {
+      "key": "595604",
+      "url": "https://rumahrajasa.com/foto_iklan/big_595604_bfi-2-t-tipe69-80.webp",
+      "sha256": "3dcda48974ab0ea075e5cf5b14a739e5686f8f62ea894ff161948dc2602924e9",
+      "bytes": 27266,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-75-rumah-megah-fasad-lega-idaman-pasangan-muda-smart-home-modern"
+      ],
+      "house_type": "69/80",
+      "action": "import",
+      "position": 0,
+      "alt": "Fasad depan · tipe 69/80. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:595604]"
+    },
+    {
+      "key": "591567",
+      "url": "https://rumahrajasa.com/foto_iklan/big_591567_bfi-2-t-tipe36-72.webp",
+      "sha256": "c25c67236b12bac4eb4b32090d87261579e536801b46a248cc00a88e0d9c8b7f",
+      "bytes": 28416,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-68-hunian-baru-di-cibiru-diskon-rp515-juta-dan-gratis-semua-biaya-surat-serta-kpr"
+      ],
+      "house_type": "36/72",
+      "action": "import",
+      "position": 0,
+      "alt": "Fasad depan · tipe 36/72. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:591567]"
+    },
+    {
+      "key": "612719",
+      "url": "https://rumahrajasa.com/foto_iklan/big_612719_bfi-2-t-tipe56-108.webp",
+      "sha256": "6be24c9aa20e8a33b746d754748d396e6f5cd1266b381c25b5fa9b8a3ddc9d7c",
+      "bytes": 39614,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-76-rumah-unit-paling-exclusive-dan-rare-kesempatan-langka-siap-mezanin-di-bandung-timu"
+      ],
+      "house_type": "56/108",
+      "action": "import",
+      "position": 0,
+      "alt": "Fasad depan · tipe 56/108. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:612719]"
+    },
+    {
+      "key": "896558",
+      "url": "https://rumahrajasa.com/foto_iklan/big_896558_bfi-2-t-tipe62-140.webp",
+      "sha256": "6d1c289e6182024e8da79066d9a43fc6b354395e431a5cf184edd28ecb0baf8e",
+      "bytes": 31596,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-77-rumah-sultan-lebar-depan-14m-exclusive-keleluasaan-lahan-maksimal-cibiru-bandung"
+      ],
+      "house_type": "62/140",
+      "action": "import",
+      "position": 0,
+      "alt": "Fasad depan · tipe 62/140. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:896558]"
+    },
+    {
+      "key": "865863",
+      "url": "https://rumahrajasa.com/foto_iklan/big_865863_bfi-2-t-tipe36-60.webp",
+      "sha256": "cee1430c4af7ec5ae58e3d12271febb65551b1f604c5fe4f74a09bf736125318",
+      "bytes": 33740,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-67-miliki-rumah-modern-smart-home-di-cibiru-bandung-–-kuota-terbatas-cuma-61-unit"
+      ],
+      "house_type": "36/60",
+      "action": "import",
+      "position": 0,
+      "alt": "Fasad depan · tipe 36/60. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:865863]"
+    },
+    {
+      "key": "378305",
+      "url": "https://rumahrajasa.com/foto_iklan/big_378305_bfi-2-t-tipe62-70.webp",
+      "sha256": "9b2c2c2b98d10b6860db1558ae2fe2674c587e9a2b87678753df4cbf8c1a907a",
+      "bytes": 27606,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-71-rumah-impian-keluarga-muda-di-bandung-timur-bebas-seluruh-biaya-surat-dan-kpr"
+      ],
+      "house_type": "62/70",
+      "action": "import",
+      "position": 0,
+      "alt": "Fasad depan · tipe 62/70. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:378305]"
+    },
+    {
+      "key": "933508",
+      "url": "https://rumahrajasa.com/foto_iklan/big_933508_bfi-2-t-tipe36-90.webp",
+      "sha256": "94c382301e8afc631e9f990ecc632226c80532e74fa049603a19d2adb20aec6f",
+      "bytes": 40426,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-70-hunian-eksklusif-halaman-belakang-luas-di-bandung-timur-gratis-seluruh-biaya-surat--kpr"
+      ],
+      "house_type": "36/90",
+      "action": "import",
+      "position": 1,
+      "alt": "Deretan fasad siang hari · tipe 36/90. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:933508]"
+    },
+    {
+      "key": "356955",
+      "url": "https://rumahrajasa.com/foto_iklan/big_356955_bfi-2-t-tipe56-90.webp",
+      "sha256": "89e1cc32cc1ebd7c5b3ff2febd0b0a04642b412b6c33c30345d0dbd6f56dc8c1",
+      "bytes": 32834,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-72-rumah-idaman-tanah-lebar-9-meter-siap-mezanin-unit-tipe-megah-gratis-seluruh-biaya-surat--kpr"
+      ],
+      "house_type": "56/90",
+      "action": "import",
+      "position": 0,
+      "alt": "Fasad depan · tipe 56/90. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:356955]"
+    },
+    {
+      "key": "144698",
+      "url": "https://rumahrajasa.com/foto_produkk/big_144698tipe-56-90-1.webp",
+      "sha256": "88b6cfcf6ea649a3626e738739589d09cd3df328d271f6e965a930a96505d687",
+      "bytes": 33176,
+      "width": 1019,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-72-rumah-idaman-tanah-lebar-9-meter-siap-mezanin-unit-tipe-megah-gratis-seluruh-biaya-surat--kpr"
+      ],
+      "house_type": "56/90",
+      "action": "import",
+      "position": 1,
+      "alt": "Perspektif kawasan · tipe 56/90. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:144698]"
+    },
+    {
+      "key": "508736",
+      "url": "https://rumahrajasa.com/foto_produkk/big_508736tipe-56-90-3.webp",
+      "sha256": "4e378c867d317a38d719a05e397aec140017cde731ccc1ae37148e27f2833544",
+      "bytes": 36816,
+      "width": 1019,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-72-rumah-idaman-tanah-lebar-9-meter-siap-mezanin-unit-tipe-megah-gratis-seluruh-biaya-surat--kpr"
+      ],
+      "house_type": "56/90",
+      "action": "reference_only",
+      "reason": "Perspektif sama dengan 861279; pilih berkas dengan detail lebih baik."
+    },
+    {
+      "key": "709928",
+      "url": "https://rumahrajasa.com/foto_produkk/big_709928tipe-56-90-2.webp",
+      "sha256": "088a1a77d884d067c987659e7815785d44968eaac039532e07cd1c2e54fd3c4e",
+      "bytes": 38342,
+      "width": 1019,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-72-rumah-idaman-tanah-lebar-9-meter-siap-mezanin-unit-tipe-megah-gratis-seluruh-biaya-surat--kpr"
+      ],
+      "house_type": "56/90",
+      "action": "import",
+      "position": 2,
+      "alt": "Perspektif jalan lingkungan · tipe 56/90. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:709928]"
+    },
+    {
+      "key": "285304",
+      "url": "https://rumahrajasa.com/foto_produkk/big_285304_tipe-56-90-1.webp",
+      "sha256": "fa54bcec6ffb6112f0ce92a9f2b524ed2232c69b7cb6daf558d44d1e1f2e79ce",
+      "bytes": 28558,
+      "width": 1019,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-79-tampil-beda-dengan-fasad-9-meter-rumah-modern-1-lantai-3-kamar-tidur-di-bandung-timur"
+      ],
+      "house_type": "56/90",
+      "action": "reference_only",
+      "reason": "Perspektif sama dengan 144698; pilih berkas dengan detail lebih baik."
+    },
+    {
+      "key": "209216",
+      "url": "https://rumahrajasa.com/foto_iklan/big_209216tipe-56-90-7.webp",
+      "sha256": "f7b533c9fefd5ea0657d70e012b023b84ca4039e3f33033bfa7197630cfee605",
+      "bytes": 18058,
+      "width": 573,
+      "height": 424,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-79-tampil-beda-dengan-fasad-9-meter-rumah-modern-1-lantai-3-kamar-tidur-di-bandung-timur"
+      ],
+      "house_type": "56/90",
+      "action": "import",
+      "position": 3,
+      "alt": "Fasad sore hari · tipe 56/90. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:209216]"
+    },
+    {
+      "key": "798932",
+      "url": "https://rumahrajasa.com/foto_iklan/big_798932tipe-56-108-1.webp",
+      "sha256": "f8f74a5ee89f0c02fe5a483791febd7f041e2dd3d5be21a36475f9978f343033",
+      "bytes": 29752,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-88-kemewahan-dalam-kesederhanaan-hunian-1-lantai-eksklusif-di-jantung-cibiru-bandung-timur"
+      ],
+      "house_type": "56/108",
+      "action": "reference_only",
+      "reason": "Ilustrasi sama dengan 612719; pilih berkas dengan detail lebih baik."
+    },
+    {
+      "key": "861279",
+      "url": "https://rumahrajasa.com/foto_produkk/big_861279tipe-56-90-3.webp",
+      "sha256": "91030e2aa44a316b74c71e215c4578f3b2f631ac6d09bf47fa4ffcc06492dceb",
+      "bytes": 42422,
+      "width": 1019,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-79-tampil-beda-dengan-fasad-9-meter-rumah-modern-1-lantai-3-kamar-tidur-di-bandung-timur"
+      ],
+      "house_type": "56/90",
+      "action": "import",
+      "position": 4,
+      "alt": "Perspektif dari atas · tipe 56/90. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:861279]"
+    },
+    {
+      "key": "475142",
+      "url": "https://rumahrajasa.com/foto_produkk/big_475142tipe-36-90.webp",
+      "sha256": "2618f789a36721f2de684a9c07cd163d382da90cdb096287ba20c707a75b34ec",
+      "bytes": 32948,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-96-hunian-mewah-tipe-3690-dekat-kampus-itb-jatinangor-dan-tol-gedebage-–-perumahan-baru-cibiru-bandung"
+      ],
+      "house_type": "36/90",
+      "action": "import",
+      "position": 2,
+      "alt": "Deretan fasad malam hari · tipe 36/90. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:475142]"
+    },
+    {
+      "key": "697313",
+      "url": "https://rumahrajasa.com/foto_produkk/big_697313tipe-56-90-2.webp",
+      "sha256": "088a1a77d884d067c987659e7815785d44968eaac039532e07cd1c2e54fd3c4e",
+      "bytes": 38342,
+      "width": 1019,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-79-tampil-beda-dengan-fasad-9-meter-rumah-modern-1-lantai-3-kamar-tidur-di-bandung-timur"
+      ],
+      "house_type": "56/90",
+      "action": "reference_only",
+      "reason": "Duplikat byte identik dengan 709928."
+    },
+    {
+      "key": "256107",
+      "url": "https://rumahrajasa.com/foto_iklan/big_256107baru-tipe-36-90.webp",
+      "sha256": "760622f320bf712ef4ee6164842d2eea369dbf2cac05c95200e3ae7797940f3c",
+      "bytes": 41434,
+      "width": 1027,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-96-hunian-mewah-tipe-3690-dekat-kampus-itb-jatinangor-dan-tol-gedebage-–-perumahan-baru-cibiru-bandung"
+      ],
+      "house_type": "36/90",
+      "action": "import",
+      "position": 0,
+      "alt": "Fasad depan · tipe 36/90. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:256107]"
+    },
+    {
+      "key": "11416",
+      "url": "https://rumahrajasa.com/foto_produkk/big_11416tipe-36-90-1.webp",
+      "sha256": "3d6bc426ec124e7a373188bfb0e1f08e6195e6145c632b56818d7ec5ae84fef0",
+      "bytes": 24876,
+      "width": 573,
+      "height": 424,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-96-hunian-mewah-tipe-3690-dekat-kampus-itb-jatinangor-dan-tol-gedebage-–-perumahan-baru-cibiru-bandung"
+      ],
+      "house_type": "36/90",
+      "action": "import",
+      "position": 3,
+      "alt": "Alternatif tampilan fasad · tipe 36/90. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:11416]"
+    },
+    {
+      "key": "774275",
+      "url": "https://rumahrajasa.com/foto_iklan/big_774275site-plan-1.webp",
+      "sha256": "06da0c67fb149480d948f2ce936337bed9614bd2d5988d54c3893b90d75ff2ce",
+      "bytes": 35916,
+      "width": 382,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-93-perumahan-di-cibiru-dekat-unpad-jatinangor-hunian-nyaman-harga-terjangkau"
+      ],
+      "house_type": null,
+      "action": "reference_only",
+      "reason": "Site plan bersama; masterplan dari brosur sudah tersedia."
+    },
+    {
+      "key": "653808",
+      "url": "https://rumahrajasa.com/foto_produkk/big_653808Perumahan-Strategis-Bandung-Timur-3.webp",
+      "sha256": "d2baf860d10d8dd92629dac0216e4701e05b8a8cf6057e83ac6dffa2130b8bf2",
+      "bytes": 20530,
+      "width": 573,
+      "height": 424,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-97-perumahan-strategis-bandung-timur-dekat-tol-cileunyi-soekarno-hatta-dan-jatinangor"
+      ],
+      "house_type": "62/84",
+      "action": "import",
+      "position": 2,
+      "alt": "Alternatif tampilan fasad · tipe 62/84. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:653808]"
+    },
+    {
+      "key": "782053",
+      "url": "https://rumahrajasa.com/foto_produkk/big_782053Perumahan-Strategis-Bandung-Timur-1.webp",
+      "sha256": "b38d09797c5b69d20d1d6a71e1d98b81fa703538b56c86ab822248fa358e3c55",
+      "bytes": 34490,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-97-perumahan-strategis-bandung-timur-dekat-tol-cileunyi-soekarno-hatta-dan-jatinangor"
+      ],
+      "house_type": "62/84",
+      "action": "import",
+      "position": 1,
+      "alt": "Deretan fasad · tipe 62/84. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:782053]"
+    },
+    {
+      "key": "240846",
+      "url": "https://rumahrajasa.com/foto_iklan/big_240846Perumahan-Strategis-Bandung-Timur.webp",
+      "sha256": "f7f6eb4f21e036067a07579d2f1374f6ccab70375b038db09e318d3e7a969893",
+      "bytes": 29610,
+      "width": 384,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-97-perumahan-strategis-bandung-timur-dekat-tol-cileunyi-soekarno-hatta-dan-jatinangor"
+      ],
+      "house_type": "62/84",
+      "action": "reference_only",
+      "reason": "Poster promo memuat harga/uang muka yang tidak diadopsi sebagai data katalog."
+    },
+    {
+      "key": "219116",
+      "url": "https://rumahrajasa.com/foto_iklan/big_219116tipe-62-70-1.webp",
+      "sha256": "b7bb3ee20b9452ea16876e584b31553414072f5096aa8c36188877d2990e258c",
+      "bytes": 22302,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-92-rumah-2-lantai-cibiru-bandung-smart-door-lock-lebar-7-meter--promo-2026"
+      ],
+      "house_type": "62/70",
+      "action": "import",
+      "position": 1,
+      "alt": "Fasad malam hari · tipe 62/70. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:219116]"
+    },
+    {
+      "key": "258806",
+      "url": "https://rumahrajasa.com/foto_produkk/big_258806bfi-2-t-tipe36-60.webp",
+      "sha256": "afa34363b0ee9cfcce727de8e0cf5c43834fd52eb638e60f197d43f33bc3c499",
+      "bytes": 22598,
+      "width": 573,
+      "height": 424,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-93-perumahan-di-cibiru-dekat-unpad-jatinangor-hunian-nyaman-harga-terjangkau"
+      ],
+      "house_type": "36/60",
+      "action": "reference_only",
+      "reason": "Versi kecil fasad 865863."
+    },
+    {
+      "key": "216237",
+      "url": "https://rumahrajasa.com/foto_produkk/big_216237bukit-flamboyan-indah-on-progres.webp",
+      "sha256": "a1995ebdc2fbb5c3012cd3633f677217337c333101c51363f2e04ee9bda41dc8",
+      "bytes": 36146,
+      "width": 382,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-93-perumahan-di-cibiru-dekat-unpad-jatinangor-hunian-nyaman-harga-terjangkau"
+      ],
+      "house_type": null,
+      "action": "reference_only",
+      "reason": "Poster fasilitas bersama, bukan dokumentasi tipe rumah."
+    },
+    {
+      "key": "138305",
+      "url": "https://rumahrajasa.com/foto_iklan/big_138305tipe-69-80-1.webp",
+      "sha256": "036ad9ad4813fa57a9a72b5fda1bfcbc8c8f9154af39e1a66fe46e59f5467ac8",
+      "bytes": 25648,
+      "width": 774,
+      "height": 573,
+      "source_pages": [
+        "https://rumahrajasa.com/properti-detail-89-fasad-gagah-smart-door-lock-rumah-smart-home-2-lantai-favorit-pasangan-muda-di-bandung-timur"
+      ],
+      "house_type": "69/80",
+      "action": "import",
+      "position": 1,
+      "alt": "Fasad malam hari · tipe 69/80. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:138305]"
+    },
+    {
+      "key": "306226",
+      "url": "https://rumahrajasa.com/foto_berita/foto_perumahan_306226baru-tipe-36-90-1.webp",
+      "sha256": "9d7b86f1e5e51d4c5d948c9dfe1b491f6dec1d73e70c9a8aabf3ce56b6bda7cf",
+      "bytes": 90308,
+      "width": 600,
+      "height": 900,
+      "source_pages": [
+        "https://rumahrajasa.com/gallery-detail-24-hunian-mewah-tipe-3690--bukit-flamboyan-indah-2"
+      ],
+      "house_type": "36/90",
+      "action": "reference_only",
+      "reason": "Poster promosi dan klaim akses; gambar fasad tersedia terpisah dengan resolusi lebih baik."
+    },
+    {
+      "key": "542406",
+      "url": "https://rumahrajasa.com/foto_berita/foto_perumahan_542406smart-home.webp",
+      "sha256": "8a98624e9e4182d3d78b85adc990879764239f6f0df150f72fd40d3a1b985155",
+      "bytes": 38106,
+      "width": 600,
+      "height": 900,
+      "source_pages": [
+        "https://rumahrajasa.com/gallery-detail-23-miliki-rumah-modern-smart-home-kavling-6-x-10-m²-type-3660"
+      ],
+      "house_type": "36/60",
+      "action": "import",
+      "position": 1,
+      "alt": "Ilustrasi interior ruang keluarga · tipe 36/60. Ilustrasi developer Rumah Rajasa, bukan foto kondisi aktual. [RR:542406]"
+    },
+    {
+      "key": "554247",
+      "url": "https://rumahrajasa.com/foto_berita/foto_perumahan_554247site-plan-1.webp",
+      "sha256": "b39ee03ede47bcc71938f37352ce21086a2de6d2270babdeaf9cf225a5475e9d",
+      "bytes": 130252,
+      "width": 600,
+      "height": 900,
+      "source_pages": [
+        "https://rumahrajasa.com/gallery-detail-18-site-plan--kawasan-bukit-flamboyan-indah-2"
+      ],
+      "house_type": null,
+      "action": "reference_only",
+      "reason": "Site plan bersama; masterplan dari brosur sudah tersedia."
+    },
+    {
+      "key": "299866",
+      "url": "https://rumahrajasa.com/foto_berita/foto_perumahan_299866bukit-flamboyan-indah-on-progres.webp",
+      "sha256": "39703973be244fcd1d0072188e152ec84553787b5e47816cd9e19ee42a3fbec9",
+      "bytes": 100218,
+      "width": 600,
+      "height": 900,
+      "source_pages": [
+        "https://rumahrajasa.com/gallery-detail-15-fasilitas-publik--akses-lengkap-di-sekitar-bukit-flamboyan-indah-2"
+      ],
+      "house_type": null,
+      "action": "reference_only",
+      "reason": "Poster fasilitas bersama, bukan dokumentasi tipe rumah."
+    },
+    {
+      "key": "417827",
+      "url": "https://rumahrajasa.com/foto_berita/foto_perumahan_417827on-progress.webp",
+      "sha256": "a0f5947b9d0a4038b765867faf43d35beebc9e85967f16e863074deeb3fc46ae",
+      "bytes": 115798,
+      "width": 600,
+      "height": 900,
+      "source_pages": [
+        "https://rumahrajasa.com/gallery-detail-17-menuju-rumah-impian-onprogress-bukit-flamboyan-indah-2"
+      ],
+      "house_type": null,
+      "action": "reference_only",
+      "reason": "Dokumentasi pembangunan bersama tanpa pemetaan tipe."
+    }
+  ]
+}
