@@ -33,7 +33,7 @@ class ContentController extends Controller
             $heroData['property'] = $property ? (new PublicPropertyResource($property))->resolve() : null;
             $heroData['property_id'] = $property?->id;
             $mediaId = $hero->payload['media_id'] ?? null;
-            $media = $property ? ($mediaId ? $property->publicMedia()->whereIn('kind', ['PHOTO', 'VIDEO'])->whereKey($mediaId)->first() : $property->coverMedia) : null;
+            $media = $property && $mediaId ? $property->publicMedia()->whereIn('kind', ['PHOTO', 'VIDEO'])->whereKey($mediaId)->first() : null;
             $heroData['media'] = $media?->publicData();
         }
         $today = now('Asia/Jakarta')->toDateString();

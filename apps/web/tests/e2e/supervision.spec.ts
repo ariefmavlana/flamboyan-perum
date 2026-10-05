@@ -11,17 +11,17 @@ test('Admin reports cohort metrics and read-only retention; Marketing is denied'
   await page.getByRole('button', { name: 'Masuk →' }).click()
   await page.getByRole('link', { name: 'Laporan', exact: true }).click()
   await expect(
-    page.getByRole('heading', { name: 'Laporan perjalanan lead' }),
+    page.getByRole('heading', { name: 'Hasil penjualan' }),
   ).toBeVisible()
   await expect(
-    page.getByText('Distribusi status cohort', { exact: true }),
+    page.getByText('Rincian tahap calon pembeli dalam periode', { exact: true }),
   ).toBeVisible()
   await page.getByLabel('Tanggal awal', { exact: true }).fill('2024-01-01')
   await page.getByRole('button', { name: 'Tampilkan laporan' }).click()
   await expect(
     page.getByRole('alert').filter({ hasText: 'Rentang laporan maksimal' }),
   ).toBeVisible()
-  await page.getByRole('link', { name: 'Retensi lead', exact: true }).click()
+  await page.getByRole('link', { name: 'Privasi kontak', exact: true }).click()
   await expect(
     page.getByRole('heading', { name: 'Kandidat retensi lead' }),
   ).toBeVisible()

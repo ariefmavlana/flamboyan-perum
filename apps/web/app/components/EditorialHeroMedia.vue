@@ -54,27 +54,23 @@ const sourceSet = computed(() =>
   <img
     v-else
     class="editorial-hero-photo"
-    src="/images/editorial-garden-1920.webp"
-    srcset="
-      /images/editorial-garden-960.webp   960w,
-      /images/editorial-garden-1920.webp 1920w
-    "
+    src="/images/flamboyan-kawasan.webp"
     sizes="100vw"
-    width="1920"
-    height="1280"
+    width="1080"
+    height="800"
     fetchpriority="high"
-    alt="Inspirasi hunian tropis dengan taman; foto ilustrasi, bukan unit dalam katalog."
+    alt="Ilustrasi kawasan Bukit Flamboyan Indah 2 dari Rumah Rajasa; bukan foto kondisi aktual."
   />
   <p v-if="photo?.sources.length" class="photo-credit hero-media-caption">
     {{ photo.alt }}
   </p>
   <p v-else class="photo-credit">
-    Foto ilustrasi ·
+    Ilustrasi kawasan ·
     <a
-      href="https://unsplash.com/photos/Pfp0MP8QB7M"
+      href="https://rumahrajasa.com/"
       target="_blank"
       rel="noopener noreferrer"
-      >Sergei Bezzubov / Unsplash ↗</a
+      >Rumah Rajasa ↗</a
     >
   </p>
   <div v-if="video?.url" class="hero-video-control">

@@ -75,7 +75,7 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
     .fill(process.env.DEMO_PASSWORD ?? '')
   await page.getByRole('button', { name: 'Masuk →' }).click()
   await expect(page).toHaveURL(/backoffice/)
-  await expect(page.getByText(/lead sesuai filter saat ini/)).toBeVisible()
+  await expect(page.getByText(/calon pembeli.*Halaman/)).toBeVisible()
   const primaryRequest: Record<string, string> = {
     '/backoffice': '/api/v1/leads',
     '/backoffice/properti': '/api/v1/internal/properties',
@@ -125,7 +125,7 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
       await expect(page.locator('main h1')).toBeVisible()
       if (path === '/backoffice') {
         await expect(
-          page.getByText(/lead sesuai filter saat ini/),
+          page.getByText(/calon pembeli.*Halaman/),
         ).toBeVisible()
         await expect(
           page.getByText('Memuat workspace…', { exact: true }),
@@ -169,12 +169,12 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
   const menu = page.getByRole('button', { name: 'Menu', exact: true })
   await menu.click()
   const nav = page.getByRole('navigation', { name: 'Workspace tim' })
-  await nav.getByRole('link', { name: 'Katalog', exact: true }).focus()
+  await nav.getByRole('link', { name: 'Katalog properti', exact: true }).focus()
   await page.keyboard.press('Escape')
   await expect(menu).toBeFocused()
   await expect(nav).not.toBeVisible()
   await menu.click()
-  await nav.getByRole('link', { name: 'Katalog', exact: true }).click()
+  await nav.getByRole('link', { name: 'Katalog properti', exact: true }).click()
   await expect(nav).not.toBeVisible()
   await page.getByRole('button', { name: 'Tambah properti' }).click()
   const dialog = page.getByRole('dialog')

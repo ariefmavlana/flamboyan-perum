@@ -55,6 +55,7 @@ Route::prefix('v1')->group(function () {
         Route::post('internal/properties/{id}/owner', [PropertyController::class, 'transferOwner'])->whereNumber('id');
         Route::patch('internal/properties/{id}', [PropertyController::class, 'update'])->whereNumber('id');
         Route::get('leads', [LeadController::class, 'index']);
+        Route::get('leads/summary', [LeadController::class, 'summary']);
         Route::post('leads', [LeadController::class, 'store']);
         Route::get('leads/{id}', [LeadController::class, 'show'])->whereNumber('id');
         Route::patch('leads/{id}/contact', [LeadController::class, 'contact'])->whereNumber('id');

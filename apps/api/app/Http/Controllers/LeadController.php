@@ -16,8 +16,20 @@ class LeadController extends Controller
 
     public function index(Request $request)
     {
-        $data = $request->validate(['page' => 'sometimes|integer|min:1', 'per_page' => 'sometimes|integer|between:1,100', 'q' => 'sometimes|string|max:100', 'assigned_marketing_id' => 'sometimes|integer|min:1', 'unassigned' => 'sometimes|boolean', 'status' => ['sometimes', Rule::enum(LeadStatus::class)]]);
+        $data = $request->validate(['page' => 'sometimes|integer|min:1', 'per_page' => 'sometimes|integer|between:1,100', 'q' => 'sometimes|string|max:100', 'assigned_marketing_id' => 'sometimes|integer|min:1', 'unassigned' => 'sometimes|boolean', 'status' => ['sometimes', Rule::enum(LeadStatus::class)], 'work' => ['sometimes', Rule::in(['unassigned', 'contact', 'visit', 'documents'])]]);
         $query = Lead::query()->visibleTo($request->user())->with(['property', 'assignee']);
+        if (isset($data['work'])) {
+            $query->whereNull('anonymized_at')->whereNotIn('status', ['DEAL', 'LOST']);
+            if ($data['work'] === 'unassigned') {
+                $query->whereNull('assigned_marketing_id');
+            } else {
+                $query->whereNotNull('assigned_marketing_id')->whereIn('status', match ($data['work']) {
+                    'contact' => ['NEW_LEAD'],
+                    'visit' => ['FOLLOWED_UP', 'SURVEY_LOKASI'],
+                    'documents' => ['PEMBERKASAN_KPR'],
+                });
+            }
+        }
         if (! empty($data['q'])) {
             $pattern = '%'.str_replace(['!', '%', '_'], ['!!', '!%', '!_'], mb_strtolower($data['q'])).'%';
             $query->where(fn ($q) => $q->whereRaw("LOWER(name) LIKE ? ESCAPE '!'", [$pattern])->orWhereRaw("whatsapp_number LIKE ? ESCAPE '!'", [$pattern])->orWhereHas('property', fn ($p) => $p->whereRaw("LOWER(title) LIKE ? ESCAPE '!'", [$pattern])));
@@ -33,6 +45,32 @@ class LeadController extends Controller
         }
 
         return JsonResource::collection($query->orderByDesc('id')->paginate($data['per_page'] ?? 20));
+    }
+
+    public function summary(Request $request)
+    {
+        // Aggregate within the same scope as the list; never return another
+        // Marketing user's workload or derive totals from a paginated page.
+        $groups = Lead::query()->visibleTo($request->user())
+            ->selectRaw('status, CASE WHEN assigned_marketing_id IS NULL THEN 1 ELSE 0 END AS unassigned, CASE WHEN anonymized_at IS NULL THEN 0 ELSE 1 END AS anonymized, COUNT(*) AS aggregate')
+            ->groupBy('status', 'unassigned', 'anonymized')->get();
+        $statuses = array_fill_keys(array_column(LeadStatus::cases(), 'value'), 0);
+        $work = ['unassigned' => 0, 'contact' => 0, 'visit' => 0, 'documents' => 0];
+        foreach ($groups as $group) {
+            $count = (int) $group->aggregate;
+            $statuses[$group->status] += $count;
+            if ((int) $group->anonymized || in_array($group->status, ['DEAL', 'LOST'], true)) {
+                continue;
+            }
+            $queue = (int) $group->unassigned ? 'unassigned' : match ($group->status) {
+                'NEW_LEAD' => 'contact',
+                'FOLLOWED_UP', 'SURVEY_LOKASI' => 'visit',
+                'PEMBERKASAN_KPR' => 'documents',
+            };
+            $work[$queue] += $count;
+        }
+
+        return ['data' => ['total' => array_sum($statuses), 'active' => array_sum($work), 'statuses' => $statuses, 'work' => $work]];
     }
 
     public function store(Request $request)

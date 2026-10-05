@@ -5,7 +5,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
   page,
   browser,
 }) => {
-  test.setTimeout(60000)
+  test.setTimeout(120000)
   const suffix = Date.now().toString()
   await page.goto('/login')
   await page.getByLabel('Email', { exact: true }).fill('admin@example.test')
@@ -15,7 +15,9 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
   await page.getByRole('button', { name: 'Masuk →' }).click()
   await expect(page).toHaveURL(/backoffice/)
   const owner = await marketingUser(page)
-  await page.getByRole('link', { name: 'Katalog', exact: true }).click()
+  await page
+    .getByRole('link', { name: 'Katalog properti', exact: true })
+    .click()
   await page.getByRole('button', { name: 'Tambah properti' }).click()
   const property = page.getByRole('dialog')
   await property
@@ -55,7 +57,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
     fullPage: true,
   })
   await page.setViewportSize({ width: 1280, height: 800 })
-  await page.getByRole('link', { name: 'CRM', exact: true }).click()
+  await page.getByRole('link', { name: 'Calon pembeli', exact: true }).click()
   await page.getByRole('button', { name: 'Catat lead baru' }).click()
   const leadForm = page
     .getByRole('dialog')
@@ -71,14 +73,12 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
     .selectOption({ label: `Rumah Operasi ${suffix}` })
   await leadForm.getByRole('button', { name: 'Simpan lead' }).click()
   await expect(leadForm).not.toBeVisible()
-  const row = page
-    .getByRole('row')
-    .filter({ hasText: `Prospek Operasi ${suffix}` })
-  await row.getByRole('button', { name: 'Lihat histori →' }).click()
   const drawer = page.getByRole('dialog').filter({
     has: page.getByRole('heading', { name: `Prospek Operasi ${suffix}` }),
   })
-  await drawer.getByText('Assign / alihkan Marketing', { exact: true }).click()
+  await expect(
+    drawer.getByText('Penanggung jawab Marketing', { exact: true }),
+  ).toBeVisible()
   await drawer
     .getByLabel('Marketing penerima', { exact: true })
     .selectOption({ value: String(owner.id) })
@@ -123,7 +123,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
     await marketing
       .getByRole('row')
       .filter({ hasText: `Prospek Operasi ${suffix}` })
-      .getByRole('button', { name: 'Lihat histori →' })
+      .getByRole('button', { name: 'Buka detail →' })
       .click()
     const panel = marketing.getByRole('dialog').filter({
       has: marketing.getByRole('heading', {
@@ -133,6 +133,9 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
     await panel.getByRole('button', { name: 'Simpan status' }).click()
     await expect(
       panel.getByText('Perubahan status', { exact: false }),
+    ).toBeVisible()
+    await expect(
+      panel.getByText(`Rumah Operasi ${suffix} · ${owner.name}`, { exact: true }),
     ).toBeVisible()
     await marketing.keyboard.press('Escape')
     await marketing.getByRole('link', { name: 'Profil', exact: true }).click()

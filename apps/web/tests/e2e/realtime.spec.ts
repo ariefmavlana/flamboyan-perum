@@ -104,7 +104,7 @@ test('real Echo/Pusher clients subscribe privately, refresh once per event and r
   const settled = notifications
   socket!.send(event)
   await expect.poll(() => notifications).toBe(settled)
-  await page.getByRole('link', { name: 'Katalog', exact: true }).click()
+  await page.getByRole('link', { name: 'Katalog properti', exact: true }).click()
   await expect(
     page.getByRole('link', { name: 'Notifikasi, 1 belum dibaca' }),
   ).toBeVisible()

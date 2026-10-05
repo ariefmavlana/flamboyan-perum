@@ -117,7 +117,6 @@ export interface PublicContent {
     eyebrow: string
     property_id: number | null
     property?: Property | null
-    media_id?: number | null
     media?: PublicMedia | null
   } | null
   testimonials: { id: number; name: string; quote: string; context: string }[]

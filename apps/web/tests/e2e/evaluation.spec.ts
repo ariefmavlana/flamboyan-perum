@@ -41,8 +41,9 @@ test('full filters, persistent comparison, floating KPR and factual SEO work on 
   )
   await expect(page.getByRole('heading', { name: fixture.title })).toBeVisible()
   await page
+    .locator('.property-card')
+    .filter({ has: page.getByRole('heading', { name: fixture.title, exact: true }) })
     .getByRole('button', { name: 'Bandingkan properti', exact: true })
-    .first()
     .click()
   await page.reload()
   await page.getByRole('link', { name: 'Bandingkan 1 properti →' }).click()
@@ -64,7 +65,9 @@ test('full filters, persistent comparison, floating KPR and factual SEO work on 
   await page.getByRole('link', { name: fixture.title, exact: true }).click()
   await page.getByLabel('Skenario fixed lalu floating').check()
   await page.getByLabel('Asumsi bunga floating (%)').fill('12')
-  await expect(page.getByText('Cicilan setelah fixed / bulan')).toBeVisible()
+  await expect(
+    page.locator('dt').filter({ hasText: /Cicilan mulai bulan .*12% \(skenario floating\)/ }),
+  ).toBeVisible()
   await page.getByLabel('Uang muka (IDR)').fill(fixture.price_idr)
   await expect(
     page
@@ -134,13 +137,18 @@ test('Admin curates verified testimonial and location; map stays consent gated',
   await dialog.getByRole('button', { name: 'Simpan konten' }).click()
   await expect(dialog).not.toBeVisible()
   expect(await (await request.get('/')).text()).not.toContain(name)
-  await page.getByRole('link', { name: 'Katalog', exact: true }).click()
+  await page
+    .getByRole('link', { name: 'Katalog properti', exact: true })
+    .click()
   await page.getByLabel('Cari properti', { exact: true }).fill(fixture.title)
   await page.getByRole('button', { name: 'Cari / muat ulang' }).click()
   await page
     .getByRole('row')
     .filter({ hasText: fixture.title })
     .getByRole('button', { name: 'Edit properti' })
+    .click()
+  await dialog
+    .getByRole('button', { name: 'Lokasi & sekitar', exact: true })
     .click()
   await dialog.getByLabel('Latitude', { exact: true }).fill('-6.6')
   await dialog.getByLabel('Longitude', { exact: true }).fill('106.8')

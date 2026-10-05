@@ -5,52 +5,52 @@ const route = useRoute()
 const links = [
   {
     to: '/backoffice',
-    label: 'CRM',
+    label: 'Calon pembeli',
     icon: 'users',
     admin: false,
-    group: 'Aktivitas',
+    group: 'Penjualan',
   },
   {
     to: '/backoffice/properti',
-    label: 'Katalog',
+    label: 'Katalog properti',
     icon: 'home',
     admin: false,
-    group: 'Aktivitas',
+    group: 'Website',
   },
   {
     to: '/backoffice/laporan',
     label: 'Laporan',
     icon: 'chart',
     admin: true,
-    group: 'Pengelolaan',
+    group: 'Penjualan',
   },
   {
     to: '/backoffice/konten',
     label: 'Konten publik',
     icon: 'file',
     admin: true,
-    group: 'Pengelolaan',
+    group: 'Website',
   },
   {
     to: '/backoffice/akun',
     label: 'Akun tim',
     icon: 'users',
     admin: true,
-    group: 'Pengelolaan',
+    group: 'Administrasi',
   },
   {
     to: '/backoffice/privasi',
-    label: 'Retensi lead',
+    label: 'Privasi kontak',
     icon: 'shield',
     admin: true,
-    group: 'Pengelolaan',
+    group: 'Administrasi',
   },
   {
     to: '/backoffice/operasi',
-    label: 'Operasi',
+    label: 'Kesehatan sistem',
     icon: 'settings',
     admin: true,
-    group: 'Pengelolaan',
+    group: 'Administrasi',
   },
   {
     to: '/backoffice/profil',
@@ -66,7 +66,7 @@ const available = computed(() =>
   ),
 )
 const groups = computed(() =>
-  ['Aktivitas', 'Pengelolaan', 'Akun']
+  ['Penjualan', 'Website', 'Administrasi', 'Akun']
     .map((label) => ({
       label,
       links: available.value.filter((link) => link.group === label),
@@ -114,7 +114,7 @@ onMounted(async () => {
     </aside>
     <div class="workspace-body">
       <header class="workspace-topbar">
-        <p><span class="muted">Workspace /</span> {{ current }}</p>
+        <p><span class="muted">Ruang kerja /</span> {{ current }}</p>
         <div class="staff-identity">
           <span class="avatar" aria-hidden="true">{{
             session.account.value?.name.slice(0, 1) ?? 'F'

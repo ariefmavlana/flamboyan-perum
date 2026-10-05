@@ -8,6 +8,7 @@ const { data: content, error: contentError } = await useFetch<{
   data: PublicContent
 }>('/api/v1/content')
 const hero = computed(() => content.value?.data.hero)
+const development = computed(() => content.value?.data.development)
 const heroMedia = computed(() =>
   hero.value?.property?.media?.find((media) => media.kind === 'PHOTO'),
 )
@@ -39,8 +40,8 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
   <div>
     <section class="editorial-hero" aria-label="Selamat datang di Flamboyan">
       <EditorialHeroMedia
-        :media="hero?.media ?? heroMedia"
-        :poster="heroMedia"
+        :media="hero?.media"
+        :poster="hero?.media?.kind === 'VIDEO' ? heroMedia : undefined"
       />
       <div class="editorial-hero-content">
         <div class="editorial-headline">
@@ -51,11 +52,16 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
           <p>
             {{
               hero?.description ??
-              'Temukan rumah yang terasa tepat. Jelajahi ruang, kenali lokasinya, dan rencanakan langkah berikutnya bersama kami.'
+              'Pilihan hunian di Bandung Timur untuk keseharian yang Anda inginkan. Kenali ruangnya, pahami biayanya, lalu rasakan langsung kawasannya.'
             }}
           </p>
           <NuxtLink class="editorial-link" to="/properti"
-            >Temukan pilihan Anda <AppIcon name="arrow"
+            >Jelajahi pilihan rumah <AppIcon name="arrow"
+          /></NuxtLink>
+          <NuxtLink
+            class="editorial-link hero-visit-link"
+            to="/konsultasi?tujuan=kunjungan"
+            >Rencanakan kunjungan <AppIcon name="arrow"
           /></NuxtLink>
         </div>
         <form
@@ -67,6 +73,7 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
             })
           "
         >
+          <p class="eyebrow">PILIHAN YANG LEBIH PERSONAL</p>
           <label for="home-search">Cari lokasi atau nama properti</label>
           <div class="editorial-search-control">
             <input
@@ -83,54 +90,24 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
               <AppIcon name="arrow" />
             </button>
           </div>
-          <p>Lokasi yang Anda pilih. Ruang yang Anda butuhkan.</p>
+          <p>Telusuri harga, luas, dan denah sebelum menentukan pilihan.</p>
         </form>
       </div>
     </section>
-    <section class="editorial-intro container">
-      <figure class="editorial-interior">
-        <img
-          src="/images/editorial-living-1920.webp"
-          srcset="
-            /images/editorial-living-960.webp   960w,
-            /images/editorial-living-1920.webp 1920w
-          "
-          sizes="(max-width: 760px) 100vw, 45vw"
-          width="1920"
-          height="2880"
-          loading="lazy"
-          alt="Inspirasi ruang duduk di Bali dengan cahaya sore dan material alami; foto ilustrasi."
-        />
-        <figcaption>
-          Foto ilustrasi ·
-          <a
-            href="https://unsplash.com/photos/iq2CirhoVck"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Polina Kuzovkova / Unsplash ↗</a
-          >
-        </figcaption>
-      </figure>
-      <div class="intro-copy">
-        <p class="eyebrow">SEBUAH TEMPAT UNTUK PULANG</p>
-        <h2>Lebih dari alamat.<br />Tentang cara Anda hidup.</h2>
-        <div>
-          <p>
-            Mulai dari lokasi yang dekat dengan keseharian, ruang yang cukup
-            untuk tumbuh, hingga anggaran yang terasa nyaman. Setiap detail
-            membantu Anda menemukan pilihan.
-          </p>
-          <a
-            v-if="wa"
-            :href="wa"
-            class="text-link"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Bicarakan rencana Anda <AppIcon name="arrow"
-          /></a>
-        </div>
-      </div>
-    </section>
+    <nav class="buyer-shortcuts container" aria-label="Mulai mencari hunian">
+      <NuxtLink to="/properti"
+        ><span>01 / TEMUKAN</span><strong>Pilihan rumah</strong
+        ><AppIcon name="arrow"
+      /></NuxtLink>
+      <NuxtLink to="/bandingkan"
+        ><span>02 / PERTIMBANGKAN</span><strong>Bandingkan pilihan</strong
+        ><AppIcon name="arrow"
+      /></NuxtLink>
+      <NuxtLink to="/konsultasi?tujuan=kunjungan"
+        ><span>03 / KUNJUNGI</span><strong>Lihat lebih dekat</strong
+        ><AppIcon name="arrow"
+      /></NuxtLink>
+    </nav>
     <section class="section container featured-collection">
       <div class="section-heading">
         <div>
@@ -154,6 +131,93 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
       <p v-else class="notice">
         Pilihan properti akan tampil setelah katalog tersedia.
       </p>
+    </section>
+    <section class="editorial-intro container">
+      <figure class="editorial-interior">
+        <img
+          src="/images/flamboyan-kawasan.webp"
+          width="1080"
+          height="800"
+          loading="lazy"
+          alt="Ilustrasi deretan hunian Bukit Flamboyan Indah 2 dari Rumah Rajasa; bukan foto kondisi aktual."
+        />
+        <figcaption>
+          Ilustrasi kawasan ·
+          <a
+            href="https://rumahrajasa.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Rumah Rajasa ↗</a
+          >
+        </figcaption>
+      </figure>
+      <div class="intro-copy">
+        <p class="eyebrow">
+          {{ development?.name ?? 'BUKIT FLAMBOYAN INDAH 2' }}
+        </p>
+        <h2>Ruang untuk keluarga.<br />Pilihan untuk masa depan.</h2>
+        <div>
+          <p>
+            Memilih rumah berarti mempertimbangkan rutinitas, kebutuhan
+            keluarga, dan rencana jangka panjang. Mulailah dari ruang yang Anda
+            perlukan, lalu bandingkan luas tanah, tata ruang, dan pilihan
+            pembiayaannya.
+          </p>
+          <a
+            v-if="wa"
+            :href="wa"
+            class="text-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Diskusikan kebutuhan hunian <AppIcon name="arrow"
+          /></a>
+        </div>
+      </div>
+    </section>
+    <section
+      class="neighbourhood-story container"
+      aria-labelledby="neighbourhood-title"
+    >
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">KENALI SEBELUM MEMUTUSKAN</p>
+          <h2 id="neighbourhood-title">
+            Rumahnya. Kawasannya.<br />Keseharian Anda.
+          </h2>
+        </div>
+        <NuxtLink class="text-link" to="/konsultasi?tujuan=kunjungan"
+          >Rencanakan survei →</NuxtLink
+        >
+      </div>
+      <div class="neighbourhood-grid">
+        <figure>
+          <img
+            src="/images/flamboyan-gerbang.webp"
+            width="747"
+            height="420"
+            loading="lazy"
+            alt="Ilustrasi gerbang Bukit Flamboyan Indah 2 dari Rumah Rajasa."
+          />
+          <figcaption>Ilustrasi gerbang kawasan · Rumah Rajasa</figcaption>
+        </figure>
+        <div class="neighbourhood-copy">
+          <p class="eyebrow">BANDUNG TIMUR</p>
+          <h3>Temukan kecocokannya secara langsung.</h3>
+          <p v-if="development?.address">{{ development.address }}</p>
+          <p>
+            Saat berkunjung, periksa akses dari rutinitas Anda, suasana
+            lingkungan, kualitas bangunan, dan kesiapan fasilitas bersama tim
+            kami.
+          </p>
+          <p class="muted">
+            Visual kawasan merupakan ilustrasi pengembang. Kondisi dan
+            ketersediaan unit dikonfirmasi saat konsultasi.
+          </p>
+          <NuxtLink class="text-link" to="/panduan/kunjungan-rumah"
+            >Panduan saat melihat rumah →</NuxtLink
+          >
+        </div>
+      </div>
     </section>
     <section v-if="hero?.property" class="editorial-spotlight container">
       <NuxtLink
