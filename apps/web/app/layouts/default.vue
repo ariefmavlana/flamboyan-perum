@@ -86,7 +86,7 @@ const wa = computed(() =>
           ><NuxtLink to="/panduan">Panduan memilih rumah</NuxtLink
           ><NuxtLink to="/konsultasi">Konsultasi & kunjungan</NuxtLink
           ><NuxtLink to="/privasi">Informasi privasi</NuxtLink
-          ><NuxtLink to="/login">Tim Flamboyan ↗</NuxtLink>
+          ><NuxtLink to="/backoffice">Tim Flamboyan ↗</NuxtLink>
         </nav>
       </div>
       <div class="container site-footer">

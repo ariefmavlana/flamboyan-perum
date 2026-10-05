@@ -4,6 +4,10 @@
 
 Tidak ada perubahan wire contract. Importer opt-in memakai session/CSRF serta GET/POST/PATCH media internal existing dengan `property_version`, menunggu READY, dan menyimpan provenance pada alt. Hanya 21 gambar terpilih untuk sembilan tipe yang dipublikasikan; 33 sumber tercatat dalam manifest. API tidak mengambil URL sumber: skrip operator mengunduh berkas terverifikasi lalu mengirim multipart. Public DTO tetap allowlist, original/staging privat; harga, spesifikasi, CMS dan CRM tidak dimutasi. Aturan resolusi, idempotensi, snapshot dan rollback ada di [rajasa-assets.md](rajasa-assets.md).
 
+## Navigasi sesi tim — 2026-10-05
+
+Kontrak REST tidak berubah. Login UI kini membaca `GET /api/v1/me`:200 mengarahkan sesi aktif ke workspace,401/403 dari endpoint identitas menampilkan login, sedangkan network/5xx memberikan retry. Footer tim menuju `/backoffice`; seluruh otorisasi tetap backend. Tidak ada login ulang otomatis, perubahan cookie/lifetime, token lokal, atau credential pada public SSR. Detail reproduksi dan validasi: [staff-session-return.md](staff-session-return.md).
+
 ## Katalog komersial dan CMS pembiayaan — 2026-10-05
 
 Availability menambah CHECK_REQUIRED. PublicProperty menambah commercial nullable, hanya untuk metadata yang telah diverifikasi. price_idr publik adalah harga pada tanggal Asia/Jakarta, konsisten untuk listing/filter/sort/detail/compare; harga normal internal tetap price_idr. Internal property menambah commercial JSON, offer_price_idr/offer_start/offer_end, next_price_idr/next_price_start. Nominal kolom harga nullable string integer IDR; tanggal nullable YYYY-MM-DD.
