@@ -208,3 +208,7 @@ Semua exception /auth/* selalu JSON, termasuk validation422, auth401, CSRF419 da
 `GET /api/v1/leads` menerima filter tambahan `work=unassigned|contact|visit|documents`; nilai lain 422. Filter ini beririsan dengan `q/status/unassigned/assigned_marketing_id` dan scope akun. Pagination existing tetap berlaku. Filter URL frontend dapat dibagikan hanya kepada akun yang berhak; URL bukan otorisasi tambahan.
 
 Pada `GET /api/v1/content`, `hero.media` hanya berisi media pilihan eksplisit yang tetap READY/published dan berasal dari property published. Jika pilihan `media_id` kosong atau dicabut, `hero.media=null` dan frontend memakai ilustrasi kawasan beratribusi. `hero.property` tetap available ketika properti published untuk sorotan katalog. ID media privat/staging/verification actor tetap tidak ditambahkan ke public allowlist. Admin dapat memilih foto cover secara eksplisit untuk menjadikannya hero.
+
+### Sinkronisasi filter CRM di klien
+
+Pergantian filter pada `GET /api/v1/leads` langsung menonaktifkan detail daftar sebelumnya sampai respons terbaru diterapkan. Respons request lama tidak mengganti daftar aktif. Menerapkan filter yang sama memuat ulang daftar. Ini merupakan guard klien; kontrak endpoint dan otorisasi scope backend tetap sama.

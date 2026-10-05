@@ -65,3 +65,13 @@ Screenshot beranda, ruang kerja Admin, detail pembeli, serta mobile diperiksa lo
 ## Rilis dan rollback
 
 Tidak ada migrasi, impor data produksi, perubahan dependensi, atau GitHub Actions. Rilis membutuhkan backend dan frontend dari revisi yang sama agar endpoint ringkasan/filter tersedia. Revert PR dan deploy ulang kedua aplikasi untuk rollback; jangan menjalankan down migration atau mengembalikan database. PR tidak mengotorisasi merge/deploy.
+
+## Koreksi saat review PR, 2026-10-05
+
+Review gabungan dengan PR#22/#23 menjalankan ulang SQLite dan PostgreSQL: masing-masing 96 test/749 assertion lulus (13,29s dan 365,72s saat host terbebani). Pint dan Composer validate strict lulus; lockfile Composer tidak berubah dan audit 0 advisory sudah dijalankan pada masing-masing PR. Frontend lint/typecheck/17 unit/build dan audit artefak runtime 0 lulus.
+
+Suite browser gabungan pertama menghasilkan 7 lulus/4 timeout 60 detik (20,6 menit termasuk startup/teardown browser). Trace menunjukkan identitas tetap 200, dengan beberapa request lokal sampai 19 detik. Pengulangan privat mempertahankan assertion, memberi batas kasus 180 detik/expect 30 detik dan menonaktifkan trace: 10 lulus/1 gagal dalam 141,08s. Keenam regresi sesi lulus; kegagalan Marketing ternyata dapat direproduksi, sehingga bukan diabaikan sebagai timeout.
+
+Saat antrean diganti, tombol detail pada daftar lama dapat diklik sebelum watcher navigasi memulai pemuatan. Klien kini mengaktifkan status loading dan menginvalidasi request lama secara sinkron sebelum navigasi, menonaktifkan tombol detail serta menolak pembukaan selama loading. Filter identik memuat ulang daftar; kegagalan navigasi tidak meninggalkan spinner permanen. Endpoint/RBAC tidak berubah. Regresi Marketing menahan request daftar `work=contact` asli, memeriksa aria-busy/tombol disabled sebelum melepas respons, kemudian memeriksa detail dari antrean yang benar dan penerapan filter identik. Lima alur UX dengan guard lulus pada build dalam 1,3 menit; lint 6,27s, typecheck 8,63s, 17 unit 1,47s, build 14,57s, audit runtime 0. Bukti percobaan disimpan privat pada `.tools/review-*`; data fixture/kredensial tidak masuk Git.
+
+Pemeriksaan tambahan Marketing termasuk penerapan filter identik lulus satu kasus dalam 3,5 menit pada host yang kembali melambat. Request yang ditahan dilepas melalui `finally`, termasuk bila assertion gagal. Angka waktu tersebut merupakan runtime runner lokal, bukan benchmark produk.
