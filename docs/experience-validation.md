@@ -28,7 +28,24 @@ Fixture browser berasal dari katalog brosur: sembilan tipe published, katalog ar
 
 ## Browser dan tinjauan visual
 
-Hasil browser final dicatat setelah runner selesai. Kelompok yang diperiksa: `experience-clarity`, `foundation`, `operations`, `supervision`, `cms-assets`, `evaluation`, `media`, `realtime`, `buyer-journey`, dan lima kasus terkait pada `ui-design`.
+Sebanyak **24 kasus browser relevan lulus** pada build final, dijalankan per kelompok secara berurutan dengan `node node_modules/@playwright/test/cli.js test tests/e2e/<spec>.spec.ts --reporter=line --config ../../.tools/experience-playwright.config.mjs` dari `apps/web`. Lima kasus `ui-design` memakai `--grep` sesuai nama pada tabel. Konfigurasi lokal mengimpor konfigurasi repository, menggunakan satu worker/tanpa retry, dan memperpanjang waktu assertion menjadi 20 detik. Alur operasi diulang setelah timeout sebagaimana dicatat di bawah; angka ini bukan klaim satu eksekusi seluruh suite repository tanpa kegagalan awal.
+
+| Kelompok / grep | Kasus lulus | Durasi runner akhir (detik) |
+|---|---:|---:|
+| `experience-clarity` | 5 | 181,68 |
+| `foundation` | 3 | 94,50 |
+| `operations` (pengulangan) | 2 | 11,13 |
+| `supervision` | 1 | 73,74 |
+| `cms-assets` | 2 | 133,69 |
+| `evaluation` | 2 | 143,88 |
+| `media` | 1 | 34,58 |
+| `realtime` | 1 | 6,39 |
+| `buyer-journey` | 2 | 8,42 |
+| `ui-design`: public navigation, responsive | 1 | 27,66 |
+| `ui-design`: staff menu, all workspace | 1 | 12,62 |
+| `ui-design`: missing property shows | 1 | 3,27 |
+| `ui-design`: applied filters can | 1 | 2,99 |
+| `ui-design`: mobile detail places | 1 | 3,76 |
 
 Pengujian baru memeriksa navbar tanpa Bandung Timur, decode gambar publik, fokus input netral dan fokus tombol keyboard, lebar 1440/390/320, hitungan CRM terhadap API, filter URL/reload/back, notifikasi, scope tindakan Marketing, alasan penutupan wajib, bagian editor properti, filter tujuan CMS, serta kegagalan ringkasan dengan retry tanpa angka nol palsu. Regresi operasi juga memeriksa properti/penanggung jawab tetap terlihat setelah perubahan tahap.
 
@@ -39,6 +56,7 @@ Screenshot beranda, ruang kerja Admin, detail pembeli, serta mobile diperiksa lo
 - Percobaan PHPUnit paralel sempat bertabrakan pada fake media storage; hasil tersebut tidak dipakai. Kedua database kemudian diuji ulang secara berurutan dan lulus.
 - Percobaan browser awal menemukan label pengujian lama serta pemilihan kartu pertama yang keliru pada fixture sembilan tipe; locator diperbarui untuk memilih properti fixture secara eksplisit. Pemeriksaan CMS menemukan pilihan media hero perlu tetap didukung; kontrak backend/frontend diperbaiki dan kasus CMS foto/video/pencabutan diuji ulang.
 - Build dan dev server sempat memakai folder `.nuxt` bersamaan, kemudian host melambat dan beberapa interaksi melampaui timeout. Runner tersebut tidak dinyatakan lulus. Pengujian akhir menggunakan preview hasil build lewat proxy lokal (API/auth/media ke 8000, Nitro ke 3104, origin browser 3000); konfigurasi lokal memberi waktu assertion hingga 20 detik. Ini bukan pengukuran kinerja atau bukti deployment Vercel.
+- Alur operasi yang membuat properti/kontak/akun lalu berganti peran melewati batas keseluruhan 60 detik pada percobaan pertama build final. Batas kasus tersebut menjadi 120 detik dengan assertion yang sama, termasuk properti/penanggung jawab setelah perubahan tahap. Pengulangan selesai dengan dua kasus lulus dalam 10,5 detik Playwright (11,13 detik runner). Lint berkas pengujian yang berubah juga lulus. Variasi waktu di tabel mencerminkan beban host; tidak dipakai sebagai benchmark produk.
 - Kasus lama `editorial images load and testimonial blocks are useful on narrow screens` tidak digunakan karena memerlukan testimonial sintetis published yang sengaja tidak tersedia pada fixture brosur. Pengujian baru memeriksa decode seluruh gambar pada tiga ukuran layar; CMS testimonial diuji dengan konten fixture sementara. Tidak mengklaim seluruh test browser repository telah dijalankan.
 - Build masih mencatat warning upstream `DEP0155` dari pemetaan package exports Vue/Nuxt dan `PLUGIN_TIMINGS` saat host terbebani. Lint tidak mempunyai warning. Tidak menyebut build bebas warning.
 - Source audit tetap memiliki 11 entri high yang diturunkan dari dua advisory tooling (`GHSA-86w9-cpqp-85rv`, `GHSA-vfj7-8cjw-p6xm`); tidak ada perubahan dependensi pada PR ini. Lihat [dependency-security.md](dependency-security.md). Artefak runtime dan Composer diaudit terpisah.

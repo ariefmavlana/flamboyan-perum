@@ -5,7 +5,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
   page,
   browser,
 }) => {
-  test.setTimeout(60000)
+  test.setTimeout(120000)
   const suffix = Date.now().toString()
   await page.goto('/login')
   await page.getByLabel('Email', { exact: true }).fill('admin@example.test')
