@@ -15,13 +15,13 @@ test('private upload is processed by the real worker, SSR gallery serves sanitiz
     .fill(process.env.DEMO_PASSWORD ?? '')
   await page.getByRole('button', { name: 'Masuk →' }).click()
   await expect(page).toHaveURL(/backoffice/)
-  await page.getByRole('link', { name: 'Katalog', exact: true }).click()
+  await page.getByRole('link', { name: 'Katalog properti', exact: true }).click()
   await page.getByLabel('Cari properti', { exact: true }).fill(fixture.title)
   await page.getByRole('button', { name: 'Cari / muat ulang' }).click()
   await page
     .getByRole('row')
     .filter({ hasText: fixture.title })
-    .getByRole('button', { name: 'Edit properti' })
+    .getByRole('button', { name: 'Foto & media', exact: true })
     .click()
   const dialog = page.getByRole('dialog')
   await dialog.getByLabel('Deskripsi gambar / media', { exact: true }).fill(alt)
@@ -64,7 +64,7 @@ test('private upload is processed by the real worker, SSR gallery serves sanitiz
   await page
     .getByRole('row')
     .filter({ hasText: fixture.title })
-    .getByRole('button', { name: 'Edit properti' })
+    .getByRole('button', { name: 'Foto & media', exact: true })
     .click()
   await page
     .locator('.media-editor')

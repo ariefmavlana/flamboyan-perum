@@ -15,6 +15,39 @@ const busy = ref(false)
 const selected = ref<EditorialContent | null>(null)
 const dialog = ref<HTMLDialogElement | null>(null)
 const kind = ref<EditorialContent['kind']>('HERO')
+const contentFilter = ref<EditorialContent['kind'] | ''>('')
+const contentPurposes = [
+  {
+    kind: 'HERO' as const,
+    title: 'Sorotan beranda',
+    description: 'Judul, pengantar, dan gambar utama website.',
+  },
+  {
+    kind: 'DEVELOPMENT' as const,
+    title: 'Kawasan & kontak',
+    description: 'Alamat, fasilitas, dan nomor WhatsApp.',
+  },
+  {
+    kind: 'BANK_RATE' as const,
+    title: 'Referensi KPR',
+    description: 'Suku bunga, masa berlaku, dan biaya bank.',
+  },
+  {
+    kind: 'TESTIMONIAL' as const,
+    title: 'Cerita pembeli',
+    description: 'Pengalaman pembeli yang sudah berizin.',
+  },
+  {
+    kind: 'BANK_PARTNER' as const,
+    title: 'Bank mitra',
+    description: 'Logo dan kemitraan yang sudah dikonfirmasi.',
+  },
+]
+async function selectContent(value: EditorialContent['kind'] | '') {
+  contentFilter.value = value
+  if (value) kind.value = value
+  await load()
+}
 const form = reactive({
   published: false,
   position: 0,
@@ -327,7 +360,9 @@ async function load(page = 1) {
       message.value = 'Halaman ini hanya untuk Admin.'
       return
     }
-    results.value = await api.request(`/api/v1/internal/content?page=${page}`)
+    results.value = await api.request(
+      `/api/v1/internal/content?page=${page}${contentFilter.value ? '&kind=' + contentFilter.value : ''}`,
+    )
   } catch (error) {
     message.value = staffError(error)
   } finally {
@@ -432,19 +467,45 @@ onMounted(() => load())
   <section class="container section">
     <p class="eyebrow">EDITORIAL ADMIN</p>
     <h1 class="page-title">Konten publik.</h1>
-    <p>
-      Publikasikan hanya konten benar, berizin, dan telah ditinjau. Bank adalah
-      referensi rate, bukan klaim kemitraan. Hero publik pertama mengikuti
-      urutan lalu ID.
+    <p class="muted">
+      Pilih bagian website yang ingin diperbarui. Simpan sebagai draft untuk
+      ditinjau, lalu publikasikan ketika informasinya siap.
     </p>
     <p v-if="message" role="status">{{ message }}</p>
     <template v-if="session.account.value?.role === 'ADMIN'"
-      ><div class="editor-actions">
+      ><div class="content-purpose-grid" aria-label="Bagian konten website">
+        <button
+          v-for="purpose in contentPurposes"
+          :key="purpose.kind"
+          :aria-pressed="contentFilter === purpose.kind"
+          :disabled="busy"
+          @click="selectContent(purpose.kind)"
+        >
+          <strong>{{ purpose.title }}</strong
+          ><span>{{ purpose.description }}</span>
+        </button>
+      </div>
+      <div class="results-heading">
+        <h2>
+          {{
+            contentPurposes.find((item) => item.kind === contentFilter)
+              ?.title ?? 'Semua konten website'
+          }}
+        </h2>
+        <button
+          v-if="contentFilter"
+          class="text-button"
+          @click="selectContent('')"
+        >
+          Lihat semua bagian
+        </button>
+      </div>
+      <div class="editor-actions">
         <label
           >Jenis konten baru<select v-model="kind">
-            <option value="HERO">Hero</option>
+            <option value="HERO">Sorotan beranda</option>
             <option value="TESTIMONIAL">Testimonial</option>
-            <option value="BANK_RATE">Rate bank</option>
+            <option value="BANK_RATE">Referensi KPR</option>
             <option value="BANK_PARTNER">Bank mitra</option>
             <option value="DEVELOPMENT">Kawasan & kontak</option>
           </select></label
@@ -453,7 +514,7 @@ onMounted(() => load())
         </button>
       </div>
       <div
-        class="table-scroll"
+        class="table-scroll responsive-records"
         role="region"
         aria-label="Tabel data, geser untuk melihat kolom lainnya"
         tabindex="0"
@@ -473,7 +534,7 @@ onMounted(() => load())
           </thead>
           <tbody>
             <tr v-for="record in results?.data" :key="record.id">
-              <td>
+              <td data-label="Bagian website">
                 {{
                   {
                     HERO: 'Sorotan beranda',
@@ -484,16 +545,20 @@ onMounted(() => load())
                   }[record.kind]
                 }}
               </td>
-              <td>
+              <td data-label="Judul / nama">
                 {{
                   record.payload.title ??
                   record.payload.name ??
                   record.payload.bank
                 }}
               </td>
-              <td>{{ record.published ? 'Publik' : 'Draft' }}</td>
-              <td>{{ record.position }}</td>
-              <td>
+              <td data-label="Publikasi">
+                <span class="badge">{{
+                  record.published ? 'Publik' : 'Draft'
+                }}</span>
+              </td>
+              <td data-label="Urutan">{{ record.position }}</td>
+              <td data-label="Kelola">
                 <button class="button secondary" @click="open(record)">
                   Edit konten #{{ record.id }}
                 </button>
@@ -528,7 +593,10 @@ onMounted(() => load())
       </nav></template
     >
     <dialog ref="dialog" class="editor-dialog" aria-labelledby="content-title">
-      <h2 id="content-title">{{ selected ? 'Edit' : 'Tambah' }} {{ kind }}</h2>
+      <h2 id="content-title">
+        {{ selected ? 'Edit' : 'Tambah' }}
+        {{ contentPurposes.find((item) => item.kind === kind)?.title }}
+      </h2>
       <form @submit.prevent="save">
         <div class="form-grid">
           <label v-for="field in schemas[kind]" :key="field.key"
@@ -633,7 +701,7 @@ onMounted(() => load())
               v-model="heroMediaId"
               :disabled="mediaLoading || busy"
             >
-              <option :value="null">Gunakan foto sampul properti</option>
+              <option :value="null">Gunakan ilustrasi kawasan Flamboyan</option>
               <option
                 v-if="
                   heroMediaId &&

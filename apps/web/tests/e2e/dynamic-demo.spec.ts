@@ -16,7 +16,7 @@ test('generated demo is live database data: Admin edit changes SSR and survives 
   await page.getByRole('button', { name: 'Masuk →' }).click()
   await expect(page).toHaveURL(/backoffice/)
   try {
-    await page.getByRole('link', { name: 'Katalog', exact: true }).click()
+    await page.getByRole('link', { name: 'Katalog properti', exact: true }).click()
     await page.getByLabel('Cari properti', { exact: true }).fill(fixture.title)
     await page.getByRole('button', { name: 'Cari / muat ulang' }).click()
     await page

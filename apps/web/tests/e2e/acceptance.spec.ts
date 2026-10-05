@@ -10,7 +10,7 @@ test('Admin monitors sanitized readiness and Marketing cannot read operations', 
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
   await page.getByRole('button', { name: 'Masuk →' }).click()
-  await page.getByRole('link', { name: 'Operasi', exact: true }).click()
+  await page.getByRole('link', { name: 'Kesehatan sistem', exact: true }).click()
   await expect(
     page.getByRole('heading', { name: 'Kesehatan layanan' }),
   ).toBeVisible()

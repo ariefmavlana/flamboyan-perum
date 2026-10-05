@@ -181,3 +181,6 @@ Build web menjalankan lint/typecheck/unit/build. Hook Composer vercel menginstal
 Sesi akun inactive/role tidak didukung harus dibersihkan saat request internal ditolak403, termasuk auth device, payload sesi dan token CSRF. Denial tidak boleh menyisakan state yang membuat guest login dialihkan seolah login sukses; security-stamp mismatch tetap401.
 
 Endpoint /auth/* merupakan API JSON meskipun ditempatkan pada web middleware untuk sesi/CSRF. Exception tidak bergantung header Accept; proxy yang membuang header tersebut tidak boleh mengubah error login/recovery menjadi redirect HTML200.
+# Addendum kejelasan alur — 2026-10-05
+
+Summary CRM memakai agregasi database dalam scope visibleTo yang sama dengan daftar; jumlah bukan turunan pagination. `work` memfilter pekerjaan aktif tanpa record anonim/terminal. Kontrak di API_DOCS. Frontend menyimpan filter/pagination CRM di URL, memiliki retry/error terpisah untuk ringkasan/riwayat, dan menolak respons daftar yang sudah kedaluwarsa. Pembatasan peran, version guard, atomisitas mutasi dan histori append-only tetap berlaku. Hero tanpa media pilihan eksplisit memakai aset ilustrasi kawasan; pemilihan foto/video eksplisit dan pencabutan publication tetap mematuhi public allowlist. Fokus netral tetap terlihat, termasuk navigasi keyboard dan forced-colors.

@@ -20,7 +20,6 @@ const wa = computed(() =>
         <ResponsiveNav id="public-navigation" label="Navigasi utama">
           <NuxtLink to="/">Beranda</NuxtLink>
           <NuxtLink to="/properti">Jelajahi properti</NuxtLink>
-          <NuxtLink to="/bandung-timur">Bandung Timur</NuxtLink>
           <NuxtLink to="/panduan">Panduan</NuxtLink>
           <NuxtLink
             :to="{

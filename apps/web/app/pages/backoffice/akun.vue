@@ -146,7 +146,13 @@ onMounted(() => load())
 <template>
   <section class="container section">
     <div class="section-heading">
-      <h1>Akun tim</h1>
+      <div>
+        <p class="eyebrow">ADMINISTRASI</p>
+        <h1>Akun tim</h1>
+        <p class="muted">
+          Atur siapa yang bekerja di platform dan tanggung jawabnya.
+        </p>
+      </div>
       <button
         v-if="session.account.value?.role === 'ADMIN'"
         class="button"
@@ -154,6 +160,29 @@ onMounted(() => load())
       >
         Tambah akun
       </button>
+    </div>
+    <div class="catalog-guide">
+      <div>
+        <strong>Admin</strong
+        ><span
+          >Mengelola katalog, konten website, akun, dan penugasan calon
+          pembeli.</span
+        >
+      </div>
+      <div>
+        <strong>Marketing</strong
+        ><span
+          >Mengelola properti sendiri dan calon pembeli yang ditugaskan
+          kepadanya.</span
+        >
+      </div>
+      <div>
+        <strong>Sebelum menonaktifkan</strong
+        ><span
+          >Alihkan pekerjaan aktif terlebih dahulu agar pembeli tetap
+          ditangani.</span
+        >
+      </div>
     </div>
     <p v-if="message && !editor?.open" role="alert">{{ message }}</p>
     <template v-if="session.account.value?.role === 'ADMIN'"
@@ -176,7 +205,7 @@ onMounted(() => load())
         </button>
       </form>
       <div
-        class="table-scroll"
+        class="table-scroll responsive-records"
         role="region"
         aria-label="Tabel data, geser untuk melihat kolom lainnya"
         tabindex="0"
@@ -195,11 +224,13 @@ onMounted(() => load())
           </thead>
           <tbody>
             <tr v-for="account in result?.data" :key="account.id">
-              <td>{{ account.name }}<br />{{ account.email }}</td>
-              <td>
+              <td data-label="Nama / email">
+                {{ account.name }}<br />{{ account.email }}
+              </td>
+              <td data-label="Peran">
                 {{ account.role === 'ADMIN' ? 'Administrator' : 'Marketing' }}
               </td>
-              <td>
+              <td data-label="Status">
                 {{ account.is_active ? 'Aktif' : 'Nonaktif' }} ·
                 {{
                   account.email_verified_at
@@ -207,7 +238,7 @@ onMounted(() => load())
                     : 'Belum diverifikasi'
                 }}
               </td>
-              <td>
+              <td data-label="Tindakan">
                 <button class="text-button" @click="open(account)">
                   Kelola akun
                 </button>

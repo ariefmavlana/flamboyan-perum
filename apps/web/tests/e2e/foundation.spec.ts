@@ -77,7 +77,7 @@ test('session CSRF login, scoped lead drawer, notes, and logout', async ({
   await page
     .getByRole('row')
     .filter({ hasText: lead.name })
-    .getByRole('button', { name: 'Lihat histori →' })
+    .getByRole('button', { name: 'Buka detail →' })
     .click()
   const dialog = page.getByRole('dialog')
   await expect(dialog.getByRole('heading', { name: lead.name })).toBeVisible()

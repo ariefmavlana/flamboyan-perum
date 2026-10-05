@@ -20,6 +20,17 @@ const editor = ref<HTMLDialogElement | null>(null)
 const ownerId = ref<number | null>(null)
 const newOwner = ref<number | null>(null)
 const reason = ref('')
+type EditorSection = 'basics' | 'media' | 'commercial' | 'location' | 'owner'
+const editorSection = ref<EditorSection>('basics')
+const editorSections = computed(() =>
+  [
+    { key: 'basics' as const, label: 'Informasi utama', admin: false },
+    { key: 'media' as const, label: 'Foto & media', admin: false },
+    { key: 'commercial' as const, label: 'Harga & pembayaran', admin: true },
+    { key: 'location' as const, label: 'Lokasi & sekitar', admin: false },
+    { key: 'owner' as const, label: 'Penanggung jawab', admin: true },
+  ].filter((item) => !item.admin || session.account.value?.role === 'ADMIN'),
+)
 const blank = () => ({
   slug: '',
   title: '',
@@ -55,7 +66,8 @@ async function load(page = 1) {
     busy.value = false
   }
 }
-function open(property?: InternalProperty) {
+function open(property?: InternalProperty, section: EditorSection = 'basics') {
+  editorSection.value = section
   selected.value = property ?? null
   Object.assign(
     form,
@@ -141,10 +153,34 @@ onMounted(() => load())
       <div>
         <p class="eyebrow">KATALOG TIM</p>
         <h1>Kelola properti</h1>
+        <p class="muted">
+          {{
+            session.account.value?.role === 'ADMIN'
+              ? 'Kelola rumah yang ditawarkan, periksa harga, lalu terbitkan ke website.'
+              : 'Kelola informasi dan media properti yang menjadi tanggung jawab Anda.'
+          }}
+        </p>
       </div>
       <button class="button" :disabled="!session.account.value" @click="open()">
         Tambah properti
       </button>
+    </div>
+    <div class="catalog-guide">
+      <div>
+        <strong>1. Lengkapi informasi</strong
+        ><span>Nama, spesifikasi, harga, dan lokasi rumah.</span>
+      </div>
+      <div>
+        <strong>2. Tambahkan media</strong
+        ><span>Foto, denah, dan masterplan melalui Foto & media.</span>
+      </div>
+      <div>
+        <strong>3. Tinjau & terbitkan</strong
+        ><span
+          >Publikasi mengatur tampil di website. Ketersediaan menjelaskan status
+          unit.</span
+        >
+      </div>
     </div>
     <form class="action-row" @submit.prevent="load()">
       <label>Cari properti<input v-model="q" maxlength="100" /></label
@@ -162,7 +198,7 @@ onMounted(() => load())
     <p v-if="message && !editor?.open" role="status">{{ message }}</p>
     <p v-if="busy" role="status">Memproses…</p>
     <div
-      class="table-scroll"
+      class="table-scroll responsive-records"
       role="region"
       aria-label="Tabel data, geser untuk melihat kolom lainnya"
       tabindex="0"
@@ -174,14 +210,14 @@ onMounted(() => load())
         <thead>
           <tr>
             <th>Properti</th>
-            <th>Pemilik</th>
+            <th>Penanggung jawab</th>
             <th>Publikasi / ketersediaan</th>
             <th>Tindakan</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="property in results?.data" :key="property.id">
-            <td>
+            <td data-label="Properti">
               <strong>{{ property.title }}</strong
               ><br />{{ property.location }} ·
               {{
@@ -192,8 +228,8 @@ onMounted(() => load())
                 }).format(Number(property.price_idr))
               }}
             </td>
-            <td>{{ property.owner?.name }}</td>
-            <td>
+            <td data-label="Penanggung jawab">{{ property.owner?.name }}</td>
+            <td data-label="Publikasi / unit">
               <span class="badge">{{
                 publicationLabels[property.publication]
               }}</span>
@@ -201,9 +237,19 @@ onMounted(() => load())
                 availabilityLabels[property.availability]
               }}</span>
             </td>
-            <td>
-              <button class="text-button" :disabled="busy" @click="open(property)">
+            <td data-label="Kelola">
+              <button
+                class="text-button"
+                :disabled="busy"
+                @click="open(property)"
+              >
                 Edit properti</button
+              ><button
+                class="text-button"
+                :disabled="busy"
+                @click="open(property, 'media')"
+              >
+                Foto & media</button
               ><NuxtLink
                 v-if="property.publication === 'PUBLISHED'"
                 :to="`/properti/${property.slug}`"
@@ -238,7 +284,7 @@ onMounted(() => load())
     </nav>
     <dialog
       ref="editor"
-      class="history-drawer"
+      class="history-drawer property-editor"
       aria-labelledby="property-editor-title"
       @close="selected = null"
     >
@@ -248,8 +294,28 @@ onMounted(() => load())
         </h2>
         <button class="button secondary" @click="editor?.close()">Tutup</button>
       </div>
+      <p v-if="selected" class="muted">{{ selected.title }}</p>
+      <nav
+        v-if="selected"
+        class="editor-sections"
+        aria-label="Bagian editor properti"
+      >
+        <button
+          v-for="section in editorSections"
+          :key="section.key"
+          type="button"
+          :aria-pressed="editorSection === section.key"
+          @click="editorSection = section.key"
+        >
+          {{ section.label }}
+        </button>
+      </nav>
+      <p v-else class="notice">
+        Simpan informasi utama terlebih dahulu. Setelah itu, buka Foto & media
+        untuk melengkapi rumah ini sebelum diterbitkan.
+      </p>
       <p v-if="message" role="alert">{{ message }}</p>
-      <form @submit.prevent="save">
+      <form v-show="editorSection === 'basics'" @submit.prevent="save">
         <div class="form-grid">
           <label
             >Judul<input v-model="form.title" required maxlength="160" /></label
@@ -362,18 +428,21 @@ onMounted(() => load())
       </form>
       <CommercialEditor
         v-if="selected && session.account.value?.role === 'ADMIN'"
+        v-show="editorSection === 'commercial'"
         :key="'commercial-' + selected.id"
         :property="selected"
         @saved="selected = $event"
       />
       <LocationEditor
         v-if="selected"
+        v-show="editorSection === 'location'"
         :key="selected.id"
         :property="selected"
         @saved="selected = $event"
       />
       <MediaManager
         v-if="selected"
+        v-show="editorSection === 'media'"
         :key="selected.id"
         :property-id="selected.id"
         :version="selected.version"
@@ -381,6 +450,7 @@ onMounted(() => load())
       />
       <form
         v-if="selected && session.account.value?.role === 'ADMIN'"
+        v-show="editorSection === 'owner'"
         class="section"
         @submit.prevent="transfer"
       >

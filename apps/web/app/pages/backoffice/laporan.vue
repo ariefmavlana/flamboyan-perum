@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { LeadReport } from '#shared/types'
+import { leadLabels } from '#shared/utils/leads'
 definePageMeta({ layout: 'backoffice' })
 useSeoMeta({
   title: 'Laporan supervisi — Flamboyan',
@@ -20,14 +21,7 @@ const marketing = ref<number | null>(null)
 const report = ref<LeadReport | null>(null)
 const message = ref('')
 const busy = ref(false)
-const statusLabels: Record<string, string> = {
-  NEW_LEAD: 'Lead baru',
-  FOLLOWED_UP: 'Ditindaklanjuti',
-  SURVEY_LOKASI: 'Survei lokasi',
-  PEMBERKASAN_KPR: 'Pemberkasan KPR',
-  DEAL: 'Deal',
-  LOST: 'Lost',
-}
+const statusLabels: Record<string, string> = leadLabels
 async function load() {
   busy.value = true
   message.value = ''
@@ -60,10 +54,10 @@ onMounted(load)
 <template>
   <section class="container section">
     <p class="eyebrow">ADMIN · SUPERVISI</p>
-    <h1>Laporan perjalanan lead</h1>
+    <h1>Hasil penjualan</h1>
     <p class="muted">
-      Cohort berdasarkan tanggal pencatatan lead, ditampilkan dalam
-      Asia/Jakarta. Status dan assignee adalah keadaan saat laporan dimuat.
+      Pilih periode masuknya calon pembeli untuk melihat perkembangan hingga
+      saat ini. Semua waktu ditampilkan dalam WIB.
     </p>
     <form class="action-row" @submit.prevent="load">
       <label>Tanggal awal<input v-model="from" type="date" required /></label>
@@ -72,7 +66,7 @@ onMounted(load)
         v-if="session.account.value?.role === 'ADMIN'"
         v-model="marketing"
         kind="marketing"
-        label="Assignee aktif saat ini (opsional)"
+        label="Marketing penanggung jawab (opsional)"
         :required="false"
       />
       <button class="button" :disabled="busy">
@@ -83,16 +77,16 @@ onMounted(load)
     <template v-if="report">
       <div class="report-metrics">
         <article>
-          <h2>Ukuran cohort</h2>
+          <h2>Calon pembeli dalam periode</h2>
           <strong>{{ report.cohort_size }} lead</strong>
         </article>
         <article>
-          <h2>Konversi DEAL</h2>
+          <h2>Menjadi pembelian</h2>
           <strong>{{ report.conversion_percent }}%</strong>
           <p>{{ report.statuses.DEAL }} / {{ report.cohort_size }} lead</p>
         </article>
         <article>
-          <h2>Median follow-up pertama</h2>
+          <h2>Waktu tengah untuk menghubungi</h2>
           <strong>{{
             report.follow_up.median_seconds === null
               ? 'Belum tersedia'
@@ -105,23 +99,39 @@ onMounted(load)
         </article>
       </div>
       <p>
-        Median dihitung dari assignment pertama sampai FOLLOWED_UP pertama.
-        Reassignment tidak mereset waktu. Lead yang belum follow-up, termasuk
-        terminal tanpa follow-up, tidak masuk median.
+        Waktu dihitung dari penugasan pertama sampai pertama kali ditandai sudah
+        dihubungi. Nilai tengah (median) hanya memakai calon pembeli yang sudah
+        dihubungi; pergantian Marketing tidak mengulang perhitungan.
       </p>
-      <h2>Belum follow-up: {{ report.follow_up.not_followed_up }} lead</h2>
+      <h2>
+        Belum dihubungi: {{ report.follow_up.not_followed_up }} calon pembeli
+      </h2>
       <ul>
         <li>
           Belum pernah ditugaskan: {{ report.follow_up.pending_age.unassigned }}
         </li>
         <li>
-          Usia assignment &lt;1 hari:
+          Ditugaskan kurang dari 1 hari:
           {{ report.follow_up.pending_age.under_1_day }}
         </li>
         <li>
           Usia 1–7 hari: {{ report.follow_up.pending_age['1_to_7_days'] }}
         </li>
         <li>Usia &gt;7 hari: {{ report.follow_up.pending_age.over_7_days }}</li>
+      </ul>
+      <h2>Perjalanan pembelian</h2>
+      <ul
+        class="report-distribution"
+        aria-label="Jumlah calon pembeli per tahap"
+      >
+        <li v-for="(count, status) in report.statuses" :key="status">
+          <span>{{ statusLabels[status] ?? status }}</span
+          ><progress
+            :value="count"
+            :max="Math.max(report.cohort_size, 1)"
+            :aria-label="statusLabels[status] ?? String(status)"
+          /><strong>{{ count }}</strong>
+        </li>
       </ul>
       <div
         class="table-scroll"
@@ -131,7 +141,7 @@ onMounted(load)
       >
         <table class="lead-table">
           <caption>
-            Distribusi status cohort
+            Rincian tahap calon pembeli dalam periode
           </caption>
           <thead>
             <tr>
@@ -155,7 +165,7 @@ onMounted(load)
       >
         <table class="lead-table">
           <caption>
-            Assignee saat ini
+            Penanggung jawab saat ini
           </caption>
           <thead>
             <tr>
@@ -186,7 +196,7 @@ onMounted(load)
       >
         <table class="lead-table">
           <caption>
-            Aktor follow-up pertama, terpisah dari assignee saat ini
+            Marketing yang pertama kali menghubungi
           </caption>
           <thead>
             <tr>

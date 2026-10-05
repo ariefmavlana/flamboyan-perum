@@ -43,7 +43,7 @@ onMounted(() => {
 const contextUrl = computed(() =>
   property.value
     ? propertyUrl(config.public.siteUrl, property.value.slug)
-    : `${config.public.siteUrl.replace(/\/+$/, '')}/bandung-timur`,
+    : `${config.public.siteUrl.replace(/\/+$/, '')}/properti`,
 )
 const handoff = computed(() => {
   if (
@@ -122,6 +122,19 @@ useHead({
           </div>
         </li>
       </ol>
+      <figure class="consultation-image">
+        <img
+          src="/images/flamboyan-fasad.webp"
+          width="747"
+          height="420"
+          loading="lazy"
+          alt="Ilustrasi fasad hunian Bukit Flamboyan Indah 2 dari Rumah Rajasa."
+        />
+        <figcaption>
+          Ilustrasi hunian · Rumah Rajasa. Kondisi aktual dikonfirmasi saat
+          kunjungan.
+        </figcaption>
+      </figure>
     </div>
     <div class="consultation-panel">
       <p class="eyebrow">RENCANA ANDA</p>

@@ -52,7 +52,7 @@ class EditorialAssetsTest extends TestCase
         $video->update(['published' => false]);
         $this->getJson('/api/v1/content')->assertJsonPath('data.hero.media', null);
         $this->patchJson('/api/v1/internal/content/'.$hero->json('data.id'), $this->hero($property) + ['version' => 1])->assertOk();
-        $this->getJson('/api/v1/content')->assertJsonPath('data.hero.media.id', $cover->id);
+        $this->getJson('/api/v1/content')->assertJsonPath('data.hero.media', null);
         $this->patchJson('/api/v1/internal/content/'.$hero->json('data.id'), $this->hero($property, $cover->id) + ['version' => 2])->assertOk();
         $this->getJson('/api/v1/content')->assertJsonPath('data.hero.media.id', $cover->id);
         $cover->update(['state' => 'ARCHIVED']);

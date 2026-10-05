@@ -48,8 +48,20 @@ button:disabled {
   opacity: 0.55;
 }
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: 3px solid #bc762c;
-  outline-offset: 4px;
+  outline: 2px solid #45554e;
+  outline-offset: 3px;
+}
+/* Text entry has a quiet inset focus instead of an external coloured halo. */
+:is(input, select, textarea):focus {
+  outline: none;
+  border-color: #45554e;
+  box-shadow: inset 0 0 0 1px #45554e;
+}
+@media (forced-colors: active) {
+  :is(input, select, textarea):focus {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
 }
 #main:focus {
   outline: none;
