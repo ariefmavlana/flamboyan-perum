@@ -107,19 +107,37 @@ function readFilters() {
   assigneeFilter.value = Number.isSafeInteger(id) && id > 0 ? id : null
 }
 async function applyFilters(page = 1) {
-  await navigateTo({
-    path: '/backoffice',
-    query: {
-      ...(search.value ? { q: search.value } : {}),
-      ...(filterStatus.value ? { status: filterStatus.value } : {}),
-      ...(work.value ? { work: work.value } : {}),
-      ...(assigneeFilter.value
-        ? { assigned_marketing_id: String(assigneeFilter.value) }
-        : {}),
-      ...(unassigned.value ? { unassigned: '1' } : {}),
-      ...(page > 1 ? { page: String(page) } : {}),
-    },
-  })
+  const query: Record<string, string> = {
+    ...(search.value ? { q: search.value } : {}),
+    ...(filterStatus.value ? { status: filterStatus.value } : {}),
+    ...(work.value ? { work: work.value } : {}),
+    ...(assigneeFilter.value
+      ? { assigned_marketing_id: String(assigneeFilter.value) }
+      : {}),
+    ...(unassigned.value ? { unassigned: '1' } : {}),
+    ...(page > 1 ? { page: String(page) } : {}),
+  }
+  const changed = [
+    'q',
+    'status',
+    'work',
+    'assigned_marketing_id',
+    'unassigned',
+    'page',
+  ].some((key) => route.query[key] !== query[key])
+  // Disable the old results before navigation and invalidate in-flight loads.
+  listRequest++
+  loading.value = true
+  try {
+    await navigateTo({ path: '/backoffice', query })
+    if (!changed) await load(page)
+  } catch {
+    readFilters()
+    leads.value = null
+    loading.value = false
+    success.value = false
+    message.value = 'Filter belum dapat diterapkan. Silakan coba lagi.'
+  }
 }
 async function chooseQueue(queue: WorkQueue | '' = '', status = '') {
   search.value = ''
@@ -157,6 +175,7 @@ async function load(page = 1) {
   }
 }
 async function openLead(lead: Lead) {
+  if (loading.value) return
   selected.value = lead
   note.value = ''
   message.value = ''
@@ -586,7 +605,11 @@ watch(
                 <small class="next-action-label">{{
                   nextLeadAction(lead)
                 }}</small>
-                <button class="text-button" @click="openLead(lead)">
+                <button
+                  class="text-button"
+                  :disabled="loading"
+                  @click="openLead(lead)"
+                >
                   Buka detail →
                 </button>
               </td>

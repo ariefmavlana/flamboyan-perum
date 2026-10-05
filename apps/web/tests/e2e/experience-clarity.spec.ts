@@ -134,6 +134,42 @@ test('Marketing workspace has scoped actions, readable mobile records and guarde
     page.getByRole('button', { name: 'Catat lead baru' }),
   ).toHaveCount(0)
   await expect(page.locator('.work-queue')).toHaveCount(3)
+  await expect(page.locator('.crm-results')).toHaveAttribute(
+    'aria-busy',
+    'false',
+  )
+  await expect(
+    page.getByRole('button', { name: 'Buka detail →' }).first(),
+  ).toBeEnabled()
+  let releaseContact = () => {}
+  const contactGate = new Promise<void>((resolve) => {
+    releaseContact = resolve
+  })
+  await page.route('**/api/v1/leads?*', async (route) => {
+    if (new URL(route.request().url()).searchParams.get('work') === 'contact')
+      await contactGate
+    await route.continue()
+  })
+  try {
+    await page
+      .locator('.work-queue')
+      .filter({ hasText: 'Perlu dihubungi' })
+      .click()
+    await expect(page.locator('.crm-results')).toHaveAttribute(
+      'aria-busy',
+      'true',
+    )
+    await expect(
+      page.getByRole('button', { name: 'Buka detail →' }).first(),
+    ).toBeDisabled()
+  } finally {
+    releaseContact()
+  }
+  await expect(page.locator('.crm-results')).toHaveAttribute(
+    'aria-busy',
+    'false',
+  )
+  // Reapplying the same queue must reload instead of remaining busy forever.
   await page
     .locator('.work-queue')
     .filter({ hasText: 'Perlu dihubungi' })
