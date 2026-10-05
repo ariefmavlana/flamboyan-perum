@@ -1,5 +1,9 @@
 # REST API — katalog, workspace dan operasi
 
+## Impor aset Rumah Rajasa — 2026-10-05
+
+Tidak ada perubahan wire contract. Importer opt-in memakai session/CSRF serta GET/POST/PATCH media internal existing dengan `property_version`, menunggu READY, dan menyimpan provenance pada alt. Hanya 21 gambar terpilih untuk sembilan tipe yang dipublikasikan; 33 sumber tercatat dalam manifest. API tidak mengambil URL sumber: skrip operator mengunduh berkas terverifikasi lalu mengirim multipart. Public DTO tetap allowlist, original/staging privat; harga, spesifikasi, CMS dan CRM tidak dimutasi. Aturan resolusi, idempotensi, snapshot dan rollback ada di [rajasa-assets.md](rajasa-assets.md).
+
 ## Katalog komersial dan CMS pembiayaan — 2026-10-05
 
 Availability menambah CHECK_REQUIRED. PublicProperty menambah commercial nullable, hanya untuk metadata yang telah diverifikasi. price_idr publik adalah harga pada tanggal Asia/Jakarta, konsisten untuk listing/filter/sort/detail/compare; harga normal internal tetap price_idr. Internal property menambah commercial JSON, offer_price_idr/offer_start/offer_end, next_price_idr/next_price_start. Nominal kolom harga nullable string integer IDR; tanggal nullable YYYY-MM-DD.
