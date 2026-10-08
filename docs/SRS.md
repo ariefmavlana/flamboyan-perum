@@ -1,5 +1,11 @@
 # Software Requirements Specification — Flamboyan Perum
 
+## Pengenalan kawasan Banjaran — 2026-10-08
+
+`/perumahan` dan `/perumahan/banjaran` adalah halaman editorial SSR dengan canonical, sitemap dan navigasi publik. Nama proyek sementara serta foto inspirasi bukan record Property, penawaran, atau fallback API. Konten kawasan mengikuti pola editorial terkurasi di source; kontrak DEVELOPMENT masih tunggal dan tidak diklaim sebagai CMS multi-proyek.
+
+Query frontend `/konsultasi?kawasan=banjaran` memakai allowlist literal Banjaran untuk konteks pesan serta URL `/perumahan/banjaran`. Parameter `properti` valid tetap diprioritaskan; detail properti yang gagal/tidak published tetap memblokir handoff. Kawasan tidak dikenal diabaikan. Query konsultasi noindex; nomor Admin tetap dari konfigurasi existing. Tidak membuat lead, mengirim pesan, atau mengonfirmasi booking otomatis. CSS animation/hover menghormati `prefers-reduced-motion`; konten tidak bergantung pada animasi atau JavaScript agar terbaca.
+
 ## Perluasan kontrak komersial — 2026-10-05
 
 Availability menambah CHECK_REQUIRED: stok belum dikonfirmasi dan structured data tidak mengarang ketersediaan. Properties menambah JSON commercial, offer_price_idr/start/end dan next_price_idr/start melalui migrasi aditif. Harga publik, filter, sort dan compare memakai harga pada hari Asia/Jakarta: program inklusif tanggal mulai/akhir, kemudian harga berikutnya jika sudah mulai, selain itu harga normal. Tidak ada perpanjangan promo otomatis. Nilai IDR integer; area decimal. Publik memakai allowlist eksplisit, tanpa aktor verifikasi atau identitas Marketing.

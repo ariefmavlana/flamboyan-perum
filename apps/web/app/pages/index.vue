@@ -29,9 +29,9 @@ const wa = computed(() =>
   ),
 )
 useSeoMeta({
-  title: 'Flamboyan Perum — Hunian di Bandung Timur',
+  title: 'Flamboyan — Pilihan perumahan & cerita berikutnya',
   description:
-    'Kenali pilihan hunian Flamboyan di Bandung Timur. Jelajahi rumah, bandingkan spesifikasi, dan rencanakan kunjungan bersama tim kami.',
+    'Jelajahi perumahan Flamboyan di Bandung Timur dan kenali rencana hunian Banjaran. Temukan kawasan, bandingkan rumah, dan diskusikan pilihan Anda.',
 })
 useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
 </script>
@@ -52,16 +52,14 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
           <p>
             {{
               hero?.description ??
-              'Pilihan hunian di Bandung Timur untuk keseharian yang Anda inginkan. Kenali ruangnya, pahami biayanya, lalu rasakan langsung kawasannya.'
+              'Berbeda suasana, satu rasa pulang. Jelajahi pilihan perumahan dalam naungan Flamboyan dan temukan ruang untuk keseharian yang Anda inginkan.'
             }}
           </p>
           <NuxtLink class="editorial-link" to="/properti"
             >Jelajahi pilihan rumah <AppIcon name="arrow"
           /></NuxtLink>
-          <NuxtLink
-            class="editorial-link hero-visit-link"
-            to="/konsultasi?tujuan=kunjungan"
-            >Rencanakan kunjungan <AppIcon name="arrow"
+          <NuxtLink class="editorial-link hero-visit-link" to="/perumahan"
+            >Kenali perumahan kami <AppIcon name="arrow"
           /></NuxtLink>
         </div>
         <form
@@ -108,6 +106,25 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
         ><AppIcon name="arrow"
       /></NuxtLink>
     </nav>
+    <section
+      class="container home-residences"
+      aria-labelledby="residences-title"
+    >
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SATU NAUNGAN, BERAGAM CERITA</p>
+          <h2 id="residences-title">Temukan tempat Anda pulang.</h2>
+          <p class="muted">
+            Dari Bandung Timur hingga rencana baru di Banjaran. Kenali setiap
+            kawasan dan cerita yang menyertainya.
+          </p>
+        </div>
+        <NuxtLink class="text-link" to="/perumahan"
+          >Seluruh perumahan →</NuxtLink
+        >
+      </div>
+      <ResidenceCollection />
+    </section>
     <section class="section container featured-collection">
       <div class="section-heading">
         <div>
