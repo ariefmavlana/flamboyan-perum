@@ -1,5 +1,11 @@
 # Product Requirements Document — Flamboyan Perum
 
+## Perluasan pengenalan perumahan — 2026-10-08
+
+Flamboyan tetap menjadi nama payung. Pengguna menyetujui nama sementara **Banjaran — hunian mendatang** untuk rencana perumahan lain dalam naungan yang sama. Discovery publik memperkenalkan pilihan kawasan melalui `/perumahan`, beranda, navigasi, dan halaman konsep `/perumahan/banjaran`. Identitas editorial premium dipertahankan, dengan foto inspirasi berlabel, gerak terbatas, dukungan reduced motion, dan konsultasi yang membawa konteks kawasan.
+
+Tahap ini adalah pengenalan rencana, bukan peluncuran penjualan Banjaran. Tidak mengarang tipe/harga/stok/alamat lengkap/fasilitas/legalitas/jadwal. Aset dummy memakai foto inspirasi berlisensi yang sudah ada. Katalog published tetap bersumber dari API. Pengelolaan beberapa proyek melalui CMS serta relasi proyek–properti belum termasuk implementasi tahap ini; diperlukan ketika data proyek dan katalog Banjaran ditetapkan.
+
 ## Pembaruan katalog dan pembiayaan — 2026-10-05
 
 Katalog Bukit Flamboyan Indah 2 mengikuti sumber pengguna: sembilan tipe, 152 unit rencana, harga dan masa berlaku terdokumentasi. Jumlah rencana tidak menyatakan stok tersedia; sertifikat, kesiapan fasilitas, bank rekanan dan persetujuan kredit tidak diasumsikan. Masterplan terpisah dari denah bangunan. Foto brosur disebut ilustrasi. Template, layout dan tema editorial dipertahankan.
