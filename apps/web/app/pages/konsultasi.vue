@@ -22,6 +22,9 @@ const { data, error, status, refresh } = await useAsyncData(
   { watch: [slug] },
 )
 const property = computed(() => data.value?.data)
+const banjaran = computed(
+  () => !slug.value && route.query.kawasan === 'banjaran',
+)
 const purposes = {
   kunjungan: 'Kunjungan rumah',
   ketersediaan: 'Ketersediaan hunian',
@@ -44,7 +47,10 @@ onMounted(() => {
 const contextUrl = computed(() =>
   property.value
     ? propertyUrl(config.public.siteUrl, property.value.slug)
-    : canonicalUrl(String(config.public.siteUrl), '/properti'),
+    : canonicalUrl(
+        String(config.public.siteUrl),
+        banjaran.value ? '/perumahan/banjaran' : '/properti',
+      ),
 )
 const handoff = computed(() => {
   if (
@@ -55,7 +61,8 @@ const handoff = computed(() => {
   const link = consultationLink(
     whatsappNumber.value,
     purposes[purpose.value],
-    property.value?.title ?? '',
+    property.value?.title ??
+      (banjaran.value ? 'Rencana hunian Banjaran — Flamboyan' : ''),
     contextUrl.value,
   )
   if (!link) return null
@@ -83,7 +90,7 @@ useSeoMeta({
   description:
     'Siapkan percakapan tentang hunian, pembiayaan, atau rencana kunjungan bersama Admin Flamboyan.',
   robots: () =>
-    route.query.properti || route.query.tujuan
+    route.query.properti || route.query.tujuan || route.query.kawasan
       ? 'noindex, follow'
       : 'index, follow',
 })
@@ -99,7 +106,7 @@ useHead({
 <template>
   <section class="container section consultation-layout">
     <div class="editorial-page-heading">
-      <p class="eyebrow">KONSULTASI FLAMBOYAN · BANDUNG TIMUR</p>
+      <p class="eyebrow">KONSULTASI FLAMBOYAN</p>
       <h1>Mulai dari<br />percakapan.</h1>
       <p>
         Ceritakan hal yang ingin Anda ketahui. Admin membantu mengonfirmasi
@@ -132,15 +139,27 @@ useHead({
       </ol>
       <figure class="consultation-image">
         <img
+          v-if="!banjaran"
           src="/images/flamboyan-fasad.webp"
           width="747"
           height="420"
           loading="lazy"
           alt="Ilustrasi fasad hunian Bukit Flamboyan Indah 2 dari Rumah Rajasa."
         />
-        <figcaption>
+        <img
+          v-else
+          src="/images/editorial-garden-960.webp"
+          width="960"
+          height="640"
+          loading="lazy"
+          alt="Foto inspirasi hunian tropis, bukan lokasi atau rancangan final Banjaran."
+        />
+        <figcaption v-if="!banjaran">
           Ilustrasi hunian · Rumah Rajasa. Kondisi aktual dikonfirmasi saat
           kunjungan.
+        </figcaption>
+        <figcaption v-else>
+          Foto inspirasi, bukan lokasi proyek · Sergei Bezzubov / Unsplash.
         </figcaption>
       </figure>
     </div>
@@ -166,6 +185,17 @@ useHead({
         <p>{{ property.location }}</p>
         <NuxtLink class="text-link" :to="'/properti/' + property.slug"
           >Lihat kembali rumah →</NuxtLink
+        >
+      </div>
+      <div v-else-if="banjaran" class="consultation-property">
+        <span class="muted">Kawasan yang Anda minati</span>
+        <h3>Banjaran · hunian mendatang</h3>
+        <p>
+          Masih dalam pengenalan rencana. Harga, desain final, dan jadwal
+          kunjungan belum diumumkan.
+        </p>
+        <NuxtLink class="text-link" to="/perumahan/banjaran"
+          >Lihat kembali konsep Banjaran →</NuxtLink
         >
       </div>
       <label

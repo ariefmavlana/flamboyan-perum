@@ -10,6 +10,8 @@ export default defineEventHandler(async (event) => {
       { url: `${origin}/properti` },
       { url: `${origin}/privasi` },
       ...[
+        '/perumahan',
+        '/perumahan/banjaran',
         '/bandung-timur',
         '/panduan',
         '/konsultasi',

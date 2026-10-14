@@ -212,3 +212,6 @@ Pada `GET /api/v1/content`, `hero.media` hanya berisi media pilihan eksplisit ya
 ### Sinkronisasi filter CRM di klien
 
 Pergantian filter pada `GET /api/v1/leads` langsung menonaktifkan detail daftar sebelumnya sampai respons terbaru diterapkan. Respons request lama tidak mengganti daftar aktif. Menerapkan filter yang sama memuat ulang daftar. Ini merupakan guard klien; kontrak endpoint dan otorisasi scope backend tetap sama.
+## Pengenalan perumahan — 2026-10-08
+
+Tidak ada perubahan kontrak REST, schema database, atau izin. `/perumahan` dan `/perumahan/banjaran` adalah route editorial Nuxt. `/konsultasi?kawasan=banjaran` merupakan query frontend allowlisted yang menyiapkan pesan WhatsApp berkonteks Banjaran; tidak diteruskan sebagai filter katalog, tidak menghasilkan record Property/Lead, dan tidak mengirim pesan. Konteks properti published tetap diutamakan bila parameter `properti` valid hadir. `GET /api/v1/content` tetap mengembalikan satu `development`; multi-proyek CMS dan relasi proyek–properti belum diimplementasikan. Banjaran tidak ditambahkan sebagai unit dummy ke API bisnis.

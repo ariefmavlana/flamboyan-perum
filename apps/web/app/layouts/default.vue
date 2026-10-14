@@ -31,6 +31,7 @@ function trackWhatsapp() {
         <BrandLogo />
         <ResponsiveNav id="public-navigation" label="Navigasi utama">
           <NuxtLink to="/">Beranda</NuxtLink>
+          <NuxtLink to="/perumahan">Perumahan</NuxtLink>
           <NuxtLink to="/properti">Jelajahi properti</NuxtLink>
           <NuxtLink to="/panduan">Panduan</NuxtLink>
           <NuxtLink
@@ -91,9 +92,13 @@ function trackWhatsapp() {
       <div class="container footer-main">
         <div>
           <BrandLogo />
-          <p>Hunian di Bandung Timur.<br />Ruang untuk cerita berikutnya.</p>
+          <p>
+            Berbeda suasana. Satu naungan.<br />Ruang untuk cerita berikutnya.
+          </p>
         </div>
         <nav aria-label="Navigasi footer">
+          <NuxtLink to="/perumahan">Pilihan perumahan</NuxtLink>
+          <NuxtLink to="/perumahan/banjaran">Banjaran · mendatang</NuxtLink>
           <NuxtLink to="/properti">Katalog properti</NuxtLink
           ><NuxtLink to="/bandingkan">Bandingkan rumah</NuxtLink
           ><NuxtLink to="/bandung-timur">Tentang Bandung Timur</NuxtLink
@@ -118,7 +123,7 @@ function trackWhatsapp() {
         </nav>
       </div>
       <div class="container site-footer">
-        <span>Flamboyan Perum · Bandung Timur</span
+        <span>Flamboyan Perum · Bandung Timur & Banjaran</span
         ><span>Temukan rumah. Rencanakan langkah berikutnya.</span>
       </div>
     </footer>

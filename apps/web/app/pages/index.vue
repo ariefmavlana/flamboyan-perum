@@ -46,7 +46,7 @@ const wa = computed(() =>
 useSeoMeta({
   title: 'Rumah Baru Cibiru Wetan, Bandung Timur',
   description:
-    'Jelajahi pilihan rumah Bukit Flamboyan Indah 2 di Cibiru Wetan, Bandung Timur. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
+    'Pilihan rumah Bukit Flamboyan Indah 2 di Cibiru Wetan, Bandung Timur dan rencana hunian Banjaran. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
 })
 useHead({
   link: [
@@ -77,17 +77,14 @@ useHead({
           <p>
             {{
               hero?.description ??
-              'Pilihan hunian di Bandung Timur untuk keseharian yang Anda inginkan. Kenali ruangnya, pahami biayanya, lalu rasakan langsung kawasannya.'
+              'Berbeda suasana, satu rasa pulang. Jelajahi pilihan perumahan dalam naungan Flamboyan dan temukan ruang untuk keseharian yang Anda inginkan.'
             }}
           </p>
           <NuxtLink class="editorial-link" to="/properti"
             >Jelajahi pilihan rumah <AppIcon name="arrow"
           /></NuxtLink>
-          <NuxtLink
-            class="editorial-link hero-visit-link"
-            to="/konsultasi?tujuan=kunjungan"
-            @click="trackVisit"
-            >Rencanakan kunjungan <AppIcon name="arrow"
+          <NuxtLink class="editorial-link hero-visit-link" to="/perumahan"
+            >Kenali perumahan kami <AppIcon name="arrow"
           /></NuxtLink>
         </div>
         <form
@@ -134,6 +131,25 @@ useHead({
         ><AppIcon name="arrow"
       /></NuxtLink>
     </nav>
+    <section
+      class="container home-residences"
+      aria-labelledby="residences-title"
+    >
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SATU NAUNGAN, BERAGAM CERITA</p>
+          <h2 id="residences-title">Temukan tempat Anda pulang.</h2>
+          <p class="muted">
+            Dari Bandung Timur hingga rencana baru di Banjaran. Kenali setiap
+            kawasan dan cerita yang menyertainya.
+          </p>
+        </div>
+        <NuxtLink class="text-link" to="/perumahan"
+          >Seluruh perumahan →</NuxtLink
+        >
+      </div>
+      <ResidenceCollection />
+    </section>
     <section class="section container featured-collection">
       <div class="section-heading">
         <div>
