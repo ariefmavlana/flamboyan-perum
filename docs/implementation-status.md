@@ -1,5 +1,9 @@
 # Status implementasi
 
+## Aset dokumentasi tipe rumah, gerbang, dan logo — 2026-10-14
+
+Branch `feat/integrasi-aset-tipe-rumah` dari `main` `43b92e9`. Implemented: tooling impor aset lokal (generator manifest + importer + 9 unit test), manifest 55 foto dokumentasi pengguna untuk lima tipe (36/60, 36/90, 56/90, 62/70, 69/80) plus 12/8 ilustrasi AI berlabel per tipe 62/70 dan 69/80, siteplan pengganti MASTERPLAN sembilan properti, foto gerbang beranda & `/bandung-timur` dengan caption dokumentasi pengguna, logo header publik + set favicon, serta pembaruan deskripsi lima properti. Berkas asli privat di `.tools/flamboyan-assets` dan tidak masuk Git; hanya turunan teroptimasi (webp/ikon) yang di-commit. **Impor media belum dijalankan** — menunggu review urutan/kapasitas dan kredensial Admin; dua video mp4 menunggu URL YouTube (pipeline hanya menerima embed). Validasi: 9 test importer, `npm run lint`, `npm run typecheck`, 39 tes frontend (10 berkas), dan `npm run build` lulus; browser lokal memverifikasi logo/gerbang/favicon tanpa page error; screenshot privat di `.tools/`. Tidak ada perubahan `apps/api`, migrasi, dependency, merge, atau deploy. Rollback: revert commit; importer idempoten dengan snapshot `.tools/flamboyan-import/`. Detail: [flamboyan-assets.md](flamboyan-assets.md).
+
 ## Integrasi main terbaru — 2026-10-14
 
 Atas instruksi pengguna, seluruh PR terbuka diperiksa lalu di-merge ke `main`: PR #24 `codex/multi-residence-banjaran` (`68e6bc5`, draft dijadikan siap-review) menjadi merge commit `e6b5f86`, lalu PR #25 `feat/production-readiness` (`0467d08`) menjadi merge commit `808b69c`. Pemeriksaan sebelum tiap merge: `mergeable/clean`, tidak ada review yang meminta perubahan, tidak ada konflik yang dibiarkan, dan status Vercel kedua project (`flamboyan-web`, `flamboyan-api`) `success` lebih dulu; tidak ada bypass, approval palsu, GitHub Actions, atau force-push.

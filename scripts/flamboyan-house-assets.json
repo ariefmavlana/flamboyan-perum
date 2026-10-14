@@ -1,0 +1,733 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-14T13:37:49.233Z",
+  "note": "Sumber privat di .tools/flamboyan-assets; jangan commit berkas asli.",
+  "photo_types": [
+    "36/60",
+    "36/90",
+    "56/90",
+    "62/70",
+    "69/80"
+  ],
+  "properties": [
+    {
+      "house_type": "36/60",
+      "slug": "bukit-flamboyan-indah-2-36-60"
+    },
+    {
+      "house_type": "36/72",
+      "slug": "bukit-flamboyan-indah-2-36-72"
+    },
+    {
+      "house_type": "36/90",
+      "slug": "bukit-flamboyan-indah-2-36-90"
+    },
+    {
+      "house_type": "62/70",
+      "slug": "bukit-flamboyan-indah-2-62-70"
+    },
+    {
+      "house_type": "62/84",
+      "slug": "bukit-flamboyan-indah-2-62-84"
+    },
+    {
+      "house_type": "69/80",
+      "slug": "bukit-flamboyan-indah-2-69-80"
+    },
+    {
+      "house_type": "56/90",
+      "slug": "bukit-flamboyan-indah-2-56-90"
+    },
+    {
+      "house_type": "56/108",
+      "slug": "bukit-flamboyan-indah-2-56-108"
+    },
+    {
+      "house_type": "62/140",
+      "slug": "bukit-flamboyan-indah-2-62-140"
+    }
+  ],
+  "siteplan": {
+    "key": "siteplan",
+    "file": "shared/Siteplan.jpg",
+    "sha256": "106f0d6155e741a404fb997700bd2f35605fb7e62db646451244a81931253141",
+    "bytes": 3199386,
+    "width": 2400,
+    "height": 1792,
+    "kind": "MASTERPLAN",
+    "alt": "Site plan Bukit Flamboyan Indah 2 · dokumentasi pengguna; warna bukan status ketersediaan. [ED:siteplan]"
+  },
+  "videos": [],
+  "assets": [
+    {
+      "key": "36-60-1",
+      "file": "edited/36-60/36-60-1.jpg",
+      "sha256": "53430b66024510eee7b2929c20e36d109d2fd5c067f7627d19729e4ab8d90abf",
+      "bytes": 3137521,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/60",
+      "alt": "Dokumentasi tipe 36/60 #1 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-60-1]",
+      "position": 0
+    },
+    {
+      "key": "36-60-2",
+      "file": "edited/36-60/36-60-2.jpg",
+      "sha256": "7e5334770407a8c7cba730886bf31e9b957b8ee8602e24c0114f6b6676d81de2",
+      "bytes": 3295793,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "36/60",
+      "alt": "Dokumentasi tipe 36/60 #2 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-60-2]",
+      "position": 1
+    },
+    {
+      "key": "36-60-3",
+      "file": "edited/36-60/36-60-3.jpg",
+      "sha256": "45c0800da34a1c5a1bd3520e1744a30004d76e0ee7ce1cfcede7b227744115ff",
+      "bytes": 2246211,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "36/60",
+      "alt": "Dokumentasi tipe 36/60 #3 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-60-3]",
+      "position": 2
+    },
+    {
+      "key": "36-60-4",
+      "file": "edited/36-60/36-60-4.jpg",
+      "sha256": "9e602f9300a96a11f8310cf8fe604a439eded7835210d862ba749399161de91c",
+      "bytes": 2980990,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/60",
+      "alt": "Dokumentasi tipe 36/60 #4 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-60-4]",
+      "position": 3
+    },
+    {
+      "key": "36-60-5",
+      "file": "edited/36-60/36-60-5.jpg",
+      "sha256": "3fe7b1dfd78c7636ae3b7a6fe9b831f2d39410a7bd7c2298fd88dd6f9c1548d1",
+      "bytes": 2562157,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/60",
+      "alt": "Dokumentasi tipe 36/60 #5 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-60-5]",
+      "position": 4
+    },
+    {
+      "key": "36-60-6",
+      "file": "edited/36-60/36-60-6.jpg",
+      "sha256": "f2459e1d3cb4d8db9a89eb9fff9595fa5936e51fda1d75c89e811b9b4d44dccc",
+      "bytes": 2623232,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/60",
+      "alt": "Dokumentasi tipe 36/60 #6 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-60-6]",
+      "position": 5
+    },
+    {
+      "key": "36-60-7",
+      "file": "edited/36-60/36-60-7.jpg",
+      "sha256": "923c5511a5cd7b16c638187e55c9083b3b9a18887057e2776a9a6121c5cd1409",
+      "bytes": 2648601,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/60",
+      "alt": "Dokumentasi tipe 36/60 #7 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-60-7]",
+      "position": 6
+    },
+    {
+      "key": "36-60-8",
+      "file": "edited/36-60/36-60-8.jpg",
+      "sha256": "8a51550e40d3f615bab3293e536cd22500d0cd243aac6dc32693667293cfa708",
+      "bytes": 2481613,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/60",
+      "alt": "Dokumentasi tipe 36/60 #8 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-60-8]",
+      "position": 7
+    },
+    {
+      "key": "36-60-9",
+      "file": "edited/36-60/36-60-9.jpg",
+      "sha256": "f84f9f39b7b00293f7cb573dadbd9d4552c66aa234fdb1fdf22a81c85ec4c4c2",
+      "bytes": 2556685,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/60",
+      "alt": "Dokumentasi tipe 36/60 #9 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-60-9]",
+      "position": 8
+    },
+    {
+      "key": "36-60-10",
+      "file": "edited/36-60/36-60-10.jpg",
+      "sha256": "4cbdcd75092a2d686cc7d83fa291660bce73cc8fa2bce07e1ddc13f68eefd1a0",
+      "bytes": 2575893,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/60",
+      "alt": "Dokumentasi tipe 36/60 #10 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-60-10]",
+      "position": 9
+    },
+    {
+      "key": "36-90-1",
+      "file": "edited/36-90/36-90-1.jpg",
+      "sha256": "d37aa569f6eba8d34c4a4e0245231e7b9a5ab3190a90c9212d7c50f374f71396",
+      "bytes": 3210513,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "36/90",
+      "alt": "Dokumentasi tipe 36/90 #1 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-90-1]",
+      "position": 0
+    },
+    {
+      "key": "36-90-2",
+      "file": "edited/36-90/36-90-2.jpg",
+      "sha256": "27e0733028aaff23efb2e851de0183a45f71ab9737323f9756bac8239cdf7561",
+      "bytes": 3479881,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "36/90",
+      "alt": "Dokumentasi tipe 36/90 #2 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-90-2]",
+      "position": 1
+    },
+    {
+      "key": "36-90-3",
+      "file": "edited/36-90/36-90-3.jpg",
+      "sha256": "53ea3fdfd91d7d35f543417b97f143c14b53567973945419f0c0582a168dee4b",
+      "bytes": 2433801,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "36/90",
+      "alt": "Dokumentasi tipe 36/90 #3 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-90-3]",
+      "position": 2
+    },
+    {
+      "key": "36-90-4",
+      "file": "edited/36-90/36-90-4.jpg",
+      "sha256": "933a0aefa7e7547559dd714d4978256d8426e9fe606a99a58d0eaefd2bc57362",
+      "bytes": 2822480,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/90",
+      "alt": "Dokumentasi tipe 36/90 #4 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-90-4]",
+      "position": 3
+    },
+    {
+      "key": "36-90-5",
+      "file": "edited/36-90/36-90-5.jpg",
+      "sha256": "cd653f9f8dbade2db60f6a73ab6cfb1896ce3448c6c5151f381360b072eb20fc",
+      "bytes": 2595634,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/90",
+      "alt": "Dokumentasi tipe 36/90 #5 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-90-5]",
+      "position": 4
+    },
+    {
+      "key": "36-90-6",
+      "file": "edited/36-90/36-90-6.jpg",
+      "sha256": "0f664da8cb4f5a75521f5c0af293fe1e156453063dd6c480b1104e695b4b06d6",
+      "bytes": 2967464,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/90",
+      "alt": "Dokumentasi tipe 36/90 #6 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-90-6]",
+      "position": 5
+    },
+    {
+      "key": "36-90-7",
+      "file": "edited/36-90/36-90-7.jpg",
+      "sha256": "146423c77ae434f0d3fcc009f67ff341785a44aee22e23dd1fd46e6810b210e8",
+      "bytes": 2401430,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/90",
+      "alt": "Dokumentasi tipe 36/90 #7 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-90-7]",
+      "position": 6
+    },
+    {
+      "key": "36-90-8",
+      "file": "edited/36-90/36-90-8.jpg",
+      "sha256": "fb2c0acc8d5190366113b24cb104b292088fa5730c33716b0eb24d54cb5e856a",
+      "bytes": 2732705,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/90",
+      "alt": "Dokumentasi tipe 36/90 #8 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-90-8]",
+      "position": 7
+    },
+    {
+      "key": "36-90-9",
+      "file": "edited/36-90/36-90-9.jpg",
+      "sha256": "463f7c7d09be695ef165bc883c1782b40754ff537c44dc71104dc231e6bcf6f7",
+      "bytes": 2802130,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "36/90",
+      "alt": "Dokumentasi tipe 36/90 #9 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:36-90-9]",
+      "position": 8
+    },
+    {
+      "key": "56-90-1",
+      "file": "edited/56-90/56-90-1.jpg",
+      "sha256": "8fead468ccf0503ee9c1afe8752dd1b793f5191514256160029a5401c2f8c884",
+      "bytes": 2940110,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "56/90",
+      "alt": "Dokumentasi tipe 56/90 #1 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:56-90-1]",
+      "position": 0
+    },
+    {
+      "key": "56-90-2",
+      "file": "edited/56-90/56-90-2.jpg",
+      "sha256": "658a78e92a39eef8de71560e620b280f3076e47f24f8c720ee531ad7d64602b1",
+      "bytes": 3974159,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "56/90",
+      "alt": "Dokumentasi tipe 56/90 #2 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:56-90-2]",
+      "position": 1
+    },
+    {
+      "key": "56-90-3",
+      "file": "edited/56-90/56-90-3.jpg",
+      "sha256": "6b9ae6a5cca8eb01310937eec98094dec5599303115b4d16d5e277b92b5757b4",
+      "bytes": 2255948,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "56/90",
+      "alt": "Dokumentasi tipe 56/90 #3 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:56-90-3]",
+      "position": 2
+    },
+    {
+      "key": "56-90-4",
+      "file": "edited/56-90/56-90-4.jpg",
+      "sha256": "0eff185f986425beed8cd4e123e31cd5d7cee865f2bddbf20f3d3a658224db50",
+      "bytes": 2550983,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "56/90",
+      "alt": "Dokumentasi tipe 56/90 #4 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:56-90-4]",
+      "position": 3
+    },
+    {
+      "key": "56-90-5",
+      "file": "edited/56-90/56-90-5.jpg",
+      "sha256": "b00f33496975a3443585dd13731ab2f55acb2265816c63a891dcaa4ccb2a0d73",
+      "bytes": 2656358,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "56/90",
+      "alt": "Dokumentasi tipe 56/90 #5 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:56-90-5]",
+      "position": 4
+    },
+    {
+      "key": "56-90-6",
+      "file": "edited/56-90/56-90-6.jpg",
+      "sha256": "0ebc79c2c48fe34ddf4f44953249e9faa70801b62a7aedd40f7afa0d9bd78df7",
+      "bytes": 2543092,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "56/90",
+      "alt": "Dokumentasi tipe 56/90 #6 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:56-90-6]",
+      "position": 5
+    },
+    {
+      "key": "56-90-7",
+      "file": "edited/56-90/56-90-7.jpg",
+      "sha256": "861cf6a3a8b193790c83bca284f070354ba05f97005e9e0890d7686c35664afd",
+      "bytes": 2554457,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "56/90",
+      "alt": "Dokumentasi tipe 56/90 #7 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:56-90-7]",
+      "position": 6
+    },
+    {
+      "key": "56-90-8",
+      "file": "edited/56-90/56-90-8.jpg",
+      "sha256": "63417c98084a477ec838b58c27b38c3cffac227bfecba8e2805a3f29e57ad98d",
+      "bytes": 2384976,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "56/90",
+      "alt": "Dokumentasi tipe 56/90 #8 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:56-90-8]",
+      "position": 7
+    },
+    {
+      "key": "56-90-9",
+      "file": "edited/56-90/56-90-9.jpg",
+      "sha256": "61b6b14d01a4f52346e474620d878bbb3fd5d21a3905ede9831d213111234c47",
+      "bytes": 3116314,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "56/90",
+      "alt": "Dokumentasi tipe 56/90 #9 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:56-90-9]",
+      "position": 8
+    },
+    {
+      "key": "56-90-10",
+      "file": "edited/56-90/56-90-10.jpg",
+      "sha256": "1bb6d9b3731becba448a694b1fd75e6a8e6e524eeeb78bdc3ee62a6de35fa397",
+      "bytes": 2991603,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "56/90",
+      "alt": "Dokumentasi tipe 56/90 #10 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:56-90-10]",
+      "position": 9
+    },
+    {
+      "key": "56-90-11",
+      "file": "edited/56-90/56-90-11.jpg",
+      "sha256": "11a3ee0c5f30cc98f6985e61050299680020a0936f75990c7a1b0c3360558c6f",
+      "bytes": 2614492,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "56/90",
+      "alt": "Dokumentasi tipe 56/90 #11 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:56-90-11]",
+      "position": 10
+    },
+    {
+      "key": "62-70-1",
+      "file": "edited/62-70/62-70-1.jpg",
+      "sha256": "34c5469eb5903cfe9793cdbd194d3a8965ab64ca26911ad11a7441836b16006c",
+      "bytes": 3008722,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Dokumentasi tipe 62/70 #1 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:62-70-1]",
+      "position": 0
+    },
+    {
+      "key": "62-70-2",
+      "file": "edited/62-70/62-70-2.jpg",
+      "sha256": "5a895e57fc8ac7d4fa11616f8ad72b2fc310b6c268f2b6564d1bbf61889e043a",
+      "bytes": 4011244,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Dokumentasi tipe 62/70 #2 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:62-70-2]",
+      "position": 1
+    },
+    {
+      "key": "62-70-3",
+      "file": "edited/62-70/62-70-3.jpg",
+      "sha256": "51bb1b4705c19d6b0cf0ef44a6d1b1bf475cd62df03dbdb0045f333604804d37",
+      "bytes": 2584200,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Dokumentasi tipe 62/70 #3 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:62-70-3]",
+      "position": 2
+    },
+    {
+      "key": "gemini-generated-image-sr44u7sr44u7sr44",
+      "file": "edited/62-70/Gemini_Generated_Image_sr44u7sr44u7sr44.jpg",
+      "sha256": "c019599803c316ca6fd5af9d32f6ac50a115645989bdd57a496869c27500e7f2",
+      "bytes": 890520,
+      "width": 1200,
+      "height": 896,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-sr44u7sr44u7sr44]",
+      "position": 3
+    },
+    {
+      "key": "gemini-generated-image-7t6q2w7t6q2w7t6q",
+      "file": "edited/62-70/Gemini_Generated_Image_7t6q2w7t6q2w7t6q.jpg",
+      "sha256": "fbfebc51b275749ae3f9ac176d87e63fc52a83de8c0cf2e4412b85b6e745a3ee",
+      "bytes": 2392587,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-7t6q2w7t6q2w7t6q]",
+      "position": 4
+    },
+    {
+      "key": "gemini-generated-image-81mu3u81mu3u81mu",
+      "file": "edited/62-70/Gemini_Generated_Image_81mu3u81mu3u81mu.jpg",
+      "sha256": "0d0846272e227ef9ed8ee4ae1e9ed5b4070fca30a261f632b12e44f1dbae3670",
+      "bytes": 3332918,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-81mu3u81mu3u81mu]",
+      "position": 5
+    },
+    {
+      "key": "gemini-generated-image-a0kgc6a0kgc6a0kg",
+      "file": "edited/62-70/Gemini_Generated_Image_a0kgc6a0kgc6a0kg.jpg",
+      "sha256": "9d390b51da764b3aefe451228003df0882629b7c0a9441c19800e34b7c8b05a2",
+      "bytes": 2958583,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-a0kgc6a0kgc6a0kg]",
+      "position": 6
+    },
+    {
+      "key": "gemini-generated-image-bgmq52bgmq52bgmq",
+      "file": "edited/62-70/Gemini_Generated_Image_bgmq52bgmq52bgmq.jpg",
+      "sha256": "a293cedf3d66405e86bd529b0d8ec096eb4fa2cfd1c7bf612d50441800a82de9",
+      "bytes": 867729,
+      "width": 1200,
+      "height": 896,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-bgmq52bgmq52bgmq]",
+      "position": 7
+    },
+    {
+      "key": "gemini-generated-image-jz7n29jz7n29jz7n",
+      "file": "edited/62-70/Gemini_Generated_Image_jz7n29jz7n29jz7n.jpg",
+      "sha256": "49d1dfad8af75188fcd0a69a9214592953b991e532571edec5484574099773ea",
+      "bytes": 859017,
+      "width": 1200,
+      "height": 896,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-jz7n29jz7n29jz7n]",
+      "position": 8
+    },
+    {
+      "key": "gemini-generated-image-l5vqtjl5vqtjl5vq-1",
+      "file": "edited/62-70/Gemini_Generated_Image_l5vqtjl5vqtjl5vq (1).jpg",
+      "sha256": "22f00936ae52949e13ff9bc32f3b75596eb292bc246a2b939d2e7673584c4225",
+      "bytes": 2940966,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-l5vqtjl5vqtjl5vq-1]",
+      "position": 9
+    },
+    {
+      "key": "gemini-generated-image-l5vqtjl5vqtjl5vq-2",
+      "file": "edited/62-70/Gemini_Generated_Image_l5vqtjl5vqtjl5vq (2).jpg",
+      "sha256": "0e32e1e085eb4bd2a2196e983aa22d9d4b3d5834d607fadd93038923a56ffc65",
+      "bytes": 3767948,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-l5vqtjl5vqtjl5vq-2]",
+      "position": 10
+    },
+    {
+      "key": "gemini-generated-image-l5vqtjl5vqtjl5vq",
+      "file": "edited/62-70/Gemini_Generated_Image_l5vqtjl5vqtjl5vq.jpg",
+      "sha256": "255d34472774b7fdd1618a84d530260172621ffcc1450d63ce4b1221da729c7b",
+      "bytes": 2807679,
+      "width": 2528,
+      "height": 1696,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-l5vqtjl5vqtjl5vq]",
+      "position": 11
+    },
+    {
+      "key": "gemini-generated-image-nl9ucknl9ucknl9u",
+      "file": "edited/62-70/Gemini_Generated_Image_nl9ucknl9ucknl9u.jpg",
+      "sha256": "32c11d858c3865254f637192e9927af88d59be5027dd8d623c71722b95a09b6a",
+      "bytes": 675797,
+      "width": 1200,
+      "height": 896,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-nl9ucknl9ucknl9u]",
+      "position": 12
+    },
+    {
+      "key": "gemini-generated-image-qynztkqynztkqynz",
+      "file": "edited/62-70/Gemini_Generated_Image_qynztkqynztkqynz.jpg",
+      "sha256": "eee6a201aa0d0def3a6bca84c071c8103605ecf86cbd372dd04d30cfb79e6c17",
+      "bytes": 994410,
+      "width": 1200,
+      "height": 896,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-qynztkqynztkqynz]",
+      "position": 13
+    },
+    {
+      "key": "gemini-generated-image-tq0sgwtq0sgwtq0s",
+      "file": "edited/62-70/Gemini_Generated_Image_tq0sgwtq0sgwtq0s.jpg",
+      "sha256": "6a4263ec5dbf408fb054f139e14fbbb6f0370fdd226aa66d5667b33cc1f169b8",
+      "bytes": 2987040,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "62/70",
+      "alt": "Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. [ED:gemini-generated-image-tq0sgwtq0sgwtq0s]",
+      "position": 14
+    },
+    {
+      "key": "69-80-1",
+      "file": "edited/69-80/69-80-1.jpg",
+      "sha256": "7990b62d9513eb19ad9d9bf457ff31337e90843bebcb62fa31d453a6c9311b26",
+      "bytes": 2938866,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "69/80",
+      "alt": "Dokumentasi tipe 69/80 #1 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:69-80-1]",
+      "position": 0
+    },
+    {
+      "key": "69-80-2",
+      "file": "edited/69-80/69-80-2.jpg",
+      "sha256": "8a8f305bfe0e60f130e7d757c24a804e6125812a00d7978fafbe128bcf4ced3a",
+      "bytes": 2586806,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "69/80",
+      "alt": "Dokumentasi tipe 69/80 #2 · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. [ED:69-80-2]",
+      "position": 1
+    },
+    {
+      "key": "gemini-generated-image-za317uza317uza31",
+      "file": "edited/69-80/Gemini_Generated_Image_za317uza317uza31.jpg",
+      "sha256": "f1042c3a46ceb356b99c3abf278c0baec3522b9a9d44306dca1cd8c9218196bf",
+      "bytes": 3179697,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "69/80",
+      "alt": "Ilustrasi AI · tipe 69/80 · bukan foto kondisi aktual. [ED:gemini-generated-image-za317uza317uza31]",
+      "position": 2
+    },
+    {
+      "key": "gemini-generated-image-m9ml6tm9ml6tm9ml-1",
+      "file": "edited/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml (1).jpg",
+      "sha256": "a25ab6a88eea5db68274187c670a1dc5040199f82b3f88f97d37f95448db5278",
+      "bytes": 3430043,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "69/80",
+      "alt": "Ilustrasi AI · tipe 69/80 · bukan foto kondisi aktual. [ED:gemini-generated-image-m9ml6tm9ml6tm9ml-1]",
+      "position": 3
+    },
+    {
+      "key": "gemini-generated-image-m9ml6tm9ml6tm9ml-2",
+      "file": "edited/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml (2).jpg",
+      "sha256": "3a3aedbae73435bc9b339acd513f62031cb19b8830fa73fcdd9472139cc6e2a4",
+      "bytes": 2977619,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "69/80",
+      "alt": "Ilustrasi AI · tipe 69/80 · bukan foto kondisi aktual. [ED:gemini-generated-image-m9ml6tm9ml6tm9ml-2]",
+      "position": 4
+    },
+    {
+      "key": "gemini-generated-image-m9ml6tm9ml6tm9ml-3",
+      "file": "edited/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml (3).jpg",
+      "sha256": "e5cf0ab8c34278fa9994a2cbd3003c525a0a6010b24f360bf7c08920feb187c7",
+      "bytes": 2902670,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "69/80",
+      "alt": "Ilustrasi AI · tipe 69/80 · bukan foto kondisi aktual. [ED:gemini-generated-image-m9ml6tm9ml6tm9ml-3]",
+      "position": 5
+    },
+    {
+      "key": "gemini-generated-image-m9ml6tm9ml6tm9ml-4",
+      "file": "edited/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml (4).jpg",
+      "sha256": "c1bc3b9e92c78dfa02476eb8257bed7aff4c719562af41a8fb684a39d96295e2",
+      "bytes": 2843748,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "69/80",
+      "alt": "Ilustrasi AI · tipe 69/80 · bukan foto kondisi aktual. [ED:gemini-generated-image-m9ml6tm9ml6tm9ml-4]",
+      "position": 6
+    },
+    {
+      "key": "gemini-generated-image-m9ml6tm9ml6tm9ml-5",
+      "file": "edited/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml (5).jpg",
+      "sha256": "a3cb8ff980dcca965b2a6d240f1633d750177cb2fdadf634281301f1b1710cf3",
+      "bytes": 3387395,
+      "width": 2752,
+      "height": 1536,
+      "kind": "PHOTO",
+      "house_type": "69/80",
+      "alt": "Ilustrasi AI · tipe 69/80 · bukan foto kondisi aktual. [ED:gemini-generated-image-m9ml6tm9ml6tm9ml-5]",
+      "position": 7
+    },
+    {
+      "key": "gemini-generated-image-m9ml6tm9ml6tm9ml",
+      "file": "edited/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml.jpg",
+      "sha256": "6470bb882c06d295c3becbc003f8e180c6afba5334f8583c0970914a413829bf",
+      "bytes": 2828161,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "69/80",
+      "alt": "Ilustrasi AI · tipe 69/80 · bukan foto kondisi aktual. [ED:gemini-generated-image-m9ml6tm9ml6tm9ml]",
+      "position": 8
+    },
+    {
+      "key": "gemini-generated-image-y1dc8by1dc8by1dc",
+      "file": "edited/69-80/Gemini_Generated_Image_y1dc8by1dc8by1dc.jpg",
+      "sha256": "e5907ccdb3148c07f70fb3ffbe3cc9c4cb1bad804218d24a8b9cf55f7b4764f5",
+      "bytes": 3052308,
+      "width": 2400,
+      "height": 1792,
+      "kind": "PHOTO",
+      "house_type": "69/80",
+      "alt": "Ilustrasi AI · tipe 69/80 · bukan foto kondisi aktual. [ED:gemini-generated-image-y1dc8by1dc8by1dc]",
+      "position": 9
+    }
+  ],
+  "skipped": [
+    {
+      "file": "edited/36-60/36-60-11.mp4",
+      "reason": "video — menunggu URL YouTube untuk embed"
+    },
+    {
+      "file": "edited/36-90/36-90-10.mp4",
+      "reason": "video — menunggu URL YouTube untuk embed"
+    }
+  ]
+}
