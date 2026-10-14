@@ -174,3 +174,21 @@ Cloud export boleh dikembalikan hanya setelah konflik pemilihan env diselesaikan
 jangan memulihkan nama `.env.local` pada APP_ENV=local secara membabi buta.
 Akun baru menggunakan operasi deaktivasi Admin existing dengan last-Admin/
 workload guard; jangan menghapus histori atau satu-satunya Admin aktif.
+
+## Addendum 15 Oktober 2026 — otorisasi langsung pengguna
+
+Dua akun nyata kini sudah dibuat menggunakan password yang secara eksplisit
+pengguna minta dipakai. Input tidak disimpan ke file; transfer antar proses
+terenkripsi DPAPI lalu stdin helper. Admin dan Marketing login200, me200 dengan
+role sesuai, akses akun Admin200/Marketing403, logout204. Dua akun aktif;
+email_verified_at tidak dipalsukan. Pernyataan akun belum dibuat di atas adalah
+snapshot audit14Oktober, bukan status saat ini.
+
+Pengguna mengotorisasi review semua PR terbuka dan merge hanya setelah lolos,
+lalu pengisian lokal melalui Admin berdasarkan aset. Dua MP4 akan menerima URL
+YouTube dari Admin nanti. Rencana langsung terbaru:
+[open-pr-admin-integration-plan.md](open-pr-admin-integration-plan.md).
+Update lockfile kompatibel menghilangkan critical; audit source masih mempunyai
+high karena braces3.0.3/node-forge1.4.0 belum memiliki patched release resmi.
+Tidak mengklaim audit0 atau mengabaikan blocker. Hasil integrasi akhir dicatat
+terpisah setelah seluruh check/review; snapshot check14Oktober tetap historis.
