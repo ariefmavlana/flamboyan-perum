@@ -192,3 +192,17 @@ Update lockfile kompatibel menghilangkan critical; audit source masih mempunyai
 high karena braces3.0.3/node-forge1.4.0 belum memiliki patched release resmi.
 Tidak mengklaim audit0 atau mengabaikan blocker. Hasil integrasi akhir dicatat
 terpisah setelah seluruh check/review; snapshot check14Oktober tetap historis.
+### Koreksi evidensi provisioning dan kompatibilitas runtime — 15 Oktober
+
+Bridge DPAPI CurrentUser hanya dipakai pada run otomatis ephemeral yang
+mengantarkan input terenkripsi antar proses otomasi lalu plaintext stdin PHP.
+Helper PS interaktif yang dibekukan tidak memakai DPAPI: hidden prompt,
+SecureString sementara, lalu JSON plaintext melalui stdin anak PHP. Tidak ada
+password dalam berkas, argumen PHP, output, Git atau PR; jangan menyimpulkan
+helper menyediakan encrypted interprocess transport.
+
+Typecheck awal gabungan gagal karena root CLI H3 berbeda dari H3 Nitro dan
+inferensi $fetch katalog siklik setelah update Nuxt. Batas stream CSP diperbaiki
+untuk listener H3 Nitro sebenarnya, byte UTF-8/chunked/buffer adapter dibatasi
+sebelum parsing, dan Vitest memakai resolusi H3 Nitro. Tipe response katalog
+eksplisit. Hasil final penuh akan dicatat terpisah; kegagalan awal bukan PASS.

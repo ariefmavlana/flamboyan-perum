@@ -11,7 +11,10 @@ YouTube oleh Admin; jangan membuat URL atau VIDEO record placeholder.
   Vercel API/web awal success, 0 review GitHub/komentar. Persetujuan AI bukan
   review/approval manusia palsu. Main tidak diubah sebelum gate terpenuhi.
 - Dua akun nyata lokal sudah dibuat melalui helper local-only, password stdin
-  process-memory dengan DPAPI antar proses; tidak menulis password ke file/Git.
+  process-memory. Run otomatis ini memakai bridge DPAPI CurrentUser sementara
+  sebelum plaintext stdin ke PHP; helper PS interaktif terpisah hanya memakai
+  hidden prompt/SecureString lalu plaintext stdin, bukan DPAPI. Keduanya tidak
+  menulis password ke file/Git atau argumen PHP.
   Login200, me200/role cocok, Admin users200, Marketing users403, logout204.
 - Sumber privat: 55 JPEG galeri (35 dokumentasi/20 AI), Siteplan, logo, dua foto
   gerbang, dua MP4. Seluruh56 hash manifest gallery+siteplan cocok. Tabel brosur
