@@ -29,19 +29,30 @@ export const descriptionNew =
 
 // Match MediaProcessor's largest variant; the manifest retains original dimensions/hash.
 export function processedDimensions({ width, height }) {
-  if (!Number.isInteger(width) || width < 1 || !Number.isInteger(height) || height < 1)
+  if (
+    !Number.isInteger(width) ||
+    width < 1 ||
+    !Number.isInteger(height) ||
+    height < 1
+  )
     throw Error("Invalid source dimensions");
   const outputWidth = Math.min(1920, width);
-  return { width: outputWidth, height: Math.max(1, Math.round(height * outputWidth / width)) };
+  return {
+    width: outputWidth,
+    height: Math.max(1, Math.round((height * outputWidth) / width)),
+  };
 }
 
 export function assertWorkerReady(plans, acknowledged) {
-  const needsWorker = plans.some((plan) =>
-    !plan.current.process_in_request &&
-    (plan.photos.some((photo) => !photo.existing) || !plan.siteplan.existing),
+  const needsWorker = plans.some(
+    (plan) =>
+      !plan.current.process_in_request &&
+      (plan.photos.some((photo) => !photo.existing) || !plan.siteplan.existing),
   );
   if (needsWorker && !acknowledged)
-    throw Error("Separate media worker required. Start queue:work --queue=media,notifications,default and confirm it is running before --apply --worker-ready. This flag is an operator acknowledgement, not a health probe.");
+    throw Error(
+      "Separate media worker required. Start queue:work --queue=media,notifications,default and confirm it is running before --apply --worker-ready. This flag is an operator acknowledgement, not a health probe.",
+    );
 }
 
 export function markerFor(key) {
@@ -147,7 +158,9 @@ export function validateManifest(manifest) {
   for (const video of manifest.videos) {
     if (
       !types.includes(video.house_type) ||
-      !video.alt?.endsWith(markerFor(`video-${video.house_type.replace("/", "-")}`)) ||
+      !video.alt?.endsWith(
+        markerFor(`video-${video.house_type.replace("/", "-")}`),
+      ) ||
       video.alt.length > 240
     )
       throw Error("Invalid video definition");
@@ -204,15 +217,23 @@ export function planSiteplan(media, siteplan) {
       existing.height !== dimensions.height)
   )
     throw Error("Imported siteplan changed or not ready");
-  if (media.some((m) => m.kind === "MASTERPLAN" && m.state !== "ARCHIVED" && m.id !== existing?.id))
-    throw Error("Existing masterplan requires manual review; importer will not archive or replace it");
+  if (
+    media.some(
+      (m) =>
+        m.kind === "MASTERPLAN" &&
+        m.state !== "ARCHIVED" &&
+        m.id !== existing?.id,
+    )
+  )
+    throw Error(
+      "Existing masterplan requires manual review; importer will not archive or replace it",
+    );
   return { existing };
 }
 
 export function nextDescription(description) {
   if (description.includes(descriptionNew)) return { state: "done" };
-  if (!description.includes(descriptionOld))
-    throw Error("Description sentence not found; review before importing");
+  if (!description.includes(descriptionOld)) return { state: "preserved" };
   return {
     state: "update",
     value: description.replace(descriptionOld, descriptionNew),
@@ -237,7 +258,11 @@ async function loadAssetBytes(file) {
 }
 
 async function main() {
-  if (process.argv.slice(2).some((a) => !["--apply", "--worker-ready"].includes(a)))
+  if (
+    process.argv
+      .slice(2)
+      .some((a) => !["--apply", "--worker-ready"].includes(a))
+  )
     throw Error("Supported options: --apply --worker-ready");
   const apply = process.argv.includes("--apply");
   const origin = validateOrigin(process.env.FLAMBOYAN_IMPORT_ORIGIN);
@@ -263,7 +288,6 @@ async function main() {
     ".tools/flamboyan-import",
     new URL(origin).hostname,
   );
-  await fs.mkdir(folder, { recursive: true });
   const { request } =
     await import("../apps/web/node_modules/@playwright/test/index.mjs");
   const api = await request.newContext({
@@ -363,6 +387,7 @@ async function main() {
     console.log(JSON.stringify(report, null, 2));
     if (!apply) return;
     assertWorkerReady(plans, process.argv.includes("--worker-ready"));
+    await fs.mkdir(folder, { recursive: true });
     const snapshot = path.join(folder, `before-${Date.now()}.json`);
     await fs.writeFile(
       snapshot,

@@ -70,3 +70,5 @@ Belum dijalankan dan tidak diklaim: apply impor live (menunggu review urutan + k
 ## Koreksi review 15 Oktober 2026
 
 Tabel validasi di atas adalah bukti historis PR awal. Perbaikan resize, penolakan replacement MASTERPLAN, preflight worker, sanitasi marker publik, dan gambar OG dokumentasi pengguna memerlukan validasi ulang pada gabungan PR sebelum merge. Source audit masih memiliki advisory tooling upstream; tidak dianggap lulus. Tidak ada migrasi, seed, impor cloud, atau perubahan CRM.
+
+Deskripsi Admin yang tidak memakai kalimat lama/baru dipertahankan (`preserved`), bukan ditolak atau ditimpa. Katalog baru tidak perlu memasukkan kalimat ilustrasi developer yang sudah tidak sesuai agar importer berjalan.

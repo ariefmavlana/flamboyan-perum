@@ -112,7 +112,10 @@ test("valid manifest passes and gemini alt rules are enforced", () => {
     alt: `Ilustrasi desain · ${markerFor("36-60-3")}`,
   });
   assert.throws(
-    () => validateManifest(makeManifest({ assets: [...manifest.assets, badIllustration] })),
+    () =>
+      validateManifest(
+        makeManifest({ assets: [...manifest.assets, badIllustration] }),
+      ),
     /Invalid gallery asset/,
   );
   const badGenerated = makeAsset("62/70", 3, {
@@ -156,7 +159,10 @@ test("verifyBytes rejects changed source and oversized files", () => {
     sha256: "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
   };
   assert.doesNotThrow(() => verifyBytes(asset, bytes));
-  assert.throws(() => verifyBytes(asset, Buffer.from("hello!")), /Source changed/);
+  assert.throws(
+    () => verifyBytes(asset, Buffer.from("hello!")),
+    /Source changed/,
+  );
   assert.throws(
     () =>
       verifyBytes(
@@ -212,8 +218,15 @@ test("planPropertyPhotos enforces capacity, reuse and readiness", () => {
 
 test("planSiteplan refuses destructive replacement and reuses processed media", () => {
   const siteplan = makeManifest().siteplan;
-  const oldMasterplan = mediaItem({ id: 5, kind: "MASTERPLAN", alt: "Masterplan brosur." });
-  assert.throws(() => planSiteplan([oldMasterplan], siteplan), /will not archive or replace/);
+  const oldMasterplan = mediaItem({
+    id: 5,
+    kind: "MASTERPLAN",
+    alt: "Masterplan brosur.",
+  });
+  assert.throws(
+    () => planSiteplan([oldMasterplan], siteplan),
+    /will not archive or replace/,
+  );
   assert.equal(planSiteplan([], siteplan).existing, undefined);
 
   const imported = mediaItem({
@@ -226,25 +239,49 @@ test("planSiteplan refuses destructive replacement and reuses processed media", 
   });
   const rerun = planSiteplan([imported], siteplan);
   assert.equal(rerun.existing?.id, 9);
-  assert.throws(() => planSiteplan([imported, oldMasterplan], siteplan), /will not archive or replace/);
-  assert.throws(() => planSiteplan([{ ...imported, width: 2400, height: 1792 }], siteplan), /not ready/);
+  assert.throws(
+    () => planSiteplan([imported, oldMasterplan], siteplan),
+    /will not archive or replace/,
+  );
+  assert.throws(
+    () => planSiteplan([{ ...imported, width: 2400, height: 1792 }], siteplan),
+    /not ready/,
+  );
 });
 
 test("nextDescription rewrites once, then reports done", () => {
   const before = `Ringkasan tipe. ${descriptionOld} Ketersediaan unit dan dokumen legalitas dikonfirmasi sebelum transaksi.`;
   const update = nextDescription(before);
   assert.equal(update.state, "update");
-  assert.match(update.value, new RegExp(descriptionNew.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(
+    update.value,
+    new RegExp(descriptionNew.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+  );
   const again = nextDescription(update.value);
   assert.equal(again.state, "done");
-  assert.throws(() => nextDescription("Teks tak dikenal."), /Description sentence not found/);
+  assert.deepEqual(nextDescription("Deskripsi faktual yang disusun Admin."), {
+    state: "preserved",
+  });
 });
 
 test("propertyFingerprint ignores volatile fields but keeps the rest", () => {
-  const base = { id: 1, title: "A", version: 3, updated_at: "x", owner: { id: 1 }, description: "d" };
+  const base = {
+    id: 1,
+    title: "A",
+    version: 3,
+    updated_at: "x",
+    owner: { id: 1 },
+    description: "d",
+  };
   assert.equal(
     propertyFingerprint(base),
-    propertyFingerprint({ ...base, version: 9, updated_at: "y", owner: null, description: "z" }),
+    propertyFingerprint({
+      ...base,
+      version: 9,
+      updated_at: "y",
+      owner: null,
+      description: "z",
+    }),
   );
   assert.notEqual(
     propertyFingerprint(base),
@@ -253,24 +290,65 @@ test("propertyFingerprint ignores volatile fields but keeps the rest", () => {
 });
 
 test("youtubeId accepts canonical forms and rejects others", () => {
-  assert.equal(youtubeId("https://www.youtube.com/watch?v=dQw4w9WgXcQ"), "dQw4w9WgXcQ");
+  assert.equal(
+    youtubeId("https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
+    "dQw4w9WgXcQ",
+  );
   assert.equal(youtubeId("https://youtu.be/dQw4w9WgXcQ"), "dQw4w9WgXcQ");
-  assert.equal(youtubeId("https://youtube.com/watch?v=dQw4w9WgXcQ&t=30s"), "dQw4w9WgXcQ");
-  assert.throws(() => youtubeId("https://example.com/watch?v=dQw4w9WgXcQ"), /Invalid YouTube URL/);
-  assert.throws(() => youtubeId("https://youtu.be/short"), /Invalid YouTube URL/);
+  assert.equal(
+    youtubeId("https://youtube.com/watch?v=dQw4w9WgXcQ&t=30s"),
+    "dQw4w9WgXcQ",
+  );
+  assert.throws(
+    () => youtubeId("https://example.com/watch?v=dQw4w9WgXcQ"),
+    /Invalid YouTube URL/,
+  );
+  assert.throws(
+    () => youtubeId("https://youtu.be/short"),
+    /Invalid YouTube URL/,
+  );
 });
 
 test("dimensions follow server resizing without upscaling", () => {
-  assert.deepEqual(processedDimensions({ width: 2752, height: 1536 }), { width: 1920, height: 1072 });
-  assert.deepEqual(processedDimensions({ width: 2400, height: 1792 }), { width: 1920, height: 1434 });
-  assert.deepEqual(processedDimensions({ width: 800, height: 600 }), { width: 800, height: 600 });
-  assert.throws(() => processedDimensions({ width: 0, height: 1 }), /Invalid source/);
+  assert.deepEqual(processedDimensions({ width: 2752, height: 1536 }), {
+    width: 1920,
+    height: 1072,
+  });
+  assert.deepEqual(processedDimensions({ width: 2400, height: 1792 }), {
+    width: 1920,
+    height: 1434,
+  });
+  assert.deepEqual(processedDimensions({ width: 800, height: 600 }), {
+    width: 800,
+    height: 600,
+  });
+  assert.throws(
+    () => processedDimensions({ width: 0, height: 1 }),
+    /Invalid source/,
+  );
 });
 
 test("worker acknowledgement is required before new asynchronous uploads", () => {
-  const pending = { current: { process_in_request: false }, photos: [{ existing: null }], siteplan: { existing: null } };
-  assert.throws(() => assertWorkerReady([pending], false), /Separate media worker required/);
+  const pending = {
+    current: { process_in_request: false },
+    photos: [{ existing: null }],
+    siteplan: { existing: null },
+  };
+  assert.throws(
+    () => assertWorkerReady([pending], false),
+    /Separate media worker required/,
+  );
   assert.doesNotThrow(() => assertWorkerReady([pending], true));
-  assert.doesNotThrow(() => assertWorkerReady([{ ...pending, current: { process_in_request: true } }], false));
-  assert.doesNotThrow(() => assertWorkerReady([{ ...pending, photos: [{ existing: {} }], siteplan: { existing: {} } }], false));
+  assert.doesNotThrow(() =>
+    assertWorkerReady(
+      [{ ...pending, current: { process_in_request: true } }],
+      false,
+    ),
+  );
+  assert.doesNotThrow(() =>
+    assertWorkerReady(
+      [{ ...pending, photos: [{ existing: {} }], siteplan: { existing: {} } }],
+      false,
+    ),
+  );
 });
