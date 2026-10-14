@@ -2,13 +2,14 @@
 import type { Paginated, Property } from '#shared/types'
 import { availabilityLabels, formatIdr } from '#shared/utils/catalog'
 import { canonicalUrl } from '#shared/utils/seo'
+import { formatArea } from '#shared/utils/format'
 const route = useRoute()
 const interactive = ref(false)
 onMounted(() => {
   interactive.value = true
 })
 const textFields = [
-  { key: 'q', label: 'Cari lokasi atau rumah', max: 100 },
+  { key: 'q', label: 'Cari lokasi atau nama properti', max: 100 },
   { key: 'location', label: 'Lokasi tepat', max: 160 },
   { key: 'certificate', label: 'Sertifikat', max: 80 },
 ] as const
@@ -72,12 +73,15 @@ const activeFilters = computed(() =>
       const value =
         key.endsWith('_price') && Number.isFinite(Number(raw))
           ? formatIdr(raw)
-          : key === 'condition'
-            ? ({ NEW: 'Baru', RESALE: 'Bekas' }[raw] ?? raw)
-            : key === 'availability'
-              ? (availabilityLabels[raw as keyof typeof availabilityLabels] ??
-                raw)
-              : raw
+          : key.endsWith('_area') && Number.isFinite(Number(raw))
+            ? formatArea(raw)
+            : key === 'condition'
+              ? ({ NEW: 'Baru', RESALE: 'Bekas' }[raw] ?? raw)
+              : key === 'availability'
+                ? (availabilityLabels[
+                    raw as keyof typeof availabilityLabels
+                  ] ?? raw)
+                : raw
       return { key, label: filterLabels[key], value }
     }),
 )
@@ -177,7 +181,7 @@ useHead({
       >
         <div class="filter-bar">
           <label
-            >Cari lokasi atau rumah<input
+            >Cari lokasi atau nama properti<input
               v-model="form.q"
               maxlength="100"
               placeholder="Nama, lokasi, atau alamat" /></label
@@ -275,10 +279,7 @@ useHead({
       </NuxtLink>
       <NuxtLink class="text-link" to="/properti">Reset filter</NuxtLink>
     </div>
-    <p v-if="status === 'pending'" class="notice">
-      Sedang mencari pilihan yang sesuai…
-    </p>
-    <div v-else-if="error" class="notice" role="alert">
+    <div v-if="error" class="notice" role="alert">
       <p>Katalog belum dapat dimuat. Periksa filter atau coba lagi.</p>
       <button class="button secondary" @click="refresh()">Coba lagi</button>
     </div>

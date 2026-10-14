@@ -19,7 +19,7 @@ const links = [
   },
   {
     to: '/backoffice/laporan',
-    label: 'Laporan',
+    label: 'Hasil penjualan',
     icon: 'chart',
     admin: true,
     group: 'Penjualan',
@@ -40,21 +40,21 @@ const links = [
   },
   {
     to: '/backoffice/privasi',
-    label: 'Privasi kontak',
+    label: 'Kandidat retensi',
     icon: 'shield',
     admin: true,
     group: 'Administrasi',
   },
   {
     to: '/backoffice/operasi',
-    label: 'Kesehatan sistem',
+    label: 'Kesehatan layanan',
     icon: 'settings',
     admin: true,
     group: 'Administrasi',
   },
   {
     to: '/backoffice/profil',
-    label: 'Profil',
+    label: 'Profil saya',
     icon: 'user',
     admin: false,
     group: 'Akun',
@@ -74,7 +74,7 @@ const groups = computed(() =>
     .filter((group) => group.links.length),
 )
 const current = computed(
-  () => links.find((link) => link.to === route.path)?.label ?? 'Workspace',
+  () => links.find((link) => link.to === route.path)?.label ?? 'Ruang kerja',
 )
 async function logout() {
   try {
@@ -96,7 +96,7 @@ onMounted(async () => {
     <a class="skip-link" href="#main">Lewati ke konten</a>
     <aside class="workspace-sidebar">
       <BrandLogo />
-      <ResponsiveNav id="workspace-navigation" label="Workspace tim">
+      <ResponsiveNav id="workspace-navigation" label="Ruang kerja tim">
         <div v-for="group in groups" :key="group.label" class="nav-group">
           <p class="nav-label">{{ group.label }}</p>
           <NuxtLink v-for="link in group.links" :key="link.to" :to="link.to">

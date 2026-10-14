@@ -1,12 +1,13 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'backoffice' })
-useSeoMeta({ title: 'Profil tim', robots: 'noindex, nofollow' })
+useSeoMeta({ title: 'Profil saya', robots: 'noindex, nofollow' })
 const session = useStaffSession()
 const name = ref('')
 const currentPassword = ref('')
 const password = ref('')
 const confirmation = ref('')
 const message = ref('')
+const success = ref(false)
 const busy = ref(false)
 const version = ref(0)
 async function load() {
@@ -20,6 +21,7 @@ async function load() {
 }
 async function save() {
   busy.value = true
+  success.value = false
   try {
     await useStaffApi().request('/api/v1/me', {
       method: 'PATCH',
@@ -40,6 +42,7 @@ async function save() {
       await navigateTo('/login?updated=1')
     } else {
       await load()
+      success.value = true
       message.value = 'Profil tersimpan.'
     }
   } catch (error) {
@@ -55,7 +58,7 @@ onMounted(load)
 </script>
 <template>
   <section class="container section">
-    <h1>Profil tim</h1>
+    <h1>Profil saya</h1>
     <form class="login-panel" @submit.prevent="save">
       <p class="muted">
         Email dan peran dikelola Admin. Perubahan kata sandi mengakhiri seluruh
@@ -87,7 +90,13 @@ onMounted(load)
           :required="!!password"
           autocomplete="new-password"
       /></label>
-      <p v-if="message" role="status">{{ message }}</p>
+      <p
+        v-if="message"
+        :role="success ? 'status' : 'alert'"
+        :class="success ? 'success-notice' : 'error-text'"
+      >
+        {{ message }}
+      </p>
       <div class="action-row">
         <button class="button" :disabled="busy || !version">
           Simpan profil</button

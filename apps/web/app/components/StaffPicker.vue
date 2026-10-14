@@ -44,7 +44,7 @@ onMounted(() => load())
 </script>
 <template>
   <fieldset class="picker">
-    <legend>{{ label }}</legend>
+    <legend class="sr-only">{{ label }}</legend>
     <div class="action-row">
       <label
         >Cari {{ kind === 'marketing' ? 'Marketing' : 'properti'
@@ -70,7 +70,7 @@ onMounted(() => load())
         v-if="model && !result?.data.some((item) => item.id === model)"
         :value="model"
       >
-        Pilihan #{{ model }}
+        Pilihan tersimpan (#{{ model }})
       </option>
       <option v-for="item in result?.data" :key="item.id" :value="item.id">
         {{ 'title' in item ? item.title : item.name }}

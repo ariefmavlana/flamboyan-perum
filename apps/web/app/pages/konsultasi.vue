@@ -236,7 +236,7 @@ useHead({
       <button v-else-if="handoff" class="button full" type="button" disabled>
         Lanjutkan ke WhatsApp ↗
       </button>
-      <p v-else-if="!slug" role="status" class="notice">
+      <p v-else role="status" class="notice">
         Kontak konsultasi belum tersedia.
       </p>
       <NuxtLink class="text-link consultation-back" to="/properti"

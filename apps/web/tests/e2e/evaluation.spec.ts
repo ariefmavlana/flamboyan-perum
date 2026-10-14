@@ -123,7 +123,7 @@ test('Admin curates verified testimonial and location; map stays consent gated',
   const dialog = page.getByRole('dialog')
   await dialog.getByLabel('Nama publik berizin').fill(name)
   await dialog
-    .getByLabel('Testimonial berizin')
+    .getByLabel('Cerita pembeli berizin')
     .fill('Konten pengujian terisolasi, bukan testimonial bisnis.')
   await dialog.getByLabel('Keterangan publik').fill('Fixture browser')
   await dialog.getByLabel('Publikasikan', { exact: true }).check()

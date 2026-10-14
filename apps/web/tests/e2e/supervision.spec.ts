@@ -21,9 +21,9 @@ test('Admin reports cohort metrics and read-only retention; Marketing is denied'
   await expect(
     page.getByRole('alert').filter({ hasText: 'Rentang laporan maksimal' }),
   ).toBeVisible()
-  await page.getByRole('link', { name: 'Privasi kontak', exact: true }).click()
+  await page.getByRole('link', { name: 'Kandidat retensi', exact: true }).click()
   await expect(
-    page.getByRole('heading', { name: 'Kandidat retensi lead' }),
+    page.getByRole('heading', { name: 'Kandidat retensi' }),
   ).toBeVisible()
   await expect(
     page.getByText('Belum ada kandidat retensi.', { exact: true }),

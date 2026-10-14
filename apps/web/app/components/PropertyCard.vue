@@ -6,6 +6,7 @@ import {
   whatsappLink,
   propertyUrl,
 } from '#shared/utils/catalog'
+import { formatArea } from '#shared/utils/format'
 const props = defineProps<{ property: Property }>()
 const config = useRuntimeConfig()
 const { whatsappNumber } = await useDevelopment()
@@ -83,11 +84,11 @@ const wa = computed(() =>
       <dl class="spec-inline">
         <div>
           <dt>Tanah</dt>
-          <dd>{{ property.land_area }} m²</dd>
+          <dd>{{ formatArea(property.land_area) }}</dd>
         </div>
         <div>
           <dt>Bangunan</dt>
-          <dd>{{ property.building_area }} m²</dd>
+          <dd>{{ formatArea(property.building_area) }}</dd>
         </div>
         <div>
           <dt>Kamar</dt>

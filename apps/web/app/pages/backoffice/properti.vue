@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import type { InternalProperty, Paginated } from '#shared/types'
-import { availabilityLabels } from '#shared/utils/catalog'
+import { availabilityLabels, formatIdr } from '#shared/utils/catalog'
 const publicationLabels = {
-  DRAFT: 'Draft',
+  DRAFT: 'Draf',
   PUBLISHED: 'Publik',
   ARCHIVED: 'Arsip',
 }
 definePageMeta({ layout: 'backoffice' })
-useSeoMeta({ title: 'Katalog tim', robots: 'noindex, nofollow' })
+useSeoMeta({ title: 'Katalog properti', robots: 'noindex, nofollow' })
 const api = useStaffApi()
 const session = useStaffSession()
 const results = ref<Paginated<InternalProperty> | null>(null)
 const q = ref('')
 const publication = ref('')
 const message = ref('')
+const success = ref(false)
 const busy = ref(false)
 const selected = ref<InternalProperty | null>(null)
 const editor = ref<HTMLDialogElement | null>(null)
@@ -52,6 +53,7 @@ const blank = () => ({
 const form = reactive(blank())
 async function load(page = 1) {
   busy.value = true
+  success.value = false
   try {
     await session.refresh()
     const query = new URLSearchParams({
@@ -111,6 +113,7 @@ async function save() {
     selected.value = response.data
     editor.value?.close()
     await load()
+    success.value = true
     message.value = 'Properti tersimpan.'
   } catch (error) {
     message.value = staffError(error)
@@ -138,7 +141,8 @@ async function transfer() {
     newOwner.value = null
     reason.value = ''
     await load()
-    message.value = 'Kepemilikan dialihkan.'
+    success.value = true
+    message.value = 'Penanggung jawab dialihkan.'
   } catch (error) {
     message.value = staffError(error)
   } finally {
@@ -151,12 +155,12 @@ onMounted(() => load())
   <section class="container section">
     <div class="section-heading">
       <div>
-        <p class="eyebrow">KATALOG TIM</p>
-        <h1>Kelola properti</h1>
+        <p class="eyebrow">KATALOG PROPERTI</p>
+        <h1>Katalog properti</h1>
         <p class="muted">
           {{
             session.account.value?.role === 'ADMIN'
-              ? 'Kelola rumah yang ditawarkan, periksa harga, lalu terbitkan ke website.'
+              ? 'Kelola properti yang ditawarkan, periksa harga, lalu terbitkan ke website.'
               : 'Kelola informasi dan media properti yang menjadi tanggung jawab Anda.'
           }}
         </p>
@@ -168,7 +172,7 @@ onMounted(() => load())
     <div class="catalog-guide">
       <div>
         <strong>1. Lengkapi informasi</strong
-        ><span>Nama, spesifikasi, harga, dan lokasi rumah.</span>
+        ><span>Nama, spesifikasi, harga, dan lokasi properti.</span>
       </div>
       <div>
         <strong>2. Tambahkan media</strong
@@ -187,7 +191,7 @@ onMounted(() => load())
       ><label
         >Publikasi<select v-model="publication">
           <option value="">Semua publikasi</option>
-          <option value="DRAFT">Draft</option>
+          <option value="DRAFT">Draf</option>
           <option value="PUBLISHED">Publik</option>
           <option value="ARCHIVED">Arsip</option>
         </select></label
@@ -195,7 +199,13 @@ onMounted(() => load())
         Cari / muat ulang
       </button>
     </form>
-    <p v-if="message && !editor?.open" role="status">{{ message }}</p>
+    <p
+      v-if="message && !editor?.open"
+      :role="success ? 'status' : 'alert'"
+      :class="success ? 'success-notice' : 'error-text'"
+    >
+      {{ message }}
+    </p>
     <p v-if="busy" role="status">Memproses…</p>
     <div
       class="table-scroll responsive-records"
@@ -220,16 +230,10 @@ onMounted(() => load())
             <td data-label="Properti">
               <strong>{{ property.title }}</strong
               ><br />{{ property.location }} ·
-              {{
-                new Intl.NumberFormat('id-ID', {
-                  style: 'currency',
-                  currency: 'IDR',
-                  maximumFractionDigits: 0,
-                }).format(Number(property.price_idr))
-              }}
+              {{ formatIdr(property.price_idr) }}
             </td>
             <td data-label="Penanggung jawab">{{ property.owner?.name }}</td>
-            <td data-label="Publikasi / unit">
+            <td data-label="Publikasi / ketersediaan">
               <span class="badge">{{
                 publicationLabels[property.publication]
               }}</span>
@@ -237,7 +241,7 @@ onMounted(() => load())
                 availabilityLabels[property.availability]
               }}</span>
             </td>
-            <td data-label="Kelola">
+            <td data-label="Tindakan">
               <button
                 class="text-button"
                 :disabled="busy"
@@ -311,10 +315,16 @@ onMounted(() => load())
         </button>
       </nav>
       <p v-else class="notice">
-        Simpan informasi utama terlebih dahulu. Setelah itu, buka Foto & media
-        untuk melengkapi rumah ini sebelum diterbitkan.
+        Simpan informasi utama terlebih dahulu, lalu lengkapi Foto & media
+        sebelum properti diterbitkan.
       </p>
-      <p v-if="message" role="alert">{{ message }}</p>
+      <p
+        v-if="message"
+        :role="success ? 'status' : 'alert'"
+        :class="success ? 'success-notice' : 'error-text'"
+      >
+        {{ message }}
+      </p>
       <form v-show="editorSection === 'basics'" @submit.prevent="save">
         <div class="form-grid">
           <label
@@ -324,7 +334,8 @@ onMounted(() => load())
               v-model="form.slug"
               required
               maxlength="160"
-              pattern="[a-z0-9]+(-[a-z0-9]+)*" /></label
+              pattern="[a-z0-9]+(-[a-z0-9]+)*"
+              title="Huruf kecil, angka, dan tanda hubung, misalnya rumah-tipe-36-60" /></label
           ><label
             >Tipe rumah<input
               v-model="form.house_type"
@@ -346,7 +357,7 @@ onMounted(() => load())
               required
               maxlength="160" /></label
           ><label
-            >Harga (Rp)<input
+            >Harga (IDR)<input
               v-model="form.price_idr"
               type="number"
               required
@@ -385,7 +396,7 @@ onMounted(() => load())
               max="50" /></label
           ><label
             >Publikasi<select v-model="form.publication">
-              <option value="DRAFT">Draft</option>
+              <option value="DRAFT">Draf</option>
               <option value="PUBLISHED">Publik</option>
               <option value="ARCHIVED">Arsip</option>
             </select></label
@@ -393,8 +404,8 @@ onMounted(() => load())
             >Ketersediaan<select v-model="form.availability">
               <option value="CHECK_REQUIRED">Konfirmasi unit</option>
               <option value="AVAILABLE">Tersedia</option>
-              <option value="BOOKED">Booked</option>
-              <option value="SOLD_OUT">Sold out</option>
+              <option value="BOOKED">Dipesan</option>
+              <option value="SOLD_OUT">Terjual</option>
             </select></label
           >
         </div>
@@ -413,16 +424,16 @@ onMounted(() => load())
           /></label
         ><label class="checkbox-label"
           ><input v-model="form.featured" type="checkbox" />Tampilkan sebagai
-          pilihan unggulan ketika published</label
+          pilihan unggulan ketika dipublikasikan</label
         ><StaffPicker
           v-if="session.account.value?.role === 'ADMIN' && !selected"
           v-model="ownerId"
           kind="marketing"
-          label="Pemilik properti"
+          label="Penanggung jawab"
         />
         <p v-if="selected" class="muted">
           Slug URL tetap. Gunakan publikasi Arsip untuk menutup properti tanpa
-          menghapus histori.
+          menghapus riwayat.
         </p>
         <button class="button" :disabled="busy">Simpan properti</button>
       </form>
@@ -454,20 +465,20 @@ onMounted(() => load())
         class="section"
         @submit.prevent="transfer"
       >
-        <h3>Alihkan kepemilikan</h3>
-        <p>Pemilik sekarang: {{ selected.owner?.name }}</p>
+        <h3>Alihkan penanggung jawab</h3>
+        <p>Penanggung jawab sekarang: {{ selected.owner?.name }}</p>
         <StaffPicker
           v-model="newOwner"
           kind="marketing"
-          label="Pemilik baru"
+          label="Penanggung jawab baru"
         /><label
-          >Alasan transfer<textarea
+          >Alasan pengalihan<textarea
             v-model="reason"
             required
             maxlength="2000"
           /></label
         ><button class="button secondary" :disabled="busy || !newOwner">
-          Alihkan pemilik
+          Alihkan penanggung jawab
         </button>
       </form>
     </dialog>

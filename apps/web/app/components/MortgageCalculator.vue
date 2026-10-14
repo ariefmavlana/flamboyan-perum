@@ -2,6 +2,12 @@
 import type { PublicContent } from '#shared/types'
 import { simulateMortgage, estimateBankFees } from '#shared/utils/mortgage'
 import { formatIdr } from '#shared/utils/catalog'
+import {
+  formatDate,
+  formatDateRange,
+  formatNumber,
+  formatPercent,
+} from '#shared/utils/format'
 const props = defineProps<{ price: string; propertyId?: number }>()
 const interactive = ref(false)
 onMounted(() => {
@@ -174,7 +180,7 @@ const yearlyChart = computed(() =>
       transaksi lainnya belum termasuk.
     </p>
     <p v-if="rateError" class="notice">
-      Referensi rate belum dapat dimuat; simulasi manual tetap tersedia.
+      Referensi suku bunga belum dapat dimuat; simulasi manual tetap tersedia.
     </p>
     <label
       >Referensi bank<select
@@ -188,32 +194,35 @@ const yearlyChart = computed(() =>
           :key="rate.id"
           :value="String(rate.id)"
         >
-          {{ rate.bank }} · {{ rate.product }} · {{ rate.annual_rate }}%
+          {{ rate.bank }} · {{ rate.product }} ·
+          {{ formatPercent(rate.annual_rate) }}
         </option>
       </select></label
     >
     <p v-if="selected" class="muted">
-      Berlaku {{ selected.effective_date }}–{{ selected.valid_until }}, fixed
-      {{ selected.fixed_months }} bulan.
+      Berlaku
+      {{ formatDateRange(selected.effective_date, selected.valid_until) }}, masa
+      fixed {{ selected.fixed_months }} bulan.
       <a :href="selected.source_url" target="_blank" rel="noopener noreferrer"
         >Lihat sumber bank ↗</a
       >. Floating setelah masa fixed merupakan skenario, bukan kepastian bunga
       masa depan.
       <span v-if="selected.checked_date"
-        >Diperiksa {{ selected.checked_date }}.</span
+        >Diperiksa {{ formatDate(selected.checked_date) }}.</span
       >
       <span v-if="selected.min_tenor_months">
-        Tenor minimum {{ selected.min_tenor_months / 12 }} tahun.</span
+        Tenor minimum {{ formatNumber(selected.min_tenor_months / 12) }}
+        tahun.</span
       >
       <span v-if="selected.max_tenor_months">
-        Maksimum {{ selected.max_tenor_months / 12 }} tahun.</span
+        Maksimum {{ formatNumber(selected.max_tenor_months / 12) }} tahun.</span
       >
     </p>
     <p v-if="selected?.conditions" class="notice">{{ selected.conditions }}</p>
     <ul v-if="selected?.phases?.length" class="muted">
       <li v-for="(phase, index) in selected.phases" :key="index">
         Tahap {{ index + 1 }}: {{ phase.months }} bulan ·
-        {{ phase.annual_rate }}% efektif per tahun.
+        {{ formatPercent(phase.annual_rate) }} efektif per tahun.
       </li>
     </ul>
     <p class="muted">
@@ -230,7 +239,7 @@ const yearlyChart = computed(() =>
     </p>
     <div class="form-grid">
       <label v-if="selected?.max_ltv_percent !== undefined"
-        >Asumsi nilai appraisal agunan (IDR)<input
+        >Asumsi nilai penilaian agunan (IDR)<input
           v-model.number="appraisalValue"
           :disabled="!interactive"
           type="number"
@@ -290,15 +299,15 @@ const yearlyChart = computed(() =>
       ></template>
     </div>
     <p v-if="!result" class="error-text" role="alert">
-      Periksa uang muka, tenor, rate, dan masa fixed. Masa fixed harus lebih
+      Periksa uang muka, tenor, bunga, dan masa fixed. Masa fixed harus lebih
       singkat dari tenor. Referensi bank harus memenuhi batas tenor dan plafon
       produknya.
       <template v-if="selected?.min_principal_idr">
         Plafon minimum {{ formatIdr(selected.min_principal_idr) }}.</template
       >
       <template v-if="selected?.max_ltv_percent">
-        LTV maksimum produk {{ selected.max_ltv_percent }}% terhadap asumsi
-        appraisal, bukan hasil penilaian bank.</template
+        LTV maksimum produk {{ formatPercent(selected.max_ltv_percent) }}
+        terhadap asumsi nilai agunan, bukan hasil penilaian bank.</template
       >
     </p>
     <template v-else>
@@ -321,7 +330,7 @@ const yearlyChart = computed(() =>
         >
           <dt>
             Cicilan mulai bulan {{ change.afterMonths + 1 }} / bulan ·
-            {{ change.annualRate }}%{{
+            {{ formatPercent(change.annualRate) }}{{
               selected && change.afterMonths < selected.fixed_months
                 ? ''
                 : ' (skenario floating)'
@@ -353,7 +362,7 @@ const yearlyChart = computed(() =>
             <dd>{{ formatIdr(fees.administration) }}</dd>
           </div>
           <div v-if="fees.appraisalMin !== null && fees.appraisalMax !== null">
-            <dt>Appraisal</dt>
+            <dt>Penilaian agunan</dt>
             <dd>
               {{ formatIdr(fees.appraisalMin) }}–{{
                 formatIdr(fees.appraisalMax)
@@ -364,7 +373,7 @@ const yearlyChart = computed(() =>
         <p class="muted">
           Belum mencakup asuransi jiwa/kebakaran, notaris, pengikatan agunan,
           pajak, dan biaya lainnya. Nilai kosong belum diketahui. Program biaya
-          developer dikonfirmasi cakupannya agar biaya tidak dihitung dua kali.
+          pengembang dikonfirmasi cakupannya agar biaya tidak dihitung dua kali.
         </p>
       </div>
       <div class="mortgage-legend" aria-label="Legenda grafik">
@@ -372,8 +381,8 @@ const yearlyChart = computed(() =>
         ><span><i class="interest-swatch" aria-hidden="true" />Bunga</span>
       </div>
       <p class="muted">
-        Floating adalah skenario tetap setelah reset, bukan prediksi perubahan
-        suku bunga.
+        Masa floating adalah asumsi tetap setelah reset, bukan prediksi
+        perubahan suku bunga.
       </p>
       <ol class="mortgage-chart" aria-label="Grafik pokok dan bunga">
         <li v-for="year in yearlyChart" :key="year.year">

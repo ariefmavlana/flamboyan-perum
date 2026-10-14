@@ -9,6 +9,7 @@ const pois = ref<PointOfInterest[]>(
   JSON.parse(JSON.stringify(props.property.pois ?? [])),
 )
 const message = ref('')
+const success = ref(false)
 const busy = ref(false)
 function addPoi() {
   if (pois.value.length < 20)
@@ -22,6 +23,7 @@ function addPoi() {
 }
 async function save() {
   busy.value = true
+  success.value = false
   message.value = ''
   try {
     const response = await api.request<{ data: InternalProperty }>(
@@ -37,6 +39,7 @@ async function save() {
       },
     )
     emit('saved', response.data)
+    success.value = true
     message.value = 'Lokasi dan referensi tersimpan.'
   } catch (error) {
     message.value = staffError(error)
@@ -47,10 +50,10 @@ async function save() {
 </script>
 <template>
   <section class="location-editor">
-    <h3>Lokasi dan POI editorial</h3>
+    <h3>Lokasi dan referensi fasilitas</h3>
     <p class="muted">
       Isi koordinat yang diverifikasi. Jarak dalam meter perlu sumber dan
-      tanggal; maksimal20 referensi. Tidak menghitung radius otomatis.
+      tanggal; maksimal 20 referensi. Tidak menghitung radius otomatis.
     </p>
     <form @submit.prevent="save">
       <div class="form-grid">
@@ -128,6 +131,12 @@ async function save() {
         </button>
       </div>
     </form>
-    <p v-if="message" role="status">{{ message }}</p>
+    <p
+      v-if="message"
+      :role="success ? 'status' : 'alert'"
+      :class="success ? 'success-notice' : 'error-text'"
+    >
+      {{ message }}
+    </p>
   </section>
 </template>

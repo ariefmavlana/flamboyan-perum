@@ -131,7 +131,7 @@ test('Marketing workspace has scoped actions, readable mobile records and guarde
   await page.setViewportSize({ width: 390, height: 844 })
   await login(page, 'marketing')
   await expect(
-    page.getByRole('button', { name: 'Catat lead baru' }),
+      page.getByRole('button', { name: 'Catat calon pembeli' }),
   ).toHaveCount(0)
   await expect(page.locator('.work-queue')).toHaveCount(3)
   await expect(page.locator('.crm-results')).toHaveAttribute(

@@ -304,7 +304,7 @@ const srcset = (item: PublicMedia) =>
       :key="item.id"
       :href="item.sources[0]?.url"
       class="button secondary"
-      >Unduh {{ item.alt }} (PDF) ↓</a
+        >Unduh brosur (PDF) ↓</a
     >
   </section>
 </template>

@@ -11,7 +11,12 @@ const realtime = useRealtimeNotifications(
 onMounted(async () => {
   try {
     await session.refresh()
-    if (!session.account.value) return
+  } catch {
+    realtime.state.value = 'Sesi belum dapat diperiksa'
+    return
+  }
+  if (!session.account.value) return
+  try {
     await inbox.refresh(1)
     await realtime.start(session.account.value.id)
   } catch {

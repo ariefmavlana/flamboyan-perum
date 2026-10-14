@@ -2,6 +2,7 @@
 import type { Paginated, Property, PublicContent } from '#shared/types'
 import { formatIdr, whatsappLink } from '#shared/utils/catalog'
 import { canonicalUrl } from '#shared/utils/seo'
+import { formatDateRange, formatPercent } from '#shared/utils/format'
 import { jsonLdText, websiteSchema } from '#shared/utils/structured-data'
 const config = useRuntimeConfig()
 const { whatsappNumber } = await useDevelopment()
@@ -108,7 +109,7 @@ useHead({
             /><button
               type="submit"
               :disabled="!hydrated"
-              aria-label="Jelajahi →"
+              aria-label="Cari properti"
             >
               <AppIcon name="arrow" />
             </button>
@@ -127,7 +128,7 @@ useHead({
         ><AppIcon name="arrow"
       /></NuxtLink>
       <NuxtLink to="/konsultasi?tujuan=kunjungan" @click="trackVisit"
-        ><span>03 / KUNJUNGI</span><strong>Lihat lebih dekat</strong
+        ><span>03 / KUNJUNGI</span><strong>Rencanakan kunjungan</strong
         ><AppIcon name="arrow"
       /></NuxtLink>
     </nav>
@@ -229,7 +230,7 @@ useHead({
           </h2>
         </div>
         <NuxtLink class="text-link" to="/konsultasi?tujuan=kunjungan" @click="trackVisit"
-          >Rencanakan survei →</NuxtLink
+          >Rencanakan kunjungan →</NuxtLink
         >
       </div>
       <div class="neighbourhood-grid">
@@ -315,7 +316,7 @@ useHead({
         </div>
         <div>
           <span class="step">02</span>
-          <h3>Lihat lebih dekat</h3>
+          <h3>Pertimbangkan pilihan</h3>
           <p>
             Bandingkan hingga tiga rumah dan pelajari estimasi pembiayaannya.
           </p>
@@ -376,11 +377,12 @@ useHead({
           <h3>{{ rate.bank }}</h3>
           <p class="muted">{{ rate.product }}</p>
           <strong
-            >{{ rate.annual_rate }}%
+            >{{ formatPercent(rate.annual_rate) }}
             <small class="muted">per tahun</small></strong
           >
           <p class="muted">
-            Berlaku {{ rate.effective_date }}–{{ rate.valid_until }}
+            Berlaku
+            {{ formatDateRange(rate.effective_date, rate.valid_until) }}
           </p>
           <a
             class="text-link"

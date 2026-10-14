@@ -31,7 +31,7 @@ const contact = whatsappLink(
       Kami menghitung tampilan detail dan klik WhatsApp sebagai jumlah harian
       per properti. Penghitung ini tidak menyimpan nama, nomor telepon, IP,
       identitas perangkat, atau cookie analitik dan tidak menghubungkan klik
-      dengan lead atau transaksi.
+      dengan calon pembeli atau transaksi.
     </p>
     <p v-else>
       Penghitung interaksi katalog belum diaktifkan. Pilihan perbandingan
@@ -42,8 +42,9 @@ const contact = whatsappLink(
       Situs menyediakan pilihan persetujuan terpisah untuk teknologi opsional
       analitik dan pengukuran iklan. Teknologi tersebut hanya dimuat setelah
       Anda memberi persetujuan, dan tidak dimuat sama sekali selama pengelola
-      situs belum mengaktifkannya. Anda dapat mengubah atau mencabut pilihan
-      kapan saja.
+      situs belum mengaktifkannya. Bila teknologi itu diaktifkan, Anda dapat
+      mengubah atau mencabut pilihan kapan saja melalui tombol di bawah atau
+      tautan “Pilihan privasi” di footer setiap halaman.
     </p>
     <button
       v-if="consent.required.value"

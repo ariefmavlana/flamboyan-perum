@@ -48,7 +48,7 @@ const marketingId = ref<number | null>(null)
 const assignReason = ref('')
 const contact = reactive({ name: '', whatsapp_number: '', reason: '' })
 const eventLabels: Record<string, string> = {
-  CREATED: 'Lead dicatat',
+  CREATED: 'Calon pembeli dicatat',
   ASSIGNED: 'Penugasan',
   REASSIGNED: 'Pengalihan penugasan',
   STATUS_CHANGED: 'Perubahan status',
@@ -79,7 +79,7 @@ const date = (value: string) =>
     timeStyle: 'short',
     timeZone: 'Asia/Jakarta',
   }).format(new Date(value))
-useSeoMeta({ title: 'CRM', robots: 'noindex, nofollow' })
+useSeoMeta({ title: 'Calon pembeli', robots: 'noindex, nofollow' })
 let listRequest = 0
 
 async function loadSummary() {
@@ -351,7 +351,7 @@ async function openNoticeLead(id: number) {
     await openLead(response.data)
   } catch {
     message.value =
-      'Lead tidak tersedia atau penugasannya telah berubah. Muat ulang daftar.'
+      'Calon pembeli tidak tersedia atau penugasannya telah berubah. Muat ulang daftar.'
   }
 }
 watch(
@@ -421,7 +421,7 @@ watch(
         class="button"
         @click="openCreateLead"
       >
-        Catat lead baru
+        Catat calon pembeli
       </button>
     </div>
     <p
@@ -431,7 +431,7 @@ watch(
     >
       {{ message }}
     </p>
-    <p v-if="loading" role="status">Memuat workspace…</p>
+    <p v-if="loading" role="status">Memuat ruang kerja…</p>
     <div class="work-overview" aria-label="Prioritas pekerjaan">
       <div class="results-heading compact">
         <h2>Mulai dari sini</h2>
@@ -567,7 +567,7 @@ watch(
       >
         <table>
           <caption class="sr-only">
-            Daftar lead sesuai hak akses Anda
+            Daftar calon pembeli sesuai hak akses Anda
           </caption>
           <thead>
             <tr>
@@ -580,7 +580,7 @@ watch(
           </thead>
           <tbody>
             <tr v-for="lead in leads?.data" :key="lead.id">
-              <td data-label="Calon pembeli">
+              <td data-label="Nama / WhatsApp">
                 <strong>{{ lead.name }}</strong
                 ><br /><span class="muted">{{
                   lead.whatsapp_number
@@ -596,12 +596,12 @@ watch(
                   lead.assignee?.name ?? 'Belum ditugaskan'
                 }}</span>
               </td>
-              <td data-label="Tahap">
+              <td data-label="Status">
                 <span class="badge" :data-state="lead.status">{{
                   labels[lead.status]
                 }}</span>
               </td>
-              <td data-label="Langkah berikutnya">
+              <td data-label="Tindakan">
                 <small class="next-action-label">{{
                   nextLeadAction(lead)
                 }}</small>
@@ -629,7 +629,7 @@ watch(
         <nav
           v-if="leads && leads.meta.last_page > 1"
           class="pagination"
-          aria-label="Halaman lead"
+          aria-label="Halaman calon pembeli"
         >
           <button
             v-if="leads.meta.current_page > 1"
@@ -659,15 +659,9 @@ watch(
             >{{ notices?.unread_count ?? 0 }} belum dibaca</span
           >
         </summary>
-        <h2>
-          Notifikasi
-          <span class="badge"
-            >{{ notices?.unread_count ?? 0 }} belum dibaca</span
-          >
-        </h2>
         <p class="muted">
-          Pantau penugasan dan perubahan status lead. Pembaruan tetap berjalan
-          secara berkala.
+          Pantau penugasan dan perubahan status calon pembeli. Pembaruan tetap
+          berjalan secara berkala.
         </p>
         <button
           class="button secondary"
@@ -686,8 +680,8 @@ watch(
             >
               {{
                 notice.kind === 'LEAD_ASSIGNED'
-                  ? 'Penugasan lead'
-                  : 'Perubahan status lead'
+                  ? 'Penugasan calon pembeli'
+                  : 'Perubahan status calon pembeli'
               }}
               #{{ notice.lead_id }}
             </NuxtLink>
@@ -881,7 +875,7 @@ watch(
             Tambah catatan
           </button>
         </div>
-        <h3>Histori aktivitas</h3>
+        <h3>Riwayat aktivitas</h3>
         <p v-if="historyLoading" role="status">Memuat riwayat…</p>
         <p v-if="historyError" role="alert">
           {{ historyError }}
@@ -922,7 +916,7 @@ watch(
           :disabled="historyLoading"
           @click="loadHistory(history.meta.current_page + 1)"
         >
-          Histori lebih lama →
+          Riwayat lebih lama →
         </button></template
       >
     </dialog>
@@ -932,7 +926,7 @@ watch(
       aria-labelledby="create-lead-title"
     >
       <div class="section-heading">
-        <h2 id="create-lead-title">Catat lead baru</h2>
+        <h2 id="create-lead-title">Catat calon pembeli</h2>
         <button class="button secondary" @click="createDialog?.close()">
           Tutup
         </button>
@@ -959,10 +953,10 @@ watch(
         />
         <p class="muted">
           Nomor dan properti yang sama hanya dicatat sekali. Klik WhatsApp
-          publik belum berarti lead tercatat.
+          publik belum berarti calon pembeli tercatat.
         </p>
         <button class="button" :disabled="busy || !leadForm.property_id">
-          Simpan lead
+          Simpan calon pembeli
         </button>
       </form>
     </dialog>
