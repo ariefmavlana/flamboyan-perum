@@ -59,6 +59,11 @@ describe('CSP report on the actual Nitro H3 listener', () => {
     expect(await report(['🙂'.repeat(4200)])).toBe(413)
     expect(warning).not.toHaveBeenCalled()
   })
+  it('fails closed when the runtime does not supply a supported Node adapter', async () => {
+    const { readReportBody } = await import('../server/api/csp-report.post')
+    await expect(readReportBody({})).rejects.toMatchObject({ statusCode: 503 })
+    expect(warning).not.toHaveBeenCalled()
+  })
   it('does not trust understated headers on a serverless buffered body', async () => {
     const { readReportBody } = await import('../server/api/csp-report.post')
     const req = Readable.from([]) as unknown as Parameters<

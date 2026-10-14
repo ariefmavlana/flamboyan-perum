@@ -1,10 +1,5 @@
-import {
-  createError,
-  defineEventHandler,
-  getHeader,
-  setResponseStatus,
-  type H3Event,
-} from 'h3'
+import type { IncomingMessage, ServerResponse } from 'node:http'
+import { createError, defineEventHandler, setResponseStatus } from 'h3'
 
 const maxBodyBytes = 16 * 1024
 const maxReportsPerMinute = 60
@@ -73,16 +68,37 @@ function collectReports(body: unknown): Record<string, unknown>[] {
   return []
 }
 
-export async function readReportBody(event: H3Event): Promise<unknown> {
-  const req = event.node.req
+// Nitro supplies a Node HTTP adapter. Its H3 runtime can differ from CLI H3 types.
+interface NodeReportEvent {
+  node?: { req?: IncomingMessage; res?: ServerResponse }
+  web?: { request?: Request }
+  _requestBody?: BodyInit
+}
+
+export async function readReportBody(event: unknown): Promise<unknown> {
+  const adapter = event as NodeReportEvent | null | undefined
+  const candidateReq = adapter?.node?.req
+  const candidateRes = adapter?.node?.res
+  if (
+    !candidateReq ||
+    !candidateRes ||
+    typeof candidateReq.pause !== 'function' ||
+    typeof candidateReq.on !== 'function'
+  )
+    throw createError({
+      statusCode: 503,
+      statusMessage: 'Unsupported report adapter',
+    })
+  // Definite aliases keep the validated contract inside callbacks and hoisted functions.
+  const req: IncomingMessage = candidateReq
+  const res: ServerResponse = candidateRes
   function tooLarge() {
     // Close the connection after the error response rather than consuming an unbounded stream.
     req.pause()
-    event.node.res.shouldKeepAlive = false
+    res.shouldKeepAlive = false
     return createError({ statusCode: 413, statusMessage: 'Payload Too Large' })
   }
-  if (Number(getHeader(event, 'content-length')) > maxBodyBytes)
-    throw tooLarge()
+  if (Number(req.headers['content-length']) > maxBodyBytes) throw tooLarge()
   const chunks: Buffer[] = []
   let size = 0
   function accept(value: Uint8Array | string) {
@@ -99,8 +115,8 @@ export async function readReportBody(event: H3Event): Promise<unknown> {
     [key: symbol]: unknown
   }
   const supplied =
-    event.web?.request?.body ??
-    event._requestBody ??
+    adapter?.web?.request?.body ??
+    adapter?._requestBody ??
     incoming[Symbol.for('h3RawBody')] ??
     incoming.rawBody ??
     incoming.body
