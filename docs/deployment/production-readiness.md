@@ -1,6 +1,6 @@
 # Kesiapan produksi dan deployment
 
-Versi 1.0 · 2026-10-14 · Branch `feat/production-readiness` (belum di-merge, belum di-deploy). Dokumen ini menggantikan asumsi; semua nilai rahasia tetap berada di Vercel/secret manager, bukan di repo.
+Versi 1.1 · 2026-10-14 · Di-merge ke `main` melalui PR #25 (`808b69c`), belum di-deploy otomatis oleh pekerjaan ini. Dokumen ini menggantikan asumsi; semua nilai rahasia tetap berada di Vercel/secret manager, bukan di repo.
 
 ## 1. Inventaris environment
 
