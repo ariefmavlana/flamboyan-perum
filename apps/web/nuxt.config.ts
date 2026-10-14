@@ -24,7 +24,12 @@ export default defineNuxtConfig({
   ssr: true,
   devtools: { enabled: false },
   modules: ['@nuxt/eslint'],
-  css: ['~/assets/main.css', '~/assets/editorial.css', '~/assets/workspace.css'],
+  css: [
+    '~/assets/main.css',
+    '~/assets/editorial.css',
+    '~/assets/residences.css',
+    '~/assets/workspace.css',
+  ],
   typescript: { strict: true },
   nitro: {
     devProxy: {
