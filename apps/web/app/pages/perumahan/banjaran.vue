@@ -1,16 +1,20 @@
 <script setup lang="ts">
+import { absoluteUrl, canonicalUrl } from '#shared/utils/seo'
 const config = useRuntimeConfig()
 useSeoMeta({
-  title: 'Banjaran — Hunian mendatang dalam naungan Flamboyan',
+  title: 'Banjaran — hunian mendatang',
   description:
     'Sebuah cerita baru di Banjaran. Jelajahi inspirasi hunian mendatang Flamboyan dan diskusikan rencananya bersama Admin. Visual merupakan ilustrasi.',
-  ogImage: `${config.public.siteUrl.replace(/\/+$/, '')}/images/editorial-garden-1920.webp`,
+  ogImage: absoluteUrl(
+    String(config.public.siteUrl),
+    '/images/editorial-garden-1920.webp',
+  ),
 })
 useHead({
   link: [
     {
       rel: 'canonical',
-      href: `${config.public.siteUrl.replace(/\/+$/, '')}/perumahan/banjaran`,
+      href: canonicalUrl(String(config.public.siteUrl), '/perumahan/banjaran'),
     },
   ],
 })

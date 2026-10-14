@@ -7,7 +7,7 @@ const publicationLabels = {
   ARCHIVED: 'Arsip',
 }
 definePageMeta({ layout: 'backoffice' })
-useSeoMeta({ title: 'Katalog tim — Flamboyan', robots: 'noindex, nofollow' })
+useSeoMeta({ title: 'Katalog tim', robots: 'noindex, nofollow' })
 const api = useStaffApi()
 const session = useStaffSession()
 const results = ref<Paginated<InternalProperty> | null>(null)

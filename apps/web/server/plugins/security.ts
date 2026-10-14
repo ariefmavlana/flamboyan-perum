@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto'
+import { buildContentSecurityPolicy } from '../utils/csp'
 
 export default defineNitroPlugin((nitro) => {
   nitro.hooks.hook('render:response', (response, { event }) => {
@@ -29,14 +30,12 @@ export default defineNitroPlugin((nitro) => {
     )
     set(
       'Content-Security-Policy',
-      `default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' wss://*.pusher.com https://*.pusher.com; frame-src https://www.youtube-nocookie.com https://www.openstreetmap.org ${String(
-        config.tourHosts,
-      )
-        .split(',')
-        .map((host) => host.trim())
-        .filter((host) => /^[a-z0-9.-]+$/.test(host))
-        .map((host) => `https://${host}`)
-        .join(' ')}; form-action 'self'`,
+      buildContentSecurityPolicy({
+        nonce,
+        tourHosts: String(config.tourHosts),
+        gtmId: String(config.public.gtmId ?? ''),
+        metaPixelId: String(config.public.metaPixelId ?? ''),
+      }),
     )
   })
 })

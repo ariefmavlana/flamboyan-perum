@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import { whatsappLink } from '#shared/utils/catalog'
+import { canonicalUrl } from '#shared/utils/seo'
 const config = useRuntimeConfig()
+const consent = useConsent()
 const { whatsappNumber } = await useDevelopment()
+const canonical = canonicalUrl(String(config.public.siteUrl), '/privasi')
 useSeoMeta({
-  title: 'Informasi privasi — Flamboyan Perum',
+  title: 'Informasi privasi',
   description:
-    'Informasi penggunaan data kontak dan interaksi katalog Flamboyan Perum.',
+    'Informasi penggunaan data kontak, interaksi katalog, dan teknologi opsional Flamboyan Perum.',
 })
+useHead({ link: [{ rel: 'canonical', href: canonical }] })
 const contact = whatsappLink(
   whatsappNumber.value,
   'permintaan informasi privasi',
-  `${config.public.siteUrl}/privasi`,
+  canonical,
 )
 </script>
 <template>
@@ -33,6 +37,22 @@ const contact = whatsappLink(
       Penghitung interaksi katalog belum diaktifkan. Pilihan perbandingan
       properti disimpan di browser Anda sebagai ID properti.
     </p>
+    <h2>Teknologi opsional</h2>
+    <p>
+      Situs menyediakan pilihan persetujuan terpisah untuk teknologi opsional
+      analitik dan pengukuran iklan. Teknologi tersebut hanya dimuat setelah
+      Anda memberi persetujuan, dan tidak dimuat sama sekali selama pengelola
+      situs belum mengaktifkannya. Anda dapat mengubah atau mencabut pilihan
+      kapan saja.
+    </p>
+    <button
+      v-if="consent.required.value"
+      class="button secondary"
+      type="button"
+      @click="consent.requestChange()"
+    >
+      Ubah pilihan privasi
+    </button>
     <h2>Penyedia eksternal</h2>
     <p>
       WhatsApp dibuka ketika Anda memilih tautannya. Peta, video dan virtual

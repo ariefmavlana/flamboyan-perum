@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { buyerGuides } from '#shared/content/buyer-guides'
+import { absoluteUrl, canonicalUrl } from '#shared/utils/seo'
+import { breadcrumbSchema, jsonLdText } from '#shared/utils/structured-data'
 const route = useRoute()
 const config = useRuntimeConfig()
 const guide = buyerGuides.find((item) => item.slug === route.params.slug)
@@ -8,20 +10,37 @@ if (!guide)
     statusCode: 404,
     statusMessage: 'Panduan tidak ditemukan',
   })
+const canonical = canonicalUrl(
+  String(config.public.siteUrl),
+  `/panduan/${guide.slug}`,
+)
 useSeoMeta({
-  title: `${guide.title} — Panduan Flamboyan`,
+  title: guide.title,
   description: guide.summary,
   ogTitle: guide.title,
   ogDescription: guide.summary,
-  ogImage: new URL(guide.image, config.public.siteUrl).href,
+  ogImage: absoluteUrl(String(config.public.siteUrl), guide.image),
   ogImageAlt: guide.imageAlt,
   twitterCard: 'summary_large_image',
 })
 useHead({
-  link: [
+  link: [{ rel: 'canonical', href: canonical }],
+  script: [
     {
-      rel: 'canonical',
-      href: `${config.public.siteUrl.replace(/\/+$/, '')}/panduan/${guide.slug}`,
+      type: 'application/ld+json',
+      textContent: jsonLdText(
+        breadcrumbSchema([
+          {
+            name: 'Beranda',
+            url: canonicalUrl(String(config.public.siteUrl)),
+          },
+          {
+            name: 'Panduan',
+            url: canonicalUrl(String(config.public.siteUrl), '/panduan'),
+          },
+          { name: guide.title, url: canonical },
+        ]),
+      ),
     },
   ],
 })

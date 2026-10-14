@@ -1,5 +1,15 @@
 # Product Requirements Document — Flamboyan Perum
 
+## Kesiapan produksi, SEO, analytics, dan akuisisi berbayar — 2026-10-14
+
+Instruksi pengguna meminta audit kesiapan produksi serta penyiapan kanal akuisisi (Google Search Ads, Meta Ads/Instagram, pencarian organik) tanpa aktivasi iklan, tanpa belanja, dan tanpa mengarang data bisnis. Temuan lengkap, pemilik tindakan, dan batasnya ada di [audits/flamboyan-production-audit.md](audits/flamboyan-production-audit.md) dan [deployment/manual-actions-required.md](deployment/manual-actions-required.md).
+
+Perilaku yang ditambahkan pada aplikasi web (default **nonaktif**; hanya aktif setelah ID resmi diisi): template judul dan default Open Graph, JSON-LD `WebSite`/`BreadcrumbList` (Organisasi ditahan sampai identitas badan usaha sah), helper URL kanonik tunggal, layer persetujuan kategori analitik/marketing dengan Consent Mode v2, banner persetujuan yang hanya tampil bila teknologi opsional dikonfigurasi, layer event terketik yang dikirim ke dataLayer GTM (tanpa PII), CSP kondisional yang mengizinkan host pihak ketiga hanya saat ID terkait diisi, serta slot tautan Instagram.
+
+Batasan yang tidak berubah: tidak ada aktivasi iklan atau belanja; tidak ada harga/stok/legalitas/kontak/username yang dikarang; lead tetap dicatat manual oleh Admin di CRM tanpa atribusi otomatis (kolom sumber lead belum diputuskan); event `generate_lead`/`qualified_lead`/`schedule_visit` sengaja tidak dibuat karena tidak ada bukti reliabel; gate produksi (domain, hosting, privasi/legal, provider, konten) tetap terbuka dan dicatat sebagai tindakan manual.
+
+Pemetaan kebutuhan: P-01/P-04/P-05 (metadata, detail SSR, WhatsApp) diperluas dengan metadata unik/canonical/JSON-LD; P-05 tetap "klik bukan lead tercatat"; I-03 tetap pencatatan manual. Gate baru: ID GTM/GA4/Ads/Meta resmi, pengesahan notice privasi, keputusan domain.
+
 ## Perluasan pengenalan perumahan — 2026-10-08
 
 Flamboyan tetap menjadi nama payung. Pengguna menyetujui nama sementara **Banjaran — hunian mendatang** untuk rencana perumahan lain dalam naungan yang sama. Discovery publik memperkenalkan pilihan kawasan melalui `/perumahan`, beranda, navigasi, dan halaman konsep `/perumahan/banjaran`. Identitas editorial premium dipertahankan, dengan foto inspirasi berlabel, gerak terbatas, dukungan reduced motion, dan konsultasi yang membawa konteks kawasan.

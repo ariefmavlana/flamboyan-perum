@@ -1400,3 +1400,68 @@ textarea,
   grid-column: 2;
   justify-self: start;
 }
+
+/* Consent banner: only rendered when optional tracking is configured. */
+.consent-banner {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 60;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -12px 30px rgba(41, 40, 35, 0.08);
+}
+.consent-inner {
+  max-width: 1536px;
+  margin: 0 auto;
+  padding: 20px 64px 24px;
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+.consent-inner p {
+  margin: 0;
+  max-width: 72ch;
+  font-size: 14px;
+}
+.consent-inner a {
+  text-decoration: underline;
+}
+.consent-options {
+  border: 1px solid var(--line);
+  padding: 12px 16px;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.consent-options legend {
+  padding-inline: 6px;
+  font-size: 12px;
+}
+.consent-options label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+}
+.consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.consent-actions .text-link {
+  background: none;
+  border: 0;
+  padding: 0;
+}
+@media (max-width: 760px) {
+  .consent-inner {
+    padding: 16px 20px 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .consent-banner {
+    box-shadow: none;
+  }
+}

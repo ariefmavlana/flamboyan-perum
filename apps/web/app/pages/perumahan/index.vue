@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { canonicalUrl } from '#shared/utils/seo'
 const config = useRuntimeConfig()
 useSeoMeta({
-  title: 'Pilihan perumahan — Flamboyan',
+  title: 'Pilihan perumahan',
   description:
     'Kenali Bukit Flamboyan Indah 2 di Bandung Timur dan rencana hunian Banjaran dalam satu naungan Flamboyan.',
 })
@@ -9,7 +10,7 @@ useHead({
   link: [
     {
       rel: 'canonical',
-      href: `${config.public.siteUrl.replace(/\/+$/, '')}/perumahan`,
+      href: canonicalUrl(String(config.public.siteUrl), '/perumahan'),
     },
   ],
 })

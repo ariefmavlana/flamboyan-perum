@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Paginated, Property } from '#shared/types'
 import { availabilityLabels, formatIdr } from '#shared/utils/catalog'
+import { canonicalUrl } from '#shared/utils/seo'
 const route = useRoute()
 const interactive = ref(false)
 onMounted(() => {
@@ -142,7 +143,7 @@ const pageLink = (page: number) => ({
   query: { ...route.query, page },
 })
 useSeoMeta({
-  title: 'Jelajahi properti — Flamboyan Perum',
+  title: 'Jelajahi properti',
   description:
     'Cari rumah berdasarkan lokasi, harga, dan spesifikasi yang sesuai kebutuhan Anda.',
   robots: () =>
@@ -150,7 +151,13 @@ useSeoMeta({
 })
 useHead({
   link: [
-    { rel: 'canonical', href: `${useRuntimeConfig().public.siteUrl}/properti` },
+    {
+      rel: 'canonical',
+      href: canonicalUrl(
+        String(useRuntimeConfig().public.siteUrl),
+        '/properti',
+      ),
+    },
   ],
 })
 </script>

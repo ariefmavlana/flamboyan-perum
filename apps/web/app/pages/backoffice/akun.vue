@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { StaffAccount, Paginated } from '#shared/types'
 definePageMeta({ layout: 'backoffice' })
-useSeoMeta({ title: 'Akun tim — Flamboyan', robots: 'noindex, nofollow' })
+useSeoMeta({ title: 'Akun tim', robots: 'noindex, nofollow' })
 const api = useStaffApi()
 const actions: Record<string, string> = {
   CREATED: 'Akun dibuat',

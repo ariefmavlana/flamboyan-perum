@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'backoffice' })
-useSeoMeta({ title: 'Profil tim — Flamboyan', robots: 'noindex, nofollow' })
+useSeoMeta({ title: 'Profil tim', robots: 'noindex, nofollow' })
 const session = useStaffSession()
 const name = ref('')
 const currentPassword = ref('')

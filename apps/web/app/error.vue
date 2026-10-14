@@ -8,7 +8,7 @@ onMounted(() => {
 const missing = computed(() => props.error.statusCode === 404)
 useHead({
   title: () =>
-    `${missing.value ? 'Halaman tidak ditemukan' : 'Halaman belum tersedia'} — Flamboyan`,
+    missing.value ? 'Halaman tidak ditemukan' : 'Halaman belum tersedia',
   meta: [{ name: 'robots', content: 'noindex, nofollow' }],
 })
 </script>

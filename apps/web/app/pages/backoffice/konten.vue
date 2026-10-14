@@ -6,7 +6,7 @@ import type {
   RatePhase,
 } from '#shared/types'
 definePageMeta({ layout: 'backoffice' })
-useSeoMeta({ title: 'Konten publik — Flamboyan', robots: 'noindex, nofollow' })
+useSeoMeta({ title: 'Konten publik', robots: 'noindex, nofollow' })
 const api = useStaffApi()
 const session = useStaffSession()
 const results = ref<Paginated<EditorialContent> | null>(null)

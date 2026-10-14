@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({ title: 'Pemulihan akun — Flamboyan', robots: 'noindex, nofollow' })
+useSeoMeta({ title: 'Pemulihan akun', robots: 'noindex, nofollow' })
 const email = ref('')
 const message = ref('')
 const busy = ref(false)

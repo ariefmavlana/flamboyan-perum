@@ -2,7 +2,7 @@
 import type { PublicContent } from '#shared/types'
 import { simulateMortgage, estimateBankFees } from '#shared/utils/mortgage'
 import { formatIdr } from '#shared/utils/catalog'
-const props = defineProps<{ price: string }>()
+const props = defineProps<{ price: string; propertyId?: number }>()
 const interactive = ref(false)
 onMounted(() => {
   interactive.value = true
@@ -93,6 +93,35 @@ const result = computed(() => {
 const rows = computed(
   () => result.value?.schedule.filter((row) => row.month % 12 === 0) ?? [],
 )
+const tracking = useAnalytics()
+const interacted = ref(false)
+watch(
+  [
+    downPayment,
+    appraisalValue,
+    years,
+    annualRate,
+    floating,
+    fixedMonths,
+    floatingRate,
+    bankId,
+  ],
+  () => {
+    interacted.value = true
+  },
+)
+watch(result, (value) => {
+  if (!value || !interacted.value) return
+  tracking.track(
+    'calculate_mortgage',
+    {
+      property_id: props.propertyId,
+      page_type: 'property',
+      content_group: 'kpr',
+    },
+    { once: true },
+  )
+})
 function selectBank() {
   const rate = selected.value
   if (!rate) {

@@ -10,6 +10,24 @@ const props = defineProps<{ property: Property }>()
 const config = useRuntimeConfig()
 const { whatsappNumber } = await useDevelopment()
 const analytics = usePropertyAnalytics()
+const tracking = useAnalytics()
+function trackSelect() {
+  tracking.track('select_property', {
+    property_id: props.property.id,
+    property_type: props.property.house_type,
+    page_type: 'katalog',
+    content_group: 'katalog',
+  })
+}
+function trackWhatsapp() {
+  analytics.record(props.property.id, 'whatsapp_click')
+  tracking.track('click_whatsapp', {
+    property_id: props.property.id,
+    property_type: props.property.house_type,
+    page_type: 'katalog',
+    lead_channel: 'whatsapp',
+  })
+}
 const cover = computed(() =>
   props.property.media?.find((item) => item.kind === 'PHOTO'),
 )
@@ -56,7 +74,7 @@ const wa = computed(() =>
     <div class="card-content">
       <p class="card-location"><AppIcon name="pin" />{{ property.location }}</p>
       <h3>
-        <NuxtLink :to="`/properti/${property.slug}`">{{
+        <NuxtLink :to="`/properti/${property.slug}`" @click="trackSelect">{{
           property.title
         }}</NuxtLink>
       </h3>
@@ -89,7 +107,7 @@ const wa = computed(() =>
           class="text-link"
           target="_blank"
           rel="noopener noreferrer"
-          @click="analytics.record(property.id, 'whatsapp_click')"
+          @click="trackWhatsapp"
           >Hubungi Admin ↗</a
         ><NuxtLink v-else :to="`/properti/${property.slug}`" class="text-link"
           >Lihat detail →</NuxtLink

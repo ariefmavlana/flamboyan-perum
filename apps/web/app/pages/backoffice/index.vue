@@ -79,7 +79,7 @@ const date = (value: string) =>
     timeStyle: 'short',
     timeZone: 'Asia/Jakarta',
   }).format(new Date(value))
-useSeoMeta({ title: 'CRM — Flamboyan Perum', robots: 'noindex, nofollow' })
+useSeoMeta({ title: 'CRM', robots: 'noindex, nofollow' })
 let listRequest = 0
 
 async function loadSummary() {
