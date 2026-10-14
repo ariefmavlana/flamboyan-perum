@@ -44,6 +44,9 @@ Tersedia: home/list/detail SSR, full filter/sort/URL, compare, KPR fixed/floatin
 - [PRD](docs/PRD.md), [SRS](docs/SRS.md), [guideline aktif](<docs/AI Agent Guide Line.md>)
 - [Arsitektur](docs/architecture.md), [ADR](docs/adr/001-proportional-foundation.md), [API](docs/API_DOCS.md)
 - [Deployment/recovery runbook](docs/runbook.md), [dependency security](docs/dependency-security.md)
+- [Audit kesiapan produksi](docs/audits/flamboyan-production-audit.md), [SEO teknis](docs/audits/technical-seo.md), [performa](docs/audits/performance-before-after.md)
+- [Peta kata kunci](docs/marketing/seo-keyword-map.md), [taksonomi event & consent](docs/marketing/analytics-event-taxonomy.md), [Google Ads](docs/marketing/google-ads-setup.md), [Meta Ads](docs/marketing/meta-ads-setup.md), [strategi Instagram](docs/marketing/instagram-content-strategy.md), [rencana peluncuran iklan](docs/marketing/paid-ads-launch-plan.md)
+- [Kesiapan produksi](docs/deployment/production-readiness.md), [tindakan manual](docs/deployment/manual-actions-required.md)
 - [Aturan kontribusi](CONTRIBUTING.md), [AGENTS](AGENTS.md)
 
 GitHub Actions tidak digunakan. Jalankan backend Pint/PHPUnit/Composer validate+audit dan frontend lint/typecheck/Vitest/build/Playwright secara lokal sebelum review PR. Suite lokal fondasi lulus pada SQLite dan PostgreSQL17.9 dengan PHP8.4.26; PHP8.3 dan Linux belum diuji. Source toolchain Nuxt memiliki advisory upstream tanpa patch yang dicatat di security document; audit source dan artefak runtime tetap wajib serta hasilnya tidak disamarkan. Tidak mengklaim production-ready sebelum hosting, security, media/data recovery, content, privacy, provider, load dan UAT gates lulus. Perintah lengkap ada di [runbook](docs/runbook.md), bukti di [docs/validation.md](docs/validation.md).
