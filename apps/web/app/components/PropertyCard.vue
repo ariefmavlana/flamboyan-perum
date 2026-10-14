@@ -83,17 +83,17 @@ const wa = computed(() =>
       <p class="muted">{{ property.address }}</p>
       <dl class="spec-inline">
         <div>
-          <dt>Tanah</dt>
+          <dt>Luas Tanah</dt>
           <dd>{{ formatArea(property.land_area) }}</dd>
         </div>
         <div>
-          <dt>Bangunan</dt>
+          <dt>Luas Bangunan</dt>
           <dd>{{ formatArea(property.building_area) }}</dd>
         </div>
         <div>
-          <dt>Kamar</dt>
+          <dt>Jumlah Kamar</dt>
           <dd>
-            {{ property.bedrooms }} tidur · {{ property.bathrooms }} mandi
+            {{ property.bedrooms }} Kamar Tidur · {{ property.bathrooms }} Kamar Mandi
           </dd>
         </div>
       </dl>

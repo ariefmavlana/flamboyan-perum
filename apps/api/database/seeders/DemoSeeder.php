@@ -41,7 +41,7 @@ class DemoSeeder extends Seeder
         try {
             config(['realtime.enabled' => false]);
             DB::transaction(function () use ($password, $properties, $leads, $marketing, &$paths) {
-                foreach (['users', 'properties', 'leads', 'site_contents', 'property_media', 'activity_logs', 'user_notifications', 'jobs'] as $table) {
+                foreach (['properties', 'leads', 'site_contents', 'property_media', 'activity_logs', 'user_notifications', 'jobs'] as $table) {
                     if (DB::table($table)->exists()) {
                         throw new \RuntimeException('Demo seed membutuhkan database domain kosong; data yang ada tidak diubah.');
                     }
