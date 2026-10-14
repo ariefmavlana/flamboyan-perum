@@ -1,8 +1,23 @@
 <script setup lang="ts">
 import type { Paginated, Property, PublicContent } from '#shared/types'
 import { formatIdr, whatsappLink } from '#shared/utils/catalog'
+import { canonicalUrl } from '#shared/utils/seo'
+import { jsonLdText, websiteSchema } from '#shared/utils/structured-data'
 const config = useRuntimeConfig()
 const { whatsappNumber } = await useDevelopment()
+const tracking = useAnalytics()
+function trackWhatsapp() {
+  tracking.track('click_whatsapp', {
+    page_type: 'home',
+    lead_channel: 'whatsapp',
+  })
+}
+function trackVisit() {
+  tracking.track('request_visit', {
+    page_type: 'home',
+    lead_channel: 'whatsapp',
+  })
+}
 const search = ref('')
 const { data: content, error: contentError } = await useFetch<{
   data: PublicContent
@@ -29,11 +44,21 @@ const wa = computed(() =>
   ),
 )
 useSeoMeta({
-  title: 'Flamboyan Perum — Hunian di Bandung Timur',
+  title: 'Rumah Baru Cibiru Wetan, Bandung Timur',
   description:
-    'Kenali pilihan hunian Flamboyan di Bandung Timur. Jelajahi rumah, bandingkan spesifikasi, dan rencanakan kunjungan bersama tim kami.',
+    'Jelajahi pilihan rumah Bukit Flamboyan Indah 2 di Cibiru Wetan, Bandung Timur. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
 })
-useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
+useHead({
+  link: [
+    { rel: 'canonical', href: canonicalUrl(String(config.public.siteUrl)) },
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      textContent: jsonLdText(websiteSchema(String(config.public.siteUrl))),
+    },
+  ],
+})
 </script>
 
 <template>
@@ -61,6 +86,7 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
           <NuxtLink
             class="editorial-link hero-visit-link"
             to="/konsultasi?tujuan=kunjungan"
+            @click="trackVisit"
             >Rencanakan kunjungan <AppIcon name="arrow"
           /></NuxtLink>
         </div>
@@ -103,7 +129,7 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
         ><span>02 / PERTIMBANGKAN</span><strong>Bandingkan pilihan</strong
         ><AppIcon name="arrow"
       /></NuxtLink>
-      <NuxtLink to="/konsultasi?tujuan=kunjungan"
+      <NuxtLink to="/konsultasi?tujuan=kunjungan" @click="trackVisit"
         ><span>03 / KUNJUNGI</span><strong>Lihat lebih dekat</strong
         ><AppIcon name="arrow"
       /></NuxtLink>
@@ -169,6 +195,7 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
             class="text-link"
             target="_blank"
             rel="noopener noreferrer"
+            @click="trackWhatsapp"
             >Diskusikan kebutuhan hunian <AppIcon name="arrow"
           /></a>
         </div>
@@ -185,7 +212,7 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
             Rumahnya. Kawasannya.<br />Keseharian Anda.
           </h2>
         </div>
-        <NuxtLink class="text-link" to="/konsultasi?tujuan=kunjungan"
+        <NuxtLink class="text-link" to="/konsultasi?tujuan=kunjungan" @click="trackVisit"
           >Rencanakan survei →</NuxtLink
         >
       </div>
@@ -290,6 +317,7 @@ useHead({ link: [{ rel: 'canonical', href: config.public.siteUrl }] })
             :href="wa"
             target="_blank"
             rel="noopener noreferrer"
+            @click="trackWhatsapp"
             >Hubungi Admin ↗</a
           >
         </div>

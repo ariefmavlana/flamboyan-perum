@@ -1,3 +1,5 @@
+import { siteOrigin } from '#shared/utils/seo'
+
 export const xmlEscape = (value: string) =>
   value.replace(
     /[<>&"']/g,
@@ -11,4 +13,4 @@ export const xmlEscape = (value: string) =>
       })[character]!,
   )
 export const sitemapOrigin = () =>
-  useRuntimeConfig().public.siteUrl.replace(/\/$/, '')
+  siteOrigin(String(useRuntimeConfig().public.siteUrl))

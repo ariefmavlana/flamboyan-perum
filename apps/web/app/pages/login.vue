@@ -19,7 +19,7 @@ onMounted(() => {
 })
 const api = useStaffApi()
 useSeoMeta({
-  title: 'Masuk tim — Flamboyan Perum',
+  title: 'Masuk tim',
   robots: 'noindex, nofollow',
 })
 async function checkSession() {

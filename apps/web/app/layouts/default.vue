@@ -1,15 +1,27 @@
 <script setup lang="ts">
 import { whatsappLink } from '#shared/utils/catalog'
+import { siteOrigin } from '#shared/utils/seo'
 const comparison = useComparison()
 const config = useRuntimeConfig()
+const consent = useConsent()
+const analytics = useAnalytics()
 const { whatsappNumber } = await useDevelopment()
+const instagram = computed(() =>
+  String(config.public.instagramUrl ?? '').trim(),
+)
 const wa = computed(() =>
   whatsappLink(
     whatsappNumber.value,
     'properti Flamboyan',
-    config.public.siteUrl,
+    siteOrigin(String(config.public.siteUrl)),
   ),
 )
+function trackWhatsapp() {
+  analytics.track('click_whatsapp', {
+    page_type: 'global',
+    lead_channel: 'whatsapp',
+  })
+}
 </script>
 <template>
   <div class="public-shell">
@@ -37,6 +49,7 @@ const wa = computed(() =>
             class="button"
             target="_blank"
             rel="noopener noreferrer"
+            @click="trackWhatsapp"
             >Hubungi Admin <AppIcon name="arrow"
           /></a>
         </ResponsiveNav>
@@ -71,6 +84,7 @@ const wa = computed(() =>
           class="button"
           target="_blank"
           rel="noopener noreferrer"
+          @click="trackWhatsapp"
           >Bicarakan dengan Admin <AppIcon name="arrow"
         /></a>
       </div>
@@ -86,6 +100,20 @@ const wa = computed(() =>
           ><NuxtLink to="/panduan">Panduan memilih rumah</NuxtLink
           ><NuxtLink to="/konsultasi">Konsultasi & kunjungan</NuxtLink
           ><NuxtLink to="/privasi">Informasi privasi</NuxtLink
+          ><a
+            v-if="instagram"
+            :href="instagram"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram resmi Flamboyan"
+            >Instagram ↗</a
+          ><button
+            v-if="consent.required.value"
+            class="text-link"
+            type="button"
+            @click="consent.requestChange()"
+          >
+            Pilihan privasi</button
           ><NuxtLink to="/backoffice">Tim Flamboyan ↗</NuxtLink>
         </nav>
       </div>
@@ -94,5 +122,6 @@ const wa = computed(() =>
         ><span>Temukan rumah. Rencanakan langkah berikutnya.</span>
       </div>
     </footer>
+    <ConsentBanner />
   </div>
 </template>

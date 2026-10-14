@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { canonicalUrl } from '#shared/utils/seo'
 const config = useRuntimeConfig()
 useSeoMeta({
-  title: 'Panduan memilih hunian — Flamboyan Bandung Timur',
+  title: 'Panduan memilih hunian Bandung Timur',
   description:
     'Catatan untuk mempersiapkan kunjungan rumah, menilai lokasi, dan menggunakan simulasi pembiayaan.',
 })
@@ -9,7 +10,7 @@ useHead({
   link: [
     {
       rel: 'canonical',
-      href: `${config.public.siteUrl.replace(/\/+$/, '')}/panduan`,
+      href: canonicalUrl(String(config.public.siteUrl), '/panduan'),
     },
   ],
 })

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: 'Kata sandi baru — Flamboyan',
+  title: 'Kata sandi baru',
   robots: 'noindex, nofollow',
 })
 const route = useRoute()

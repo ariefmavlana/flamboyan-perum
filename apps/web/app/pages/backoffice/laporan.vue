@@ -3,7 +3,7 @@ import type { LeadReport } from '#shared/types'
 import { leadLabels } from '#shared/utils/leads'
 definePageMeta({ layout: 'backoffice' })
 useSeoMeta({
-  title: 'Laporan supervisi — Flamboyan',
+  title: 'Laporan supervisi',
   robots: 'noindex, nofollow',
 })
 const api = useStaffApi()

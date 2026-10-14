@@ -6,6 +6,12 @@ import {
   whatsappLink,
   propertyUrl,
 } from '#shared/utils/catalog'
+import { absoluteUrl, canonicalUrl } from '#shared/utils/seo'
+import {
+  breadcrumbSchema,
+  jsonLdText,
+  realEstateListingSchema,
+} from '#shared/utils/structured-data'
 const route = useRoute()
 const config = useRuntimeConfig()
 const { whatsappNumber } = await useDevelopment()
@@ -27,7 +33,37 @@ if (!data.value)
   })
 const property = computed(() => data.value!.data)
 const analytics = usePropertyAnalytics()
-onMounted(() => analytics.record(property.value.id, 'property_view'))
+const tracking = useAnalytics()
+onMounted(() => {
+  analytics.record(property.value.id, 'property_view')
+  tracking.track(
+    'view_property',
+    {
+      property_id: property.value.id,
+      property_type: property.value.house_type,
+      page_type: 'property',
+      content_group: 'katalog',
+    },
+    { once: true },
+  )
+})
+function trackWhatsapp() {
+  analytics.record(property.value.id, 'whatsapp_click')
+  tracking.track('click_whatsapp', {
+    property_id: property.value.id,
+    property_type: property.value.house_type,
+    page_type: 'property',
+    lead_channel: 'whatsapp',
+  })
+}
+function trackVisit() {
+  tracking.track('request_visit', {
+    property_id: property.value.id,
+    property_type: property.value.house_type,
+    page_type: 'property',
+    lead_channel: 'whatsapp',
+  })
+}
 const canonical = computed(() =>
   propertyUrl(config.public.siteUrl, property.value.slug),
 )
@@ -39,12 +75,12 @@ const cover = computed(() =>
 )
 const shareImage = computed(() => {
   const source = cover.value?.sources.at(-1)?.url
-  return source ? new URL(source, config.public.siteUrl).href : undefined
+  return source ? absoluteUrl(String(config.public.siteUrl), source) : undefined
 })
 const hasMedia = (kind: string) =>
   property.value.media?.some((media) => media.kind === kind)
 useSeoMeta({
-  title: () => `${property.value.title} — Flamboyan Perum`,
+  title: () => property.value.title,
   description: () => property.value.description.slice(0, 155),
   ogTitle: () => property.value.title,
   ogDescription: () => property.value.description.slice(0, 155),
@@ -59,40 +95,28 @@ useHead(() => ({
   script: [
     {
       type: 'application/ld+json',
-      textContent: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'RealEstateListing',
-        name: property.value.title,
-        description: property.value.description,
-        url: canonical.value,
-        offers: {
-          '@type': 'Offer',
-          price: property.value.price_idr,
-          priceCurrency: 'IDR',
-          ...(property.value.availability === 'CHECK_REQUIRED'
-            ? {}
-            : {
-                availability: `https://schema.org/${property.value.availability === 'AVAILABLE' ? 'InStock' : property.value.availability === 'SOLD_OUT' ? 'SoldOut' : 'Reserved'}`,
-              }),
-          itemOffered: {
-            '@type': 'House',
-            name: property.value.title,
-            address: {
-              '@type': 'PostalAddress',
-              streetAddress: property.value.address,
-              addressLocality: property.value.location,
-              addressCountry: 'ID',
-            },
-            floorSize: {
-              '@type': 'QuantitativeValue',
-              value: Number(property.value.building_area),
-              unitCode: 'MTK',
-            },
-            numberOfBedrooms: property.value.bedrooms,
-            numberOfBathroomsTotal: property.value.bathrooms,
+      textContent: jsonLdText(
+        realEstateListingSchema(property.value, {
+          url: canonical.value,
+          image: shareImage.value,
+        }),
+      ),
+    },
+    {
+      type: 'application/ld+json',
+      textContent: jsonLdText(
+        breadcrumbSchema([
+          {
+            name: 'Beranda',
+            url: canonicalUrl(String(config.public.siteUrl)),
           },
-        },
-      }).replace(/</g, '\\u003c'),
+          {
+            name: 'Jelajahi properti',
+            url: canonicalUrl(String(config.public.siteUrl), '/properti'),
+          },
+          { name: property.value.title, url: canonical.value },
+        ]),
+      ),
     },
   ],
 }))
@@ -138,7 +162,7 @@ useHead(() => ({
           class="button full"
           target="_blank"
           rel="noopener noreferrer"
-          @click="analytics.record(property.id, 'whatsapp_click')"
+          @click="trackWhatsapp"
           >Hubungi Admin melalui WhatsApp ↗</a
         >
         <p class="muted">
@@ -187,6 +211,7 @@ useHead(() => ({
             path: '/konsultasi',
             query: { properti: property.slug, tujuan: 'kunjungan' },
           }"
+          @click="trackVisit"
           >Rencanakan kunjungan →</NuxtLink
         >
         <NuxtLink class="text-link" to="/panduan/kunjungan-rumah"
@@ -204,7 +229,10 @@ useHead(() => ({
       </div>
     </div>
     <div id="simulasi-kpr">
-      <MortgageCalculator :price="property.price_idr" />
+      <MortgageCalculator
+        :price="property.price_idr"
+        :property-id="property.id"
+      />
     </div>
   </section>
 </template>

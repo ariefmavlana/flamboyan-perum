@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Property } from '#shared/types'
 import { consultationLink, propertyUrl } from '#shared/utils/catalog'
+import { canonicalUrl } from '#shared/utils/seo'
 const config = useRuntimeConfig()
 const { whatsappNumber } = await useDevelopment()
 const route = useRoute()
@@ -43,7 +44,7 @@ onMounted(() => {
 const contextUrl = computed(() =>
   property.value
     ? propertyUrl(config.public.siteUrl, property.value.slug)
-    : `${config.public.siteUrl.replace(/\/+$/, '')}/properti`,
+    : canonicalUrl(String(config.public.siteUrl), '/properti'),
 )
 const handoff = computed(() => {
   if (
@@ -67,11 +68,18 @@ const handoff = computed(() => {
   return url.href
 })
 const analytics = usePropertyAnalytics()
+const tracking = useAnalytics()
 function record() {
   if (property.value) analytics.record(property.value.id, 'whatsapp_click')
+  tracking.track('click_whatsapp', {
+    property_id: property.value?.id,
+    property_type: property.value?.house_type,
+    page_type: 'consultation',
+    lead_channel: 'whatsapp',
+  })
 }
 useSeoMeta({
-  title: 'Konsultasi hunian & kunjungan — Flamboyan Bandung Timur',
+  title: 'Konsultasi hunian & kunjungan',
   description:
     'Siapkan percakapan tentang hunian, pembiayaan, atau rencana kunjungan bersama Admin Flamboyan.',
   robots: () =>
@@ -83,7 +91,7 @@ useHead({
   link: [
     {
       rel: 'canonical',
-      href: `${config.public.siteUrl.replace(/\/+$/, '')}/konsultasi`,
+      href: canonicalUrl(String(config.public.siteUrl), '/konsultasi'),
     },
   ],
 })

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Paginated } from '#shared/types'
 definePageMeta({ layout: 'backoffice' })
-useSeoMeta({ title: 'Retensi lead — Flamboyan', robots: 'noindex, nofollow' })
+useSeoMeta({ title: 'Retensi lead', robots: 'noindex, nofollow' })
 type Candidate = {
   id: number
   property_id: number

@@ -10,6 +10,18 @@ if (process.env.VERCEL === '1' && !process.env.NUXT_API_BASE)
     'NUXT_API_BASE wajib diset pada build Vercel agar proxy same-origin berfungsi.',
   )
 
+const publicSiteUrl = (
+  process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+).replace(/\/+$/, '')
+
+if (
+  process.env.VERCEL_ENV === 'production' &&
+  /\.vercel\.app$/.test(publicSiteUrl)
+)
+  console.warn(
+    '[flamboyan] NUXT_PUBLIC_SITE_URL masih memakai hostname Vercel. Canonical dan sitemap produksi menunggu domain resmi disetujui.',
+  )
+
 const sameOriginProxy =
   process.env.VERCEL === '1'
     ? Object.fromEntries(
@@ -66,6 +78,9 @@ export default defineNuxtConfig({
       siteUrl: 'http://localhost:3000',
       whatsappNumber: '62895375894848',
       analyticsEnabled: false,
+      gtmId: '',
+      metaPixelId: '',
+      instagramUrl: '',
     },
   },
   routeRules: {
@@ -101,5 +116,21 @@ export default defineNuxtConfig({
       },
     },
   },
-  app: { head: { htmlAttrs: { lang: 'id' }, title: 'Flamboyan Perum' } },
+  app: {
+    head: {
+      htmlAttrs: { lang: 'id' },
+      title: 'Flamboyan Perum',
+      meta: [
+        {
+          name: 'description',
+          content:
+            'Jelajahi pilihan rumah Bukit Flamboyan Indah 2 di Cibiru Wetan, Bandung Timur. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
+        },
+        { property: 'og:site_name', content: 'Flamboyan Perum' },
+        { property: 'og:locale', content: 'id_ID' },
+        { property: 'og:type', content: 'website' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+      ],
+    },
+  },
 })

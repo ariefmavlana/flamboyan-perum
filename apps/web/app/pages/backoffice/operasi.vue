@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'backoffice' })
 useSeoMeta({
-  title: 'Operasi layanan — Flamboyan',
+  title: 'Operasi layanan',
   robots: 'noindex, nofollow',
 })
 type Health = {

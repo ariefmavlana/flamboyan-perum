@@ -33,7 +33,7 @@ function remove(id: number) {
   })
 }
 useSeoMeta({
-  title: 'Bandingkan properti — Flamboyan',
+  title: 'Bandingkan properti',
   robots: 'noindex, follow',
 })
 </script>
