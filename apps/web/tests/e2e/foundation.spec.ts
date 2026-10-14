@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { formatArea } from '../../shared/utils/format'
 import { demoProperty } from './helpers'
 
 test('property specifications and canonical are present in SSR HTML', async ({
@@ -10,7 +11,7 @@ test('property specifications and canonical are present in SSR HTML', async ({
   expect(response.status()).toBe(200)
   const html = await response.text()
   expect(html).toContain(fixture.title)
-  expect(html).toContain(fixture.land_area + ' m²')
+  expect(html).toContain(formatArea(fixture.land_area))
   expect(html).toContain('rel="canonical"')
   await page.goto(`/properti/${fixture.slug}`)
   await expect(page.getByRole('heading', { name: fixture.title })).toBeVisible()

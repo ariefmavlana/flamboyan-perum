@@ -11,6 +11,7 @@ const api = useStaffApi()
 const session = useStaffSession()
 const results = ref<Paginated<EditorialContent> | null>(null)
 const message = ref('')
+const success = ref(false)
 const busy = ref(false)
 const selected = ref<EditorialContent | null>(null)
 const dialog = ref<HTMLDialogElement | null>(null)
@@ -153,7 +154,7 @@ const schemas = {
   ],
   TESTIMONIAL: [
     { key: 'name', label: 'Nama publik berizin', type: 'text', max: 160 },
-    { key: 'quote', label: 'Testimonial berizin', type: 'textarea', max: 2000 },
+    { key: 'quote', label: 'Cerita pembeli berizin', type: 'textarea', max: 2000 },
     { key: 'context', label: 'Keterangan publik', type: 'text', max: 160 },
   ],
   BANK_PARTNER: [
@@ -162,18 +163,18 @@ const schemas = {
   ],
   DEVELOPMENT: [
     { key: 'name', label: 'Nama kawasan', type: 'text', max: 160 },
-    { key: 'developer', label: 'Developer', type: 'text', max: 160 },
+    { key: 'developer', label: 'Pengembang', type: 'text', max: 160 },
     { key: 'address', label: 'Alamat kawasan', type: 'text', max: 500 },
     {
       key: 'whatsapp',
-      label: 'WhatsApp survei (format 62…)',
+      label: 'WhatsApp kunjungan (format 62…)',
       type: 'text',
       max: 15,
     },
-    { key: 'website', label: 'Situs developer HTTPS', type: 'url', max: 2048 },
+    { key: 'website', label: 'Situs pengembang HTTPS', type: 'url', max: 2048 },
     {
       key: 'planned_units',
-      label: 'Total rencana unit (bukan stok)',
+      label: 'Total rencana unit (bukan jumlah tersedia)',
       type: 'number',
       max: 100000,
     },
@@ -284,7 +285,7 @@ const schemas = {
     {
       key: 'conditions',
       label:
-        'Syarat produk, kelompok nasabah, plafon, developer dan biaya yang belum tercakup',
+        'Syarat produk, kelompok nasabah, plafon, pengembang dan biaya yang belum tercakup',
       type: 'textarea',
       max: 2500,
       optional: true,
@@ -451,6 +452,7 @@ async function save() {
     if (kind.value === 'BANK_PARTNER') selected.value = result.data
     else dialog.value?.close()
     await load()
+    success.value = true
     message.value =
       kind.value === 'BANK_PARTNER' && !selected.value?.logo_uploaded
         ? 'Konten tersimpan. Unggah logo berizin di bawah, lalu publikasikan setelah ditinjau.'
@@ -465,13 +467,19 @@ onMounted(() => load())
 </script>
 <template>
   <section class="container section">
-    <p class="eyebrow">EDITORIAL ADMIN</p>
-    <h1 class="page-title">Konten publik.</h1>
+    <p class="eyebrow">ADMIN · KONTEN</p>
+    <h1 class="page-title">Konten publik</h1>
     <p class="muted">
-      Pilih bagian website yang ingin diperbarui. Simpan sebagai draft untuk
+      Pilih bagian website yang ingin diperbarui. Simpan sebagai draf untuk
       ditinjau, lalu publikasikan ketika informasinya siap.
     </p>
-    <p v-if="message" role="status">{{ message }}</p>
+    <p
+      v-if="message && !dialog?.open"
+      :role="success ? 'status' : 'alert'"
+      :class="success ? 'success-notice' : 'error-text'"
+    >
+      {{ message }}
+    </p>
     <template v-if="session.account.value?.role === 'ADMIN'"
       ><div class="content-purpose-grid" aria-label="Bagian konten website">
         <button
@@ -504,7 +512,7 @@ onMounted(() => load())
         <label
           >Jenis konten baru<select v-model="kind">
             <option value="HERO">Sorotan beranda</option>
-            <option value="TESTIMONIAL">Testimonial</option>
+            <option value="TESTIMONIAL">Cerita pembeli</option>
             <option value="BANK_RATE">Referensi KPR</option>
             <option value="BANK_PARTNER">Bank mitra</option>
             <option value="DEVELOPMENT">Kawasan & kontak</option>
@@ -521,25 +529,25 @@ onMounted(() => load())
       >
         <table>
           <caption>
-            Konten editorial, termasuk draft dan rate kedaluwarsa
+            Konten editorial, termasuk draf dan suku bunga kedaluwarsa
           </caption>
           <thead>
             <tr>
-              <th>Jenis</th>
+              <th>Jenis konten</th>
               <th>Judul / nama</th>
               <th>Publikasi</th>
               <th>Urutan</th>
-              <th>Aksi</th>
+              <th>Tindakan</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="record in results?.data" :key="record.id">
-              <td data-label="Bagian website">
+              <td data-label="Jenis konten">
                 {{
                   {
                     HERO: 'Sorotan beranda',
-                    TESTIMONIAL: 'Testimonial',
-                    BANK_RATE: 'Referensi bank',
+                    TESTIMONIAL: 'Cerita pembeli',
+                    BANK_RATE: 'Referensi KPR',
                     BANK_PARTNER: 'Bank mitra',
                     DEVELOPMENT: 'Kawasan & kontak',
                   }[record.kind]
@@ -554,11 +562,11 @@ onMounted(() => load())
               </td>
               <td data-label="Publikasi">
                 <span class="badge">{{
-                  record.published ? 'Publik' : 'Draft'
+                  record.published ? 'Publik' : 'Draf'
                 }}</span>
               </td>
               <td data-label="Urutan">{{ record.position }}</td>
-              <td data-label="Kelola">
+              <td data-label="Tindakan">
                 <button class="button secondary" @click="open(record)">
                   Edit konten #{{ record.id }}
                 </button>
@@ -568,7 +576,11 @@ onMounted(() => load())
         </table>
       </div>
       <p v-if="results && !results.data.length" class="notice">
-        Belum ada konten. Tidak ada testimonial atau rate yang dibuat otomatis.
+        {{
+          contentFilter
+            ? 'Belum ada konten untuk bagian ini. Pilih “Lihat semua bagian” untuk melihat seluruh konten.'
+            : 'Belum ada konten. Tidak ada cerita pembeli atau suku bunga yang dibuat otomatis.'
+        }}
       </p>
       <nav
         v-if="results && results.meta.last_page > 1"
@@ -726,8 +738,9 @@ onMounted(() => load())
           <p v-if="mediaError" role="alert">{{ mediaError }}</p>
           <p class="muted">
             Hanya foto dan video siap yang diaktifkan untuk publik dari properti
-            ini. Unggah melalui Katalog → Edit properti → Media properti. Video
-            diputar setelah pengunjung memilihnya; foto sampul menjadi poster.
+            ini. Unggah melalui Katalog properti → Edit properti → Foto & media.
+            Video diputar setelah pengunjung memilihnya; foto sampul menjadi
+            poster.
           </p>
         </template>
         <p v-if="kind === 'BANK_PARTNER'" class="notice">
@@ -758,7 +771,13 @@ onMounted(() => load())
             Tutup
           </button>
         </div>
-        <p v-if="message" role="alert">{{ message }}</p>
+        <p
+          v-if="message"
+          :role="success ? 'status' : 'alert'"
+          :class="success ? 'success-notice' : 'error-text'"
+        >
+          {{ message }}
+        </p>
       </form>
       <form
         v-if="kind === 'BANK_PARTNER' && selected"
@@ -804,6 +823,10 @@ onMounted(() => load())
         >
           Unggah logo bank
         </button>
+        <p v-if="!logoFile || !logoVerified" class="muted">
+          Pilih berkas dan centang verifikasi izin logo untuk mengaktifkan
+          unggahan.
+        </p>
       </form>
     </dialog>
   </section>

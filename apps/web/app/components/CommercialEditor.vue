@@ -6,6 +6,7 @@ const api = useStaffApi()
 const busy = ref(false)
 const message = ref('')
 const verified = ref(false)
+const success = ref(false)
 const form = reactive({
   floors: 1,
   lot_dimensions: '',
@@ -72,6 +73,7 @@ watch(
 const money = (v: string) => (v === '' ? null : Number(v))
 async function save() {
   busy.value = true
+  success.value = false
   message.value = ''
   try {
     const result = await api.request<{ data: InternalProperty }>(
@@ -109,6 +111,7 @@ async function save() {
       },
     )
     emit('saved', result.data)
+    success.value = true
     message.value = 'Spesifikasi dan periode pembayaran tersimpan.'
   } catch (error) {
     message.value = staffError(error)
@@ -136,9 +139,9 @@ function addPlan() {
   <form class="section" @submit.prevent="save">
     <h3>Spesifikasi, harga & pembayaran</h3>
     <p>
-      Harga dasar pada form properti dipakai di luar periode program. Rencana
-      unit bukan stok tersedia. Periode memakai tanggal Asia/Jakarta; penawaran
-      lama otomatis tidak ditampilkan.
+      Harga dasar pada formulir properti dipakai di luar periode program.
+      Rencana unit bukan ketersediaan tersedia. Periode memakai tanggal
+      Asia/Jakarta; penawaran lama otomatis tidak ditampilkan.
     </p>
     <div class="form-grid">
       <label
@@ -198,7 +201,7 @@ function addPlan() {
           :required="!!form.next_price_idr"
       /></label>
       <label
-        >Biaya program developer (IDR, opsional)<input
+        >Biaya program pengembang (IDR, opsional)<input
           v-model="form.program_fee_idr"
           type="number"
           min="0"
@@ -206,14 +209,14 @@ function addPlan() {
           step="1"
       /></label>
       <label
-        >Biaya program terakhir berlaku<input
-          v-model="form.program_fee_until"
+        >Biaya program mulai berlaku<input
+          v-model="form.program_fee_start"
           type="date"
           :required="form.program_fee_idr !== ''"
       /></label>
       <label
-        >Biaya program mulai berlaku<input
-          v-model="form.program_fee_start"
+        >Biaya program terakhir berlaku<input
+          v-model="form.program_fee_until"
           type="date"
           :required="form.program_fee_idr !== ''"
       /></label>
@@ -249,7 +252,7 @@ function addPlan() {
       />
     </label>
     <label
-      >Ketentuan biaya developer<textarea
+        >Ketentuan biaya pengembang<textarea
         v-model="form.fee_notes"
         maxlength="1500"
         required
@@ -262,7 +265,7 @@ function addPlan() {
         required
       />
     </label>
-    <h4>Cash & cicilan developer</h4>
+      <h4>Tunai & cicilan pengembang</h4>
     <p>
       Terpisah dari bunga dan persetujuan KPR bank. Total harus cocok dengan
       pembayaran awal + jumlah bulan × angsuran.
@@ -275,8 +278,8 @@ function addPlan() {
         /></label>
         <label
           >Jenis<select v-model="plan.kind">
-            <option value="CASH">Cash</option>
-            <option value="INSTALLMENT">Cicilan developer</option>
+            <option value="CASH">Tunai</option>
+            <option value="INSTALLMENT">Cicilan pengembang</option>
           </select></label
         >
         <label
@@ -345,14 +348,27 @@ function addPlan() {
     >
       Tambah skema pembayaran
     </button>
+    <p v-if="plans.length >= 8" class="muted">
+      Maksimum 8 skema pembayaran per properti.
+    </p>
     <label class="checkbox-label"
       ><input v-model="verified" type="checkbox" required />Saya telah
       mencocokkan spesifikasi, periode, angka, dan ketentuan dengan dokumen
-      developer.</label
+      pengembang.</label
     >
     <button class="button" :disabled="busy || !verified">
       Simpan spesifikasi & pembayaran
     </button>
-    <p v-if="message" role="status">{{ message }}</p>
+    <p v-if="!verified" class="muted">
+      Centang verifikasi untuk mengaktifkan penyimpanan; setiap perubahan
+      setelah dicentang perlu dicentang ulang.
+    </p>
+    <p
+      v-if="message"
+      :role="success ? 'status' : 'alert'"
+      :class="success ? 'success-notice' : 'error-text'"
+    >
+      {{ message }}
+    </p>
   </form>
 </template>

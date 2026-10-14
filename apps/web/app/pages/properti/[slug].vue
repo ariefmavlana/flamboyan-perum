@@ -7,6 +7,7 @@ import {
   propertyUrl,
 } from '#shared/utils/catalog'
 import { absoluteUrl, canonicalUrl } from '#shared/utils/seo'
+import { formatArea } from '#shared/utils/format'
 import {
   breadcrumbSchema,
   jsonLdText,
@@ -183,11 +184,11 @@ useHead(() => ({
           </div>
           <div>
             <dt>Luas tanah</dt>
-            <dd>{{ property.land_area }} m²</dd>
+            <dd>{{ formatArea(property.land_area) }}</dd>
           </div>
           <div>
             <dt>Luas bangunan</dt>
-            <dd>{{ property.building_area }} m²</dd>
+            <dd>{{ formatArea(property.building_area) }}</dd>
           </div>
           <div>
             <dt>Kamar tidur</dt>

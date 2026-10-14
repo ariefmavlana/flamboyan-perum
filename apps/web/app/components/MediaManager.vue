@@ -12,6 +12,7 @@ const alt = ref('')
 const url = ref('')
 const file = ref<File | null>(null)
 const message = ref('')
+const success = ref(false)
 const busy = ref(false)
 const processInRequest = ref(false)
 const polling = ref(false)
@@ -26,7 +27,7 @@ const kinds: Record<PublicMedia['kind'], string> = {
   PHOTO: 'Foto',
   FLOOR_PLAN: 'Denah',
   MASTERPLAN: 'Masterplan kawasan',
-  VIDEO: 'YouTube',
+  VIDEO: 'Video',
   TOUR: 'Virtual tour',
   BROCHURE: 'Brosur PDF',
 }
@@ -71,6 +72,7 @@ function toggleArchives() {
 }
 async function add() {
   busy.value = true
+  success.value = false
   message.value = ''
   try {
     let body: Record<string, unknown> | FormData
@@ -98,6 +100,7 @@ async function add() {
     file.value = null
     if (input.value) input.value.value = ''
     await load()
+    success.value = true
     message.value =
       'Media tersimpan. Tinjau status dan tampilkan ke publik setelah siap.'
   } catch (error) {
@@ -106,7 +109,11 @@ async function add() {
     busy.value = false
   }
 }
-async function update(item: InternalMedia, changes: Record<string, unknown>) {
+async function update(
+  item: InternalMedia,
+  changes: Record<string, unknown>,
+  successMessage = 'Media diperbarui.',
+) {
   busy.value = true
   try {
     const result = await api.request<{ property_version: number }>(
@@ -115,8 +122,10 @@ async function update(item: InternalMedia, changes: Record<string, unknown>) {
     )
     emit('version', result.property_version)
     await load()
-    message.value = 'Media diperbarui.'
+    success.value = true
+    message.value = successMessage
   } catch (error) {
+    success.value = false
     message.value = staffError(error)
   } finally {
     busy.value = false
@@ -172,7 +181,13 @@ watch(
       tampil publik setelah meninjau foto dan deskripsinya. Denah diunggah
       terpisah agar mudah dikenali.
     </p>
-    <p v-if="message" role="status">{{ message }}</p>
+    <p
+      v-if="message"
+      :role="success ? 'status' : 'alert'"
+      :class="success ? 'success-notice' : 'error-text'"
+    >
+      {{ message }}
+    </p>
     <form @submit.prevent="add">
       <label
         >Jenis media<select v-model="kind">
@@ -181,7 +196,7 @@ watch(
           </option>
         </select></label
       ><label
-        >Deskripsi gambar / media<input
+        >Deskripsi media<input
           v-model="alt"
           required
           maxlength="240" /></label
@@ -246,6 +261,10 @@ watch(
         <strong>{{ kinds[item.kind] }} · {{ item.alt }}</strong
         ><br />{{ labels[item.state] }}
       </p>
+      <p v-if="item.state === 'ARCHIVED'" class="muted">
+        Media arsip tidak dapat diedit dari sini; unggah berkas baru untuk
+        menggantinya.
+      </p>
       <template v-if="item.state !== 'ARCHIVED'"
         ><img
           v-if="
@@ -277,7 +296,7 @@ watch(
             max="1000" /></label
         ><label class="checkbox-label"
           ><input v-model="item.published" type="checkbox" />Tampilkan saat
-          properti published dan media siap</label
+          properti dipublikasikan dan media siap</label
         >
         <div class="action-row">
           <button
@@ -296,13 +315,13 @@ watch(
             v-if="item.state === 'FAILED'"
             class="text-button"
             :disabled="busy"
-            @click="update(item, { retry: true })"
+            @click="update(item, { retry: true }, 'Pemrosesan ulang diminta.')"
           >
             Proses ulang</button
           ><button
             class="text-button"
             :disabled="busy"
-            @click="update(item, { archived: true })"
+            @click="update(item, { archived: true }, 'Media diarsipkan.')"
           >
             Arsipkan media
           </button>

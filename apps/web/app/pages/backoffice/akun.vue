@@ -20,7 +20,7 @@ function describeChanges(changes: Record<string, unknown>) {
   return Object.entries(changes)
     .flatMap(([key, value]) =>
       key === 'role'
-        ? [`Peran: ${value === 'ADMIN' ? 'Admin' : 'Marketing'}`]
+        ? [`Peran: ${value === 'ADMIN' ? 'Administrator' : 'Marketing'}`]
         : key === 'is_active'
           ? [value ? 'Akun aktif' : 'Akun dinonaktifkan']
           : value === true && changeLabels[key]
@@ -35,6 +35,7 @@ const q = ref('')
 const role = ref('')
 const active = ref('')
 const message = ref('')
+const success = ref(false)
 const busy = ref(false)
 const selected = ref<StaffAccount | null>(null)
 const editor = ref<HTMLDialogElement | null>(null)
@@ -110,6 +111,7 @@ function open(account?: StaffAccount) {
 }
 async function save() {
   busy.value = true
+  success.value = false
   try {
     const { password, password_confirmation, ...fields } = form
     await api.request(
@@ -133,6 +135,7 @@ async function save() {
       await navigateTo('/login')
     } else {
       await load()
+      success.value = true
       message.value = 'Akun tersimpan.'
     }
   } catch (error) {
@@ -163,7 +166,7 @@ onMounted(() => load())
     </div>
     <div class="catalog-guide">
       <div>
-        <strong>Admin</strong
+        <strong>Administrator</strong
         ><span
           >Mengelola katalog, konten website, akun, dan penugasan calon
           pembeli.</span
@@ -184,14 +187,20 @@ onMounted(() => load())
         >
       </div>
     </div>
-    <p v-if="message && !editor?.open" role="alert">{{ message }}</p>
+    <p
+      v-if="message && !editor?.open"
+      :role="success ? 'status' : 'alert'"
+      :class="success ? 'success-notice' : 'error-text'"
+    >
+      {{ message }}
+    </p>
     <template v-if="session.account.value?.role === 'ADMIN'"
       ><form class="action-row" @submit.prevent="load()">
         <label>Cari nama / email<input v-model="q" maxlength="100" /></label
         ><label
           >Peran<select v-model="role">
             <option value="">Semua</option>
-            <option value="ADMIN">Admin</option>
+            <option value="ADMIN">Administrator</option>
             <option value="MARKETING">Marketing</option>
           </select></label
         ><label
@@ -293,7 +302,7 @@ onMounted(() => load())
         ><label
           >Peran<select v-model="form.role">
             <option value="MARKETING">Marketing</option>
-            <option value="ADMIN">Admin</option>
+            <option value="ADMIN">Administrator</option>
           </select></label
         ><label v-if="selected" class="checkbox-label"
           ><input v-model="form.is_active" type="checkbox" />Akun aktif</label
@@ -323,8 +332,8 @@ onMounted(() => load())
         >
         <p v-else class="muted">
           Perubahan email, peran, dan aktivasi mengakhiri sesi akun. Alihkan
-          katalog serta lead aktif sebelum menonaktifkan Marketing. Admin aktif
-          terakhir dilindungi.
+          katalog serta calon pembeli aktif sebelum menonaktifkan Marketing.
+          Administrator aktif terakhir dilindungi.
         </p>
         <button class="button" :disabled="busy">Simpan akun</button>
       </form>

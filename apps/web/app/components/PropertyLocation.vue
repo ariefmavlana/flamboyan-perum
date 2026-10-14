@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Property } from '#shared/types'
+import { formatDate, formatNumber } from '#shared/utils/format'
 const props = defineProps<{ property: Property }>()
 const consent = ref(false)
 const interactive = ref(false)
@@ -75,9 +76,10 @@ const categories = {
     <ul v-if="property.pois?.length" class="poi-list">
       <li v-for="(poi, index) in property.pois" :key="index">
         <strong>{{ poi.name }}</strong> · {{ categories[poi.category] }} ·
-        {{ new Intl.NumberFormat('id-ID').format(poi.distance_m) }} m
+        {{ formatNumber(poi.distance_m) }} m
         <p class="muted">
-          Jarak editorial, bukan waktu tempuh. Sumber {{ poi.source_date }}:
+          Jarak editorial, bukan waktu tempuh. Sumber
+          {{ formatDate(poi.source_date) }}:
           <a :href="poi.source_url" target="_blank" rel="noopener noreferrer"
             >referensi ↗</a
           >

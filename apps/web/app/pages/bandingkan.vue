@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Property } from '#shared/types'
 import { formatIdr, availabilityLabels } from '#shared/utils/catalog'
+import { formatArea } from '#shared/utils/format'
 const route = useRoute()
 const comparison = useComparison()
 const compareIds = computed(() =>
@@ -118,11 +119,11 @@ useSeoMeta({
             </div>
             <div>
               <dt>Tanah</dt>
-              <dd>{{ property.land_area }} m²</dd>
+              <dd>{{ formatArea(property.land_area) }}</dd>
             </div>
             <div>
               <dt>Bangunan</dt>
-              <dd>{{ property.building_area }} m²</dd>
+              <dd>{{ formatArea(property.building_area) }}</dd>
             </div>
             <div>
               <dt>Kamar tidur / mandi</dt>

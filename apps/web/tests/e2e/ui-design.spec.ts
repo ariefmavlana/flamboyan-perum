@@ -112,7 +112,7 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
         if (width <= 900)
           await page.getByRole('button', { name: 'Menu', exact: true }).click()
         await page
-          .getByRole('navigation', { name: 'Workspace tim' })
+          .getByRole('navigation', { name: 'Ruang kerja tim' })
           .locator('a[href="' + path + '"]')
           .click()
         await expect(page).toHaveURL('http://127.0.0.1:3000' + path)
@@ -128,7 +128,7 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
           page.getByText(/calon pembeli.*Halaman/),
         ).toBeVisible()
         await expect(
-          page.getByText('Memuat workspace…', { exact: true }),
+          page.getByText('Memuat ruang kerja…', { exact: true }),
         ).not.toBeVisible()
       } else if (
         [
@@ -168,7 +168,7 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
   await page.setViewportSize({ width: 320, height: 800 })
   const menu = page.getByRole('button', { name: 'Menu', exact: true })
   await menu.click()
-  const nav = page.getByRole('navigation', { name: 'Workspace tim' })
+  const nav = page.getByRole('navigation', { name: 'Ruang kerja tim' })
   await nav.getByRole('link', { name: 'Katalog properti', exact: true }).focus()
   await page.keyboard.press('Escape')
   await expect(menu).toBeFocused()

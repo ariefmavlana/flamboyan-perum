@@ -74,7 +74,7 @@ for (const role of ['admin', 'marketing']) {
       role === 'admin' ? 'Administrator' : 'Marketing',
     )
     await expect(
-      page.getByText('Memuat workspace…', { exact: true }),
+      page.getByText('Memuat ruang kerja…', { exact: true }),
     ).toHaveCount(0)
     await expect(page.getByRole('row').nth(1)).toBeVisible()
     expect(

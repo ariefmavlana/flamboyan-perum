@@ -58,10 +58,10 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
   })
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.getByRole('link', { name: 'Calon pembeli', exact: true }).click()
-  await page.getByRole('button', { name: 'Catat lead baru' }).click()
+  await page.getByRole('button', { name: 'Catat calon pembeli' }).click()
   const leadForm = page
     .getByRole('dialog')
-    .filter({ has: page.getByRole('heading', { name: 'Catat lead baru' }) })
+    .filter({ has: page.getByRole('heading', { name: 'Catat calon pembeli' }) })
   await leadForm
     .getByLabel('Nama calon pembeli')
     .fill(`Prospek Operasi ${suffix}`)
@@ -71,7 +71,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
   await leadForm
     .getByLabel('Properti yang diminati', { exact: true })
     .selectOption({ label: `Rumah Operasi ${suffix}` })
-  await leadForm.getByRole('button', { name: 'Simpan lead' }).click()
+  await leadForm.getByRole('button', { name: 'Simpan calon pembeli' }).click()
   await expect(leadForm).not.toBeVisible()
   const drawer = page.getByRole('dialog').filter({
     has: page.getByRole('heading', { name: `Prospek Operasi ${suffix}` }),

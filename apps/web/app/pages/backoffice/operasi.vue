@@ -61,11 +61,11 @@ onMounted(load)
       </p>
       <dl class="spec-grid">
         <div>
-          <dt>Database</dt>
+          <dt>Basis data</dt>
           <dd>{{ health.database ? 'Terhubung' : 'Gagal' }}</dd>
         </div>
         <div>
-          <dt>Storage private</dt>
+          <dt>Penyimpanan privat</dt>
           <dd>{{ health.private_storage ? 'Baca/tulis sehat' : 'Gagal' }}</dd>
         </div>
         <div>
@@ -79,21 +79,21 @@ onMounted(load)
           </dd>
         </div>
         <div>
-          <dt>Job tertunda</dt>
+          <dt>Tugas menunggu</dt>
           <dd>{{ health.queue.pending ?? 'Tidak tersedia' }}</dd>
         </div>
         <div>
-          <dt>Usia job tertua</dt>
+          <dt>Usia tugas tertua</dt>
           <dd>
             {{ health.queue.oldest_age_seconds ?? 'Tidak tersedia' }} detik
           </dd>
         </div>
         <div>
-          <dt>Failed jobs</dt>
+          <dt>Tugas gagal</dt>
           <dd>{{ health.queue.failed ?? 'Tidak tersedia' }}</dd>
         </div>
         <div>
-          <dt>Media gagal / processing &gt;15 menit</dt>
+          <dt>Media gagal / diproses &gt;15 menit</dt>
           <dd>
             {{ health.media?.failed ?? '—' }} /
             {{ health.media?.stale_processing ?? '—' }}
@@ -113,18 +113,18 @@ onMounted(load)
         </div>
       </dl>
       <p v-if="health.queue.backlog_alert" role="alert">
-        Backlog melewati 5 menit atau queue belum dapat diperiksa. Periksa
-        worker dan provider melalui runbook.
+        Antrean melewati 5 menit atau belum dapat diperiksa. Periksa proses
+        latar dan penyedia layanan sesuai panduan operasi.
       </p>
       <p v-if="health.backup.overdue" role="alert">
-        Bukti backup belum tersedia atau melewati 26 jam. Verifikasi backup
-        database dan media sesuai runbook.
+        Bukti cadangan belum tersedia atau melewati 26 jam. Verifikasi cadangan
+        basis data dan media sesuai panduan operasi.
       </p></template
     >
     <p class="muted">
-      Pemeriksaan tidak membuktikan pengiriman provider, ketersediaan bulanan,
-      backup offsite atau izin konten. Monitor eksternal dan bukti rilis tetap
-      diperlukan.
+      Pemeriksaan tidak membuktikan pengiriman penyedia layanan, ketersediaan
+      bulanan, cadangan di luar lokasi, atau izin konten. Pemantauan eksternal
+      dan bukti rilis tetap diperlukan.
     </p>
   </section>
 </template>

@@ -18,7 +18,7 @@ Kosakata status: `CONFIRMED`, `SUSPECTED`, `NOT VERIFIED`, `RESOLVED`, `REQUIRES
 
 | ID | Area | Temuan | Bukti | Dampak | Usulan perbaikan | Status |
 |---|---|---|---|---|---|---|
-| FLB-CONTENT-01 | Konten/kepercayaan | Listing **"Rumah Minimalis Cihapit"** (`/properti/weje`, Rp 200.000.000, LT 40 m², LB 25 m², 4 kamar tidur/2 kamar mandi, "Rumah baru · SHM · 6/4", label "Konfirmasi unit") tayang di produksi dan muncul sebagai kartu featured di beranda | Live 2026-10-14 (beranda); pencarian repo: tidak ada di seeder, fixture, CMS seed, katalog brosur, maupun dokumen | Data tampak tidak konsisten (4 kamar pada bangunan 25 m²); listing tak terverifikasi dapat menurunkan kepercayaan dan berisiko keluhan iklan | Tentukan status lewat prosedur unpublish terkontrol (Lampiran A di [manual-actions-required.md](../deployment/manual-actions-required.md)); bila listing sah, lengkapi spesifikasi dan sumber data | REQUIRES BUSINESS APPROVAL |
+| FLB-CONTENT-01 | Konten/kepercayaan | Listing **"Rumah Minimalis Cihapit"** (`/properti/weje`) tayang di produksi dan muncul sebagai kartu featured di beranda | Live 2026-10-14 (beranda); pencarian repo: tidak ada di seeder, fixture, CMS seed, katalog brosur, maupun dokumen; database lokal juga tidak memuatnya (hanya ada satu record fixture) | Listing uji pada katalog publik menurunkan kredibilitas dan berisiko pada penilaian iklan | **Pemilik bisnis mengonfirmasi 2026-10-14 bahwa record ini dibuat sebagai data uji.** Arsipkan melalui workspace Admin (Lampiran A di [manual-actions-required.md](../deployment/manual-actions-required.md)); tidak ada hard delete sehingga riwayat aman | CONFIRMED (data uji) · eksekusi arsip menunggu akses Admin produksi |
 | FLB-CONTENT-02 | Konten/promo | Batas harga program 2026-10-29, biaya program 2026-10-30, harga/biaya berikutnya 2026-10-31; tanggal 30 Oktober adalah hari "harga normal + konfirmasi" | `apps/api/app/Models/Property.php` (`publicPrice`), `apps/api/tests/Feature/CommercialTest.php`, [brochure-kpr-research.md](../brochure-kpr-research.md) | Salah label promo/harga setelah 29 Oktober dapat merusak kepercayaan dan memicu sengketa harga | Pertahankan perilaku saat ini (sudah ber-test), konfirmasi ulang sumber harga sebelum 29 Oktober, dan pastikan komunikasi iklan tidak memakai angka promo kedaluwarsa | RESOLVED by design · konfirmasi bisnis tetap diminta |
 | FLB-PRIV-01 | Privasi/legal | Halaman `/privasi` menyatakan kebijakan retensi resmi dan detail pengelola data belum disahkan | `apps/web/app/pages/privasi.vue` | Iklan berbayar dan analytics opsional tidak layak diaktifkan sebelum notice/retensi disahkan | Siapkan materi review legal (lihat [production-readiness.md](../deployment/production-readiness.md) bagian privasi) dan sahkan sebelum aktivasi iklan | REQUIRES BUSINESS APPROVAL |
 | FLB-MKTG-01 | Marketing/pengukuran | Tidak ada tag pihak ketiga (GA4/GTM/Meta) dan CSP produksi `script-src 'self' 'nonce-…'` akan memblokirnya; tidak ada mekanisme persetujuan opsional | `apps/web/server/plugins/security.ts`, tidak ada plugin analytics sebelum branch ini | Kampanye berbayar tidak dapat diukur secara sah | Fondasi consent-aware + CSP kondisional diimplementasikan pada branch ini; aktivasi tag tetap menunggu ID resmi | CONFIRMED → IMPLEMENTED (merged 2026-10-14; ID resmi tetap gate) |
@@ -60,15 +60,41 @@ Kosakata status: `CONFIRMED`, `SUSPECTED`, `NOT VERIFIED`, `RESOLVED`, `REQUIRES
 | FLB-GROW-05 | UX | Modul properti terkait dan breadcrumb visual di halaman detail | PLANNED |
 | FLB-GROW-06 | Pengukuran | A/B testing terkontrol setelah baseline trafik stabil | PLANNED |
 
-## 5. Tidak dapat diverifikasi dari lingkungan ini
+## 5. Audit UI/UX tiga peran — 2026-10-14
 
-- Stok/ketersediaan unit, legalitas sertifikat, dan kebenaran data listing (termasuk FLB-CONTENT-01) — memerlukan konfirmasi bisnis.
+Pemeriksaan menyeluruh permukaan publik (pengunjung), workspace Admin, dan workspace Marketing: bahasa, label, format angka/tanggal, konsistensi nama halaman, tabel responsif, pesan error, dan redundansi. Temuan diperbaiki pada branch `fix/ui-consistency` dan di-merge ke `main` (lihat [implementation-status.md](../implementation-status.md)); ringkasannya:
+
+| ID | Area | Temuan | Perbaikan | Status |
+|---|---|---|---|---|
+| FLB-UI-01 | Publik | Tanggal ISO tampil ke pengunjung di 8 tempat (masa berlaku suku bunga, harga program, periode skema pembayaran, tanggal sumber POI/kawasan) | Helper `shared/utils/format.ts` (`formatDate`, `formatDateRange`) dipakai di beranda, kalkulator KPR, `PropertyCommercial`, `PropertyLocation`, `bandung-timur` | FIXED |
+| FLB-UI-02 | Publik | Luas tampil "90.00 m²" (desimal titik) di kartu, detail, dan perbandingan | `formatArea` (desimal koma, nol desimal dihilangkan); spek `foundation.spec.ts` memakai helper yang sama | FIXED |
+| FLB-UI-03 | Publik | Persen dan tenor tampil "2.75%", potensi "1.5 tahun" | `formatPercent`/`formatNumber` (id-ID) di beranda dan kalkulator | FIXED |
+| FLB-UI-04 | Publik | CTA beranda "Rencanakan survei" menyimpang dari istilah "kunjungan" yang dominan; dua CTA berbeda label untuk tujuan kunjungan yang sama | Istilah distandarkan ke "kunjungan"; label unik per tujuan | FIXED |
+| FLB-UI-05 | Publik | Footer memakai "Bicarakan dengan Admin" untuk tautan WhatsApp identik dengan header "Hubungi Admin" | Footer memakai "Hubungi Admin" | FIXED |
+| FLB-UI-06 | Publik | Alt/caption gambar ilustrasi tidak konsisten ("Foto suasana" vs "Foto inspirasi" vs "Ilustrasi"); badge `MediaDisclosure` hanya menyala bila alt diawali "Ilustrasi" | Deteksi berbasis kata kunci "ilustrasi"/"inspirasi" (case-insensitive); label badge "Ilustrasi" | FIXED |
+| FLB-UI-07 | Publik | Pesan "Kontak konsultasi belum tersedia." tidak muncul saat nomor WhatsApp tidak valid (hanya muncul bila properti tidak ada) | Pesan tampil setiap kali tautan handoff tidak tersedia | FIXED |
+| FLB-UI-08 | Publik | Tombol unduh brosur memakai teks alt sebagai nama berkas; `aria-label` tombol cari tidak sesuai aksi | Label diganti "Unduh brosur (PDF)"; aria-label "Cari properti" | FIXED |
+| FLB-UI-09 | Admin/Marketing | Nama halaman berbeda antara sidebar, judul tab, dan `<h1>` (mis. Katalog properti/Katalog tim/Kelola properti) | Nama disatukan per halaman (nav = `<h1>` = judul tab) | FIXED |
+| FLB-UI-10 | Admin/Marketing | Istilah campur: "lead" vs "calon pembeli", "workspace" vs "ruang kerja", "Policy", "queue/backlog/failed jobs/processing/storage", "cohort", "Follow-up", "Cash", "published", "draft" | Distandarkan ke bahasa Indonesia pada seluruh teks yang terlihat (istilah teknis seperti `fixed`, `floating`, `LTV`, `PWA` tetap karena dipakai industri/bank) | FIXED |
+| FLB-UI-11 | Admin/Marketing | Enum mentah tampil ke pengguna (status lead di halaman retensi, kepala kolom "DEAL") dan versi internal ditampilkan | Memakai `leadLabels`; kolom versi dihapus; kepala kolom memakai label Indonesia | FIXED |
+| FLB-UI-12 | Admin/Marketing | Pesan error memakai `role="status"` (tanpa gaya error) pada properti/konten/media/lokasi/komersial/akun/profil | Pola `success` + `:role`/kelas dinamis, konsisten dengan halaman CRM | FIXED |
+| FLB-UI-13 | Admin/Marketing | Ketidaksesuaian `<th>` vs `data-label` tabel responsif (7 kolom), label ganda `StaffPicker`, typo "maksimal20", instruksi menunjuk menu yang tidak ada | Diselaraskan; label ganda dijadikan `sr-only`; typo dan instruksi diperbaiki | FIXED |
+| FLB-UI-14 | Admin | Tombol terkunci tanpa penjelasan (verifikasi komersial, unggah logo, batas skema/POI) dan pesan aksi arsip/retry yang generik | Petunjuk ditambahkan; pesan dibedakan per aksi | FIXED |
+| FLB-UI-15 | Publik | Redundansi: blok langkah 01/02/03 beranda mengulang label yang sama dengan blok pintasan; dua pengumuman pemuatan katalog | Label dibedakan agar tidak ambigu; pengumuman pemuatan ganda dihapus | FIXED |
+| FLB-UI-16 | Publik | Badge ketersediaan "Tersedia" tampil sebagai kepastian stok, sementara situs meminta konfirmasi ke Admin | Ditinjau: nilai berasal dari data properti yang dikelola Admin; narasi konfirmasi tetap dipertahankan. Perubahan label keputusan bisnis, tidak diubah sepihak | REVIEWED (kept) |
+| FLB-UI-17 | Uji | Beberapa string yang diuji spec browser ikut berubah (format luas, label tombol) | Spec diperbarui memakai helper/semi teks yang sama; dijalankan pada build produksi lokal untuk area yang tidak memerlukan API | FIXED |
+
+Catatan: istilah "fixed"/"floating" pada kalkulator KPR dipertahankan karena dipakai label produk bank dan diuji spec; istilah "Marketing" sebagai nama peran juga dipertahankan.
+
+## 6. Tidak dapat diverifikasi dari lingkungan ini
+
+- Stok/ketersediaan unit dan legalitas sertifikat — memerlukan konfirmasi dokumen resmi (status listing Cihapit sendiri sudah dikonfirmasi sebagai data uji pada 2026-10-14).
 - Volume pencarian, CPC, kesulitan kata kunci, dan estimasi performa iklan — dilarang dikarang; lihat [seo-keyword-map.md](../marketing/seo-keyword-map.md).
 - Kelayakan Google Business Profile dan identitas badan usaha — memerlukan dokumen resmi.
 - Perilaku tag aktual di GTM/GA4/Ads/Meta — memerlukan akun dan container nyata.
 - Core Web Vitals lapangan dan crawl aktual Search Console.
 
-## 6. Yang sudah benar dan dipertahankan
+## 7. Yang sudah benar dan dipertahankan
 
 - Katalog publik hanya berisi properti `PUBLISHED`; draft/arsip 404 di detail dan tidak masuk sitemap/compare.
 - Resource publik berupa allowlist tanpa identitas Marketing dan tanpa data CRM.
@@ -78,7 +104,7 @@ Kosakata status: `CONFIRMED`, `SUSPECTED`, `NOT VERIFIED`, `RESOLVED`, `REQUIRES
 - Forum aksesibilitas dasar: skip-link, `aria-*`, dialog keyboard, reduced motion, fokus terlihat.
 - Seed demo opt-in dan menolak environment non-lokal.
 
-## 7. Rujukan
+## 8. Rujukan
 
 - [technical-seo.md](technical-seo.md) — detail kondisi SEO dan verifikasi.
 - [performance-before-after.md](performance-before-after.md) — baseline dan protokol pengukuran.

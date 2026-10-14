@@ -64,10 +64,10 @@ async function login() {
     <div v-if="checking" class="login-panel" role="status" aria-live="polite">
       <p class="eyebrow">TIM FLAMBOYAN</p>
       <h1>Memeriksa sesi Anda…</h1>
-      <p class="muted">Sebentar, kami menyiapkan akses workspace Anda.</p>
+      <p class="muted">Sebentar, kami menyiapkan akses ruang kerja Anda.</p>
     </div>
     <div v-else-if="sessionError" class="login-panel">
-      <h1>Akses workspace</h1>
+      <h1>Akses ruang kerja</h1>
       <p role="alert" class="error-text">{{ sessionError }}</p>
       <button class="button full" type="button" @click="checkSession">
         Coba lagi

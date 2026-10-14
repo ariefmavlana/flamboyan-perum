@@ -86,7 +86,7 @@ function trackWhatsapp() {
           target="_blank"
           rel="noopener noreferrer"
           @click="trackWhatsapp"
-          >Bicarakan dengan Admin <AppIcon name="arrow"
+          >Hubungi Admin <AppIcon name="arrow"
         /></a>
       </div>
       <div class="container footer-main">

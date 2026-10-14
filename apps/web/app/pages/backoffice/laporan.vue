@@ -78,12 +78,14 @@ onMounted(load)
       <div class="report-metrics">
         <article>
           <h2>Calon pembeli dalam periode</h2>
-          <strong>{{ report.cohort_size }} lead</strong>
+          <strong>{{ report.cohort_size }} calon pembeli</strong>
         </article>
         <article>
           <h2>Menjadi pembelian</h2>
           <strong>{{ report.conversion_percent }}%</strong>
-          <p>{{ report.statuses.DEAL }} / {{ report.cohort_size }} lead</p>
+          <p>
+            {{ report.statuses.DEAL }} / {{ report.cohort_size }} calon pembeli
+          </p>
         </article>
         <article>
           <h2>Waktu tengah untuk menghubungi</h2>
@@ -170,8 +172,8 @@ onMounted(load)
           <thead>
             <tr>
               <th scope="col">Tim</th>
-              <th scope="col">Lead</th>
-              <th scope="col">DEAL</th>
+              <th scope="col">Calon pembeli</th>
+              <th scope="col">Pembelian selesai</th>
               <th scope="col">Konversi</th>
             </tr>
           </thead>
@@ -201,7 +203,7 @@ onMounted(load)
           <thead>
             <tr>
               <th scope="col">Tim</th>
-              <th scope="col">Follow-up</th>
+              <th scope="col">Tindak lanjut</th>
             </tr>
           </thead>
           <tbody>
@@ -215,7 +217,9 @@ onMounted(load)
           </tbody>
         </table>
       </div>
-      <p v-if="!report.cohort_size">Belum ada lead dalam cohort ini.</p>
+      <p v-if="!report.cohort_size">
+        Belum ada calon pembeli dalam periode ini.
+      </p>
       <h2>Interaksi katalog anonim</h2>
       <p>
         {{

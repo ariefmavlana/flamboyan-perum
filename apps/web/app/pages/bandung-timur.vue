@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { canonicalUrl } from '#shared/utils/seo'
+import { formatDate } from '#shared/utils/format'
 const config = useRuntimeConfig()
 const { development } = await useDevelopment()
 useSeoMeta({
@@ -87,7 +88,7 @@ useHead({
           <p>{{ development.notes }}</p>
           <p class="muted">
             Sumber: {{ development.source_name }} ·
-            {{ development.source_date }}.
+            {{ formatDate(development.source_date) }}.
           </p>
         </div>
       </div>
