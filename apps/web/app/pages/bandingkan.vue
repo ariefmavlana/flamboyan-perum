@@ -27,6 +27,7 @@ const { data, error, status, refresh } = await useAsyncData(
   { watch: [compareIds] },
 )
 function remove(id: number) {
+  if (!comparison.ready.value) return
   if (comparison.ids.value.includes(id)) comparison.toggle(id)
   return navigateTo({
     path: '/bandingkan',
@@ -59,6 +60,7 @@ useSeoMeta({
           v-for="id in data.missing"
           :key="id"
           class="button secondary"
+          :disabled="!comparison.ready.value"
           @click="remove(id)"
         >
           Hapus pilihan #{{ id }}
@@ -134,7 +136,11 @@ useSeoMeta({
               <dd>{{ availabilityLabels[property.availability] }}</dd>
             </div>
           </dl>
-          <button class="button secondary" @click="remove(property.id)">
+          <button
+            class="button secondary"
+            :disabled="!comparison.ready.value"
+            @click="remove(property.id)"
+          >
             Hapus {{ property.title }}
           </button>
         </article>

@@ -23,11 +23,20 @@ type Health = {
   }
 }
 const health = ref<Health | null>(null)
+const session = useStaffSession()
+const authorized = ref(false)
 const message = ref('')
 const busy = ref(false)
 async function load() {
   busy.value = true
+  authorized.value = false
   try {
+    const account = await session.refresh()
+    if (account?.role !== 'ADMIN') {
+      await navigateTo('/backoffice', { replace: true })
+      return
+    }
+    authorized.value = true
     health.value = (
       await useStaffApi().request<{ data: Health }>(
         '/api/v1/internal/operations',
@@ -44,7 +53,7 @@ async function load() {
 onMounted(load)
 </script>
 <template>
-  <section class="container section">
+  <section v-if="authorized" class="container section">
     <p class="eyebrow">ADMIN · OPERASI</p>
     <h1>Kesehatan layanan</h1>
     <button class="button secondary" :disabled="busy" @click="load">
@@ -126,5 +135,12 @@ onMounted(load)
       bulanan, cadangan di luar lokasi, atau izin konten. Pemantauan eksternal
       dan bukti rilis tetap diperlukan.
     </p>
+  </section>
+  <section v-else class="container section">
+    <p v-if="message" role="alert">{{ message }}</p>
+    <p v-else role="status">Memeriksa akses…</p>
+    <button v-if="message" class="button" :disabled="busy" @click="load">
+      Coba lagi
+    </button>
   </section>
 </template>

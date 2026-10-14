@@ -1,5 +1,31 @@
 # Status implementasi
 
+## Audit lokal Tim Flamboyan — 2026-10-14
+
+Branch `codex/local-role-verification`, base main final `c1cecaf` (audit awal `43b92e9`). Guard frontend Operasi
+dan Privasi memeriksa identitas/role sebelum menampilkan konten atau meminta API
+Admin; Marketing dengan URL langsung kembali ke workspace, visitor ke login,
+dan gangguan sesi menyediakan retry. Backend tetap menjadi batas otorisasi.
+Tombol hapus perbandingan menunggu hydration agar klik tidak hilang sebelum state siap.
+Kontradiksi status endpoint CMS/media/report pada kontrak API dikoreksi, tanpa
+endpoint baru atau migration. Pengunjung tetap tanpa akun; hanya ADMIN/MARKETING.
+
+Audit READ ONLY pada PostgreSQL lokal menemukan database domain kosong dan dua
+akun yang diminta belum ada, bukan dataset demo yang perlu dihapus. Server API
+lokal dipulihkan; ekspor cloud yang bernama `.env.local` dipindahkan byte-for-byte
+ke nama privat ignored yang tidak dipilih Laravel untuk APP_ENV=local. Worker
+lokal media/notifikasi database dijalankan. Tool provisioning privat tersedia,
+tetapi **akun belum dibuat sampai pengguna memasukkan password pada prompt
+tersembunyi**; tidak ada password bisnis di source/argumen/log/artifact.
+
+Data uji dipisahkan dari database/media bisnis. Konten nyata lokal masih harus
+diisi/diverifikasi; informasi konsep serta label ilustrasi/simulasi faktual tidak
+disamarkan menjadi foto/properti/penawaran nyata. SMTP log, provider push/scanner,
+backup/privasi/domain dan advisory source tetap gate produksi. Hasil, kegagalan
+harness, scope isolasi, review, dan rollback dicatat pada
+[local-role-production-validation.md](local-role-production-validation.md);
+rencana yang disetujui ada di [local-role-production-plan.md](local-role-production-plan.md).
+
 ## Integrasi main terbaru — 2026-10-14
 
 Atas instruksi pengguna, seluruh PR terbuka diperiksa lalu di-merge ke `main`: PR #24 `codex/multi-residence-banjaran` (`68e6bc5`, draft dijadikan siap-review) menjadi merge commit `e6b5f86`, lalu PR #25 `feat/production-readiness` (`0467d08`) menjadi merge commit `808b69c`. Pemeriksaan sebelum tiap merge: `mergeable/clean`, tidak ada review yang meminta perubahan, tidak ada konflik yang dibiarkan, dan status Vercel kedua project (`flamboyan-web`, `flamboyan-api`) `success` lebih dulu; tidak ada bypass, approval palsu, GitHub Actions, atau force-push.
