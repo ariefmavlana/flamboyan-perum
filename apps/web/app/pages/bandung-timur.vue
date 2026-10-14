@@ -3,6 +3,17 @@ import { canonicalUrl } from '#shared/utils/seo'
 import { formatDate } from '#shared/utils/format'
 const config = useRuntimeConfig()
 const { development } = await useDevelopment()
+const toList = (value?: string | null) =>
+  [
+    ...new Set(
+      (value ?? '')
+        .split('\n')
+        .map((item) => item.trim())
+        .filter(Boolean),
+    ),
+  ]
+const facilities = computed(() => toList(development.value?.facilities))
+const nearby = computed(() => toList(development.value?.nearby))
 useSeoMeta({
   title: 'Hunian Bandung Timur',
   description:
@@ -51,47 +62,56 @@ useHead({
         </figcaption>
       </figure>
     </section>
-    <section v-if="development" class="container section place-priorities">
-      <p class="eyebrow">{{ development.developer }}</p>
-      <h2>{{ development.name }}</h2>
-      <p>{{ development.address }}</p>
-      <p>
-        {{ development.house_types }} tipe ·
-        {{ development.planned_units }} rencana unit. Ketersediaan aktual
-        dikonfirmasi ke Admin.
-      </p>
-      <div class="value-strip">
+    <section
+      v-if="development"
+      class="container section place-priorities place-facilities"
+      aria-labelledby="facilities-title"
+    >
+      <div class="section-heading">
         <div>
-          <h3>Fasilitas kawasan</h3>
-          <ul>
-            <li
-              v-for="item in development.facilities.split('\n').filter(Boolean)"
-              :key="item"
-            >
-              {{ item }}
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3>Fasilitas sekitar</h3>
-          <ul>
-            <li
-              v-for="item in development.nearby.split('\n').filter(Boolean)"
-              :key="item"
-            >
-              {{ item }}
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3>Sebelum berkunjung</h3>
-          <p>{{ development.notes }}</p>
+          <p class="eyebrow">{{ development.developer }}</p>
+          <h2 id="facilities-title">{{ development.name }}</h2>
+          <p class="muted">{{ development.address }}</p>
           <p class="muted">
-            Sumber: {{ development.source_name }} ·
-            {{ formatDate(development.source_date) }}.
+            {{ development.house_types }} tipe ·
+            {{ development.planned_units }} rencana unit · ketersediaan aktual
+            dikonfirmasi ke Admin.
           </p>
         </div>
       </div>
+      <div class="facility-grid">
+        <article class="facility-card">
+          <h3>Fasilitas kawasan</h3>
+          <p class="muted">
+            Keterangan pengembang untuk fasilitas di dalam perumahan.
+          </p>
+          <ul v-if="facilities.length" class="facility-list">
+            <li v-for="item in facilities" :key="item">{{ item }}</li>
+          </ul>
+          <p v-else class="muted">Rincian fasilitas kawasan belum tersedia.</p>
+        </article>
+        <article class="facility-card facility-card-wide">
+          <h3>Fasilitas sekitar</h3>
+          <p class="muted">
+            Referensi lingkungan sekitar; tidak menyatakan jarak atau waktu
+            tempuh.
+          </p>
+          <ul v-if="nearby.length" class="facility-list facility-list-columns">
+            <li v-for="item in nearby" :key="item">{{ item }}</li>
+          </ul>
+          <p v-else class="muted">
+            Referensi fasilitas sekitar belum tersedia.
+          </p>
+        </article>
+      </div>
+      <article class="facility-note">
+        <h3>Sebelum berkunjung</h3>
+        <p>{{ development.notes }}</p>
+        <p class="muted">
+          Sumber: {{ development.source_name }} ·
+          {{ formatDate(development.source_date) }}.
+        </p>
+      </article>
     </section>
     <section class="container section place-priorities">
       <p class="eyebrow">BERANGKAT DARI KEBUTUHAN ANDA</p>

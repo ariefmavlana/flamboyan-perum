@@ -89,6 +89,18 @@ test('editorial buyer pages are SSR, discoverable, responsive and have real next
         ),
       ).toBe(true)
       expect(await page.locator('main a[href="#"]').count()).toBe(0)
+      if (route === '/bandung-timur') {
+        const headings = page.locator('.facility-card h3')
+        if (await headings.count()) {
+          for (const width of await headings.evaluateAll((elements) =>
+            elements.map((element) => element.getBoundingClientRect().width),
+          ))
+            expect(width).toBeGreaterThan(120)
+          await expect(
+            page.locator('.facility-list li').first(),
+          ).toBeVisible()
+        }
+      }
     }
   }
   const sitemap = await request.get('/sitemaps/pages.xml')
