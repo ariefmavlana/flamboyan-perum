@@ -17,7 +17,7 @@ class OperationalTest extends TestCase
     {
         Log::spy();
         $response = $this->getJson('/api/v1/properties?q=private-test-phone');
-        $response->assertOk()->assertHeader('X-Content-Type-Options', 'nosniff')->assertHeader('X-Frame-Options', 'DENY')->assertHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+        $response->assertOk()->assertHeader('X-Content-Type-Options', 'nosniff')->assertHeader('X-Frame-Options', 'DENY')->assertHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=()')->assertHeader('Cross-Origin-Resource-Policy', 'same-site');
         $this->getJson('/api/v1/me')->assertUnauthorized()->assertHeader('X-Content-Type-Options', 'nosniff');
         Log::shouldHaveReceived('info')->with('http_request', \Mockery::on(fn ($data) => $data['route'] === 'api/v1/me' && $data['status'] === 401));
         Log::shouldHaveReceived('info')->with('http_request', \Mockery::on(fn ($data) => array_keys($data) === ['request_id', 'method', 'route', 'status', 'duration_ms'] && ! str_contains(json_encode($data), 'private-test-phone')));
@@ -56,7 +56,28 @@ class OperationalTest extends TestCase
     {
         config(['app.env' => 'production', 'operations.hosts' => ['flamboyan.example.test']]);
         $this->getJson('https://hostile.example.test/api/v1/properties')->assertStatus(400);
-        $this->getJson('https://flamboyan.example.test/api/v1/properties')->assertOk()->assertHeader('Strict-Transport-Security', 'max-age=31536000');
+        $this->getJson('https://flamboyan.example.test/api/v1/properties')->assertOk()->assertHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    }
+
+    public function test_login_activity_is_audited_without_credentials_in_logs(): void
+    {
+        Log::spy();
+        $user = User::factory()->create(['role' => 'ADMIN', 'is_active' => true, 'password' => bcrypt('secret-password')]);
+        $this->postJson('/auth/login', ['email' => $user->email, 'password' => 'secret-password'])->assertOk();
+        $this->assertDatabaseHas('activity_logs', ['actor_id' => $user->id, 'subject_type' => 'USER', 'action' => 'LOGIN']);
+        $this->postJson('/auth/login', ['email' => $user->email, 'password' => 'wrong-password'])->assertUnprocessable();
+        Log::shouldHaveReceived('warning')->with('login_failed', \Mockery::on(fn ($data) => ! str_contains(json_encode($data), $user->email) && ! str_contains(json_encode($data), 'wrong-password') && isset($data['request_id'])));
+    }
+
+    public function test_cors_is_pinned_to_configured_origins(): void
+    {
+        config(['cors.allowed_origins' => ['https://flamboyan.example.test', 'https://api.example.test']]);
+        $allowed = $this->call('OPTIONS', '/sanctum/csrf-cookie', [], [], [], ['HTTP_ORIGIN' => 'https://flamboyan.example.test', 'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'GET', 'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'x-requested-with']);
+        $allowed->assertStatus(204)->assertHeader('Access-Control-Allow-Origin', 'https://flamboyan.example.test');
+        $blocked = $this->call('OPTIONS', '/sanctum/csrf-cookie', [], [], [], ['HTTP_ORIGIN' => 'https://hostile.example.test', 'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'GET']);
+        $blocked->assertStatus(204);
+        $this->assertFalse($blocked->headers->has('Access-Control-Allow-Origin'));
+        $this->assertStringContainsString('Origin', (string) $blocked->headers->get('Vary'));
     }
 
     public function test_database_outage_returns_generic_not_ready_instead_of_partial_success(): void
@@ -90,10 +111,10 @@ class OperationalTest extends TestCase
     public function test_production_readiness_requires_valid_key_and_secure_configuration(): void
     {
         Storage::fake('media');
-        $valid = ['app.env' => 'production', 'app.debug' => false, 'app.key' => 'base64:'.base64_encode(str_repeat('k', 32)), 'app.url' => 'https://localhost', 'session.secure' => true, 'operations.proxy_secret' => str_repeat('p', 64), 'operations.hosts' => ['localhost'], 'realtime.enabled' => false];
+        $valid = ['app.env' => 'production', 'app.debug' => false, 'app.key' => 'base64:'.base64_encode(str_repeat('k', 32)), 'app.url' => 'https://localhost', 'session.secure' => true, 'session.encrypt' => true, 'session.same_site' => 'lax', 'operations.proxy_secret' => str_repeat('p', 64), 'operations.hosts' => ['localhost'], 'realtime.enabled' => false];
         config($valid);
         $this->getJson('https://localhost/ready')->assertOk();
-        foreach (['app.debug' => true, 'app.key' => 'base64:invalid', 'session.secure' => false, 'app.url' => 'http://localhost', 'operations.proxy_secret' => ''] as $field => $value) {
+        foreach (['app.debug' => true, 'app.key' => 'base64:invalid', 'session.secure' => false, 'session.encrypt' => false, 'session.same_site' => 'none', 'app.url' => 'http://localhost', 'operations.proxy_secret' => ''] as $field => $value) {
             config(array_merge($valid, [$field => $value]));
             $this->getJson('https://localhost/ready')->assertServiceUnavailable()->assertExactJson(['status' => 'not_ready']);
         }
