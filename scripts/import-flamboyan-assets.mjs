@@ -25,7 +25,24 @@ export const maxBytes = 5 * 1024 * 1024;
 export const descriptionOld =
   "Gambar merupakan ilustrasi desain developer, bukan foto kondisi unit.";
 export const descriptionNew =
-  "Gambar mencakup dokumentasi lapangan dan ilustrasi desain developer; kondisi unit dikonfirmasi sebelum transaksi.";
+  "Galeri menampilkan dokumentasi pengguna; ilustrasi diberi label sesuai sumbernya. Kondisi unit dikonfirmasi saat kunjungan.";
+
+// Match MediaProcessor's largest variant; the manifest retains original dimensions/hash.
+export function processedDimensions({ width, height }) {
+  if (!Number.isInteger(width) || width < 1 || !Number.isInteger(height) || height < 1)
+    throw Error("Invalid source dimensions");
+  const outputWidth = Math.min(1920, width);
+  return { width: outputWidth, height: Math.max(1, Math.round(height * outputWidth / width)) };
+}
+
+export function assertWorkerReady(plans, acknowledged) {
+  const needsWorker = plans.some((plan) =>
+    !plan.current.process_in_request &&
+    (plan.photos.some((photo) => !photo.existing) || !plan.siteplan.existing),
+  );
+  if (needsWorker && !acknowledged)
+    throw Error("Separate media worker required. Start queue:work --queue=media,notifications,default and confirm it is running before --apply --worker-ready. This flag is an operator acknowledgement, not a health probe.");
+}
 
 export function markerFor(key) {
   return `[ED:${key}]`;
@@ -154,14 +171,15 @@ export function planPropertyPhotos(property, media, assets) {
     throw Error("Property identity/status mismatch");
   const selected = assets.map((asset) => {
     const existing = findByMarker(media, asset.key);
+    const dimensions = processedDimensions(asset);
     if (
       existing &&
       (existing.alt !== asset.alt ||
         existing.kind !== "PHOTO" ||
         !existing.published ||
         existing.state !== "READY" ||
-        existing.width !== asset.width ||
-        existing.height !== asset.height)
+        existing.width !== dimensions.width ||
+        existing.height !== dimensions.height)
     )
       throw Error(`Imported media changed or not ready: ${asset.key}`);
     return { asset, existing };
@@ -175,20 +193,20 @@ export function planPropertyPhotos(property, media, assets) {
 
 export function planSiteplan(media, siteplan) {
   const existing = findByMarker(media, "siteplan");
+  const dimensions = processedDimensions(siteplan);
   if (
     existing &&
     (existing.alt !== siteplan.alt ||
       existing.kind !== "MASTERPLAN" ||
       !existing.published ||
       existing.state !== "READY" ||
-      existing.width !== siteplan.width ||
-      existing.height !== siteplan.height)
+      existing.width !== dimensions.width ||
+      existing.height !== dimensions.height)
   )
     throw Error("Imported siteplan changed or not ready");
-  const archive = media.filter(
-    (m) => m.kind === "MASTERPLAN" && m.id !== existing?.id,
-  );
-  return { existing, archive };
+  if (media.some((m) => m.kind === "MASTERPLAN" && m.state !== "ARCHIVED" && m.id !== existing?.id))
+    throw Error("Existing masterplan requires manual review; importer will not archive or replace it");
+  return { existing };
 }
 
 export function nextDescription(description) {
@@ -219,8 +237,8 @@ async function loadAssetBytes(file) {
 }
 
 async function main() {
-  if (process.argv.slice(2).some((a) => a !== "--apply"))
-    throw Error("Supported option: --apply");
+  if (process.argv.slice(2).some((a) => !["--apply", "--worker-ready"].includes(a)))
+    throw Error("Supported options: --apply --worker-ready");
   const apply = process.argv.includes("--apply");
   const origin = validateOrigin(process.env.FLAMBOYAN_IMPORT_ORIGIN);
   if (
@@ -337,13 +355,14 @@ async function main() {
         type: p.property.house_type,
         photos_new: p.photos.filter((s) => !s.existing).length,
         photos_reused: p.photos.filter((s) => s.existing).length,
-        masterplan_archive: p.siteplan.archive.length,
+        separate_worker_required: !p.current.process_in_request,
         masterplan: p.siteplan.existing ? "reused" : "new",
         description: p.description.state,
       })),
     };
     console.log(JSON.stringify(report, null, 2));
     if (!apply) return;
+    assertWorkerReady(plans, process.argv.includes("--worker-ready"));
     const snapshot = path.join(folder, `before-${Date.now()}.json`);
     await fs.writeFile(
       snapshot,
@@ -410,12 +429,12 @@ async function main() {
           throw Error("Concurrent property change; review before rerunning");
         for (const [position, id] of selectedIds.entries()) {
           const media = listing.data.find((m) => m.id === id);
-          const asset = plan.photos[position].asset;
+          const dimensions = processedDimensions(plan.photos[position].asset);
           if (
             !media ||
             media.state !== "READY" ||
-            media.width !== asset.width ||
-            media.height !== asset.height ||
+            media.width !== dimensions.width ||
+            media.height !== dimensions.height ||
             !media.published
           )
             throw Error("Processed media dimensions/publication mismatch");
@@ -430,13 +449,6 @@ async function main() {
       }
       if (!plan.siteplan.existing) {
         let masterplan = null;
-        for (const media of plan.siteplan.archive) {
-          const result = await call(`${plan.endpoint}/${media.id}`, {
-            method: "PATCH",
-            data: { version, archived: true },
-          });
-          version = result.property_version;
-        }
         const uploaded = await call(plan.endpoint, {
           method: "POST",
           multipart: {
@@ -467,9 +479,10 @@ async function main() {
             await call(`${plan.endpoint}/process`, { method: "POST" });
           await pause(1500);
         }
+        const dimensions = processedDimensions(manifest.siteplan);
         if (
-          readyMasterplan.width !== manifest.siteplan.width ||
-          readyMasterplan.height !== manifest.siteplan.height ||
+          readyMasterplan.width !== dimensions.width ||
+          readyMasterplan.height !== dimensions.height ||
           !readyMasterplan.published
         )
           throw Error("Processed siteplan dimensions/publication mismatch");

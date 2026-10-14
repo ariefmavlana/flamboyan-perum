@@ -4,22 +4,23 @@ Inventaris 14 Oktober 2026. Pengguna menambahkan aset dokumentasi ke repository 
 
 ## Cakupan dan label
 
-| Tipe | Foto real (dokumentasi pengguna) | Ilustrasi AI (Gemini) | Kapasitas setelah impor |
+| Tipe | Foto real (dokumentasi pengguna) | Ilustrasi AI (Gemini) | PHOTO pada katalog lokal kosong |
 |---|---:|---:|---:|
-| 36/60 | 10 | 0 | 13 / 20 |
-| 36/90 | 9 | 0 | 14 / 20 |
-| 56/90 | 11 | 0 | 17 / 20 |
-| 62/70 | 3 | 12 | 18 / 20 |
-| 69/80 | 2 | 8 | 13 / 20 |
+| 36/60 | 10 | 0 | 10 / 20 |
+| 36/90 | 9 | 0 | 9 / 20 |
+| 56/90 | 11 | 0 | 11 / 20 |
+| 62/70 | 3 | 12 | 15 / 20 |
+| 69/80 | 2 | 8 | 10 / 20 |
 
 - Foto real diberi alt `Dokumentasi tipe <tipe> #n · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan.` — **tanpa** kata "ilustrasi" agar badge `MediaDisclosure` tidak salah muncul.
 - Gambar AI (berkas `Gemini_Generated_Image_*`) diberi alt `Ilustrasi AI · tipe <tipe> · bukan foto kondisi aktual.` sehingga badge "Ilustrasi" tampil di kartu/bandingkan. Tidak ada klaim HD/upscaling; byte asli tidak dimodifikasi.
 - Urutan galeri: foto real lebih dulu (1..n), gambar AI di belakang; sampul = foto real pertama.
-- `Siteplan.jpg` (2400×1792) menggantikan MASTERPLAN brosur pada **sembilan** properti: masterplan lama diarsipkan (final via API, snapshot disimpan) lalu siteplan baru diunggah posisi 1 dengan caveat `warna bukan status ketersediaan`.
+- Total galeri: 35 foto dokumentasi pengguna dan 20 ilustrasi AI (55 JPEG). Empat tipe lainnya belum mempunyai foto dari pengguna.
+- `Siteplan.jpg` (sumber 2400×1792, hasil 1920×1434) ditambahkan pada **sembilan** properti bila belum memiliki MASTERPLAN, posisi 1 dengan caveat `warna bukan status ketersediaan`. MASTERPLAN lain menghentikan seluruh preflight sebelum penulisan; importer tidak mengarsipkan atau menggantinya.
 - `GATE 1/2.jpg` dan `LOGO.jpg` adalah aset statis situs (lihat bawah), bukan media properti.
-- Dua video `36-60-11.mp4` dan `36-90-10.mp4` **belum diimpor**: pipeline hanya menerima embed YouTube/Matterport. Menunggu URL YouTube + persetujuan pengguna.
+- Dua video `36-60-11.mp4` dan `36-90-10.mp4` **belum diimpor**: pipeline hanya menerima embed YouTube/Matterport. Admin sudah menyediakan jenis VIDEO dan input tautan YouTube. Pengguna meminta Admin mengisi tautan resmi kemudian; tidak dibuat record video placeholder.
 
-Deskripsi lima properti terdampak ikut diperbarui (konsistensi narasi): kalimat `Gambar merupakan ilustrasi desain developer, bukan foto kondisi unit.` diganti `Gambar mencakup dokumentasi lapangan dan ilustrasi desain developer; kondisi unit dikonfirmasi sebelum transaksi.` Empat tipe lain tanpa dokumentasi tidak diubah. Perubahan deskripsi dilakukan importer dengan rantai `property_version` dan snapshot.
+Deskripsi lima properti terdampak ikut diperbarui (konsistensi narasi): kalimat `Gambar merupakan ilustrasi desain developer, bukan foto kondisi unit.` diganti `Galeri menampilkan dokumentasi pengguna; ilustrasi diberi label sesuai sumbernya. Kondisi unit dikonfirmasi saat kunjungan.` Empat tipe lain tanpa dokumentasi tidak diubah. Perubahan deskripsi dilakukan importer dengan rantai `property_version` dan snapshot.
 
 ## Pengoperasian
 
@@ -29,19 +30,21 @@ Node 24.21.0 dan dependency frontend (Playwright sudah tersedia). Dari root repo
 node scripts/build-flamboyan-manifest.mjs
 node --test scripts/import-flamboyan-assets.test.mjs
 node scripts/import-flamboyan-assets.mjs              # plan read-only
-node scripts/import-flamboyan-assets.mjs --apply      # menulis
+node scripts/import-flamboyan-assets.mjs --apply --worker-ready # menulis setelah worker dipastikan berjalan
 ```
 
 Environment (rahasia operator; jangan di argumen/file tracked/log/PR): `FLAMBOYAN_IMPORT_ORIGIN`, `FLAMBOYAN_IMPORT_ADMIN_EMAIL`, `FLAMBOYAN_IMPORT_ADMIN_PASSWORD`. Origin allowlist: `http://127.0.0.1:3000` atau `https://flamboyan-web.vercel.app`.
 
 - `scripts/build-flamboyan-manifest.mjs` membaca `.tools/flamboyan-assets/edited/<tipe>/*.jpg` + `shared/Siteplan.jpg`, menghitung SHA-256/dimensi, membuang duplikat byte identik, dan menulis `scripts/flamboyan-house-assets.json` (di-commit). File non-JPEG dicatat pada `skipped`.
 - Importer memakai session+CSRF dan POST/PATCH media internal existing dengan rantai `property_version`; jeda 650 ms per call; konflik 409 menghentikan proses tanpa retry otomatis. Marker `[ED:<key>]` mencegah upload ganda dan memverifikasi media existing (alt/kind/dimensi/READY/published).
-- Foto baru masuk posisi 0..n-1 (jadi sampul), PHOTO lama tetap published posisi 100+; MASTERPLAN lama diarsipkan sebelum siteplan baru diunggah; VIDEO hanya bila `videos` terisi di manifest.
+- Foto baru masuk posisi 0..n-1 (jadi sampul), PHOTO lama tetap published posisi 100+; MASTERPLAN existing hanya dipakai ulang bila marker/dimensi/READY cocok. VIDEO hanya bila `videos` terisi dengan tautan resmi.
+- Dimensi manifest/SHA adalah sumber asli; pemeriksaan READY mengikuti resize server ke lebar maksimal 1920 tanpa upscaling (2752×1536 menjadi 1920×1072). Public alt membuang marker terminal ED/RR, sementara API internal menyimpannya untuk idempotensi; label ilustrasi tetap utuh.
+- Pada `process_in_request=false`, jalankan `php artisan queue:work --queue=media,notifications,default` dan pastikan worker aktif sebelum apply. Flag `--worker-ready` menyatakan pemeriksaan operator, bukan bukti kesehatan worker. Tanpa flag, importer berhenti sebelum upload; worker yang berhenti di tengah proses menghasilkan kegagalan berbatas, bukan retry penulisan otomatis.
 - Snapshot sebelum apply: `.tools/flamboyan-import/<hostname>/before-<timestamp>.json` (metadata internal, wajib privat). Hasil apply: `result-<timestamp>.json` di folder yang sama.
 
 ## Rollback
 
-Gunakan snapshot sebelum apply pertama untuk origin terkait. Login Admin, baca versi terbaru, `PATCH` media baru ber-marker menjadi `published:false`, kembalikan posisi media lama. Arsip MASTERPLAN tidak dapat di-unarchive via API; dalam masa grace 30 hari berkas lama masih tersedia di disk/R2 sebelum `flamboyan:media-cleanup`, dan sumber siteplan brosur dapat diunggah ulang bila diperlukan. Jangan restore database keseluruhan karena dapat menimpa perubahan CRM.
+Gunakan snapshot sebelum apply pertama untuk origin terkait. Login Admin, baca versi terbaru, `PATCH` media baru ber-marker menjadi `published:false`, kembalikan posisi media lama. Importer tidak mengarsipkan MASTERPLAN lama. Siteplan baru dapat disembunyikan dengan `published:false` menggunakan versi terbaru. Jangan restore database keseluruhan karena dapat menimpa perubahan CRM.
 
 ## Aset statis situs (PR web)
 
@@ -63,3 +66,7 @@ Runtime Windows, Node 24.21.0, PHP 8.5.11 (GD WebP untuk konversi), Edge lokal v
 | Browser lokal (dev server) | logo header termuat (naturalWidth 308), favicon tertaut, foto gerbang beranda & `/bandung-timur` termuat 1440×1075 (HTTP 200), 0 page error; screenshot di `.tools/flamboyan-import/screens/` |
 
 Belum dijalankan dan tidak diklaim: apply impor live (menunggu review urutan + kredensial Admin), suite PHPUnit/Pint (tidak ada perubahan `apps/api`), tes menulis ke produksi, verifikasi visual oleh pengguna (menunggu PR preview), embed video (menunggu URL YouTube). Screenshot lengkap disimpan privat; pengguna meninjau melalui PR preview sebelum merge.
+
+## Koreksi review 15 Oktober 2026
+
+Tabel validasi di atas adalah bukti historis PR awal. Perbaikan resize, penolakan replacement MASTERPLAN, preflight worker, sanitasi marker publik, dan gambar OG dokumentasi pengguna memerlukan validasi ulang pada gabungan PR sebelum merge. Source audit masih memiliki advisory tooling upstream; tidak dianggap lulus. Tidak ada migrasi, seed, impor cloud, atau perubahan CRM.

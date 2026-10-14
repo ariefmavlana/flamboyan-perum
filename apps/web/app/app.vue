@@ -10,12 +10,12 @@ useHead({
   meta: computed(() => [
     {
       property: 'og:image',
-      content: `${origin.value}/images/flamboyan-kawasan.webp`,
+      content: `${origin.value}/images/gerbang-kawasan-1920.webp`,
     },
     {
       property: 'og:image:alt',
       content:
-        'Ilustrasi kawasan Bukit Flamboyan Indah 2 dari Rumah Rajasa; bukan foto kondisi aktual.',
+        'Gerbang kawasan Bukit Flamboyan Indah 2 · dokumentasi pengguna.',
     },
   ]),
 })
