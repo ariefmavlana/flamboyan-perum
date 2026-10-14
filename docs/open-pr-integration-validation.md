@@ -20,7 +20,7 @@ Lock/installed Nuxt4.6.1, Nitro2.13.4, Vite8.3.2, Vue3.5.43, Vitest4.1.11.
 | PHP `vendor/bin/phpunit`, SQLite in-memory | PASS, 102 tes / 803 assertion, 23.891s |
 | PHP `vendor/bin/phpunit`, PostgreSQL database test terpisah | PASS, 102 tes / 803 assertion, 22.294s; cluster dihentikan setelah suite |
 | `npm run lint`, `npm run typecheck` | PASS pada gabungan setelah koreksi runtime H3 |
-| `npm test` | PASS, 47 tes / 11 berkas, 1.22s |
+| `npm test` | PASS, 48 tes / 11 berkas (rerun setelah koreksi tipe standalone) |
 | `npm run build` | PASS preset node-server; rebuild copy akhir16.5s |
 | `node --test scripts/import-flamboyan-assets.test.mjs` | PASS, 11 tes |
 | Playwright10 spec / 30 alur | PASS, Chrome + database/storage fixture baru + worker media nyata |
@@ -107,3 +107,15 @@ versi terbaru dan posisi existing dikembalikan dari snapshot privat. Jangan
 hard-delete histori atau satu-satunya Admin; deaktivasi memakai guard existing.
 Rollout/rollback enkripsi sesi mencabut login lama. Perubahan lokal tak terkait,
 env, database, dan sumber asli privat dipertahankan saat sinkronisasi main.
+
+## Koreksi build standalone PR30
+
+Check Vercel HEAD b465850 gagal pada typecheck CSP karena tipe H3 root pada
+lock lama mendefinisikan node/res optional dan tidak mempunyai web/_requestBody.
+Gabungan Nuxt baru lulus, tetapi itu tidak membuktikan PR standalone lulus.
+Batas reader memakai interface Node HTTP yang eksplisit (IncomingMessage/
+ServerResponse) dengan guard adapter; adapter yang tidak didukung ditolak503.
+Tidak memperlemah byte limit/log sanitizer atau memalsukan versi dependency.
+Tes unsupported adapter ditambahkan; unit/lint/type/build dan smoke diulang.
+Status Vercel harus diperiksa ulang pada HEAD koreksi, bukan dianggap lulus
+dari check sebelumnya. Source audit tetap11high/FAIL; gate merger tetap.
