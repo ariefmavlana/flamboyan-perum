@@ -1,6 +1,6 @@
 # SEO teknis — kondisi, implementasi, dan verifikasi
 
-Versi 1.0 · 2026-10-14 · Branch `feat/production-readiness` dari `main` `f1005fb` · Implementasi pada dokumen ini belum di-merge.
+Versi 1.1 · 2026-10-14 · Di-merge ke `main` melalui PR #25 (`808b69c`); halaman perumahan berasal dari PR #24 (`e6b5f86`). Verifikasi eksternal (crawl, Search Console, rich result) tetap tindakan manual.
 
 Dokumen ini mencatat kondisi SEO teknis sebelum dan sesudah pekerjaan pada branch ini. Klaim hasil pencarian tidak dibuat: tidak ada akses Search Console, tidak ada crawl aktual, dan tidak ada data volume.
 
@@ -14,6 +14,8 @@ Semua judul halaman kini berupa judul deskriptif tanpa suffix brand, dan templat
 | Katalog `/properti` | Jelajahi properti · Flamboyan | Cari rumah berdasarkan lokasi/harga/spesifikasi | `{siteUrl}/properti` | index; `noindex, follow` bila ada query filter |
 | Detail `/properti/{slug}` | `{judul properti} · Flamboyan` | 155 karakter pertama deskripsi properti | `{siteUrl}/properti/{slug}` | index (404 untuk draft/arsip) |
 | Bandung Timur `/bandung-timur` | Hunian Bandung Timur · Flamboyan | Konteks kawasan | `{siteUrl}/bandung-timur` | index |
+| Perumahan `/perumahan` | Pilihan perumahan · Flamboyan | Ringkasan dua kawasan dalam naungan Flamboyan | `{siteUrl}/perumahan` | index |
+| Konsep Banjaran `/perumahan/banjaran` | Banjaran — hunian mendatang · Flamboyan | Pengenalan rencana; menegaskan bukan peluncuran penjualan | `{siteUrl}/perumahan/banjaran` | index |
 | Panduan `/panduan` | Panduan memilih hunian Bandung Timur · Flamboyan | Ringkasan tiga panduan | `{siteUrl}/panduan` | index |
 | Panduan detail `/panduan/{slug}` | `{judul panduan} · Flamboyan` | Ringkasan panduan | `{siteUrl}/panduan/{slug}` | index; 404 untuk slug tak dikenal |
 | Konsultasi `/konsultasi` | Konsultasi hunian & kunjungan · Flamboyan | Menyiapkan percakapan WhatsApp | `{siteUrl}/konsultasi` | index; `noindex, follow` bila ada query |
@@ -23,7 +25,7 @@ Semua judul halaman kini berupa judul deskriptif tanpa suffix brand, dan templat
 | Backoffice (CRM/katalog/laporan/konten/akun/profil/privasi/operasi) | Label halaman masing-masing | — | — | `noindex, nofollow` + header `X-Robots-Tag` |
 | Error 404/503 | Halaman tidak ditemukan / belum tersedia | — | — | `noindex, nofollow` |
 
-Perubahan utama: `titleTemplate` global di `nuxt.config.ts`, normalisasi seluruh judul halaman, default `description`, `og:site_name`, `og:locale=id_ID`, `og:type=website`, `og:image` + `og:image:alt` (aset ilustrasi berlisensi yang sudah dipakai beranda), dan `twitter:card`. Judul beranda dan deskripsinya mengikuti usulan instruksi pengguna dan hanya menyatakan fakta yang tersedia di situs.
+Perubahan utama: `titleTemplate` global di `app.vue`, normalisasi seluruh judul halaman (termasuk `/perumahan` dan `/perumahan/banjaran` dari PR #24 agar tidak menggandakan brand), default `description`, `og:site_name`, `og:locale=id_ID`, `og:type=website`, `og:image` + `og:image:alt` runtime (aset ilustrasi berlisensi yang sudah dipakai beranda), dan `twitter:card`. Judul beranda dan deskripsinya mengikuti usulan instruksi pengguna dan hanya menyatakan fakta yang tersedia di situs.
 
 ## 2. Sumber URL dan canonical
 
@@ -57,7 +59,7 @@ Item yang **belum diverifikasi**: perilaku crawler `AdsBot-Google` terhadap grup
 ## 4. sitemap.xml
 
 - `/{sitemap.xml}` mengembalikan sitemapindex (`pages.xml` + `properties-1.xml`…`properties-N.xml`) dengan `Cache-Control: no-store`; bila API sitemap gagal, respons `503` (bukan sitemap kosong).
-- `pages.xml` berisi origin, `/properti`, `/privasi`, `/bandung-timur`, `/panduan`, `/konsultasi`, dan seluruh slug panduan.
+- `pages.xml` berisi origin, `/properti`, `/privasi`, `/perumahan`, `/perumahan/banjaran`, `/bandung-timur`, `/panduan`, `/konsultasi`, dan seluruh slug panduan.
 - `properties-N.xml` hanya memuat properti `PUBLISHED` (endpoint `/api/v1/sitemap`), maksimum 1000 entri per berkas, `lastmod` berasal dari `updated_at` (bukan tanggal buatan).
 - Yang **tidak** dimasukkan: `/bandingkan`, area tim, auth, URL ber-query, dan properti draft/arsip.
 - Verifikasi lokal: `GET /sitemap.xml`, `GET /sitemaps/pages.xml`, `GET /sitemaps/properties-1.xml` harus `200`; nama berkas atau halaman di luar rentang harus `404`.

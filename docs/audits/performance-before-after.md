@@ -1,6 +1,6 @@
 # Performa — baseline terukur dan protokol sesudah perubahan
 
-Versi 1.0 · 2026-10-14 · Branch `feat/production-readiness` dari `main` `f1005fb` · Hanya data yang benar-benar diukur yang dicatat.
+Versi 1.1 · 2026-10-14 · Di-merge ke `main` melalui PR #25 (`808b69c`) · Hanya data yang benar-benar diukur yang dicatat.
 
 ## 1. Ringkasan jujur
 
