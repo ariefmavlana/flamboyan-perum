@@ -141,3 +141,20 @@ Backup job hosting/operator hanya sesudah consistent DB+media snapshot, encrypti
 Local acceptance scripts berada di tests/acceptance dan scripts: fixture seed guardedlocal/fixedDB/emptytable, encrypted SQLite/native snapshot drill, localhost bounded load≤20rps/900s. Ikuti acceptance-validation.md; set private env proses saja dan laporan ke ignored.tools. Production E2E case memerlukan E2E_PRODUCTION_ORIGIN pada builtSSR terisolasi; suitebrowser menggunakan demoDB terpisah. Setelah drill, hapus hanya direktori backup-drill-[16hex] yang resolvedpath berada di workspace.tools; jangan recursive-delete computed target tanpa memverifikasi batas path. Stop hanya proses/cluster fixture yang dimiliki tugas; data bisnis tidak dipakai.
 
 PR operational acceptance tidak menambah migration. Rollback pairedAPI/Nuxt config+code sebagai satu release; preserve migration000006/privacy guards. Jangan mengaktifkan kode lama yang menulis PII ke anonymized rows. Tidak ada GitHub Actions/deploy/merge otomatis.
+
+
+### Perbaikan review keamanan — 15 Oktober 2026
+
+Laporan CSP dibatasi16KiB pada stream sebelum parsing (termasuk chunked/tanpa
+Content-Length); oversized menghasilkan413. Log hanya directive allowlist dan
+originHTTP(S), tidak menyimpan userinfo/path/query/fragment/nonce. Kuota tetap
+60/menit per instance; edge limit terpisah diperlukan.
+
+Produksi memeriksa sslmode koneksi PostgreSQL efektif setelah DB_URL diparse;
+prefer/allow/disable ditolak503 sebelum query. require/verify-ca/verify-full
+diizinkan; gunakan verify-full dengan trustedCA bila peeridentity diperlukan.
+DB_SSLMODE tidak boleh diasumsikan mengalahkan query DB_URL.
+
+Perubahan SESSION_ENCRYPT false→true mengakhiri sesi plaintext yang sudah ada;
+operator memberi tahu tim untuk login ulang. Rollback true→false juga mengakhiri
+sesi encrypted. Jangan mengganti APP_KEY atau memulihkan data sesi lama.

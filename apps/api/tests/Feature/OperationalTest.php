@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Services\OperationalHealth;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -54,6 +55,8 @@ class OperationalTest extends TestCase
 
     public function test_production_host_allowlist_and_https_headers(): void
     {
+        // Database transport policy is exercised independently without a TLS server fixture.
+        $this->partialMock(OperationalHealth::class)->shouldReceive('databaseTransportIsSecure')->andReturn(true);
         config(['app.env' => 'production', 'operations.hosts' => ['flamboyan.example.test']]);
         $this->getJson('https://hostile.example.test/api/v1/properties')->assertStatus(400);
         $this->getJson('https://flamboyan.example.test/api/v1/properties')->assertOk()->assertHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
@@ -110,6 +113,8 @@ class OperationalTest extends TestCase
 
     public function test_production_readiness_requires_valid_key_and_secure_configuration(): void
     {
+        // Database transport policy is exercised independently without a TLS server fixture.
+        $this->partialMock(OperationalHealth::class)->shouldReceive('databaseTransportIsSecure')->andReturn(true);
         Storage::fake('media');
         $valid = ['app.env' => 'production', 'app.debug' => false, 'app.key' => 'base64:'.base64_encode(str_repeat('k', 32)), 'app.url' => 'https://localhost', 'session.secure' => true, 'session.encrypt' => true, 'session.same_site' => 'lax', 'operations.proxy_secret' => str_repeat('p', 64), 'operations.hosts' => ['localhost'], 'realtime.enabled' => false];
         config($valid);

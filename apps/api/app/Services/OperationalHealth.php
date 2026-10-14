@@ -9,6 +9,18 @@ use Illuminate\Support\Str;
 
 class OperationalHealth
 {
+    public function databaseTransportIsSecure(): bool
+    {
+        try {
+            $connection = DB::connection();
+
+            return $connection->getDriverName() !== 'pgsql'
+                || in_array($connection->getConfig('sslmode'), ['require', 'verify-ca', 'verify-full'], true);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
     public function snapshot(): array
     {
         $database = $storage = false;
@@ -55,7 +67,7 @@ class OperationalHealth
         $production = config('app.env') === 'production';
         $key = (string) config('app.key');
         $key = str_starts_with($key, 'base64:') ? base64_decode(substr($key, 7), true) : $key;
-        $configuration = ! $production || (! config('app.debug') && is_string($key) && strlen($key) === 32 && strlen((string) config('operations.proxy_secret')) >= 32 && config('session.secure') === true && config('session.encrypt') === true && in_array(config('session.same_site'), ['lax', 'strict'], true) && str_starts_with((string) config('app.url'), 'https://') && (! config('realtime.enabled') || app(PusherDelivery::class)->ready()));
+        $configuration = ! $production || ($this->databaseTransportIsSecure() && ! config('app.debug') && is_string($key) && strlen($key) === 32 && strlen((string) config('operations.proxy_secret')) >= 32 && config('session.secure') === true && config('session.encrypt') === true && in_array(config('session.same_site'), ['lax', 'strict'], true) && str_starts_with((string) config('app.url'), 'https://') && (! config('realtime.enabled') || app(PusherDelivery::class)->ready()));
 
         return ['ready' => $ready && $configuration, 'database' => $database, 'private_storage' => $storage, 'production_configuration' => $configuration, 'queue' => $queue, 'media' => $database ? $media : null, 'backup' => ['verified_at' => $verified?->toIso8601String(), 'age_seconds' => $backupAge, 'overdue' => $backupAge === null || $backupAge > 93600]];
     }
