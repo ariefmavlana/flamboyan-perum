@@ -51,7 +51,7 @@ useHead({
           "
           width="1920"
           height="1434"
-          alt="Gerbang kawasan Bukit Flamboyan Indah 2, Cibiru Wetan · dokumentasi pengguna."
+          alt="Gerbang kawasan Bukit Flamboyan Indah 2 · dokumentasi pengguna."
           fetchpriority="high"
         />
         <figcaption>

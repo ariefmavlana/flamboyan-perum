@@ -129,7 +129,7 @@ export default defineNuxtConfig({
         {
           name: 'description',
           content:
-            'Jelajahi pilihan rumah Bukit Flamboyan Indah 2 di Cibiru Wetan, Bandung Timur. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
+            'Jelajahi pilihan rumah Bukit Flamboyan Indah 2 di Bandung Timur. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
         },
         { property: 'og:site_name', content: 'Flamboyan Perum' },
         { property: 'og:locale', content: 'id_ID' },

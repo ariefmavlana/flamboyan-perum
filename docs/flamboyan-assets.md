@@ -72,3 +72,5 @@ Belum dijalankan dan tidak diklaim: apply impor live (menunggu review urutan + k
 Tabel validasi di atas adalah bukti historis PR awal. Perbaikan resize, penolakan replacement MASTERPLAN, preflight worker, sanitasi marker publik, dan gambar OG dokumentasi pengguna memerlukan validasi ulang pada gabungan PR sebelum merge. Source audit masih memiliki advisory tooling upstream; tidak dianggap lulus. Tidak ada migrasi, seed, impor cloud, atau perubahan CRM.
 
 Deskripsi Admin yang tidak memakai kalimat lama/baru dipertahankan (`preserved`), bukan ditolak atau ditimpa. Katalog baru tidak perlu memasukkan kalimat ilustrasi developer yang sudah tidak sesuai agar importer berjalan.
+
+Siteplan menyebut Komplek Bumi Flamboyan Indah, Jl. Cikoneng, Cimekar, Kecamatan Cileunyi; branding katalog tetap Bukit Flamboyan Indah 2. Nama kompleks pada sumber tidak dianggap identitas legal proyek. SEO/alt gerbang memakai Bandung Timur tanpa klaim desa Cibiru Wetan yang berbeda dari aset terbaru. Koordinat numerik, developer, situs, dan fasilitas berstatus aktual tidak disimpulkan dari gambar ini.

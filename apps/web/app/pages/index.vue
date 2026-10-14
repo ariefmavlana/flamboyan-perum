@@ -45,9 +45,9 @@ const wa = computed(() =>
   ),
 )
 useSeoMeta({
-  title: 'Rumah Baru Cibiru Wetan, Bandung Timur',
+  title: 'Rumah Baru Bandung Timur',
   description:
-    'Pilihan rumah Bukit Flamboyan Indah 2 di Cibiru Wetan, Bandung Timur dan rencana hunian Banjaran. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
+    'Pilihan rumah Bukit Flamboyan Indah 2 di Bandung Timur dan rencana hunian Banjaran. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
 })
 useHead({
   link: [
