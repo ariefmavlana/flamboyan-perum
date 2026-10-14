@@ -1,8 +1,9 @@
 import {
-  assertBodySize,
+  createError,
   defineEventHandler,
-  readBody,
+  getHeader,
   setResponseStatus,
+  type H3Event,
 } from 'h3'
 
 const maxBodyBytes = 16 * 1024
@@ -72,30 +73,117 @@ function collectReports(body: unknown): Record<string, unknown>[] {
   return []
 }
 
+export async function readReportBody(event: H3Event): Promise<unknown> {
+  const req = event.node.req
+  function tooLarge() {
+    // Close the connection after the error response rather than consuming an unbounded stream.
+    req.pause()
+    event.node.res.shouldKeepAlive = false
+    return createError({ statusCode: 413, statusMessage: 'Payload Too Large' })
+  }
+  if (Number(getHeader(event, 'content-length')) > maxBodyBytes)
+    throw tooLarge()
+  const chunks: Buffer[] = []
+  let size = 0
+  function accept(value: Uint8Array | string) {
+    const bytes =
+      typeof value === 'string' ? Buffer.byteLength(value) : value.byteLength
+    if (size + bytes > maxBodyBytes) throw tooLarge()
+    size += bytes
+    chunks.push(Buffer.from(value))
+  }
+  // Nitro's serverless adapters may provide an already materialized body or a Web stream.
+  const incoming = req as typeof req & {
+    rawBody?: unknown
+    body?: unknown
+    [key: symbol]: unknown
+  }
+  const supplied =
+    event.web?.request?.body ??
+    event._requestBody ??
+    incoming[Symbol.for('h3RawBody')] ??
+    incoming.rawBody ??
+    incoming.body
+  if (supplied != null) {
+    const body = await supplied
+    if (body instanceof ReadableStream) {
+      const reader = body.getReader()
+      try {
+        while (true) {
+          const part = await reader.read()
+          if (part.done) break
+          accept(part.value)
+        }
+      } catch (error) {
+        void reader.cancel().catch(() => {})
+        throw error
+      } finally {
+        reader.releaseLock()
+      }
+    } else if (typeof body === 'string' || body instanceof Uint8Array) {
+      accept(body)
+    } else {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Invalid report body',
+      })
+    }
+  } else if (!req.readableEnded) {
+    await new Promise<void>((resolve, reject) => {
+      function cleanup() {
+        req.off('data', data)
+        req.off('end', end)
+        req.off('error', fail)
+        req.off('aborted', aborted)
+      }
+      function data(chunk: Buffer) {
+        try {
+          accept(chunk)
+        } catch (error) {
+          cleanup()
+          reject(error)
+        }
+      }
+      function end() {
+        cleanup()
+        resolve()
+      }
+      function fail(error: Error) {
+        cleanup()
+        reject(error)
+      }
+      function aborted() {
+        fail(
+          createError({
+            statusCode: 400,
+            statusMessage: 'Incomplete report body',
+          }),
+        )
+      }
+      req
+        .on('data', data)
+        .once('end', end)
+        .once('error', fail)
+        .once('aborted', aborted)
+    })
+  }
+  try {
+    return JSON.parse(Buffer.concat(chunks, size).toString('utf8'))
+  } catch {
+    return null
+  }
+}
+
 export default defineEventHandler(async (event) => {
-  // H3 wraps the request stream: missing/chunked Content-Length cannot bypass it.
-  assertBodySize(event, maxBodyBytes)
   const now = Date.now()
   if (now - windowStartedAt > 60_000) {
     windowStartedAt = now
     windowCount = 0
   }
   windowCount += 1
+  // Every request remains byte-bounded, including reports past the logging quota.
+  const body = await readReportBody(event)
   if (windowCount <= maxReportsPerMinute) {
-    let body: unknown
-    try {
-      body = await readBody(event)
-    } catch (error) {
-      const status =
-        error && typeof error === 'object'
-          ? Number(
-              (error as { statusCode?: number; status?: number }).statusCode ??
-                (error as { status?: number }).status,
-            )
-          : 0
-      if (status === 413 || status === 400) throw error
-      body = null
-    }
     for (const report of collectReports(body)) {
       console.warn(
         'csp_violation',
