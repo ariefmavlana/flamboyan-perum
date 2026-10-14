@@ -28,7 +28,7 @@ function trackWhatsapp() {
     <a class="skip-link" href="#main">Lewati ke konten</a>
     <header class="public-header">
       <div class="site-header container">
-        <BrandLogo />
+        <BrandLogo logotype />
         <ResponsiveNav id="public-navigation" label="Navigasi utama">
           <NuxtLink to="/">Beranda</NuxtLink>
           <NuxtLink to="/perumahan">Perumahan</NuxtLink>

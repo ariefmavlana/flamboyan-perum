@@ -229,20 +229,29 @@ useHead({
             Rumahnya. Kawasannya.<br />Keseharian Anda.
           </h2>
         </div>
-        <NuxtLink class="text-link" to="/konsultasi?tujuan=kunjungan" @click="trackVisit"
+        <NuxtLink
+          class="text-link"
+          to="/konsultasi?tujuan=kunjungan"
+          @click="trackVisit"
           >Rencanakan kunjungan →</NuxtLink
         >
       </div>
       <div class="neighbourhood-grid">
         <figure>
           <img
-            src="/images/flamboyan-gerbang.webp"
-            width="747"
-            height="420"
+            src="/images/gerbang-kawasan-1920.webp"
+            srcset="
+              /images/gerbang-kawasan-960.webp   960w,
+              /images/gerbang-kawasan-1920.webp 1920w
+            "
+            width="1920"
+            height="1434"
             loading="lazy"
-            alt="Ilustrasi gerbang Bukit Flamboyan Indah 2 dari Rumah Rajasa."
+            alt="Gerbang kawasan Bukit Flamboyan Indah 2 · dokumentasi pengguna."
           />
-          <figcaption>Ilustrasi gerbang kawasan · Rumah Rajasa</figcaption>
+          <figcaption>
+            Gerbang kawasan Bukit Flamboyan Indah 2 · dokumentasi pengguna
+          </figcaption>
         </figure>
         <div class="neighbourhood-copy">
           <p class="eyebrow">BANDUNG TIMUR</p>
@@ -254,8 +263,8 @@ useHead({
             kami.
           </p>
           <p class="muted">
-            Visual kawasan merupakan ilustrasi pengembang. Kondisi dan
-            ketersediaan unit dikonfirmasi saat konsultasi.
+            Gambar kawasan adalah dokumentasi pengguna; kondisi dan ketersediaan
+            unit dikonfirmasi saat konsultasi.
           </p>
           <NuxtLink class="text-link" to="/panduan/kunjungan-rumah"
             >Panduan saat melihat rumah →</NuxtLink
