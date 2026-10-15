@@ -37,7 +37,7 @@ Environment (rahasia operator; jangan di argumen/file tracked/log/PR): `FLAMBOYA
 
 - `scripts/build-flamboyan-manifest.mjs` membaca `.tools/flamboyan-assets/edited/<tipe>/*.jpg` + `shared/Siteplan.jpg`, menghitung SHA-256/dimensi, membuang duplikat byte identik, dan menulis `scripts/flamboyan-house-assets.json` (di-commit). File non-JPEG dicatat pada `skipped`.
 - Importer memakai session+CSRF dan POST/PATCH media internal existing dengan rantai `property_version`; jeda 650 ms per call; konflik 409 menghentikan proses tanpa retry otomatis. Marker `[ED:<key>]` mencegah upload ganda dan memverifikasi media existing (alt/kind/dimensi/READY/published).
-- Foto baru masuk posisi 0..n-1 (jadi sampul), PHOTO lama tetap published posisi 100+; MASTERPLAN existing hanya dipakai ulang bila marker/dimensi/READY cocok. VIDEO hanya bila `videos` terisi dengan tautan resmi.
+- Foto baru masuk posisi 0..n-1 (jadi sampul), PHOTO lama tetap published posisi 100+; MASTERPLAN existing hanya dipakai ulang bila marker/dimensi/READY cocok. VIDEO hanya bila `videos` terisi dengan tautan resmi; maksimal satu entri per tipe, duplikat dengan URL sama maupun berbeda ditolak sebelum write agar marker tetap unik.
 - Dimensi manifest/SHA adalah sumber asli; pemeriksaan READY mengikuti resize server ke lebar maksimal 1920 tanpa upscaling (2752×1536 menjadi 1920×1072). Public alt membuang marker terminal ED/RR, sementara API internal menyimpannya untuk idempotensi; label ilustrasi tetap utuh.
 - Pada `process_in_request=false`, jalankan `php artisan queue:work --queue=media,notifications,default` dan pastikan worker aktif sebelum apply. Flag `--worker-ready` menyatakan pemeriksaan operator, bukan bukti kesehatan worker. Tanpa flag, importer berhenti sebelum upload; worker yang berhenti di tengah proses menghasilkan kegagalan berbatas, bukan retry penulisan otomatis.
 - Snapshot sebelum apply: `.tools/flamboyan-import/<hostname>/before-<timestamp>.json` (metadata internal, wajib privat). Hasil apply: `result-<timestamp>.json` di folder yang sama.
@@ -52,7 +52,11 @@ Gunakan snapshot sebelum apply pertama untuk origin terkait. Login Admin, baca v
 - `public/images/bandung-timur-gerbang-960/1920.webp` (dari GATE 2) menggantikan foto Unsplash pada place-intro `/bandung-timur`; kredit Unsplash dihapus, caption diganti dokumentasi pengguna.
 - `logo-flamboyan.webp` (transparan, dari LOGO.jpg) dipakai di header publik lewat `BrandLogo logotype`; wordmark teks tetap untuk footer gelap dan sidebar backoffice. Favicon set: `favicon.ico` (16/32/48), `favicon-32.png`, `icon-192.png`, `apple-touch-icon.png`, didaftarkan di `nuxt.config.ts` `app.head.link`.
 
-## Validasi
+## Validasi koreksi review — 2026-10-15
+
+`node --test scripts/import-flamboyan-assets.test.mjs`: 12 tes lulus, termasuk penolakan VIDEO duplikat sebelum apply, dua URL berbeda untuk tipe yang sama, serta satu video untuk setiap tipe berbeda. Koreksi ini tidak menjalankan impor bisnis. Bukti gabungan backend/frontend/browser sebelumnya tercatat di `open-pr-integration-validation.md`; hasilnya tidak dianggap penerimaan risiko dependency source yang masih terbuka.
+
+## Validasi awal sebelum koreksi review (historis)
 
 Runtime Windows, Node 24.21.0, PHP 8.5.11 (GD WebP untuk konversi), Edge lokal via Playwright (Chromium Playwright belum diinstal di mesin ini).
 
@@ -65,7 +69,7 @@ Runtime Windows, Node 24.21.0, PHP 8.5.11 (GD WebP untuk konversi), Edge lokal v
 | `npm run build` | Lulus (Nuxt 4.5.2, Nitro node-server) |
 | Browser lokal (dev server) | logo header termuat (naturalWidth 308), favicon tertaut, foto gerbang beranda & `/bandung-timur` termuat 1440×1075 (HTTP 200), 0 page error; screenshot di `.tools/flamboyan-import/screens/` |
 
-Belum dijalankan dan tidak diklaim: apply impor live (menunggu review urutan + kredensial Admin), suite PHPUnit/Pint (tidak ada perubahan `apps/api`), tes menulis ke produksi, verifikasi visual oleh pengguna (menunggu PR preview), embed video (menunggu URL YouTube). Screenshot lengkap disimpan privat; pengguna meninjau melalui PR preview sebelum merge.
+Pada putaran awal ini belum dijalankan: apply impor live, suite PHPUnit/Pint, tes menulis ke produksi, verifikasi visual oleh pengguna, dan embed video. Saat itu belum ada perubahan `apps/api`; PR final kemudian menambahkan sanitasi marker DTO publik beserta MediaTest. Bukti awal ini bukan cakupan maupun hasil validasi PR final. Screenshot awal disimpan privat; embed video tetap menunggu URL YouTube resmi.
 
 ## Koreksi review 15 Oktober 2026
 
