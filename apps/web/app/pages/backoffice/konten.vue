@@ -34,6 +34,11 @@ const contentPurposes = [
     description: 'Suku bunga, masa berlaku, dan biaya bank.',
   },
   {
+    kind: 'FINANCING_PROGRAM' as const,
+    title: 'Pembiayaan BSI & BNI',
+    description: 'Angsuran tetap dan informasi pembiayaan kawasan.',
+  },
+  {
     kind: 'TESTIMONIAL' as const,
     title: 'Cerita pembeli',
     description: 'Pengalaman pembeli yang sudah berizin.',
@@ -205,6 +210,49 @@ const schemas = {
       max: 2000,
     },
   ],
+  FINANCING_PROGRAM: [
+    { key: 'bank', label: 'Bank (BSI atau BNI)', type: 'text', max: 3 },
+    { key: 'product', label: 'Nama program', type: 'text', max: 160 },
+    { key: 'development_name', label: 'Nama kawasan', type: 'text', max: 160 },
+    {
+      key: 'method',
+      label: 'Jenis informasi pembiayaan',
+      type: 'text',
+      max: 30,
+    },
+    {
+      key: 'monthly_idr',
+      label: 'Angsuran tetap per bulan (IDR)',
+      type: 'number',
+      max: 1000000000000,
+    },
+    {
+      key: 'tenor_months',
+      label: 'Tenor angsuran tetap (bulan)',
+      type: 'number',
+      max: 360,
+    },
+    { key: 'source_name', label: 'Sumber informasi', type: 'text', max: 200 },
+    {
+      key: 'source_url',
+      label: 'Tautan sumber bank HTTPS (bila tersedia)',
+      type: 'url',
+      max: 2048,
+      optional: true,
+    },
+    {
+      key: 'checked_date',
+      label: 'Tanggal pemeriksaan sumber',
+      type: 'date',
+      max: 0,
+    },
+    {
+      key: 'conditions',
+      label: 'Cakupan tipe, syarat dan biaya',
+      type: 'textarea',
+      max: 2500,
+    },
+  ],
   BANK_RATE: [
     {
       key: 'min_principal_idr',
@@ -334,6 +382,14 @@ const schemas = {
     },
   ],
 } as const
+const visibleSchema = computed(() =>
+  schemas[kind.value].filter(
+    (field) =>
+      kind.value !== 'FINANCING_PROGRAM' ||
+      !['monthly_idr', 'tenor_months'].includes(field.key) ||
+      form.payload.method === 'FIXED_INSTALLMENT',
+  ),
+)
 watch(
   () => form.payload,
   () => {
@@ -400,6 +456,10 @@ function open(record?: EditorialContent) {
     typeof record?.payload.property_id === 'number'
       ? record.payload.property_id
       : null
+  if (kind.value === 'FINANCING_PROGRAM' && !record) {
+    form.payload.method = 'REFERENCE_ONLY'
+    form.payload.development_name = 'Bukit Flamboyan Indah 2'
+  }
   heroMediaId.value =
     typeof record?.payload.media_id === 'number'
       ? record.payload.media_id
@@ -435,6 +495,13 @@ async function save() {
     }
     if (kind.value === 'BANK_RATE' && phases.value.length)
       payload.phases = phases.value
+    if (
+      kind.value === 'FINANCING_PROGRAM' &&
+      payload.method === 'REFERENCE_ONLY'
+    ) {
+      delete payload.monthly_idr
+      delete payload.tenor_months
+    }
     const result = await api.request<{ data: EditorialContent }>(
       `/api/v1/internal/content${selected.value ? `/${selected.value.id}` : ''}`,
       {
@@ -514,6 +581,7 @@ onMounted(() => load())
             <option value="HERO">Sorotan beranda</option>
             <option value="TESTIMONIAL">Cerita pembeli</option>
             <option value="BANK_RATE">Referensi KPR</option>
+            <option value="FINANCING_PROGRAM">Pembiayaan BSI & BNI</option>
             <option value="BANK_PARTNER">Bank mitra</option>
             <option value="DEVELOPMENT">Kawasan & kontak</option>
           </select></label
@@ -548,6 +616,7 @@ onMounted(() => load())
                     HERO: 'Sorotan beranda',
                     TESTIMONIAL: 'Cerita pembeli',
                     BANK_RATE: 'Referensi KPR',
+                    FINANCING_PROGRAM: 'Pembiayaan BSI & BNI',
                     BANK_PARTNER: 'Bank mitra',
                     DEVELOPMENT: 'Kawasan & kontak',
                   }[record.kind]
@@ -611,10 +680,18 @@ onMounted(() => load())
       </h2>
       <form @submit.prevent="save">
         <div class="form-grid">
-          <label v-for="field in schemas[kind]" :key="field.key"
+          <label v-for="field in visibleSchema" :key="field.key"
             >{{ field.label
-            }}<textarea
-              v-if="field.type === 'textarea'"
+            }}<select
+              v-if="kind === 'FINANCING_PROGRAM' && field.key === 'method'"
+              v-model="form.payload.method"
+            >
+              <option value="FIXED_INSTALLMENT">Angsuran tetap</option>
+              <option value="REFERENCE_ONLY">
+                Informasi bank — tarif belum dikonfirmasi
+              </option></select
+            ><textarea
+              v-else-if="field.type === 'textarea'"
               v-model="form.payload[field.key]"
               :required="!('optional' in field && field.optional)"
               :maxlength="field.max" /><input
@@ -629,11 +706,13 @@ onMounted(() => load())
               "
               :max="field.type === 'number' ? field.max : undefined"
               :min="
-                field.key === 'fixed_months'
+                field.key === 'fixed_months' || field.key === 'monthly_idr'
                   ? 1
-                  : field.type === 'number'
-                    ? 0
-                    : undefined
+                  : field.key === 'tenor_months'
+                    ? 12
+                    : field.type === 'number'
+                      ? 0
+                      : undefined
               "
               :step="
                 field.key === 'annual_rate' ||

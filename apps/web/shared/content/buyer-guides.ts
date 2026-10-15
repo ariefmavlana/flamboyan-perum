@@ -132,8 +132,8 @@ export const buyerGuides: BuyerGuide[] = [
       },
     ],
     reference: {
-      title: 'Contoh informasi resmi biaya dan periode bunga KPR — BCA',
-      url: 'https://www.bca.co.id/id/individu/produk/pinjaman/kpr/kpr-first',
+      title: 'BNI Griya Pembelian — syarat dan informasi produk',
+      url: 'https://www.bni.co.id/id-id/individu/pinjaman/bni-griya/bni-griya-pembelian',
     },
   },
 ]

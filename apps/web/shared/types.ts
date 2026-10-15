@@ -108,6 +108,19 @@ export interface BankRate {
   appraisal_min_idr?: number
   appraisal_max_idr?: number
 }
+export type FinancingProgram = {
+  id: number
+  bank: 'BSI' | 'BNI'
+  product: string
+  development_name: string
+  source_name: string
+  source_url?: string
+  checked_date: string
+  conditions: string
+} & (
+  | { method: 'FIXED_INSTALLMENT'; monthly_idr: number; tenor_months: number }
+  | { method: 'REFERENCE_ONLY' }
+)
 export interface PublicContent {
   development?: Development | null
   hero: {
@@ -121,6 +134,7 @@ export interface PublicContent {
   } | null
   testimonials: { id: number; name: string; quote: string; context: string }[]
   bank_rates: BankRate[]
+  financing_programs?: FinancingProgram[]
   bank_partners?: {
     id: number
     name: string
@@ -130,7 +144,13 @@ export interface PublicContent {
 }
 export interface EditorialContent {
   id: number
-  kind: 'HERO' | 'TESTIMONIAL' | 'BANK_RATE' | 'BANK_PARTNER' | 'DEVELOPMENT'
+  kind:
+    | 'HERO'
+    | 'TESTIMONIAL'
+    | 'BANK_RATE'
+    | 'BANK_PARTNER'
+    | 'DEVELOPMENT'
+    | 'FINANCING_PROGRAM'
   payload: Record<string, string | number | null | RatePhase[]>
   published: boolean
   position: number

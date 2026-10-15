@@ -1,5 +1,9 @@
 # Software Requirements Specification — Flamboyan Perum
 
+## Revisi katalog/pembiayaan dan pembersihan fixture — 2026-10-15
+
+FINANCING_PROGRAM memakai SiteContent dan transaksi CMS existing: bank BSI/BNI, kawasan Bukit Flamboyan Indah 2, metode FIXED_INSTALLMENT dengan monthly_idr/tenor_months integer positif, atau REFERENCE_ONLY tanpa angka angsuran/tenor rekaan. Source_name, checked_date dan conditions wajib; source_url bila tersedia harus HTTPS. Publikasi memerlukan Admin aktif dan attestation; update memakai version guard/audit. Public financing_programs hanya published+verified, allowlist tanpa metadata aktor. BANK_RATE existing terpisah untuk anuitas dengan periode berlaku. Katalog/CRM live direkonsiliasi menjadi lima properti dan nol fixture lead/history/notifications; penghapusan operasional tidak menambahkan API edit/delete histori. Detail validasi/pemulihan di [real-catalog-financing-revision.md](real-catalog-financing-revision.md).
+
 ## Integrasi aset pemilik — 2026-10-15
 
 Halaman SSR `/perumahan/bukit-flamboyan-indah-2` memuat 17 foto aktual, 2 ilustrasi gerbang dan 1 siteplan, tanpa MP4. Lima paket tipe 36/60, 36/90, 56/90, 62/70 dan 69/80 dipetakan dari folder sumber ke 50 PHOTO + 5 FLOOR_PLAN; empat tipe lain mempertahankan katalog/media existing. Foto aktual tidak dialokasikan ke tipe tanpa konfirmasi. Label, denah dan ilustrasi ditampilkan utuh; galeri mendukung keyboard, Escape dan pengembalian fokus.

@@ -11,7 +11,7 @@ import { absoluteUrl, canonicalUrl } from '#shared/utils/seo'
 import { formatDate } from '#shared/utils/format'
 import { breadcrumbSchema, jsonLdText } from '#shared/utils/structured-data'
 const config = useRuntimeConfig()
-const { development } = await useDevelopment()
+const { development, financingPrograms } = await useDevelopment()
 const { data, error, refresh } = await useFetch<Paginated<Property>>(
   '/api/v1/properties',
   {
@@ -152,6 +152,9 @@ useHead({
         Pilihan rumah akan tampil setelah katalog dipublikasikan.
       </p>
     </section>
+    <div class="container section">
+      <FinancingPrograms :programs="financingPrograms" />
+    </div>
     <section
       id="dokumentasi"
       class="container section project-documentation"

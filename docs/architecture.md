@@ -1,5 +1,9 @@
 # Arsitektur fondasi
 
+## Program pembiayaan kawasan — 2026-10-15
+
+SiteContent menambah schema fixed FINANCING_PROGRAM untuk angsuran tetap BSI dan referensi BNI tanpa bunga proyek yang belum dikonfirmasi. ContentController tetap menangani validasi, Admin fresh lock, version guard dan audit CMS; Public DTO tersendiri. Komponen FinancingPrograms digunakan di kawasan/detail, sementara kernel anuitas tidak berubah. Tidak ada tabel/dependency/service baru. Pembersihan fixture adalah operasi khusus bersnapshot dan transaksi, tanpa endpoint penghapusan atau seed otomatis. Bukti dan rollback: [real-catalog-financing-revision.md](real-catalog-financing-revision.md).
+
 ## Pemisahan aset kawasan dan katalog — 2026-10-15
 
 Aset editorial kawasan dan brand disajikan sebagai WebP responsif lokal dengan metadata typed di `shared/content/flamboyan-assets.ts`. Foto rumah/denah tetap melalui PropertyMedia/API dan private disk existing; tidak ada katalog statis pengganti API. Tooling persiapan/impor opt-in terpisah dari build, seeding dan request; sumber mentah serta journal berada di `.tools` yang diabaikan Git. Semua harga, otorisasi, version guard, audit dan worker tetap pada batas existing.
