@@ -35,7 +35,7 @@ test('discovery filters preserve URL and mobile layout does not overflow', async
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
   await page.getByLabel('Cari lokasi atau nama properti').fill(fixture.title)
-  await page.getByRole('button', { name: 'Jelajahi →' }).click()
+  await page.getByRole('button', { name: 'Cari properti', exact: true }).click()
   await expect(page).toHaveURL(/properti\?q=/)
   expect(new URL(page.url()).searchParams.get('q')).toBe(fixture.title)
   await expect(

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\OperationalHealth;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,6 +13,7 @@ class EdgeSecurity
     {
         if (config('app.env') === 'production') {
             abort_unless(in_array($request->getHost(), config('operations.hosts'), true), 400, 'Host tidak diizinkan.');
+            abort_unless(app(OperationalHealth::class)->databaseTransportIsSecure(), 503, 'Transport database belum memenuhi konfigurasi aman.');
         }
         if ($request->headers->has('X-Flamboyan-Proxy-Signature')) {
             $secret = (string) config('operations.proxy_secret');
@@ -32,10 +34,11 @@ class EdgeSecurity
     {
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', 'DENY');
-        $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+        $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=()');
         $response->headers->set('Referrer-Policy', 'no-referrer');
+        $response->headers->set('Cross-Origin-Resource-Policy', 'same-site');
         if (config('app.env') === 'production' && $request->isSecure()) {
-            $response->headers->set('Strict-Transport-Security', 'max-age=31536000');
+            $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
 
         return $response;

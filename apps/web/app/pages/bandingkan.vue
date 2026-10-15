@@ -27,6 +27,7 @@ const { data, error, status, refresh } = await useAsyncData(
   { watch: [compareIds] },
 )
 function remove(id: number) {
+  if (!comparison.ready.value) return
   if (comparison.ids.value.includes(id)) comparison.toggle(id)
   return navigateTo({
     path: '/bandingkan',
@@ -59,6 +60,7 @@ useSeoMeta({
           v-for="id in data.missing"
           :key="id"
           class="button secondary"
+          :disabled="!comparison.ready.value"
           @click="remove(id)"
         >
           Hapus pilihan #{{ id }}
@@ -77,6 +79,12 @@ useSeoMeta({
             :aria-label="'Lihat ' + property.title"
           >
             <img
+              :class="{
+                'is-illustration': /ilustrasi|inspirasi/i.test(
+                  property.media.find((media) => media.kind === 'PHOTO')?.alt ??
+                    '',
+                ),
+              }"
               :src="
                 property.media.find((media) => media.kind === 'PHOTO')
                   ?.sources[0]?.url
@@ -134,7 +142,11 @@ useSeoMeta({
               <dd>{{ availabilityLabels[property.availability] }}</dd>
             </div>
           </dl>
-          <button class="button secondary" @click="remove(property.id)">
+          <button
+            class="button secondary"
+            :disabled="!comparison.ready.value"
+            @click="remove(property.id)"
+          >
             Hapus {{ property.title }}
           </button>
         </article>
@@ -142,3 +154,9 @@ useSeoMeta({
     >
   </section>
 </template>
+<style scoped>
+.compare-photo img.is-illustration {
+  object-fit: contain;
+  background: var(--cream);
+}
+</style>

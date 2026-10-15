@@ -1,5 +1,11 @@
 # Product Requirements Document — Flamboyan Perum
 
+## Aset pemilik Bukit Flamboyan Indah 2 — 2026-10-15
+
+Seluruh 58 gambar EDITED dan 17 foto lapangan dipetakan, dengan logo resmi pada identitas website. Foto lapangan menerima koreksi warna deterministik yang mempertahankan kondisi fisik; ilustrasi dan dokumentasi aktual diberi caption berbeda. Lima tipe memiliki 50 ilustrasi rumah dan 5 denah; dua ilustrasi gerbang serta satu siteplan disajikan di halaman kawasan. Harga dan spesifikasi tetap dari katalog API. Video 22 berkas ditunda sesuai instruksi pengguna sampai URL YouTube tersedia.
+
+Sumber asli disimpan privat; website memakai varian WebP responsif. Importer opt-in mencegah upload berulang dan memublikasikan galeri pengganti setelah seluruh 55 gambar READY. R2 diinventaris bersama refs database; orphan/duplikasi yang masih dipakai atau berada dalam grace 30 hari dipertahankan. Cakupan, bukti serta batas publikasi ada di [real-flamboyan-assets.md](real-flamboyan-assets.md).
+
 ## Kesiapan produksi, SEO, analytics, dan akuisisi berbayar — 2026-10-14
 
 Instruksi pengguna meminta audit kesiapan produksi serta penyiapan kanal akuisisi (Google Search Ads, Meta Ads/Instagram, pencarian organik) tanpa aktivasi iklan, tanpa belanja, dan tanpa mengarang data bisnis. Temuan lengkap, pemilik tindakan, dan batasnya ada di [audits/flamboyan-production-audit.md](audits/flamboyan-production-audit.md) dan [deployment/manual-actions-required.md](deployment/manual-actions-required.md).

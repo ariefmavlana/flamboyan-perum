@@ -7,10 +7,15 @@ export default defineEventHandler((event) => {
   event.node.res.setHeader('X-Frame-Options', 'DENY')
   event.node.res.setHeader(
     'Permissions-Policy',
-    'camera=(), microphone=(), geolocation=()',
+    'camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=()',
   )
   event.node.res.setHeader('Referrer-Policy', 'no-referrer')
   const config = useRuntimeConfig()
+  if (String(config.public.siteUrl).startsWith('https://'))
+    event.node.res.setHeader(
+      'Strict-Transport-Security',
+      'max-age=31536000; includeSubDomains',
+    )
   const secret = String(config.apiProxySecret)
   const remote = event.node.req.socket?.remoteAddress
   const now = Math.floor(Date.now() / 1000)

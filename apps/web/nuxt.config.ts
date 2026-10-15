@@ -25,7 +25,7 @@ if (
 const sameOriginProxy =
   process.env.VERCEL === '1'
     ? Object.fromEntries(
-        ['/api/**', '/auth/**', '/sanctum/**', '/media/**', '/up'].map(
+        ['/api/v1/**', '/auth/**', '/sanctum/**', '/media/**', '/up'].map(
           (path) => [path, { proxy: `${apiOrigin}${path}` }],
         ),
       )
@@ -125,11 +125,19 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'id' },
       title: 'Flamboyan Perum',
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: '/images/brand/flamboyan-mark.png',
+        },
+        { rel: 'apple-touch-icon', href: '/images/brand/flamboyan-mark.png' },
+      ],
       meta: [
         {
           name: 'description',
           content:
-            'Jelajahi pilihan rumah Bukit Flamboyan Indah 2 di Cibiru Wetan, Bandung Timur. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
+            'Jelajahi pilihan rumah Bukit Flamboyan Indah 2 di Bandung Timur. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
         },
         { property: 'og:site_name', content: 'Flamboyan Perum' },
         { property: 'og:locale', content: 'id_ID' },

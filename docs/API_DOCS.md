@@ -1,5 +1,34 @@
 # REST API — katalog, workspace dan operasi
 
+## Aset asli Bukit Flamboyan Indah 2 — 2026-10-15
+
+POST `/api/v1/internal/properties/{id}/media` menerima `published` boolean opsional; default `true` mempertahankan kompatibilitas klien existing. Multipart `published=0` menyimpan media privat, termasuk setelah READY. Publikasi melalui PATCH existing tetap memakai scope, CSRF, version guard dan audit. Kuota menghitung seluruh media non-ARCHIVED, termasuk unpublished: PHOTO 20/FLOOR_PLAN 5 tidak dinaikkan. Tidak ada migrasi atau endpoint baru.
+
+GET `/api/v1/internal/properties/{id}/media` menambah `supports_unpublished_uploads:true` pada envelope. Importer memeriksa dukungan ini pada seluruh target sebelum apply; backend lama dengan field missing/false ditolak sebelum upload atau journal write. Default dry-run tetap dapat membaca dan melaporkan kapabilitas tanpa mutasi.
+
+DTO media publik menghapus hanya suffix provenance terminal `[BFI2:<key ASCII>]`, `[ED:<key>]` atau `[RR:<key>]` dari `alt`; caption lain dipertahankan. Internal DTO menyimpan marker untuk pencocokan manifest/journal. Field storage privat, metadata aktor dan identitas Marketing tetap tidak dipublikasikan.
+
+CLI `flamboyan:media-cleanup --json` default dry-run, mendukung disk lokal/R2 dengan enumerasi file Flysystem. Laporan mencantumkan path, bytes, kandidat archived/orphan, retained shared objects dan blocked media IDs. Orphan hanya eligible setelah 30 hari. Seluruh staging/variants dari record belum purged, termasuk draft/unpublished/FAILED, serta logo CMS aktif/draft tetap dilindungi. Hanya pola file managed staging/ready/content-logos yang dapat dibersihkan; direktori tidak dihapus. `--execute` memerlukan backup konsisten terverifikasi dan penghentian write media; refs/umur orphan diperiksa ulang sebelum penghapusan. Audit/histori tetap. Inventaris cloud 14 Oktober menghasilkan 0 kandidat eligible; tidak ada penghapusan cloud pada pekerjaan ini.
+
+`/perumahan/bukit-flamboyan-indah-2` merupakan route editorial SSR, canonical/sitemap dan konteks konsultasi yang allowlisted. Harga, spesifikasi dan card berasal dari API; hanya slug yang tepat cocok dengan house_type ditampilkan. Foto aktual yang tipenya belum dikonfirmasi disajikan pada galeri kawasan. Tidak menambah multi-proyek CMS, unit fallback atau record Lead. Manifest, pemrosesan dan rollback: [real-flamboyan-assets.md](real-flamboyan-assets.md).
+
+## Koreksi integrasi rilis — 2026-10-15
+
+Audit LOGIN yang gagal membatalkan sesi dan CSRF sebelum error diteruskan; respons500 tidak meninggalkan sesi authenticated. Proxy produksi Nuxt hanya menangani namespace Laravel /api/v1/**; /api/csp-report tetap di Nuxt dan memenuhi204/413/429. Referensi CA relatif DB_SSLROOTCERT diselesaikan terhadap app directory; CA resmi Supabase disertakan sebagai sertifikat publik, tanpa private key.
+
+## Koreksi review keamanan — 2026-10-15
+
+`POST /api/csp-report` pada Nuxt menerima body maksimal 16 KiB (413 jika
+terlalu besar). Maksimal 60 request diterima per menit per instance; berikutnya
+menghasilkan429 sebelum body dibaca/parsing. Ini bukan kuota global provider.
+Log hanya directive allowlist dan origin; tidak ada path/query/token/nonce.
+
+Laravel production hanya menerima PostgreSQL dengan sslmode efektif
+`verify-full`; mode yang lebih lemah menghasilkan503 sebelum query, termasuk
+bila berasal dari DB_URL. Koneksi yang tidak dapat memverifikasi CA/hostname
+juga gagal tertutup. `/ready` tetap hanya `ready`/`not_ready`, tanpa konfigurasi
+atau kredensial. Persiapan CA dan rollout ada di [runbook.md](runbook.md).
+
 ## Impor aset Rumah Rajasa — 2026-10-05
 
 Tidak ada perubahan wire contract. Importer opt-in memakai session/CSRF serta GET/POST/PATCH media internal existing dengan `property_version`, menunggu READY, dan menyimpan provenance pada alt. Hanya 21 gambar terpilih untuk sembilan tipe yang dipublikasikan; 33 sumber tercatat dalam manifest. API tidak mengambil URL sumber: skrip operator mengunduh berkas terverifikasi lalu mengirim multipart. Public DTO tetap allowlist, original/staging privat; harga, spesifikasi, CMS dan CRM tidak dimutasi. Aturan resolusi, idempotensi, snapshot dan rollback ada di [rajasa-assets.md](rajasa-assets.md).
@@ -78,7 +107,7 @@ Laravel paginator memiliki metadata tambahan from/to/path/links yang boleh diaba
 }
 ```
 
-Validation422 menambahkan `errors:{field:[message]}`. 401 auth,403 role/inactive,404 scoped missing,409 duplicate/stale/transition/terminal/same-assignee,419 CSRF,422 input,429 throttle,500 sanitized failure. Error JSON dan `X-Request-ID` tersedia; frontend tidak menampilkan SQL/stack. API body/filter bounded; login5/min peremail+IP,public120/minIP,internal120/minuser. Cron/push/CMS/media/KPR/rates/report endpoints belum diimplementasikan; tidak dianggap contract live.
+Validation422 menambahkan `errors:{field:[message]}`. 401 auth,403 role/inactive,404 scoped missing,409 duplicate/stale/transition/terminal/same-assignee,419 CSRF,422 input,429 throttle,500 sanitized failure. Error JSON dan `X-Request-ID` tersedia; frontend tidak menampilkan SQL/stack. API body/filter bounded; login5/min peremail+IP,public120/minIP,internal120/minuser. Endpoint CMS, media, laporan, operasi dan realtime sudah tersedia sesuai bagian kontrak di bawah. Kalkulator KPR berjalan di frontend; referensi rate berasal dari CMS. Cron/worker dan delivery SMTP/push/scanner bergantung konfigurasi/provider yang benar-benar diverifikasi; keberadaan endpoint tidak membuktikan gate produksi tersebut selesai.
 
 ## Contoh workflow
 
@@ -109,8 +138,8 @@ Admin kemudian assign `{marketing_id:2,version:1}`. Lead returned version2; Mark
 | PATCH `/leads/{id}/contact` | Admin | name,whatsapp_number,version,reason; CONTACT_UPDATED; duplicate409 rollback |
 | POST `/auth/forgot-password` | CSRF | email; generic202 existing/absent;5/min/email+IP; production log/array503 |
 | POST `/auth/reset-password` | CSRF | email,token,password≥12+confirmation;200; invalid/expired/used422 |
-| GET `/internal/properties/{id}/media` | Scoped | page/per_page≤50 default20,include_archived=0/1; paginator + property_version |
-| POST `/internal/properties/{id}/media` | Scoped | version,kind,alt; multipart file PHOTO/FLOOR_PLAN/BROCHURE atau HTTPS url VIDEO/TOUR;201 + property_version |
+| GET `/internal/properties/{id}/media` | Scoped | page/per_page≤50 default20,include_archived=0/1; paginator + property_version/process_in_request/supports_unpublished_uploads |
+| POST `/internal/properties/{id}/media` | Scoped | version,kind,alt,published optional defaulttrue; multipart file PHOTO/FLOOR_PLAN/MASTERPLAN/BROCHURE atau HTTPS url VIDEO/TOUR;201 + property_version |
 | PATCH `/internal/properties/{id}/media/{mediaId}` | Scoped | version,alt/position/published/archived/retry; atomic audit + property_version; archive terminal |
 | GET `/internal/media/{mediaId}/{variant}` | Scoped | READY sanitized preview, including draft; variant640/1280/1920/download |
 | GET `/media/{mediaId}/{variant}` | Public outside v1 | READY+published media pada PUBLISHED property;404 lainnya; nosniff/no-store; PDF attachment |
@@ -189,7 +218,7 @@ POST /api/v1/internal/content/{id}/logo Admin aktif + session/CSRF: multipart fi
 
 GET /api/v1/content/{id}/logo public hanya BANK_PARTNER published+verified dan file tersedia; selain itu404. Output image/webp, nosniff, Cache-Control:no-store, CSP sandbox. Route diizinkan pada signed public proxy dengan ID numerik, tidak membuka internal routes. Public content.bank_partners hanya record eligible dengan file dan DTO {id,name,website,logo_url}; tidak membuat klaim rekanan dari data BANK_RATE. Pemilik wajib memverifikasi izin logo dan hubungan bank sebelum attestation.
 
-File logo terdahulu dipertahankan private setelah replacement, tidak dihidangkan oleh endpoint dan tidak dihapus otomatis. Rollback konten cukup unpublish atau unggah kembali aset yang disetujui memakai version terbaru; pemulihan filesystem/DB mengikuti backup operator. Inventaris dan pembersihan file lama memerlukan review backup/retensi operator, bukan cleanup media properti. Tidak ada hard-delete, logo fiktif, perubahan CRM/privacy, atau migrasi database. Catatan redesign terdahulu mengenai hero statis merupakan snapshot historis; hero yang dipilih CMS kini dikirim lewat field media di atas.
+File logo terdahulu dipertahankan private setelah replacement, tidak dihidangkan oleh endpoint dan tidak dihapus otomatis. Rollback konten cukup unpublish atau unggah kembali aset yang disetujui memakai version terbaru; pemulihan filesystem/DB mengikuti backup operator. Pada integrasi aset 15 Oktober, cleanup CLI juga menginventaris logo tidak direferensikan melewati 30 hari; current logo dari seluruh CMS tetap dilindungi, dengan review backup/retensi operator sebelum execute. Tidak ada hard-delete record, logo fiktif, perubahan CRM/privacy, atau migrasi database. Catatan redesign terdahulu mengenai hero statis merupakan snapshot historis; hero yang dipilih CMS kini dikirim lewat field media di atas.
 
 ### Media function (2026-10-05)
 
@@ -215,3 +244,7 @@ Pergantian filter pada `GET /api/v1/leads` langsung menonaktifkan detail daftar 
 ## Pengenalan perumahan — 2026-10-08
 
 Tidak ada perubahan kontrak REST, schema database, atau izin. `/perumahan` dan `/perumahan/banjaran` adalah route editorial Nuxt. `/konsultasi?kawasan=banjaran` merupakan query frontend allowlisted yang menyiapkan pesan WhatsApp berkonteks Banjaran; tidak diteruskan sebagai filter katalog, tidak menghasilkan record Property/Lead, dan tidak mengirim pesan. Konteks properti published tetap diutamakan bila parameter `properti` valid hadir. `GET /api/v1/content` tetap mengembalikan satu `development`; multi-proyek CMS dan relasi proyek–properti belum diimplementasikan. Banjaran tidak ditambahkan sebagai unit dummy ke API bisnis.
+
+## Alt media publik — 2026-10-15
+
+Public media DTO membuang hanya marker impor terminal `[ED:key]` atau `[RR:key]` dari `alt`. Label dokumentasi/ilustrasi dan catatan pengguna dipertahankan. API internal tetap menyimpan dan mengembalikan alt asli; tidak ada endpoint, schema database, atau izin baru. Dimensi READY tetap dimensi varian 1920 yang diproses server, bukan dimensi unggahan sumber.

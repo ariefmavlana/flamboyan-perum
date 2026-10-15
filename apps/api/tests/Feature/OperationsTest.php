@@ -7,6 +7,7 @@ use App\Models\Lead;
 use App\Models\LeadHistory;
 use App\Models\Property;
 use App\Models\User;
+use App\Services\OperationalHealth;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -210,9 +211,10 @@ class OperationsTest extends TestCase
         $user->forceFill(['email' => strtoupper($user->email)])->save();
         $token = Password::createToken($user);
         $this->postJson('/auth/reset-password', ['email' => strtolower($user->email), 'token' => $token, 'password' => 'Sandi-kapital-2026', 'password_confirmation' => 'Sandi-kapital-2026'])->assertOk();
-        config(['app.env' => 'production', 'mail.default' => 'log']);
-        $this->postJson('/auth/forgot-password', ['email' => $user->email])->assertStatus(503);
-        $this->postJson('/auth/forgot-password', ['email' => 'absent-production@example.test'])->assertStatus(503);
+        $this->partialMock(OperationalHealth::class)->shouldReceive('databaseTransportIsSecure')->andReturn(true);
+        config(['app.env' => 'production', 'mail.default' => 'log', 'operations.hosts' => ['localhost']]);
+        $this->postJson('/auth/forgot-password', ['email' => $user->email])->assertStatus(503)->assertJsonPath('message', 'Layanan mengalami kendala. Silakan coba lagi.');
+        $this->postJson('/auth/forgot-password', ['email' => 'absent-production@example.test'])->assertStatus(503)->assertJsonPath('message', 'Layanan mengalami kendala. Silakan coba lagi.');
         Notification::assertNothingSent();
     }
 

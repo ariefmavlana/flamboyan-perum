@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
       { url: `${origin}/privasi` },
       ...[
         '/perumahan',
+        '/perumahan/bukit-flamboyan-indah-2',
         '/perumahan/banjaran',
         '/bandung-timur',
         '/panduan',

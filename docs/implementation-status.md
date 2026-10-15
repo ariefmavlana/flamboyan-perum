@@ -1,5 +1,57 @@
 # Status implementasi
 
+## Review rilis gabungan — 2026-10-15
+
+Seluruh PR30–34 direkonsiliasi pada branch codex/release-assets-review-20261015 dari main c1cecaf. Koreksi tambahan: kegagalan audit login membatalkan sesi, CA resmi Supabase + path relatif portabel, satu importer/manifest aset, marker publik ED/RR/BFI2 konsisten, serta penghapusan turunan brand lama. Lint/typecheck/48unit/build final19.2s, Composer/Pint, masing-masing SQLite/PostgreSQL113tes/905assertion dan19importer lulus; runtime audit0.20browser terdampak diverifikasi dalam kelompok yang mematuhi limiter; run gabungan mencatat4HTTP429 lalu diulang. Smoke produksi CSP204/413/429 dan private API401 lulus; build API Linux113tes/904assertion lulus. Preview HTTP dengan alias allowlist exact menunggu redeploy metadata. Source audit11high/0critical tetapFAIL; pemilik telah menerima risiko sementara eksplisit dengan mitigasi dev loopback/build tepercaya/runtime0. Izin TLS diberikan terpisah. Pemeriksaan teknis/preview tetap wajib sebelum merge. Main/live/import cloud belum berubah. Bukti dan rollback: [release-assets-review.md](release-assets-review.md).
+
+## Aset asli Bukit Flamboyan Indah 2 — 2026-10-15
+
+Branch `codex/real-flamboyan-assets` disinkronkan ke `origin/main` terbaru (`c1cecaf`) atas instruksi pengguna. Perubahan wording kartu, DemoSeeder dan lockfile main dipertahankan; vendor lokal dipasang sesuai Laravel 13.36.0/PHPUnit 12.5.39.
+
+Implemented: seluruh 58 gambar EDITED dipetakan (50 PHOTO + 5 FLOOR_PLAN untuk lima tipe, 2 ilustrasi gerbang + 1 siteplan kawasan), 17 foto lapangan dikoreksi warna deterministik dengan full frame tetap, logo resmi transparan pada identitas publik/workspace/favicon, halaman kawasan SSR beserta galeri keyboard/responsif, navigasi/konsultasi/canonical/sitemap. Harga, spesifikasi dan card tetap dari API; tipe foto aktual tidak diasumsikan. Video 22 berkas ditunda sampai YouTube sesuai instruksi pengguna.
+
+Importer opt-in memverifikasi sumber/journal/hash/versi/kapasitas; 55 gambar masuk unpublished dan seluruhnya READY sebelum publikasi. Backend menerima `published` opsional pada upload, default true kompatibel; caption publik tidak menampilkan suffix provenance BFI2. Cleanup lokal/R2 melaporkan objek/bytes dan melindungi seluruh refs privat/shared/CMS dengan grace orphan 30 hari. Sumber asli/video disimpan utuh di arsip lokal `.tools`, tidak ikut build/Git. Tidak ada migration atau dependency baru dari fitur aset.
+
+Apply lokal menghasilkan 55 READY/published; rerun pada API final 0 upload/55 reused. Seluruh 220 objek hasil impor tersedia dengan total 31.755.552 bytes. Validasi akhir: Pint/Composer lulus, masing-masing SQLite/PostgreSQL 105 tests/840 assertions, importer 19 tests, frontend lint/typecheck/39unit/build dan 13 browser flows lulus. Seluruh 165 varian API + 63 aset statis berhasil dimuat; sweep produksi semua 55 gambar decoded tanpa page error. Bukti di [real-flamboyan-assets.md](real-flamboyan-assets.md). Audit runtime 0; source 14 temuan (12 high/2 critical) pada tooling existing tetap menjadi gate.
+
+Cloud hanya dibaca: 784 objek/94,765 MiB, 640 refs/0 hilang; cleanup dry-run 0 eligible/0 deleted. Belum di-merge/deploy/import live. Semua 58 EDITED digunakan pada implementasi; 55 media tipe baru di cloud menunggu backend deployed yang mendukung private upload. Tidak ada seed otomatis, perubahan harga/CRM, penghapusan cloud atau GitHub Actions. Cakupan, proses, bukti dan rollback ada di [real-flamboyan-assets.md](real-flamboyan-assets.md).
+
+## Hardening keamanan — 2026-10-14
+
+Branch `feat/security-hardening` dari `main` `43b92e9`. Implemented: CORS di-pin ke origin `FRONTEND_URL`/`APP_URL` (config baru; framework default `*` tidak lagi berlaku), HSTS `includeSubDomains`, `Cross-Origin-Resource-Policy: same-site`, perluasan `Permissions-Policy` (payment/usb/magnetometer/gyroscope), `Cross-Origin-Opener-Policy: same-origin` pada HTML, CSP diperluas (`worker-src`/`manifest-src`/`report-uri`/`upgrade-insecure-requests`) + endpoint laporan CSP tersanitasi (query/token dibuang, batas 16 KiB, 60 laporan/menit per instance), HSTS dipasang middleware untuk semua response Nuxt, `SESSION_ENCRYPT` default true + masuk gate `/ready` bersama `same_site`, `DB_SSLMODE` default `verify-full` di produksi, audit `LOGIN` + log `login_failed` (tanpa kredensial). Validasi awal sebelum koreksi review: PHPUnit 97 lulus, Pint lulus; lint/typecheck/40 tes frontend/build lulus; uji HTTP fungsional pada server build (header lengkap, preflight CORS diizinkan/diblokir benar, laporan CSP 204 dengan log tersanitasi tanpa query). Tidak ada migrasi atau perubahan data; rollback revert commit.
+
+Koreksi review 2026-10-15: PostgreSQL produksi hanya menerima sslmode efektif `verify-full`, termasuk parameter DB_URL; require/verify-ca ditolak sebelum query. DB_SSLROOTCERT opsional meneruskan CA provider ke libpq, dengan CA/hostname valid sebagai prasyarat rollout. CSP setelah 60 request/menit/instance mengembalikan429 sebelum membaca body dan menutup koneksi. Kuota lintas instance tetap memerlukan edge provider. Validasi koreksi final dicatat terpisah; hasil awal di atas bukan bukti CA/provider aktual.
+
+## Aset dokumentasi tipe rumah, gerbang, dan logo — 2026-10-14
+
+Branch `feat/integrasi-aset-tipe-rumah` dari `main` `43b92e9`. Implemented: generator manifest dan importer lokal; 55 foto galeri total terdiri dari 35 dokumentasi pengguna dan 20 ilustrasi AI berlabel (12 untuk tipe 62/70 dan 8 untuk 69/80), untuk lima tipe 36/60, 36/90, 56/90, 62/70, 69/80. Siteplan MASTERPLAN untuk sembilan properti hanya ditambahkan bila tidak ada masterplan aktif lain; importer menolak penggantian otomatis. Foto gerbang, logo dan favicon teroptimasi masuk Git; sumber asli tetap privat di `.tools/flamboyan-assets`. Public DTO backend membuang marker impor terminal, tetap mempertahankan disclosure ilustrasi AI; perubahan `apps/api` ini memiliki regresi MediaTest. Manifest menolak lebih dari satu VIDEO per tipe sebelum write. Dua MP4 belum diimpor dan menunggu tautan YouTube resmi dari Admin; tidak ada placeholder. **Impor bisnis belum dijalankan**, tanpa migrasi atau perubahan CRM. Validasi koreksi importer 2026-10-15: `node --test scripts/import-flamboyan-assets.test.mjs`, 12 tes lulus. Bukti awal 9 tes importer, 39 tes frontend serta browser logo/gerbang/favicon merupakan snapshot sebelum koreksi review; bukti gabungan berikutnya ada di [open-pr-integration-validation.md](open-pr-integration-validation.md). Rollback source melalui revert; rollback impor memakai snapshot privat dan versi terbaru tanpa restore DB keseluruhan. Detail: [flamboyan-assets.md](flamboyan-assets.md).
+
+## Audit lokal Tim Flamboyan — 2026-10-14
+
+Branch `codex/local-role-verification`, base main final `c1cecaf` (audit awal `43b92e9`). Guard frontend Operasi
+dan Privasi memeriksa identitas/role sebelum menampilkan konten atau meminta API
+Admin; Marketing dengan URL langsung kembali ke workspace, visitor ke login,
+dan gangguan sesi menyediakan retry. Backend tetap menjadi batas otorisasi.
+Tombol hapus perbandingan menunggu hydration agar klik tidak hilang sebelum state siap.
+Kontradiksi status endpoint CMS/media/report pada kontrak API dikoreksi, tanpa
+endpoint baru atau migration. Pengunjung tetap tanpa akun; hanya ADMIN/MARKETING.
+
+Audit READ ONLY pada PostgreSQL lokal menemukan database domain kosong dan dua
+akun yang diminta belum ada, bukan dataset demo yang perlu dihapus. Server API
+lokal dipulihkan; ekspor cloud yang bernama `.env.local` dipindahkan byte-for-byte
+ke nama privat ignored yang tidak dipilih Laravel untuk APP_ENV=local. Worker
+lokal media/notifikasi database dijalankan. Tool provisioning privat tersedia,
+tetapi **akun belum dibuat sampai pengguna memasukkan password pada prompt
+tersembunyi**; tidak ada password bisnis di source/argumen/log/artifact.
+
+Data uji dipisahkan dari database/media bisnis. Konten nyata lokal masih harus
+diisi/diverifikasi; informasi konsep serta label ilustrasi/simulasi faktual tidak
+disamarkan menjadi foto/properti/penawaran nyata. SMTP log, provider push/scanner,
+backup/privasi/domain dan advisory source tetap gate produksi. Hasil, kegagalan
+harness, scope isolasi, review, dan rollback dicatat pada
+[local-role-production-validation.md](local-role-production-validation.md);
+rencana yang disetujui ada di [local-role-production-plan.md](local-role-production-plan.md).
+
 ## Integrasi main terbaru — 2026-10-14
 
 Atas instruksi pengguna, seluruh PR terbuka diperiksa lalu di-merge ke `main`: PR #24 `codex/multi-residence-banjaran` (`68e6bc5`, draft dijadikan siap-review) menjadi merge commit `e6b5f86`, lalu PR #25 `feat/production-readiness` (`0467d08`) menjadi merge commit `808b69c`. Pemeriksaan sebelum tiap merge: `mergeable/clean`, tidak ada review yang meminta perubahan, tidak ada konflik yang dibiarkan, dan status Vercel kedua project (`flamboyan-web`, `flamboyan-api`) `success` lebih dulu; tidak ada bypass, approval palsu, GitHub Actions, atau force-push.
@@ -210,3 +262,7 @@ Validasi lokal: PHP8.4.26, PostgreSQL17.9, Node24.21.0, 86 PHPUnit/637 assertion
 Pengujian cloud tambahan menemukan sesi akun inactive ditolak403 tetapi stamp/login device masih tersisa, dan pemeriksaan terpisah mendapati error login melalui proxy menjadi HTML200. Perbaikan ActiveUser membersihkan sesi sebelum403; regresi gagal pada perilaku lama (stamp masih ada). Hasil suite akhir, deploy Git dan uji ulang dicatat pada site-operations-validation.md.
 
 Hasil akhir: source198acc1 deployed otomatis lewat Git ke kedua alias; native PHP8.5.2/88tes655assertion lulus.7browser cloud inti diulang setelah fix +6kelompok tambahan +4publik lulus;88tes lokal SQLite/PostgreSQL dan15unit frontend lulus, runtime audit0/source11high upstream tetap terbuka. Login salah dan akun inactive mengembalikan422 JSON lewat host web; sesi lama dicabut401, notifikasi recipient-scoped, semua foto beranda termuat. Data uji tambahan dipensiunkan setelah snapshot/audit, data awal tetap utuh. Bukti/detail operasional ada di site-operations-validation.md. PR#18 belum merge; production tracking sementara codex/site-operations.
+
+## Koreksi integrasi aset — 2026-10-15
+
+Importer membandingkan dimensi READY hasil resize, menolak replacement MASTERPLAN sebelum penulisan, dan mensyaratkan acknowledgement worker untuk upload asynchronous. Marker impor hanya tersedia internal; disclosure AI tetap publik. Gambar OG default menggunakan foto gerbang pengguna. 55 galeri terdiri dari35 dokumentasi dan20 AI; empat tipe belum mempunyai foto. Form VIDEO Admin siap untuk tautan YouTube yang diisi kemudian; tidak ada video placeholder. Validasi gabungan dan review final tetap gate sebelum merge/impor lokal.

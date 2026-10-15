@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { canonicalUrl } from '#shared/utils/seo'
 import { formatDate } from '#shared/utils/format'
+import { developmentPhotos } from '#shared/content/flamboyan-assets'
+const actualFacade = developmentPhotos[0]!
 const config = useRuntimeConfig()
 const { development } = await useDevelopment()
-const toList = (value?: string | null) =>
-  [
-    ...new Set(
-      (value ?? '')
-        .split('\n')
-        .map((item) => item.trim())
-        .filter(Boolean),
-    ),
-  ]
+const toList = (value?: string | null) => [
+  ...new Set(
+    (value ?? '')
+      .split('\n')
+      .map((item) => item.trim())
+      .filter(Boolean),
+  ),
+]
 const facilities = computed(() => toList(development.value?.facilities))
 const nearby = computed(() => toList(development.value?.nearby))
 useSeoMeta({
@@ -45,20 +46,20 @@ useHead({
       </div>
       <figure>
         <img
-          src="/images/editorial-garden-960.webp"
-          width="960"
-          height="640"
-          alt="Ilustrasi hunian tropis dengan taman, bukan dokumentasi lokasi Flamboyan."
+          :src="actualFacade.src"
+          :srcset="
+            actualFacade.sources
+              .map((source) => `${source.url} ${source.width}w`)
+              .join(', ')
+          "
+          sizes="(max-width: 760px) 100vw, 50vw"
+          :width="actualFacade.width"
+          :height="actualFacade.height"
+          :alt="actualFacade.alt"
           fetchpriority="high"
         />
         <figcaption>
-          Foto suasana, bukan lokasi perumahan ·
-          <a
-            href="https://unsplash.com/photos/Pfp0MP8QB7M"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Sergei Bezzubov / Unsplash ↗</a
-          >
+          {{ actualFacade.caption }}
         </figcaption>
       </figure>
     </section>
@@ -72,6 +73,9 @@ useHead({
           <p class="eyebrow">{{ development.developer }}</p>
           <h2 id="facilities-title">{{ development.name }}</h2>
           <p class="muted">{{ development.address }}</p>
+          <NuxtLink class="text-link" to="/perumahan/bukit-flamboyan-indah-2"
+            >Dokumentasi & rencana kawasan →</NuxtLink
+          >
           <p class="muted">
             {{ development.house_types }} tipe ·
             {{ development.planned_units }} rencana unit · ketersediaan aktual
