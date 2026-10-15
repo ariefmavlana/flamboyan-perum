@@ -1,5 +1,13 @@
 # Status implementasi
 
+## Kontak utama Pak Andre — 2026-10-15
+
+Atas instruksi pemilik, kontak utama menjadi 0822-1479-5024 (format WhatsApp `6282214795024`). Konten DEVELOPMENT produksi diperbarui melalui API Admin dengan optimistic version dan audit, tanpa mengubah payload bisnis lain. Fallback Nuxt, `.env.example`, contoh deployment dan environment Vercel preview/production diselaraskan agar kegagalan CMS tidak mengarahkan pengunjung ke nomor berbeda. Pesan konsultasi/detail tetap membawa konteks kawasan/properti; perubahan ini tidak mengirim pesan WhatsApp.
+
+Validasi: lint/typecheck, 48 unit frontend, build node-server dengan proxy Vercel (23,8s), Pint, Composer validate/audit 0, masing-masing SQLite/PostgreSQL 113 tes/907 assertion (22,571s/32,976s), serta 19 tes importer lulus. Empat pemeriksaan browser fixture membuktikan prioritas CMS saat sehat dan fallback baru ketika endpoint konten503 pada konsultasi/detail, tanpa page error; fixture dan flag gangguan dibersihkan. Dua pemeriksaan kontak live serta login/logout browser Admin/Marketing existing juga lulus. Kredensial hanya diserahkan lewat berkas privat lokal ignored dengan ACL pemilik; tidak masuk source, log, screenshot, atau PR. Tidak membuat akun duplikat atau mengganti password existing.
+
+Audit artefak runtime 0. Audit source masih FAIL 11 high/0 critical dengan advisori yang sama persis seperti risiko sementara yang telah diterima pemilik; dependency/lock source tidak berubah. Percobaan audit output sebelum membuat lock artefak berhenti ENOLOCK, bukan hasil audit bersih; lock dibuat hanya pada output ignored lalu audit dijalankan ulang. Tidak ada migration, perubahan API, CRM, media/R2, atau GitHub Actions.
+
 ## Rilis aset live — 2026-10-15
 
 PR #35 telah di-merge ke main sebagai `e9649656988d6f240ea59fbf5ced5275c1308087`; PR #30–34 ikut tertutup dengan merged=true. Tidak ada PR terbuka pada inventaris sesudah merge. Vercel API `dpl_DPKEriPGyJLaSux6fWwXv8quvUph` dan web `dpl_9Zwmq7K5PWMvj2uZFL7VzYbWurFJ` READY pada SHA yang sama. Alias [website](https://flamboyan-web.vercel.app/perumahan/bukit-flamboyan-indah-2), API /up dan /ready mengembalikan 200. TLS produksi memakai verify-full dan CA resmi; secret tidak dicetak atau di-commit.

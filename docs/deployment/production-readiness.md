@@ -2,6 +2,8 @@
 
 Versi 1.1 · 2026-10-14 · Di-merge ke `main` melalui PR #25 (`808b69c`), belum di-deploy otomatis oleh pekerjaan ini. Dokumen ini menggantikan asumsi; semua nilai rahasia tetap berada di Vercel/secret manager, bukan di repo.
 
+Pembaruan kontak 15 Oktober 2026: pemilik menetapkan Pak Andre, `6282214795024`, sebagai kontak utama. Gunakan nomor yang sama pada DEVELOPMENT di CMS dan `NUXT_PUBLIC_WHATSAPP_NUMBER` preview/production; nilai environment adalah fallback ketika CMS tidak tersedia. Nilai default source serta `.env.example` juga selaras. Status rollout terbaru ada di [implementation-status.md](../implementation-status.md).
+
 ## 1. Inventaris environment
 
 ### `apps/web` (Nuxt)
@@ -30,7 +32,7 @@ Tetap mengikuti [runbook.md](../runbook.md) dan `.env.example` masing-masing; pe
 NUXT_API_BASE=https://flamboyan-api.vercel.app
 NUXT_ALLOWED_HOSTS=flamboyan-web.vercel.app
 NUXT_PUBLIC_SITE_URL=https://flamboyan-web.vercel.app
-NUXT_PUBLIC_WHATSAPP_NUMBER=62895375894848
+NUXT_PUBLIC_WHATSAPP_NUMBER=6282214795024
 NUXT_PUBLIC_ANALYTICS_ENABLED=false
 # Biarkan kosong sampai akun resmi tersedia.
 NUXT_PUBLIC_GTM_ID=
