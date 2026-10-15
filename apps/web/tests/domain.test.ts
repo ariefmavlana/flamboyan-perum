@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { whatsappLink } from '../shared/utils/catalog'
-import { simulateMortgage, estimateBankFees } from '../shared/utils/mortgage'
+import {
+  simulateMortgage,
+  simulateMurabahah,
+  estimateBankFees,
+} from '../shared/utils/mortgage'
 
 describe('WhatsApp handoff', () => {
   it('includes the property context safely', () => {
@@ -134,5 +138,36 @@ describe('Mortgage kernel', () => {
         simulateMortgage(...(values as [number, number, number, number])),
       ).toThrow(RangeError)
     }
+  })
+})
+
+describe('BSI murabahah quote', () => {
+  it('uses the selected house price minus DP plus the agreed total margin', () => {
+    const result = simulateMurabahah(500000000, 100000000, 15, 266000000)
+    expect(result).toEqual({
+      principal: 400000000,
+      totalMargin: 266000000,
+      totalPayment: 666000000,
+      monthlyPayment: 3700000,
+    })
+    expect(
+      simulateMurabahah(600000000, 100000000, 15, 266000000).monthlyPayment,
+    ).toBeCloseTo(4255555.5556, 3)
+    expect(
+      simulateMurabahah(500000000, 200000000, 15, 266000000).principal,
+    ).toBe(300000000)
+  })
+  it('handles zero margin and rejects invalid or unfinanced margin', () => {
+    expect(simulateMurabahah(120000000, 0, 10, 0).monthlyPayment).toBe(1000000)
+    for (const margin of [NaN, Infinity, -1, 1.5])
+      expect(() => simulateMurabahah(120000000, 0, 10, margin)).toThrow(
+        RangeError,
+      )
+    expect(() => simulateMurabahah(120000000, 120000000, 10, 1)).toThrow(
+      RangeError,
+    )
+    expect(() => simulateMurabahah(120000000, 120000001, 10, 0)).toThrow(
+      RangeError,
+    )
   })
 })

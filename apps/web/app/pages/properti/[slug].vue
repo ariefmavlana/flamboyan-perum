@@ -253,6 +253,7 @@ useHead(() => ({
       <MortgageCalculator
         :price="property.price_idr"
         :property-id="property.id"
+        :house-type="property.house_type"
       />
     </div>
   </section>

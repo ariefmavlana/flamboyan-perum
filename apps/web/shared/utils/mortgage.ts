@@ -1,3 +1,27 @@
+export function simulateMurabahah(
+  price: number,
+  downPayment: number,
+  years: number,
+  totalMargin: number,
+) {
+  // Reuse the same price, DP and tenor bounds as the annuity calculator.
+  const { principal } = simulateMortgage(price, downPayment, years, 0)
+  if (
+    !Number.isSafeInteger(totalMargin) ||
+    totalMargin < 0 ||
+    totalMargin > 1e12 ||
+    (principal === 0 && totalMargin !== 0)
+  )
+    throw new RangeError('Margin murabahah tidak valid')
+  const totalPayment = principal + totalMargin
+  return {
+    principal,
+    totalMargin,
+    totalPayment,
+    monthlyPayment: totalPayment / (years * 12),
+  }
+}
+
 /** Monthly annuity; recalculate each rate phase from remaining principal and term. */
 export function simulateMortgage(
   price: number,

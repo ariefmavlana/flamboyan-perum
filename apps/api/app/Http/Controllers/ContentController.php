@@ -38,7 +38,7 @@ class ContentController extends Controller
         }
         $today = now('Asia/Jakarta')->toDateString();
 
-        $programs = (clone $query)->where('kind', 'FINANCING_PROGRAM')->limit(10)->get()->map->publicData();
+        $programs = (clone $query)->where('kind', 'FINANCING_PROGRAM')->limit(10)->get()->filter(fn ($item) => ($item->payload['method'] ?? null) !== 'FIXED_INSTALLMENT' || (($item->payload['bank'] ?? null) === 'BSI' && ($item->payload['house_types'] ?? []) === ['36/60']))->map->publicData()->values();
 
         return ['data' => ['development' => (clone $query)->where('kind', 'DEVELOPMENT')->first()?->publicData(), 'hero' => $heroData, 'financing_programs' => $programs, 'bank_partners' => (clone $query)->where('kind', 'BANK_PARTNER')->limit(50)->get()->filter(fn ($item) => isset($item->payload['_logo']['path']) && Storage::disk('media')->exists($item->payload['_logo']['path']))->map->publicData()->values(), 'testimonials' => (clone $query)->where('kind', 'TESTIMONIAL')->limit(12)->get()->map->publicData(), 'bank_rates' => (clone $query)->where('kind', 'BANK_RATE')->whereDate('effective_date', '<=', $today)->whereDate('valid_until', '>=', $today)->limit(50)->get()->map->publicData()]];
     }
@@ -88,13 +88,18 @@ class ContentController extends Controller
             'TESTIMONIAL' => ['payload' => 'array:name,quote,context', 'payload.name' => 'required|string|max:160', 'payload.quote' => 'required|string|max:2000', 'payload.context' => 'required|string|max:160'],
             'BANK_RATE' => FinancingContent::rules(),
             'FINANCING_PROGRAM' => [
-                'payload' => 'array:bank,product,development_name,method,monthly_idr,tenor_months,source_name,source_url,checked_date,conditions',
+                'payload' => 'array:bank,product,development_name,method,house_types,monthly_idr,tenor_months,price_idr,down_payment_idr,total_margin_idr,source_name,source_url,checked_date,conditions',
                 'payload.bank' => ['required', Rule::in(['BSI', 'BNI'])],
                 'payload.product' => 'required|string|max:160',
                 'payload.development_name' => 'required|in:Bukit Flamboyan Indah 2',
-                'payload.method' => 'required|in:FIXED_INSTALLMENT,REFERENCE_ONLY',
+                'payload.method' => 'required|in:FIXED_INSTALLMENT,REFERENCE_ONLY,MURABAHAH_QUOTE',
+                'payload.house_types' => 'required_if:payload.method,FIXED_INSTALLMENT,MURABAHAH_QUOTE|array|min:1|max:5',
+                'payload.house_types.*' => ['required', 'distinct', Rule::in(['36/60', '36/90', '56/90', '62/70', '69/80'])],
                 'payload.monthly_idr' => 'required_if:payload.method,FIXED_INSTALLMENT|prohibited_unless:payload.method,FIXED_INSTALLMENT|integer|between:1,1000000000000',
-                'payload.tenor_months' => 'required_if:payload.method,FIXED_INSTALLMENT|prohibited_unless:payload.method,FIXED_INSTALLMENT|integer|between:12,360',
+                'payload.tenor_months' => 'required_if:payload.method,FIXED_INSTALLMENT,MURABAHAH_QUOTE|prohibited_if:payload.method,REFERENCE_ONLY|integer|between:12,360|multiple_of:12',
+                'payload.price_idr' => 'required_if:payload.method,MURABAHAH_QUOTE|prohibited_unless:payload.method,MURABAHAH_QUOTE|integer|between:1,1000000000000',
+                'payload.down_payment_idr' => 'required_if:payload.method,MURABAHAH_QUOTE|prohibited_unless:payload.method,MURABAHAH_QUOTE|integer|min:0|lt:payload.price_idr',
+                'payload.total_margin_idr' => 'required_if:payload.method,MURABAHAH_QUOTE|prohibited_unless:payload.method,MURABAHAH_QUOTE|integer|between:0,1000000000000',
                 'payload.source_name' => 'required|string|max:200',
                 'payload.source_url' => 'sometimes|required|url:https|max:2048',
                 'payload.checked_date' => 'required|date_format:Y-m-d|before_or_equal:'.now('Asia/Jakarta')->toDateString(),
@@ -107,7 +112,18 @@ class ContentController extends Controller
             FinancingContent::validate($payload);
             $payload = FinancingContent::normalize($payload);
         }
+        if ($data['kind'] === 'FINANCING_PROGRAM' && $payload['method'] === 'MURABAHAH_QUOTE') {
+            if ($payload['bank'] !== 'BSI' || count($payload['house_types']) !== 1) {
+                throw ValidationException::withMessages(['payload.house_types' => 'Penawaran murabahah BSI harus memuat tepat satu tipe rumah.']);
+            }
+            foreach (['price_idr', 'down_payment_idr', 'total_margin_idr', 'tenor_months'] as $field) {
+                $payload[$field] = (int) $payload[$field];
+            }
+        }
         if ($data['kind'] === 'FINANCING_PROGRAM' && $payload['method'] === 'FIXED_INSTALLMENT') {
+            if ($payload['bank'] !== 'BSI' || $payload['house_types'] !== ['36/60']) {
+                throw ValidationException::withMessages(['payload.house_types' => 'Program angsuran tetap BSI hanya berlaku untuk tipe 36/60.']);
+            }
             $payload['monthly_idr'] = (int) $payload['monthly_idr'];
             $payload['tenor_months'] = (int) $payload['tenor_months'];
         }

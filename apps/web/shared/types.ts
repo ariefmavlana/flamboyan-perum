@@ -113,12 +113,20 @@ export type FinancingProgram = {
   bank: 'BSI' | 'BNI'
   product: string
   development_name: string
+  house_types?: string[]
   source_name: string
   source_url?: string
   checked_date: string
   conditions: string
 } & (
   | { method: 'FIXED_INSTALLMENT'; monthly_idr: number; tenor_months: number }
+  | {
+      method: 'MURABAHAH_QUOTE'
+      price_idr: number
+      down_payment_idr: number
+      total_margin_idr: number
+      tenor_months: number
+    }
   | { method: 'REFERENCE_ONLY' }
 )
 export interface PublicContent {
@@ -151,7 +159,7 @@ export interface EditorialContent {
     | 'BANK_PARTNER'
     | 'DEVELOPMENT'
     | 'FINANCING_PROGRAM'
-  payload: Record<string, string | number | null | RatePhase[]>
+  payload: Record<string, string | number | null | RatePhase[] | string[]>
   published: boolean
   position: number
   version: number
