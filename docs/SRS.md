@@ -1,5 +1,9 @@
 # Software Requirements Specification — Flamboyan Perum
 
+## Revisi KPR dan akun produksi — 16 Oktober 2026
+
+Instruksi terbaru menggantikan cakupan BSI sebelumnya: program BSI Flat Rp3,7 juta/180 bulan **hanya 36/60**. BNI dan BSI Griya tersedia untuk seluruh lima tipe. Tarif proyek belum tersedia; Admin mengisi penawaran melalui CMS existing, tanpa tarif dummy. FINANCING_PROGRAM mendukung `house_types` dan `MURABAHAH_QUOTE` (harga, DP, tenor, total margin rupiah per tipe); kalkulator mengabaikan penawaran BSI bila harga tidak sama dengan harga aktif. BANK_RATE existing menyediakan bunga efektif/tahapan BNI. Seeder akun produksi opt-in, rahasia melalui konfigurasi privat; default seed tetap kosong. Kontrak, riset, validasi dan rollback: [production-accounts-kpr.md](production-accounts-kpr.md).
+
 ## Revisi katalog/pembiayaan dan pembersihan fixture — 2026-10-15
 
 FINANCING_PROGRAM memakai SiteContent dan transaksi CMS existing: bank BSI/BNI, kawasan Bukit Flamboyan Indah 2, metode FIXED_INSTALLMENT dengan monthly_idr/tenor_months integer positif, atau REFERENCE_ONLY tanpa angka angsuran/tenor rekaan. Source_name, checked_date dan conditions wajib; source_url bila tersedia harus HTTPS. Publikasi memerlukan Admin aktif dan attestation; update memakai version guard/audit. Public financing_programs hanya published+verified, allowlist tanpa metadata aktor. BANK_RATE existing terpisah untuk anuitas dengan periode berlaku. Katalog/CRM live direkonsiliasi menjadi lima properti dan nol fixture lead/history/notifications; penghapusan operasional tidak menambahkan API edit/delete histori. Detail validasi/pemulihan di [real-catalog-financing-revision.md](real-catalog-financing-revision.md).

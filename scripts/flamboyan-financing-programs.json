@@ -6,14 +6,17 @@
     "verified": true,
     "payload": {
       "bank": "BSI",
-      "product": "Angsuran tetap 15 tahun",
+      "product": "BSI Flat · khusus 36/60",
       "development_name": "Bukit Flamboyan Indah 2",
       "method": "FIXED_INSTALLMENT",
       "monthly_idr": 3700000,
       "tenor_months": 180,
-      "source_name": "Konfirmasi pemilik, 15 Oktober 2026",
-      "checked_date": "2026-10-15",
-      "conditions": "Berlaku untuk semua lima tipe: 36/60, 36/90, 56/90, 62/70 dan 69/80. Angsuran tetap Rp3.700.000 per bulan selama 15 tahun sesuai konfirmasi pemilik. Total 180 angsuran Rp666.000.000 belum mencakup DP dan biaya transaksi; bukan harga rumah. DP, plafon, biaya, akad dan persetujuan pembiayaan dikonfirmasi tertulis kepada Admin dan BSI."
+      "source_name": "Revisi pemilik, 16 Oktober 2026",
+      "checked_date": "2026-10-16",
+      "conditions": "Khusus tipe 36/60: angsuran Rp3.700.000 per bulan selama 180 bulan sesuai program pemilik. Total angsuran Rp666.000.000 bukan harga rumah. DP, plafon, biaya dan akad belum tercantum; minta rincian tertulis BSI berdasarkan harga aktif tipe 36/60. Angka ini tidak dipakai untuk tipe lain atau diubah otomatis saat DP/tenor simulasi berubah.",
+      "house_types": [
+        "36/60"
+      ]
     }
   },
   {
@@ -28,8 +31,24 @@
       "method": "REFERENCE_ONLY",
       "source_name": "BNI — informasi resmi BNI Griya Pembelian",
       "source_url": "https://www.bni.co.id/id-id/individu/pinjaman/bni-griya/bni-griya-pembelian",
-      "checked_date": "2026-10-15",
+      "checked_date": "2026-10-16",
       "conditions": "BNI Griya Pembelian mencakup pembelian rumah baru, dengan tenor rumah tinggal hingga 30 tahun sesuai kemampuan bayar dan usia saat pelunasan. Untuk Bukit Flamboyan Indah 2, minta penawaran BNI berdasarkan tipe, harga, DP, appraisal, dokumen dan hasil pemeriksaan kredit. Siapkan identitas keluarga, NPWP, bukti penghasilan atau usaha, rekening dan Surat Pemesanan Rumah. Suku bunga, DP minimum, masa fixed, floating dan biaya khusus proyek belum terkonfirmasi. Tarif Q3 di halaman BNI berakhir 30 September 2026; promo wondrX terbatas pada developer peserta dengan ketentuan tanggal yang perlu diklarifikasi. Tarif tersebut tidak dipakai sebagai penawaran proyek ini."
+    }
+  },
+  {
+    "kind": "FINANCING_PROGRAM",
+    "position": 2,
+    "published": true,
+    "verified": true,
+    "payload": {
+      "bank": "BSI",
+      "product": "BSI Griya",
+      "development_name": "Bukit Flamboyan Indah 2",
+      "method": "REFERENCE_ONLY",
+      "source_name": "BSI — informasi resmi BSI Griya",
+      "source_url": "https://www.bankbsi.co.id/produk&layanan/produk/bsi-griya",
+      "checked_date": "2026-10-16",
+      "conditions": "Tersedia untuk seluruh tipe: 36/60, 36/90, 56/90, 62/70 dan 69/80. Pembiayaan syariah mengikuti harga rumah, DP, tenor dan penawaran BSI. Murabahah memakai harga dan margin yang disepakati; MMQ mengikuti akad kepemilikan bersama. Margin, biaya dan jadwal angsuran tipe lainnya memerlukan penawaran tertulis BSI. Promo segmen/developer terpilih tidak otomatis berlaku untuk proyek ini."
     }
   }
 ]

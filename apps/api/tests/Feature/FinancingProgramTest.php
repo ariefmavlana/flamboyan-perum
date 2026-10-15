@@ -13,7 +13,7 @@ class FinancingProgramTest extends TestCase
 
     private function program(): array
     {
-        return ['kind' => 'FINANCING_PROGRAM', 'position' => 0, 'published' => true, 'verified' => true, 'payload' => ['bank' => 'BSI', 'product' => 'Angsuran tetap 15 tahun', 'development_name' => 'Bukit Flamboyan Indah 2', 'method' => 'FIXED_INSTALLMENT', 'monthly_idr' => '3700000', 'tenor_months' => '180', 'source_name' => 'Instruksi pemilik', 'checked_date' => now('Asia/Jakarta')->toDateString(), 'conditions' => 'Berlaku untuk kelima tipe. DP dan biaya dikonfirmasi tertulis.']];
+        return ['kind' => 'FINANCING_PROGRAM', 'position' => 0, 'published' => true, 'verified' => true, 'payload' => ['bank' => 'BSI', 'product' => 'Angsuran tetap 15 tahun', 'development_name' => 'Bukit Flamboyan Indah 2', 'method' => 'FIXED_INSTALLMENT', 'house_types' => ['36/60'], 'monthly_idr' => '3700000', 'tenor_months' => '180', 'source_name' => 'Instruksi pemilik', 'checked_date' => now('Asia/Jakarta')->toDateString(), 'conditions' => 'Khusus 36/60. DP dan biaya dikonfirmasi tertulis.']];
     }
 
     public function test_fixed_installment_has_no_invented_interest_and_is_admin_verified_versioned(): void
@@ -61,5 +61,39 @@ class FinancingProgramTest extends TestCase
             $this->postJson('/api/v1/internal/content', $data)->assertUnprocessable();
         }
         $this->assertDatabaseCount('site_contents', 0);
+    }
+
+    public function test_fixed_program_requires_bsi_and_only_type_36_60_and_legacy_unscoped_data_is_hidden(): void
+    {
+        $this->actingAs(User::factory()->create(['role' => 'ADMIN', 'is_active' => true]));
+        foreach ([null, [], ['36/90'], ['36/60', '36/90']] as $types) {
+            $data = $this->program();
+            $data['payload']['house_types'] = $types;
+            $this->postJson('/api/v1/internal/content', $data)->assertUnprocessable();
+        }
+        $data = $this->program();
+        $data['payload']['bank'] = 'BNI';
+        $this->postJson('/api/v1/internal/content', $data)->assertUnprocessable();
+        $data = $this->program();
+        $created = $this->postJson('/api/v1/internal/content', $data)->assertCreated();
+        $this->getJson('/api/v1/content')->assertJsonPath('data.financing_programs.0.house_types', ['36/60']);
+        unset($data['payload']['house_types']);
+        SiteContent::findOrFail($created->json('data.id'))->update(['payload' => $data['payload']]);
+        $this->getJson('/api/v1/content')->assertJsonCount(0, 'data.financing_programs');
+    }
+
+    public function test_admin_can_publish_a_bsi_murabahah_quote_for_a_specific_house_price_without_interest(): void
+    {
+        $this->actingAs(User::factory()->create(['role' => 'ADMIN', 'is_active' => true]));
+        $data = $this->program();
+        unset($data['payload']['monthly_idr']);
+        $data['payload'] = array_replace($data['payload'], ['method' => 'MURABAHAH_QUOTE', 'house_types' => ['56/90'], 'price_idr' => '500000000', 'down_payment_idr' => '100000000', 'total_margin_idr' => '266000000']);
+        $this->postJson('/api/v1/internal/content', $data)->assertCreated();
+        $this->getJson('/api/v1/content')->assertJsonPath('data.financing_programs.0.price_idr', 500000000)->assertJsonPath('data.financing_programs.0.house_types', ['56/90'])->assertJsonPath('data.financing_programs.0.total_margin_idr', 266000000)->assertJsonMissingPath('data.financing_programs.0.annual_rate');
+        foreach ([['bank', 'BNI'], ['house_types', ['36/60', '56/90']], ['down_payment_idr', 500000001], ['total_margin_idr', -1], ['tenor_months', 181]] as [$key, $value]) {
+            $invalid = $data;
+            $invalid['payload'][$key] = $value;
+            $this->postJson('/api/v1/internal/content', $invalid)->assertUnprocessable();
+        }
     }
 }

@@ -1,5 +1,9 @@
 # Status implementasi
 
+## Revisi KPR dan akun produksi — 16 Oktober 2026
+
+Instruksi terbaru menggantikan cakupan BSI sebelumnya: program BSI Flat Rp3,7 juta/180 bulan **hanya 36/60**. BNI dan BSI Griya tersedia untuk seluruh lima tipe. Tarif proyek belum tersedia; Admin mengisi penawaran melalui CMS existing, tanpa tarif dummy. FINANCING_PROGRAM mendukung `house_types` dan `MURABAHAH_QUOTE` (harga, DP, tenor, total margin rupiah per tipe); kalkulator mengabaikan penawaran BSI bila harga tidak sama dengan harga aktif. BANK_RATE existing menyediakan bunga efektif/tahapan BNI. Seeder akun produksi opt-in, rahasia melalui konfigurasi privat; default seed tetap kosong. Kontrak, riset, validasi dan rollback: [production-accounts-kpr.md](production-accounts-kpr.md).
+
 ## Revisi lima tipe, BSI/BNI dan pembersihan data — 2026-10-15
 
 Branch baru `codex/real-catalog-bsi-bni` dari `origin/main` `d3aafec`. Pemilik menetapkan tepat lima tipe EDITED dan mengonfirmasi BSI Rp3.700.000/bulan selama 15 tahun untuk semuanya; draf weje dikonfirmasi sebagai data uji. CMS FINANCING_PROGRAM memisahkan angsuran tetap dan informasi bank tanpa tarif proyek terkonfirmasi dari BANK_RATE/anuitas. Tampilan kawasan/detail dan form Admin mengikuti kontrak tersebut; sumber BNI resmi dicatat tanpa memakai promo expired atau promo developer lain sebagai tarif proyek. Tidak ada migration/dependency baru.

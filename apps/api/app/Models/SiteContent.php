@@ -29,13 +29,13 @@ class SiteContent extends Model
             'HERO' => ['title', 'description', 'eyebrow', 'property_id'],
             'TESTIMONIAL' => ['name', 'quote', 'context'],
             'BANK_PARTNER' => ['name', 'website'],
-            'FINANCING_PROGRAM' => ['bank', 'product', 'development_name', 'method', 'monthly_idr', 'tenor_months', 'source_name', 'source_url', 'checked_date', 'conditions'],
+            'FINANCING_PROGRAM' => ['bank', 'product', 'development_name', 'method', 'house_types', 'monthly_idr', 'tenor_months', 'price_idr', 'down_payment_idr', 'total_margin_idr', 'source_name', 'source_url', 'checked_date', 'conditions'],
             'BANK_RATE' => ['bank', 'product', 'annual_rate', 'effective_date', 'valid_until', 'fixed_months', 'source_url', 'floating_rate', 'min_tenor_months', 'max_tenor_months', 'checked_date', 'conditions', 'phases', 'provision_percent', 'admin_percent', 'admin_min_idr', 'admin_max_idr', 'appraisal_min_idr', 'appraisal_max_idr', 'min_principal_idr', 'max_principal_idr', 'max_ltv_percent'],
         };
 
         $payload = array_intersect_key($this->payload, array_flip($keys));
         if ($this->kind === 'FINANCING_PROGRAM' && $payload['method'] === 'REFERENCE_ONLY') {
-            unset($payload['monthly_idr'], $payload['tenor_months']);
+            unset($payload['monthly_idr'], $payload['tenor_months'], $payload['price_idr'], $payload['down_payment_idr'], $payload['total_margin_idr']);
         }
         if ($this->kind === 'BANK_RATE' && isset($payload['phases'])) {
             $payload['phases'] = array_map(fn ($phase) => array_intersect_key($phase, array_flip(['months', 'annual_rate'])), $payload['phases']);

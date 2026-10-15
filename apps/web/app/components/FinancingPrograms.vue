@@ -2,14 +2,45 @@
 import type { FinancingProgram } from '#shared/types'
 import { formatIdr } from '#shared/utils/catalog'
 import { formatDate, formatNumber } from '#shared/utils/format'
-defineProps<{ programs: FinancingProgram[] }>()
+const props = defineProps<{
+  programs: FinancingProgram[]
+  houseType?: string
+  price?: string
+}>()
+const visiblePrograms = computed(() =>
+  props.programs.filter((program) => {
+    if (
+      program.method === 'MURABAHAH_QUOTE' &&
+      props.price &&
+      program.price_idr !== Number(props.price)
+    )
+      return false
+    if (
+      program.method === 'FIXED_INSTALLMENT' &&
+      (program.bank !== 'BSI' || program.house_types?.join(',') !== '36/60')
+    )
+      return false
+    return (
+      !props.houseType ||
+      !program.house_types?.length ||
+      program.house_types.includes(props.houseType)
+    )
+  }),
+)
 </script>
 <template>
-  <section v-if="programs.length" aria-labelledby="financing-title">
+  <section v-if="visiblePrograms.length" aria-labelledby="financing-title">
     <p class="eyebrow">PEMBIAYAAN BUKIT FLAMBOYAN INDAH 2</p>
     <h2 id="financing-title">Pilihan KPR BSI & BNI</h2>
-    <article v-for="program in programs" :key="program.id" class="notice">
+    <article
+      v-for="program in visiblePrograms"
+      :key="program.id"
+      class="notice"
+    >
       <h3>{{ program.bank }} · {{ program.product }}</h3>
+      <p v-if="program.house_types?.length">
+        Khusus tipe {{ program.house_types.join(', ') }}.
+      </p>
       <dl v-if="program.method === 'FIXED_INSTALLMENT'" class="spec-list">
         <div>
           <dt>Angsuran tetap per bulan</dt>
@@ -29,9 +60,40 @@ defineProps<{ programs: FinancingProgram[] }>()
           <dd>{{ formatIdr(program.monthly_idr * program.tenor_months) }}</dd>
         </div>
       </dl>
+      <dl v-else-if="program.method === 'MURABAHAH_QUOTE'" class="spec-list">
+        <div>
+          <dt>Harga rumah penawaran</dt>
+          <dd>{{ formatIdr(program.price_idr) }}</dd>
+        </div>
+        <div>
+          <dt>DP penawaran</dt>
+          <dd>{{ formatIdr(program.down_payment_idr) }}</dd>
+        </div>
+        <div>
+          <dt>Total margin akad</dt>
+          <dd>{{ formatIdr(program.total_margin_idr) }}</dd>
+        </div>
+        <div>
+          <dt>Tenor</dt>
+          <dd>{{ program.tenor_months }} bulan</dd>
+        </div>
+        <div>
+          <dt>Angsuran murabahah per bulan</dt>
+          <dd>
+            {{
+              formatIdr(
+                (program.price_idr -
+                  program.down_payment_idr +
+                  program.total_margin_idr) /
+                  program.tenor_months,
+              )
+            }}
+          </dd>
+        </div>
+      </dl>
       <p v-else class="notice">
-        Suku bunga dan angsuran BNI untuk perumahan ini menunggu konfirmasi
-        bank.
+        Angsuran {{ program.bank }} mengikuti harga tipe rumah, DP, tenor dan
+        penawaran bank.
       </p>
       <p>{{ program.conditions }}</p>
       <p class="muted">

@@ -1,5 +1,9 @@
 # REST API — katalog, workspace dan operasi
 
+## Revisi KPR dan akun produksi — 16 Oktober 2026
+
+Instruksi terbaru menggantikan cakupan BSI sebelumnya: program BSI Flat Rp3,7 juta/180 bulan **hanya 36/60**. BNI dan BSI Griya tersedia untuk seluruh lima tipe. Tarif proyek belum tersedia; Admin mengisi penawaran melalui CMS existing, tanpa tarif dummy. FINANCING_PROGRAM mendukung `house_types` dan `MURABAHAH_QUOTE` (harga, DP, tenor, total margin rupiah per tipe); kalkulator mengabaikan penawaran BSI bila harga tidak sama dengan harga aktif. BANK_RATE existing menyediakan bunga efektif/tahapan BNI. Seeder akun produksi opt-in, rahasia melalui konfigurasi privat; default seed tetap kosong. Kontrak, riset, validasi dan rollback: [production-accounts-kpr.md](production-accounts-kpr.md).
+
 ## Revisi program pembiayaan — 2026-10-15
 
 `GET /api/v1/content` menambah `data.financing_programs` (array, dapat kosong). Hanya published+verified. DTO: id, bank (`BSI|BNI`), product, development_name, method, source_name, checked_date, conditions dan source_url HTTPS opsional. `FIXED_INSTALLMENT` juga memuat monthly_idr dan tenor_months integer positif; `REFERENCE_ONLY` tidak memuat kedua field itu. Tidak memuat annual_rate, principal, identitas aktor atau metadata verifikasi.

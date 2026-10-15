@@ -159,7 +159,12 @@ const schemas = {
   ],
   TESTIMONIAL: [
     { key: 'name', label: 'Nama publik berizin', type: 'text', max: 160 },
-    { key: 'quote', label: 'Cerita pembeli berizin', type: 'textarea', max: 2000 },
+    {
+      key: 'quote',
+      label: 'Cerita pembeli berizin',
+      type: 'textarea',
+      max: 2000,
+    },
     { key: 'context', label: 'Keterangan publik', type: 'text', max: 160 },
   ],
   BANK_PARTNER: [
@@ -213,7 +218,32 @@ const schemas = {
   FINANCING_PROGRAM: [
     { key: 'bank', label: 'Bank (BSI atau BNI)', type: 'text', max: 3 },
     { key: 'product', label: 'Nama program', type: 'text', max: 160 },
+    {
+      key: 'house_types',
+      label: 'Tipe rumah, pisahkan koma (wajib 36/60 untuk BSI Flat)',
+      type: 'text',
+      max: 100,
+      optional: true,
+    },
     { key: 'development_name', label: 'Nama kawasan', type: 'text', max: 160 },
+    {
+      key: 'price_idr',
+      label: 'Harga rumah pada penawaran BSI (IDR)',
+      type: 'number',
+      max: 1000000000000,
+    },
+    {
+      key: 'down_payment_idr',
+      label: 'DP pada penawaran BSI (IDR)',
+      type: 'number',
+      max: 1000000000000,
+    },
+    {
+      key: 'total_margin_idr',
+      label: 'Total margin akad BSI (IDR, bukan persen)',
+      type: 'number',
+      max: 1000000000000,
+    },
     {
       key: 'method',
       label: 'Jenis informasi pembiayaan',
@@ -383,12 +413,18 @@ const schemas = {
   ],
 } as const
 const visibleSchema = computed(() =>
-  schemas[kind.value].filter(
-    (field) =>
-      kind.value !== 'FINANCING_PROGRAM' ||
-      !['monthly_idr', 'tenor_months'].includes(field.key) ||
-      form.payload.method === 'FIXED_INSTALLMENT',
-  ),
+  schemas[kind.value].filter((field) => {
+    if (kind.value !== 'FINANCING_PROGRAM') return true
+    if (field.key === 'monthly_idr')
+      return form.payload.method === 'FIXED_INSTALLMENT'
+    if (field.key === 'tenor_months')
+      return form.payload.method !== 'REFERENCE_ONLY'
+    if (
+      ['price_idr', 'down_payment_idr', 'total_margin_idr'].includes(field.key)
+    )
+      return form.payload.method === 'MURABAHAH_QUOTE'
+    return true
+  }),
 )
 watch(
   () => form.payload,
@@ -452,6 +488,10 @@ function open(record?: EditorialContent) {
               : '',
         ]),
       )
+  if (kind.value === 'FINANCING_PROGRAM')
+    form.payload.house_types = Array.isArray(record?.payload.house_types)
+      ? record.payload.house_types.join(', ')
+      : ''
   heroProperty.value =
     typeof record?.payload.property_id === 'number'
       ? record.payload.property_id
@@ -493,8 +533,26 @@ async function save() {
       else if (field.type === 'number')
         payload[field.key] = Number(payload[field.key])
     }
+    if (
+      kind.value === 'FINANCING_PROGRAM' &&
+      typeof payload.house_types === 'string'
+    )
+      payload.house_types = payload.house_types
+        .split(',')
+        .map((value) => value.trim())
+        .filter(Boolean)
     if (kind.value === 'BANK_RATE' && phases.value.length)
       payload.phases = phases.value
+    if (kind.value === 'FINANCING_PROGRAM') {
+      if (Array.isArray(payload.house_types) && !payload.house_types.length)
+        delete payload.house_types
+      if (payload.method !== 'MURABAHAH_QUOTE') {
+        delete payload.price_idr
+        delete payload.down_payment_idr
+        delete payload.total_margin_idr
+      }
+      if (payload.method !== 'FIXED_INSTALLMENT') delete payload.monthly_idr
+    }
     if (
       kind.value === 'FINANCING_PROGRAM' &&
       payload.method === 'REFERENCE_ONLY'
@@ -687,6 +745,9 @@ onMounted(() => load())
               v-model="form.payload.method"
             >
               <option value="FIXED_INSTALLMENT">Angsuran tetap</option>
+              <option value="MURABAHAH_QUOTE">
+                Penawaran BSI murabahah per tipe
+              </option>
               <option value="REFERENCE_ONLY">
                 Informasi bank — tarif belum dikonfirmasi
               </option></select

@@ -1,5 +1,9 @@
 # Arsitektur fondasi
 
+## Revisi KPR dan akun produksi — 16 Oktober 2026
+
+Instruksi terbaru menggantikan cakupan BSI sebelumnya: program BSI Flat Rp3,7 juta/180 bulan **hanya 36/60**. BNI dan BSI Griya tersedia untuk seluruh lima tipe. Tarif proyek belum tersedia; Admin mengisi penawaran melalui CMS existing, tanpa tarif dummy. FINANCING_PROGRAM mendukung `house_types` dan `MURABAHAH_QUOTE` (harga, DP, tenor, total margin rupiah per tipe); kalkulator mengabaikan penawaran BSI bila harga tidak sama dengan harga aktif. BANK_RATE existing menyediakan bunga efektif/tahapan BNI. Seeder akun produksi opt-in, rahasia melalui konfigurasi privat; default seed tetap kosong. Kontrak, riset, validasi dan rollback: [production-accounts-kpr.md](production-accounts-kpr.md).
+
 ## Program pembiayaan kawasan — 2026-10-15
 
 SiteContent menambah schema fixed FINANCING_PROGRAM untuk angsuran tetap BSI dan referensi BNI tanpa bunga proyek yang belum dikonfirmasi. ContentController tetap menangani validasi, Admin fresh lock, version guard dan audit CMS; Public DTO tersendiri. Komponen FinancingPrograms digunakan di kawasan/detail, sementara kernel anuitas tidak berubah. Tidak ada tabel/dependency/service baru. Pembersihan fixture adalah operasi khusus bersnapshot dan transaksi, tanpa endpoint penghapusan atau seed otomatis. Bukti dan rollback: [real-catalog-financing-revision.md](real-catalog-financing-revision.md).
