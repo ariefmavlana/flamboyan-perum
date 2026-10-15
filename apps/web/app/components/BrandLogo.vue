@@ -36,9 +36,6 @@ defineProps<{ variant?: 'footer' }>()
   padding: 12px;
   background: var(--cream);
 }
-:global(.workspace-sidebar) .brand-artwork {
-  width: 180px;
-}
 @media (max-width: 760px) {
   .brand-artwork {
     width: 176px;

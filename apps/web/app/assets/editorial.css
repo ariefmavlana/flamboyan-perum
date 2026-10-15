@@ -553,27 +553,6 @@ textarea,
 .workspace-shell {
   background: #f4f2ec;
 }
-.workspace-sidebar {
-  background: #eeebe3;
-}
-.workspace-sidebar > .brand {
-  margin-left: 8px;
-}
-.workspace-sidebar .brand-wordmark {
-  font-size: 28px;
-}
-.workspace-sidebar .brand-sub {
-  font-size: 7px;
-}
-.workspace-sidebar .nav-group > .router-link-exact-active {
-  background: #ded9cd;
-  color: #292823;
-}
-.workspace-sidebar .nav-group > a:hover,
-.sidebar-bottom > a:hover,
-.sidebar-logout:hover {
-  background: #e3ded3;
-}
 .workspace-topbar {
   background: #faf9f5;
 }
@@ -777,9 +756,6 @@ textarea,
   }
   .public-shell .section-heading h2 {
     font-size: 35px;
-  }
-  .workspace-sidebar .brand-wordmark {
-    font-size: 25px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
