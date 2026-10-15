@@ -19,6 +19,17 @@ php artisan flamboyan:create-user
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
+**Pisahkan environment lokal dan ekspor cloud.** Laravel memilih `.env.<APP_ENV>`
+bila APP_ENV disediakan pada environment proses. Jangan menaruh ekspor produksi
+dalam `.env.local`: proses APP_ENV=local dapat membaca URL/kredensial cloud dan
+path serverless `/tmp`. Simpan ekspor cloud privat dengan nama yang tidak dipilih
+Laravel, misalnya `.env.cloud-export.private` (tetap ignored), dan gunakan `.env`
+lokal yang menunjuk database loopback. Jangan meng-copy atau menampilkan nilai
+rahasia untuk mendokumentasikan pemisahan ini. Periksa environment/host/driver
+efektif sebelum migration, seed, provisioning, atau test; DB_URL juga dapat
+mengungguli fields host/port. Detail kejadian lokal dan rollback ada di
+[local-role-production-validation.md](local-role-production-validation.md).
+
 CLI provisioning meminta nama/email/role dan secret password/konfirmasi secara interaktif; tidak menyediakan registrasi publik. Untuk demo opt-in saja, set `DEMO_PASSWORD` ≥12 karakter pada environment atau `.env` lokal lalu `php artisan db:seed --class=DemoSeeder`. Demo akun `admin@example.test`/`marketing@example.test`; password hanya yang Anda berikan. Seed default tidak membuat account. Demo dilarang production/staging. Jangan menjalankan seed demo pada database bisnis.
 
 Jika memilih demo, lewati `flamboyan:create-user` pada langkah di atas: generator mensyaratkan seluruh tabel domain kosong dan menyediakan akun sendiri. Ikuti [demo-data.md](demo-data.md) untuk jumlah, media worker, persistensi, dan regenerasi aman. Install Composer dengan dev dependencies karena generator memakai Faker; dependency ini tidak diperlukan di produksi.

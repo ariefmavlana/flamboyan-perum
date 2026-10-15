@@ -78,7 +78,7 @@ Laravel paginator memiliki metadata tambahan from/to/path/links yang boleh diaba
 }
 ```
 
-Validation422 menambahkan `errors:{field:[message]}`. 401 auth,403 role/inactive,404 scoped missing,409 duplicate/stale/transition/terminal/same-assignee,419 CSRF,422 input,429 throttle,500 sanitized failure. Error JSON dan `X-Request-ID` tersedia; frontend tidak menampilkan SQL/stack. API body/filter bounded; login5/min peremail+IP,public120/minIP,internal120/minuser. Cron/push/CMS/media/KPR/rates/report endpoints belum diimplementasikan; tidak dianggap contract live.
+Validation422 menambahkan `errors:{field:[message]}`. 401 auth,403 role/inactive,404 scoped missing,409 duplicate/stale/transition/terminal/same-assignee,419 CSRF,422 input,429 throttle,500 sanitized failure. Error JSON dan `X-Request-ID` tersedia; frontend tidak menampilkan SQL/stack. API body/filter bounded; login5/min peremail+IP,public120/minIP,internal120/minuser. Endpoint CMS, media, laporan, operasi dan realtime sudah tersedia sesuai bagian kontrak di bawah. Kalkulator KPR berjalan di frontend; referensi rate berasal dari CMS. Cron/worker dan delivery SMTP/push/scanner bergantung konfigurasi/provider yang benar-benar diverifikasi; keberadaan endpoint tidak membuktikan gate produksi tersebut selesai.
 
 ## Contoh workflow
 

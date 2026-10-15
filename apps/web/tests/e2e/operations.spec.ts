@@ -4,6 +4,7 @@ import { marketingUser } from './helpers'
 test('Admin creates catalog, records and assigns lead; Marketing processes assigned work', async ({
   page,
   browser,
+  baseURL,
 }) => {
   test.setTimeout(120000)
   const suffix = Date.now().toString()
@@ -27,7 +28,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
   await property.getByLabel('Tipe rumah').fill('Tipe 60')
   await property.getByLabel('Sertifikat', { exact: true }).fill('SHM')
   await property.getByLabel('Lokasi', { exact: true }).fill('Bogor')
-  await property.getByLabel('Harga (Rp)').fill('900000000')
+  await property.getByLabel('Harga (IDR)').fill('900000000')
   await property.getByLabel('Luas tanah (m²)').fill('90')
   await property.getByLabel('Luas bangunan (m²)').fill('60')
   await property.getByLabel('Kamar tidur').fill('3')
@@ -39,7 +40,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
     .getByLabel('Deskripsi', { exact: true })
     .fill('Data pengujian terisolasi, bukan penawaran.')
   await property
-    .getByLabel('Pemilik properti', { exact: true })
+    .getByLabel('Penanggung jawab', { exact: true })
     .selectOption({ value: String(owner.id) })
   await property.getByRole('button', { name: 'Simpan properti' }).click()
   await expect(property).not.toBeVisible()
@@ -103,7 +104,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
   await account.getByRole('button', { name: 'Simpan akun' }).click()
   await expect(account).not.toBeVisible()
   await expect(page.getByText(`tim-${suffix}@example.test`)).toBeVisible()
-  const context = await browser.newContext({ baseURL: 'http://127.0.0.1:3000' })
+  const context = await browser.newContext({ baseURL })
   const marketing = await context.newPage()
   try {
     await marketing.goto('/login')
@@ -135,10 +136,14 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
       panel.getByText('Perubahan status', { exact: false }),
     ).toBeVisible()
     await expect(
-      panel.getByText(`Rumah Operasi ${suffix} · ${owner.name}`, { exact: true }),
+      panel.getByText(`Rumah Operasi ${suffix} · ${owner.name}`, {
+        exact: true,
+      }),
     ).toBeVisible()
     await marketing.keyboard.press('Escape')
-    await marketing.getByRole('link', { name: 'Profil', exact: true }).click()
+    await marketing
+      .getByRole('link', { name: 'Profil saya', exact: true })
+      .click()
     await marketing.getByLabel('Nama', { exact: true }).fill(owner.name)
     await marketing.getByRole('button', { name: 'Simpan profil' }).click()
     await expect(
