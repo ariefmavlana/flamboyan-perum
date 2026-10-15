@@ -1,5 +1,17 @@
 # Aset asli Bukit Flamboyan Indah 2
 
+## Status produksi — 15 Oktober 2026
+
+PR #35 telah di-merge ke main sebagai `e9649656988d6f240ea59fbf5ced5275c1308087`; PR #30–34 ikut tertutup dengan merged=true. Tidak ada PR terbuka pada inventaris sesudah merge. Vercel API `dpl_DPKEriPGyJLaSux6fWwXv8quvUph` dan web `dpl_9Zwmq7K5PWMvj2uZFL7VzYbWurFJ` READY pada SHA yang sama. Alias [website](https://flamboyan-web.vercel.app/perumahan/bukit-flamboyan-indah-2), API /up dan /ready mengembalikan 200. TLS produksi memakai verify-full dan CA resmi; secret tidak dicetak atau di-commit.
+
+Import produksi selesai 2026-10-15T03:58:38.476Z: 55 gambar baru READY/published (50 PHOTO + 5 FLOOR_PLAN); rerun apply 0 baru/55 reused, pending=null. Seluruh 58 EDITED terpakai, 17 foto lapangan dikoreksi deterministik, logo resmi tampil. Sweep live 165 varian API dan 63 aset statis semuanya 200; hash varian 1920 cocok receipt, 0 marker internal/objek hilang. Browser desktop 1440 memeriksa seluruh 55 gambar tipe + 20 gambar editorial: semuanya decoded. Pada mobile 390, halaman kawasan/beranda dan logo diperiksa; foto serta denah tipe 69/80 juga decoded, object-fit contain dan tanpa overflow horizontal. Seluruh run final memiliki 0 page error. Masterplan/media non-target dipertahankan, metadata harga/spesifikasi/owner/komersial cocok snapshot. Katalog tetap 10 listing publik: 9 tipe Flamboyan dan 1 listing existing. Sebanyak 22 video tetap ditunda sampai tugas YouTube.
+
+R2 setelah rollout: 1004 objek/131123260 bytes (125.05 MiB), naik 220 objek/31755236 bytes; 860 refs terdaftar, 0 hilang. Seluruh objek lama masih ada; 0 penghapusan. Orphan 144 objek/615978 bytes masih dalam grace 30 hari; 0 eligible. Duplikasi ETag yang masih direferensikan tidak dihapus. MP4/sumber mentah tidak diupload. Jurnal khusus properti/media menjadi dasar rollback; backup seluruh CRM/auth tidak diperlukan untuk perubahan media ini.
+
+Bukti pengujian integrasi, temuan keamanan dan penerimaan risiko terbaru: [release-assets-review.md](release-assets-review.md). Uraian implementasi/validasi lokal berikut merekam snapshot PR #34 sebelum review gabungan; jumlah tes dan audit source pada snapshot tersebut bukan hasil final rilis.
+
+## Inventaris awal
+
 Inventaris 14 Oktober 2026 mencakup 76 gambar dan 22 video dari pemilik. Video ditunda atas instruksi pengguna sampai URL YouTube diberikan. Implementasi dilanjutkan pada 15 Oktober; branch `codex/real-flamboyan-assets` disinkronkan ke `origin/main` `c1cecaf`, mempertahankan perubahan kartu, DemoSeeder dan lockfile backend.
 
 `scripts/flamboyan-source-assets.json` mencatat 98 sumber beserta SHA-256, bytes, dimensi, klasifikasi, caption dan keluaran. `scripts/flamboyan-house-assets.json` mengikat 55 gambar tipe ke slug, PHOTO/FLOOR_PLAN, urutan dan hash upload. Semua sumber memiliki keputusan pemakaian; tidak ada duplikat hash sumber.
@@ -52,7 +64,7 @@ Seluruh 55 gambar diupload unpublished, diverifikasi READY, baru dipublikasikan/
 
 Response write yang hilang meninggalkan pending intent dan memblokir rerun sampai operator mencocokkan audit, ID, versi dan hash. Journal harus dipertahankan untuk resume/idempotensi. Importer berhenti pada versi/metadata/varian berubah, FAILED, file berubah, quota penuh atau API yang mengabaikan private upload. Seluruh impor bukan satu transaksi lintas upload; setiap mutasi mengikuti transaksi/version/audit backend.
 
-API harus menjalankan perubahan `published` sebelum apply live. Branch/PR ini belum di-merge atau di-deploy ke alias live; apply diuji pada salinan SQLite/storage lokal terisolasi. Data cloud dan database lokal awal tidak diubah.
+Prasyarat API `published` sudah dipenuhi pada rollout produksi PR #35. Pengujian awal memakai salinan SQLite/storage lokal terisolasi; hasil import live dan pemeriksaan data tercatat pada status produksi di atas.
 
 ## R2 dan rollback
 
@@ -93,4 +105,4 @@ Ketiga spec browser dijalankan terpisah dengan jeda antar-spec untuk mematuhi li
 
 Audit runtime 0; source audit 14 temuan (12 high/2 critical), termasuk tooling devtools/simple-git/argv-parser serta braces/node-forge. Source audit keluar 1 dan gate keamanan tooling tetap terbuka. Warning build upstream Rolldown plugin timing/DEP0155 tetap dicatat.
 
-Apply lokal melalui session/CSRF/API asli selesai dengan 55 READY/published; rerun `--apply` menghasilkan 0 upload/55 reused tanpa pending write. Metadata properti cocok snapshot importer. Bukti runtime, journal, log dan screenshot berada di `.tools/real-flamboyan-assets` dan `.tools/frontend-assets-*` yang privat. Semua aset tipe belum diklaim terpasang live sebelum deployment/import.
+Apply lokal melalui session/CSRF/API asli selesai dengan 55 READY/published; rerun `--apply` menghasilkan 0 upload/55 reused tanpa pending write. Metadata properti cocok snapshot importer. Bukti runtime, journal, log dan screenshot berada di `.tools/real-flamboyan-assets` dan `.tools/frontend-assets-*` yang privat. Pada snapshot awal aset tipe belum live; rollout berikutnya sudah selesai dan diverifikasi pada status produksi di atas.
