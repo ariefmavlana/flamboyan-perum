@@ -84,4 +84,3 @@ for (const target of adminPages) {
     await expect(page).toHaveURL(new RegExp(`${target.path}$`))
   })
 }
-

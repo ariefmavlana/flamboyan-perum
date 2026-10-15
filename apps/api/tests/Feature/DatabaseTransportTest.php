@@ -14,7 +14,11 @@ class DatabaseTransportTest extends TestCase
         $environment = Env::getRepository();
         $original = $environment->get('DB_SSLROOTCERT');
         try {
-            foreach (['resources/certificates/supabase-ca-2021.crt' => base_path('resources/certificates/supabase-ca-2021.crt'), '/private/provider.pem' => '/private/provider.pem', 'C:/private/provider.pem' => 'C:/private/provider.pem'] as $path => $expected) {
+            $paths = ['resources/certificates/supabase-ca-2021.crt' => base_path('resources/certificates/supabase-ca-2021.crt'), '/private/provider.pem' => '/private/provider.pem'];
+            if (DIRECTORY_SEPARATOR === '\\') {
+                $paths['C:/private/provider.pem'] = 'C:/private/provider.pem';
+            }
+            foreach ($paths as $path => $expected) {
                 $environment->set('DB_SSLROOTCERT', $path);
                 $database = require config_path('database.php');
                 $this->assertSame($expected, $database['connections']['pgsql']['sslrootcert']);
