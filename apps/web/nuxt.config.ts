@@ -81,7 +81,7 @@ export default defineNuxtConfig({
     tourHosts: 'my.matterport.com',
     public: {
       siteUrl: 'http://localhost:3000',
-      whatsappNumber: '62895375894848',
+      whatsappNumber: '6282214795024',
       analyticsEnabled: false,
       gtmId: '',
       metaPixelId: '',
