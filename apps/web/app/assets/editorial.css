@@ -28,6 +28,11 @@
   line-height: 1.05;
   letter-spacing: -1.6px;
 }
+.brand-logo {
+  height: 32px;
+  width: auto;
+  display: block;
+}
 .brand-dot {
   color: #a45137;
 }
@@ -634,6 +639,9 @@ textarea,
   }
   .brand-wordmark {
     font-size: 30px;
+  }
+  .brand-logo {
+    height: 26px;
   }
   .public-header .responsive-nav nav {
     gap: 8px;

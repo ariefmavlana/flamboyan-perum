@@ -1,0 +1,14 @@
+# Taste
+- Communicates in Indonesian (Bahasa Indonesia); prefers responses in Indonesian. Confidence: 0.6
+- Prefers to use their own locally-installed database server (their existing PostgreSQL 17) rather than the default/bundled option (SQLite) for the backend. Confidence: 0.5
+- Prefers to run dev servers (API and web) manually in separate terminals himself rather than have them started/daemonized automatically. Confidence: 0.4
+- Uses Git Bash (MINGW64) as his primary shell on Windows. Confidence: 0.5
+- Wants CI/CD set up so that every merge to `main` (via an opened PR) automatically deploys to production. Confidence: 0.5
+- Works via a PR-based workflow, merging changes into `main` through open pull requests. Confidence: 0.5
+- Prefers the agent to carry out setup/execution steps autonomously on his behalf (granting broad permission, e.g. "do it yourself, I give you full permission") rather than being handed manual steps to run himself. Confidence: 0.6
+- Uses Cloudflare R2 (S3-compatible) buckets as the media/object storage backend for his projects. Confidence: 0.6
+- Willing to proactively handle third-party authentication himself (e.g. opening the provider's site in his browser / completing OAuth) to let the agent finish integrating external services. Confidence: 0.5
+- Expects exhaustive, end-to-end execution with no gaps, errors, misses, conflicts, or blockers, and explicitly demands "comprehensive" results. Confidence: 0.8
+- Expects branch/PR health to be checked against the latest `main` before work is declared done — verifying mergeability (no conflicts), no blocking requirements, and that CI checks pass. Confidence: 0.5
+- Insists that work be genuinely functional, not merely backed by passing tests — wants real functional/end-to-end verification, not "tests alone". Confidence: 0.5
+- Expects content and assets to be fully manageable through the admin UI (view, edit, reorder, and add) as befits a proper admin role, rather than being fixed in code. Confidence: 0.5

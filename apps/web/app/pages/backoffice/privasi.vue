@@ -18,10 +18,19 @@ const result = ref<
   | null
 >(null)
 const message = ref('')
+const session = useStaffSession()
+const authorized = ref(false)
 const busy = ref(false)
 async function load(page = 1) {
   busy.value = true
+  authorized.value = false
   try {
+    const account = await session.refresh()
+    if (account?.role !== 'ADMIN') {
+      await navigateTo('/backoffice', { replace: true })
+      return
+    }
+    authorized.value = true
     result.value = await useStaffApi().request(
       `/api/v1/internal/privacy?page=${page}`,
     )
@@ -36,7 +45,7 @@ async function load(page = 1) {
 onMounted(() => load())
 </script>
 <template>
-  <section class="container section">
+  <section v-if="authorized" class="container section">
     <p class="eyebrow">ADMIN · PRIVASI</p>
     <h1>Kandidat retensi</h1>
     <p>
@@ -119,5 +128,12 @@ onMounted(() => load())
       dimasukkan kembali. Langkah lengkap dan penanganan backup ada dalam
       runbook.
     </p>
+  </section>
+  <section v-else class="container section">
+    <p v-if="message" role="alert">{{ message }}</p>
+    <p v-else role="status">Memeriksa akses…</p>
+    <button v-if="message" class="button" :disabled="busy" @click="load()">
+      Coba lagi
+    </button>
   </section>
 </template>

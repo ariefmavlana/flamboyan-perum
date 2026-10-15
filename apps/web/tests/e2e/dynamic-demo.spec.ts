@@ -16,7 +16,9 @@ test('generated demo is live database data: Admin edit changes SSR and survives 
   await page.getByRole('button', { name: 'Masuk →' }).click()
   await expect(page).toHaveURL(/backoffice/)
   try {
-    await page.getByRole('link', { name: 'Katalog properti', exact: true }).click()
+    await page
+      .getByRole('link', { name: 'Katalog properti', exact: true })
+      .click()
     await page.getByLabel('Cari properti', { exact: true }).fill(fixture.title)
     await page.getByRole('button', { name: 'Cari / muat ulang' }).click()
     await page
@@ -27,7 +29,7 @@ test('generated demo is live database data: Admin edit changes SSR and survives 
     const dialog = page.getByRole('dialog')
     await dialog.getByLabel('Judul', { exact: true }).fill(title)
     await dialog
-      .getByLabel('Harga (Rp)', { exact: true })
+      .getByLabel('Harga (IDR)', { exact: true })
       .fill(String(Number(fixture.price_idr) + 1000000))
     await dialog
       .getByRole('button', { name: 'Simpan properti', exact: true })
