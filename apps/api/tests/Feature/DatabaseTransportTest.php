@@ -13,10 +13,10 @@ class DatabaseTransportTest extends TestCase
         $original = config('database.default');
         config(['app.env' => 'production', 'operations.hosts' => ['localhost'], 'database.default' => 'transport_test']);
         try {
-            foreach (['disable' => false, 'allow' => false, 'prefer' => false, 'require' => true, 'verify-ca' => true, 'verify-full' => true] as $mode => $secure) {
+            foreach (['disable' => false, 'allow' => false, 'prefer' => false, 'require' => false, 'verify-ca' => false, 'verify-full' => true] as $mode => $secure) {
                 config(['database.connections.transport_test' => array_merge(config('database.connections.pgsql'), [
                     'url' => 'postgresql://fixture@127.0.0.1:9/fixture?sslmode='.$mode,
-                    'sslmode' => 'require',
+                    'sslmode' => 'verify-full',
                 ])]);
                 DB::purge('transport_test');
                 $this->assertSame($mode, DB::connection()->getConfig('sslmode'));

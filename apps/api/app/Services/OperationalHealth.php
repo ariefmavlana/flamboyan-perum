@@ -15,7 +15,7 @@ class OperationalHealth
             $connection = DB::connection();
 
             return $connection->getDriverName() !== 'pgsql'
-                || in_array($connection->getConfig('sslmode'), ['require', 'verify-ca', 'verify-full'], true);
+                || $connection->getConfig('sslmode') === 'verify-full';
         } catch (\Throwable) {
             return false;
         }

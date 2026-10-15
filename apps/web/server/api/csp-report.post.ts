@@ -196,8 +196,14 @@ export default defineEventHandler(async (event) => {
     windowStartedAt = now
     windowCount = 0
   }
+  if (windowCount >= maxReportsPerMinute) {
+    // Reject before reading/parsing; do not drain an unbounded request stream.
+    const adapter = event as unknown as NodeReportEvent
+    adapter.node?.req?.pause()
+    if (adapter.node?.res) adapter.node.res.shouldKeepAlive = false
+    throw createError({ statusCode: 429, statusMessage: 'Too Many Requests' })
+  }
   windowCount += 1
-  // Every request remains byte-bounded, including reports past the logging quota.
   const body = await readReportBody(event)
   if (windowCount <= maxReportsPerMinute) {
     for (const report of collectReports(body)) {

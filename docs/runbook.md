@@ -128,7 +128,7 @@ Migration000006 nullablephone/anonymized/redacted/index+dailyaggregate compatibl
 
 ## Konfigurasi edge dan acceptance final
 
-Routing `/ready` ke Laravel bersama `/up`; probe setiap≤1menit tanpa credential lalu alert saat503/unreachable. Admin `/backoffice/operasi` memperlihatkan queue/backlog/media/backup, bukan koneksi provider. Set APP_ENV=production, APP_DEBUG=false, APP_KEY generatedsekali/persistent, SESSION_SECURE_COOKIE=true, SESSION_ENCRYPT=true, DB_SSLMODE=require (default produksi), HTTPS APP_URL/FRONTEND_URL/site canonical dan exact Sanctum domains. API TRUSTED_HOSTS serta Nuxt NUXT_ALLOWED_HOSTS harus domain yang benar; jangan defaultlocalhost pada domain asli. API TRUSTED_PROXY_IPS dan Nuxt NUXT_TRUSTED_PROXY_IPS hanya actual reverse-proxy hops; kosong bila tanpa proxy; wildcard dilarang. Edge wajib menimpa header forwarded dari client sebelum menambahkan observed IP. Verifikasi auth/login/logout/CSRF419/no-store/Host400 pada deployment nyata.
+Routing `/ready` ke Laravel bersama `/up`; probe setiap≤1menit tanpa credential lalu alert saat503/unreachable. Admin `/backoffice/operasi` memperlihatkan queue/backlog/media/backup, bukan koneksi provider. Set APP_ENV=production, APP_DEBUG=false, APP_KEY generatedsekali/persistent, SESSION_SECURE_COOKIE=true, SESSION_ENCRYPT=true, DB_SSLMODE=verify-full (default produksi; CA/hostname wajib valid), HTTPS APP_URL/FRONTEND_URL/site canonical dan exact Sanctum domains. API TRUSTED_HOSTS serta Nuxt NUXT_ALLOWED_HOSTS harus domain yang benar; jangan defaultlocalhost pada domain asli. API TRUSTED_PROXY_IPS dan Nuxt NUXT_TRUSTED_PROXY_IPS hanya actual reverse-proxy hops; kosong bila tanpa proxy; wildcard dilarang. Edge wajib menimpa header forwarded dari client sebelum menambahkan observed IP. Verifikasi auth/login/logout/CSRF419/no-store/Host400 pada deployment nyata.
 
 Generate API_PROXY_SECRET≥32randombytes secara private melalui native CSPRNG; nilai identik NUXT_API_PROXY_SECRET di Node. Jangan taruh di args/chat/git/public runtime config. Rotasi kedua proses bersamaan dan restart; mismatch menghasilkan403 public proxy. Public SSR allowlist hanya GET katalog/content/compare/sitemap dan strict analytics POST, tanpa cookie/bearer forwarding. CSP NUXT_TOUR_HOSTS harus sinkron dengan Laravel TOUR_ALLOWED_HOSTS; YouTube nocookie/OSM/Pusher official allowlisted. Header/security configs diuji setelah edge/CDN karena host-provided policy bisa menimpa. Jangan cache HTML bersama nonce perresponse tanpa policy CSP/cache yang ditinjau.
 
@@ -148,12 +148,29 @@ PR operational acceptance tidak menambah migration. Rollback pairedAPI/Nuxt conf
 Laporan CSP dibatasi16KiB pada stream sebelum parsing (termasuk chunked/tanpa
 Content-Length); oversized menghasilkan413. Log hanya directive allowlist dan
 originHTTP(S), tidak menyimpan userinfo/path/query/fragment/nonce. Kuota tetap
-60/menit per instance; edge limit terpisah diperlukan.
+60/menit per instance; setelah 60 request, handler mengembalikan429 sebelum
+membaca/parsing body dan menutup koneksi. Batas ini bukan kuota global/shared;
+edge limit provider terpisah diperlukan untuk membatasi invokasi lintas instance.
 
 Produksi memeriksa sslmode koneksi PostgreSQL efektif setelah DB_URL diparse;
-prefer/allow/disable ditolak503 sebelum query. require/verify-ca/verify-full
-diizinkan; gunakan verify-full dengan trustedCA bila peeridentity diperlukan.
-DB_SSLMODE tidak boleh diasumsikan mengalahkan query DB_URL.
+disable/allow/prefer/require/verify-ca ditolak503 sebelum query. Hanya
+verify-full diterima: certificate chain dan hostname wajib diverifikasi oleh
+libpq. Default produksi DB_SSLMODE=verify-full; DB_SSLMODE tidak mengalahkan
+query DB_URL, sehingga parameter URL juga wajib verify-full.
+
+Sebelum rollout, pasang CA resmi provider di private deployment path dan set
+DB_SSLROOTCERT ke file tersebut, atau siapkan trust store default libpq yang
+didukung runtime provider. Jangan memakai certificate yang diambil dari koneksi
+yang belum terverifikasi. Host DB harus cocok SAN/CN sertifikat; gunakan nama
+provider, bukan IP pengganti. Tanpa CA terpercaya/hostname cocok, koneksi gagal
+tertutup dan /ready tetap503. Preview dan produksi sama-sama memerlukan
+konfigurasi ini jika APP_ENV=production. File CA tidak perlu masuk Git; private
+key dan kredensial tidak boleh dicommit atau dicatat dalam output.
+
+Validasi koneksi provider dan /ready sebelum merge/deploy; pengujian konfigurasi
+lokal tidak membuktikan CA/provider aktual. Rollback source melalui revert
+commit hardening; jangan melonggarkan sslmode untuk memaksa readiness hijau.
+Trust store/CA yang valid dapat dipertahankan saat rollback.
 
 Perubahan SESSION_ENCRYPT false→true mengakhiri sesi plaintext yang sudah ada;
 operator memberi tahu tim untuk login ulang. Rollback true→false juga mengakhiri

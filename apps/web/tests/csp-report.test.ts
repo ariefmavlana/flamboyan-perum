@@ -111,8 +111,10 @@ describe('CSP report on the actual Nitro H3 listener', () => {
       expect(JSON.stringify(warning.mock.calls)).not.toContain('private')
     },
   )
-  it('still rejects oversized requests after the logging quota', async () => {
-    for (let i = 0; i < 61; i++) expect(await report(['{}'])).toBe(204)
-    expect(await report(['x'.repeat(17000)])).toBe(413)
+  it('rejects reports before reading their body after the instance quota', async () => {
+    for (let i = 0; i < 60; i++) expect(await report(['{}'])).toBe(204)
+    expect(await report(['{}'])).toBe(429)
+    expect(await report(['x'.repeat(17000)])).toBe(429)
+    expect(warning).not.toHaveBeenCalled()
   })
 })
