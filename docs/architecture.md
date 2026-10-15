@@ -1,5 +1,9 @@
 # Arsitektur fondasi
 
+## Navigasi workspace dan panduan peran — 16 Oktober 2026
+
+Workspace memakai sidebar khusus desktop dan drawer modal mobile dengan menu sesuai peran, penanda halaman aktif, akses profil/keluar, serta bantuan kontekstual. `/backoffice/panduan` menyediakan langkah Admin/Marketing dan tampilan cetak setelah pemeriksaan sesi; panduan tidak menyatakan fitur yang belum tersedia sebagai otomatis. Kontrak REST, otorisasi backend dan data bisnis tidak berubah. Panduan pengguna: [panduan-admin-marketing.md](panduan-admin-marketing.md).
+
 ## Beranda, video YouTube dan mobile — 16 Oktober 2026
 
 Hero editorial mendukung gambar pendamping dan tautan YouTube independen melalui CMS HERO (`video_url`, `video_title`, `video_autoplay`). Video inline tanpa crop, autoplay tanpa suara, putar ulang dan kontrol native/jeda/suara, fallback saat gagal, reduced-motion/Data Saver; privasi menjelaskan pemuatan YouTube otomatis. Admin dapat memilih dan mengunggah foto melalui MediaManager di editor beranda. Kartu harga/spesifikasi dan KPR dirapikan pada mobile; harga/kelima tipe tetap dari API dan BSI Flat tetap hanya36/60. Validasi, kontrak, sumber dan rollback: [editorial-home-media-mobile.md](editorial-home-media-mobile.md).

@@ -17,8 +17,12 @@ const props = defineProps<{
     | 'pin'
     | 'compare'
     | 'logout'
+    | 'book'
+    | 'external'
 }>()
 const paths = {
+  book: 'M12 5v16 M12 5C9 3 5 3 2 4v15c3-1 7-1 10 2 3-3 7-3 10-2V4c-3-1-7-1-10 1',
+  external: 'M14 3h7v7 M21 3 10 14 M10 3H3v18h18v-7',
   home: 'm3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z',
   grid: 'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',
   users:

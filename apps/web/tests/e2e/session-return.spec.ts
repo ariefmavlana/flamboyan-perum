@@ -8,7 +8,7 @@ async function login(page: Page, email: string) {
     .fill(process.env.DEMO_PASSWORD ?? '')
   await page.getByRole('button', { name: 'Masuk →', exact: true }).click()
   await expect(page).toHaveURL(/\/backoffice$/)
-  await expect(page.locator('.staff-identity')).toContainText(
+  await expect(page.locator('.staff-page-context')).toContainText(
     email.startsWith('admin') ? 'Administrator' : 'Marketing',
   )
 }
@@ -28,8 +28,10 @@ for (const role of ['admin', 'marketing']) {
         loginPosts++
     })
     await login(page, `${role}@example.test`)
-    await page.getByRole('link', { name: 'Lihat website', exact: true }).click()
-    await expect(page).toHaveURL(/\/properti$/)
+    await page
+      .getByRole('link', { name: 'Lihat website publik', exact: true })
+      .click()
+    await expect(page).toHaveURL(/\/$/)
     const sessionStatus = await page.evaluate(
       async () =>
         (
@@ -45,8 +47,10 @@ for (const role of ['admin', 'marketing']) {
       .click()
     await expect(page).toHaveURL(/\/backoffice$/)
     await expect(page.getByLabel('Kata sandi', { exact: true })).toHaveCount(0)
-    await page.getByRole('link', { name: 'Lihat website', exact: true }).click()
-    await expect(page).toHaveURL(/\/properti$/)
+    await page
+      .getByRole('link', { name: 'Lihat website publik', exact: true })
+      .click()
+    await expect(page).toHaveURL(/\/$/)
     await page.reload()
     await page
       .getByRole('link', { name: 'Tim Flamboyan ↗', exact: true })
@@ -55,7 +59,7 @@ for (const role of ['admin', 'marketing']) {
     const other = await context.newPage()
     await other.goto('/login')
     await expect(other).toHaveURL(/\/backoffice$/)
-    await expect(other.locator('.staff-identity')).toContainText(
+    await expect(other.locator('.staff-page-context')).toContainText(
       role === 'admin' ? 'Administrator' : 'Marketing',
     )
     if (role === 'marketing')
@@ -64,13 +68,15 @@ for (const role of ['admin', 'marketing']) {
       ).toHaveCount(0)
     await page.setViewportSize({ width: 390, height: 844 })
     await page.getByRole('button', { name: 'Menu', exact: true }).click()
-    await page.getByRole('link', { name: 'Lihat website', exact: true }).click()
-    await expect(page).toHaveURL(/\/properti$/)
+    await page
+      .getByRole('link', { name: 'Lihat website publik', exact: true })
+      .click()
+    await expect(page).toHaveURL(/\/$/)
     await page
       .getByRole('link', { name: 'Tim Flamboyan ↗', exact: true })
       .click()
     await expect(page).toHaveURL(/\/backoffice$/)
-    await expect(page.locator('.staff-identity')).toContainText(
+    await expect(page.locator('.staff-page-context')).toContainText(
       role === 'admin' ? 'Administrator' : 'Marketing',
     )
     await expect(
@@ -102,15 +108,21 @@ test('visitor and expired sessions reach login, while logout in another tab inva
   await login(page, 'admin@example.test')
   const other = await context.newPage()
   await other.goto('/backoffice')
-  await expect(other.locator('.staff-identity')).toContainText('Administrator')
-  await page.getByRole('link', { name: 'Lihat website', exact: true }).click()
+  await expect(other.locator('.staff-page-context')).toContainText(
+    'Administrator',
+  )
+  await page
+    .getByRole('link', { name: 'Lihat website publik', exact: true })
+    .click()
   await other.getByRole('button', { name: 'Keluar', exact: true }).click()
   await expect(other).toHaveURL(/\/login$/)
   await page.getByRole('link', { name: 'Tim Flamboyan ↗', exact: true }).click()
   await expect(page).toHaveURL(/\/login$/)
   await expect(page.getByLabel('Email', { exact: true })).toBeEnabled()
   await login(page, 'marketing@example.test')
-  await page.getByRole('link', { name: 'Lihat website', exact: true }).click()
+  await page
+    .getByRole('link', { name: 'Lihat website publik', exact: true })
+    .click()
   await context.clearCookies()
   await page.getByRole('link', { name: 'Tim Flamboyan ↗', exact: true }).click()
   await expect(page).toHaveURL(/\/login$/)
@@ -167,5 +179,5 @@ test('temporary session-check failure can recover the existing session without c
   await page.unroute('**/api/v1/me')
   await page.getByRole('button', { name: 'Coba lagi', exact: true }).click()
   await expect(page).toHaveURL(/\/backoffice$/)
-  await expect(page.locator('.staff-identity')).toContainText('Marketing')
+  await expect(page.locator('.staff-page-context')).toContainText('Marketing')
 })

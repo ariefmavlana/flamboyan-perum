@@ -1,133 +1,163 @@
 <script setup lang="ts">
+import { workspaceNavigation } from '#shared/utils/workspace'
 const session = useStaffSession()
-const message = ref('')
 const route = useRoute()
-const links = [
-  {
-    to: '/backoffice',
-    label: 'Calon pembeli',
-    icon: 'users',
-    admin: false,
-    group: 'Penjualan',
-  },
-  {
-    to: '/backoffice/properti',
-    label: 'Katalog properti',
-    icon: 'home',
-    admin: false,
-    group: 'Website',
-  },
-  {
-    to: '/backoffice/laporan',
-    label: 'Hasil penjualan',
-    icon: 'chart',
-    admin: true,
-    group: 'Penjualan',
-  },
-  {
-    to: '/backoffice/konten',
-    label: 'Konten publik',
-    icon: 'file',
-    admin: true,
-    group: 'Website',
-  },
-  {
-    to: '/backoffice/akun',
-    label: 'Akun tim',
-    icon: 'users',
-    admin: true,
-    group: 'Administrasi',
-  },
-  {
-    to: '/backoffice/privasi',
-    label: 'Kandidat retensi',
-    icon: 'shield',
-    admin: true,
-    group: 'Administrasi',
-  },
-  {
-    to: '/backoffice/operasi',
-    label: 'Kesehatan layanan',
-    icon: 'settings',
-    admin: true,
-    group: 'Administrasi',
-  },
-  {
-    to: '/backoffice/profil',
-    label: 'Profil saya',
-    icon: 'user',
-    admin: false,
-    group: 'Akun',
-  },
-] as const
-const available = computed(() =>
-  links.filter(
-    (link) => !link.admin || session.account.value?.role === 'ADMIN',
-  ),
+const message = ref('')
+const loggingOut = ref(false)
+const ready = ref(false)
+const menu = ref<HTMLDialogElement | null>(null)
+const menuOpen = ref(false)
+let desktop: MediaQueryList | undefined
+const current = computed(() =>
+  workspaceNavigation(session.account.value?.role)
+    .flatMap((group) => group.links)
+    .find((link) => link.to === route.path),
 )
-const groups = computed(() =>
-  ['Penjualan', 'Website', 'Administrasi', 'Akun']
-    .map((label) => ({
-      label,
-      links: available.value.filter((link) => link.group === label),
-    }))
-    .filter((group) => group.links.length),
+const role = computed(() =>
+  session.account.value?.role === 'ADMIN'
+    ? 'Administrator'
+    : session.account.value?.role === 'MARKETING'
+      ? 'Marketing'
+      : 'Ruang kerja tim',
 )
-const current = computed(
-  () => links.find((link) => link.to === route.path)?.label ?? 'Ruang kerja',
+const help = computed(
+  () => '/backoffice/panduan#' + (current.value?.guide ?? 'mulai'),
 )
+function closeMenu() {
+  menu.value?.close()
+}
+function openMenu() {
+  menu.value?.showModal()
+  menuOpen.value = true
+}
+function keepMenuFocus(event: KeyboardEvent) {
+  if (event.key !== 'Tab' || !menu.value) return
+  const controls = Array.from(
+    menu.value.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
+  )
+  const first = controls[0]
+  const last = controls.at(-1)
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault()
+    last?.focus()
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault()
+    first?.focus()
+  }
+}
+function backdrop(event: MouseEvent) {
+  if (event.target !== menu.value || !menu.value) return
+  const bounds = menu.value.getBoundingClientRect()
+  if (
+    event.clientX < bounds.left ||
+    event.clientX > bounds.right ||
+    event.clientY < bounds.top ||
+    event.clientY > bounds.bottom
+  )
+    closeMenu()
+}
+function resized() {
+  if (desktop?.matches) closeMenu()
+}
+async function navigated() {
+  if (!menu.value?.open) return
+  closeMenu()
+  await nextTick()
+  document.getElementById('main')?.focus()
+}
+watch(() => route.fullPath, navigated)
 async function logout() {
+  if (loggingOut.value) return
+  closeMenu()
+  loggingOut.value = true
+  message.value = ''
   try {
     await session.logout()
   } catch {
-    message.value = 'Belum dapat keluar. Coba kembali.'
+    message.value =
+      'Sesi Anda belum dapat diakhiri. Pilih Keluar untuk mencoba kembali.'
+  } finally {
+    loggingOut.value = false
   }
 }
 onMounted(async () => {
+  ready.value = true
+  desktop = window.matchMedia('(min-width: 901px)')
+  desktop.addEventListener('change', resized)
   try {
     await session.refresh()
   } catch (error) {
     message.value = staffError(error)
   }
 })
+onBeforeUnmount(() => desktop?.removeEventListener('change', resized))
 </script>
 <template>
   <div class="workspace-shell">
     <a class="skip-link" href="#main">Lewati ke konten</a>
-    <aside class="workspace-sidebar">
-      <BrandLogo />
-      <ResponsiveNav id="workspace-navigation" label="Ruang kerja tim">
-        <div v-for="group in groups" :key="group.label" class="nav-group">
-          <p class="nav-label">{{ group.label }}</p>
-          <NuxtLink v-for="link in group.links" :key="link.to" :to="link.to">
-            <AppIcon :name="link.icon" />{{ link.label }}
-          </NuxtLink>
-        </div>
-        <div class="sidebar-bottom">
-          <NuxtLink to="/properti"
-            ><AppIcon name="arrow" />Lihat website</NuxtLink
-          ><button type="button" class="sidebar-logout" @click="logout">
-            <AppIcon name="logout" />Keluar
-          </button>
-        </div>
-      </ResponsiveNav>
+    <aside class="staff-rail" aria-label="Navigasi workspace">
+      <WorkspaceNavigation
+        :account="session.account.value"
+        :logging-out="loggingOut"
+        @logout="logout"
+      />
     </aside>
+    <dialog
+      id="workspace-menu"
+      ref="menu"
+      class="staff-menu"
+      aria-labelledby="workspace-menu-title"
+      @close="menuOpen = false"
+      @click="backdrop"
+      @keydown="keepMenuFocus"
+    >
+      <div class="staff-menu-heading">
+        <h2 id="workspace-menu-title">Menu ruang kerja</h2>
+        <button
+          type="button"
+          class="staff-menu-close"
+          autofocus
+          aria-label="Tutup menu"
+          @click="closeMenu"
+        >
+          <AppIcon name="close" />
+        </button>
+      </div>
+      <WorkspaceNavigation
+        :account="session.account.value"
+        :logging-out="loggingOut"
+        @navigate="navigated"
+        @logout="logout"
+      />
+    </dialog>
     <div class="workspace-body">
-      <header class="workspace-topbar">
-        <p><span class="muted">Ruang kerja /</span> {{ current }}</p>
-        <div class="staff-identity">
-          <span class="avatar" aria-hidden="true">{{
-            session.account.value?.name.slice(0, 1) ?? 'F'
-          }}</span
-          ><span
-            >{{ session.account.value?.name
-            }}<small>{{
-              session.account.value?.role === 'ADMIN'
-                ? 'Administrator'
-                : 'Marketing'
-            }}</small></span
-          >
+      <header class="workspace-topbar staff-topbar">
+        <button
+          class="staff-menu-trigger"
+          type="button"
+          :disabled="!ready"
+          aria-label="Menu"
+          aria-controls="workspace-menu"
+          :aria-expanded="menuOpen"
+          @click="openMenu"
+        >
+          <AppIcon name="menu" />
+        </button>
+        <div class="staff-page-context">
+          <p>
+            {{ role }}<span aria-hidden="true"> / </span
+            ><strong>{{ current?.label ?? 'Ruang kerja' }}</strong>
+          </p>
+          <small>{{
+            current?.description ?? 'Selamat datang di ruang kerja Flamboyan.'
+          }}</small>
         </div>
+        <NuxtLink
+          :to="help"
+          class="staff-context-help"
+          aria-label="Panduan halaman ini"
+          ><AppIcon name="book" /><span>Panduan halaman ini</span></NuxtLink
+        >
       </header>
       <div class="workspace-inbox"><NotificationBell /></div>
       <main id="main" tabindex="-1">

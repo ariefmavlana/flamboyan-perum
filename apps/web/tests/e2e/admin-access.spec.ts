@@ -32,7 +32,7 @@ for (const target of adminPages) {
     await expect(
       page.getByRole('heading', { name: target.heading }),
     ).toHaveCount(0)
-    await expect(page.locator('.staff-identity')).toContainText('Marketing')
+    await expect(page.locator('.staff-page-context')).toContainText('Marketing')
     expect(adminRequests).toEqual([])
     const denied = await page.evaluate(
       async (api) =>
