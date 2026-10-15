@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { siteOrigin } from '#shared/utils/seo'
+import { gateDay } from '#shared/content/flamboyan-assets'
 const config = useRuntimeConfig()
 const origin = computed(() => siteOrigin(String(config.public.siteUrl)))
 useHead({
@@ -10,12 +11,11 @@ useHead({
   meta: computed(() => [
     {
       property: 'og:image',
-      content: `${origin.value}/images/gerbang-kawasan-1920.webp`,
+      content: `${origin.value}${gateDay.src}`,
     },
     {
       property: 'og:image:alt',
-      content:
-        'Gerbang kawasan Bukit Flamboyan Indah 2 · dokumentasi pengguna.',
+      content: gateDay.alt,
     },
   ]),
 })

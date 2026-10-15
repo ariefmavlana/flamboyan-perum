@@ -1,5 +1,17 @@
 # REST API — katalog, workspace dan operasi
 
+## Aset asli Bukit Flamboyan Indah 2 — 2026-10-15
+
+POST `/api/v1/internal/properties/{id}/media` menerima `published` boolean opsional; default `true` mempertahankan kompatibilitas klien existing. Multipart `published=0` menyimpan media privat, termasuk setelah READY. Publikasi melalui PATCH existing tetap memakai scope, CSRF, version guard dan audit. Kuota menghitung seluruh media non-ARCHIVED, termasuk unpublished: PHOTO 20/FLOOR_PLAN 5 tidak dinaikkan. Tidak ada migrasi atau endpoint baru.
+
+GET `/api/v1/internal/properties/{id}/media` menambah `supports_unpublished_uploads:true` pada envelope. Importer memeriksa dukungan ini pada seluruh target sebelum apply; backend lama dengan field missing/false ditolak sebelum upload atau journal write. Default dry-run tetap dapat membaca dan melaporkan kapabilitas tanpa mutasi.
+
+DTO media publik menghapus hanya suffix provenance `[BFI2:<key ASCII>]` dari `alt`; caption lain dipertahankan. Internal DTO menyimpan marker untuk pencocokan manifest/journal. Field storage privat, metadata aktor dan identitas Marketing tetap tidak dipublikasikan.
+
+CLI `flamboyan:media-cleanup --json` default dry-run, mendukung disk lokal/R2 dengan enumerasi file Flysystem. Laporan mencantumkan path, bytes, kandidat archived/orphan, retained shared objects dan blocked media IDs. Orphan hanya eligible setelah 30 hari. Seluruh staging/variants dari record belum purged, termasuk draft/unpublished/FAILED, serta logo CMS aktif/draft tetap dilindungi. Hanya pola file managed staging/ready/content-logos yang dapat dibersihkan; direktori tidak dihapus. `--execute` memerlukan backup konsisten terverifikasi dan penghentian write media; refs/umur orphan diperiksa ulang sebelum penghapusan. Audit/histori tetap. Inventaris cloud 14 Oktober menghasilkan 0 kandidat eligible; tidak ada penghapusan cloud pada pekerjaan ini.
+
+`/perumahan/bukit-flamboyan-indah-2` merupakan route editorial SSR, canonical/sitemap dan konteks konsultasi yang allowlisted. Harga, spesifikasi dan card berasal dari API; hanya slug yang tepat cocok dengan house_type ditampilkan. Foto aktual yang tipenya belum dikonfirmasi disajikan pada galeri kawasan. Tidak menambah multi-proyek CMS, unit fallback atau record Lead. Manifest, pemrosesan dan rollback: [real-flamboyan-assets.md](real-flamboyan-assets.md).
+
 ## Koreksi review keamanan — 2026-10-15
 
 `POST /api/csp-report` pada Nuxt menerima body maksimal 16 KiB (413 jika
@@ -122,8 +134,8 @@ Admin kemudian assign `{marketing_id:2,version:1}`. Lead returned version2; Mark
 | PATCH `/leads/{id}/contact` | Admin | name,whatsapp_number,version,reason; CONTACT_UPDATED; duplicate409 rollback |
 | POST `/auth/forgot-password` | CSRF | email; generic202 existing/absent;5/min/email+IP; production log/array503 |
 | POST `/auth/reset-password` | CSRF | email,token,password≥12+confirmation;200; invalid/expired/used422 |
-| GET `/internal/properties/{id}/media` | Scoped | page/per_page≤50 default20,include_archived=0/1; paginator + property_version |
-| POST `/internal/properties/{id}/media` | Scoped | version,kind,alt; multipart file PHOTO/FLOOR_PLAN/BROCHURE atau HTTPS url VIDEO/TOUR;201 + property_version |
+| GET `/internal/properties/{id}/media` | Scoped | page/per_page≤50 default20,include_archived=0/1; paginator + property_version/process_in_request/supports_unpublished_uploads |
+| POST `/internal/properties/{id}/media` | Scoped | version,kind,alt,published optional defaulttrue; multipart file PHOTO/FLOOR_PLAN/MASTERPLAN/BROCHURE atau HTTPS url VIDEO/TOUR;201 + property_version |
 | PATCH `/internal/properties/{id}/media/{mediaId}` | Scoped | version,alt/position/published/archived/retry; atomic audit + property_version; archive terminal |
 | GET `/internal/media/{mediaId}/{variant}` | Scoped | READY sanitized preview, including draft; variant640/1280/1920/download |
 | GET `/media/{mediaId}/{variant}` | Public outside v1 | READY+published media pada PUBLISHED property;404 lainnya; nosniff/no-store; PDF attachment |
@@ -202,7 +214,7 @@ POST /api/v1/internal/content/{id}/logo Admin aktif + session/CSRF: multipart fi
 
 GET /api/v1/content/{id}/logo public hanya BANK_PARTNER published+verified dan file tersedia; selain itu404. Output image/webp, nosniff, Cache-Control:no-store, CSP sandbox. Route diizinkan pada signed public proxy dengan ID numerik, tidak membuka internal routes. Public content.bank_partners hanya record eligible dengan file dan DTO {id,name,website,logo_url}; tidak membuat klaim rekanan dari data BANK_RATE. Pemilik wajib memverifikasi izin logo dan hubungan bank sebelum attestation.
 
-File logo terdahulu dipertahankan private setelah replacement, tidak dihidangkan oleh endpoint dan tidak dihapus otomatis. Rollback konten cukup unpublish atau unggah kembali aset yang disetujui memakai version terbaru; pemulihan filesystem/DB mengikuti backup operator. Inventaris dan pembersihan file lama memerlukan review backup/retensi operator, bukan cleanup media properti. Tidak ada hard-delete, logo fiktif, perubahan CRM/privacy, atau migrasi database. Catatan redesign terdahulu mengenai hero statis merupakan snapshot historis; hero yang dipilih CMS kini dikirim lewat field media di atas.
+File logo terdahulu dipertahankan private setelah replacement, tidak dihidangkan oleh endpoint dan tidak dihapus otomatis. Rollback konten cukup unpublish atau unggah kembali aset yang disetujui memakai version terbaru; pemulihan filesystem/DB mengikuti backup operator. Pada integrasi aset 15 Oktober, cleanup CLI juga menginventaris logo tidak direferensikan melewati 30 hari; current logo dari seluruh CMS tetap dilindungi, dengan review backup/retensi operator sebelum execute. Tidak ada hard-delete record, logo fiktif, perubahan CRM/privacy, atau migrasi database. Catatan redesign terdahulu mengenai hero statis merupakan snapshot historis; hero yang dipilih CMS kini dikirim lewat field media di atas.
 
 ### Media function (2026-10-05)
 

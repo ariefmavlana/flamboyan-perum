@@ -56,7 +56,7 @@ class MediaOperations
                 };
                 abort_if($property->media()->where('kind', $data['kind'])->where('state', '!=', 'ARCHIVED')->count() >= $limit, 409, 'Batas media jenis ini tercapai. Arsipkan media lama terlebih dahulu.');
                 $this->bump($property, $data['version']);
-                $media = $property->media()->create(['kind' => $data['kind'], 'alt' => $data['alt'], 'state' => $path ? 'PROCESSING' : 'READY', 'staging_path' => $path, 'url' => $data['url'] ?? null, 'position' => $property->media()->max('position') + 1, 'mime' => $file?->getMimeType(), 'size_bytes' => $file?->getSize()]);
+                $media = $property->media()->create(['kind' => $data['kind'], 'alt' => $data['alt'], 'published' => $data['published'] ?? true, 'state' => $path ? 'PROCESSING' : 'READY', 'staging_path' => $path, 'url' => $data['url'] ?? null, 'position' => $property->media()->max('position') + 1, 'mime' => $file?->getMimeType(), 'size_bytes' => $file?->getSize()]);
                 $this->audit($actor, $property, $media, 'MEDIA_ADDED');
                 if ($path) {
                     $this->enqueue($media);

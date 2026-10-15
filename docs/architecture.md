@@ -1,5 +1,11 @@
 # Arsitektur fondasi
 
+## Pemisahan aset kawasan dan katalog — 2026-10-15
+
+Aset editorial kawasan dan brand disajikan sebagai WebP responsif lokal dengan metadata typed di `shared/content/flamboyan-assets.ts`. Foto rumah/denah tetap melalui PropertyMedia/API dan private disk existing; tidak ada katalog statis pengganti API. Tooling persiapan/impor opt-in terpisah dari build, seeding dan request; sumber mentah serta journal berada di `.tools` yang diabaikan Git. Semua harga, otorisasi, version guard, audit dan worker tetap pada batas existing.
+
+Cleanup menggunakan enumerasi Flysystem yang sama untuk lokal/R2 dan menghitung refs dari seluruh media belum purged serta CMS, sehingga unpublished/shared file tidak diperlakukan sebagai orphan. Tidak menambah schema, service runtime, dependency, queue atau cron. Detail operasi [real-flamboyan-assets.md](real-flamboyan-assets.md).
+
 ## Perluasan katalog berbasis sumber — 2026-10-05
 
 CommercialController mempertahankan modular monolith/Eloquent: transaksi khusus Admin untuk kolom jadwal harga dan JSON commercial, fresh lock, optimistic version dan ActivityLog. Property menyediakan ekspresi harga portabel SQLite/PostgreSQL agar public resource, filter, sort, detail dan compare memakai tanggal Asia/Jakarta yang sama. Public commercial dan payment_plans mempunyai allowlist tersendiri; metadata verifikasi tidak keluar. CHECK_REQUIRED tidak menyatakan stok. MASTERPLAN melewati MediaProcessor/MediaDisk existing dan tetap memiliki revocation checks.

@@ -146,6 +146,7 @@ const srcset = (item: PublicMedia) =>
         ref="opener"
         class="gallery-main"
         :class="{
+          'is-illustration': /ilustrasi|inspirasi/i.test(selected.alt),
           'is-plan':
             selected.kind === 'FLOOR_PLAN' || selected.kind === 'MASTERPLAN',
         }"
@@ -304,7 +305,7 @@ const srcset = (item: PublicMedia) =>
       :key="item.id"
       :href="item.sources[0]?.url"
       class="button secondary"
-        >Unduh brosur (PDF) ↓</a
+      >Unduh brosur (PDF) ↓</a
     >
   </section>
 </template>
@@ -362,7 +363,8 @@ const srcset = (item: PublicMedia) =>
 .gallery-caption span {
   white-space: nowrap;
 }
-.property-gallery .gallery-main.is-plan img {
+.property-gallery .gallery-main.is-plan img,
+.property-gallery .gallery-main.is-illustration img {
   height: min(660px, 75dvh);
   object-fit: contain;
   background: #fff;

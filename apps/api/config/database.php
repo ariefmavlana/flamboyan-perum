@@ -2,6 +2,12 @@
 
 use Illuminate\Support\Str;
 use Pdo\Mysql;
+use Symfony\Component\Filesystem\Path;
+
+$sslRootCert = env('DB_SSLROOTCERT');
+if ($sslRootCert && ! Path::isAbsolute($sslRootCert)) {
+    $sslRootCert = base_path($sslRootCert);
+}
 
 return [
 
@@ -97,7 +103,7 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => env('DB_SSLMODE', env('APP_ENV') === 'production' ? 'verify-full' : 'prefer'),
-            'sslrootcert' => env('DB_SSLROOTCERT') ?: null,
+            'sslrootcert' => $sslRootCert ?: null,
         ],
 
         'sqlsrv' => [

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { canonicalUrl } from '#shared/utils/seo'
 import { formatDate } from '#shared/utils/format'
+import { developmentPhotos } from '#shared/content/flamboyan-assets'
+const actualFacade = developmentPhotos[0]!
 const config = useRuntimeConfig()
 const { development } = await useDevelopment()
 const toList = (value?: string | null) => [
@@ -44,18 +46,20 @@ useHead({
       </div>
       <figure>
         <img
-          src="/images/bandung-timur-gerbang-1920.webp"
-          srcset="
-            /images/bandung-timur-gerbang-960.webp   960w,
-            /images/bandung-timur-gerbang-1920.webp 1920w
+          :src="actualFacade.src"
+          :srcset="
+            actualFacade.sources
+              .map((source) => `${source.url} ${source.width}w`)
+              .join(', ')
           "
-          width="1920"
-          height="1434"
-          alt="Gerbang kawasan Bukit Flamboyan Indah 2 · dokumentasi pengguna."
+          sizes="(max-width: 760px) 100vw, 50vw"
+          :width="actualFacade.width"
+          :height="actualFacade.height"
+          :alt="actualFacade.alt"
           fetchpriority="high"
         />
         <figcaption>
-          Gerbang kawasan Bukit Flamboyan Indah 2 · dokumentasi pengguna
+          {{ actualFacade.caption }}
         </figcaption>
       </figure>
     </section>
@@ -69,6 +73,9 @@ useHead({
           <p class="eyebrow">{{ development.developer }}</p>
           <h2 id="facilities-title">{{ development.name }}</h2>
           <p class="muted">{{ development.address }}</p>
+          <NuxtLink class="text-link" to="/perumahan/bukit-flamboyan-indah-2"
+            >Dokumentasi & rencana kawasan →</NuxtLink
+          >
           <p class="muted">
             {{ development.house_types }} tipe ·
             {{ development.planned_units }} rencana unit · ketersediaan aktual

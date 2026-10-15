@@ -51,6 +51,7 @@ const wa = computed(() =>
       <img
         v-if="cover?.sources[0]"
         class="card-photo"
+        :class="{ 'is-illustration': /ilustrasi|inspirasi/i.test(cover.alt) }"
         :src="cover.sources[0].url"
         :srcset="
           cover.sources
@@ -117,3 +118,9 @@ const wa = computed(() =>
     </div>
   </article>
 </template>
+<style scoped>
+.card-photo.is-illustration {
+  object-fit: contain;
+  background: var(--cream);
+}
+</style>

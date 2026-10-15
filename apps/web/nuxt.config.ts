@@ -125,6 +125,14 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'id' },
       title: 'Flamboyan Perum',
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: '/images/brand/flamboyan-mark.png',
+        },
+        { rel: 'apple-touch-icon', href: '/images/brand/flamboyan-mark.png' },
+      ],
       meta: [
         {
           name: 'description',
@@ -135,26 +143,6 @@ export default defineNuxtConfig({
         { property: 'og:locale', content: 'id_ID' },
         { property: 'og:type', content: 'website' },
         { name: 'twitter:card', content: 'summary_large_image' },
-      ],
-      link: [
-        { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
-        {
-          rel: 'icon',
-          type: 'image/png',
-          href: '/favicon-32.png',
-          sizes: '32x32',
-        },
-        {
-          rel: 'icon',
-          type: 'image/png',
-          href: '/icon-192.png',
-          sizes: '192x192',
-        },
-        {
-          rel: 'apple-touch-icon',
-          href: '/apple-touch-icon.png',
-          sizes: '180x180',
-        },
       ],
     },
   },

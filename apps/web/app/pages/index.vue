@@ -4,6 +4,8 @@ import { formatIdr, whatsappLink } from '#shared/utils/catalog'
 import { canonicalUrl } from '#shared/utils/seo'
 import { formatDateRange, formatPercent } from '#shared/utils/format'
 import { jsonLdText, websiteSchema } from '#shared/utils/structured-data'
+import { developmentPhotos, gateDusk } from '#shared/content/flamboyan-assets'
+const actualFacade = developmentPhotos[0]!
 const config = useRuntimeConfig()
 const { whatsappNumber } = await useDevelopment()
 const tracking = useAnalytics()
@@ -178,20 +180,20 @@ useHead({
     <section class="editorial-intro container">
       <figure class="editorial-interior">
         <img
-          src="/images/flamboyan-kawasan.webp"
-          width="1080"
-          height="800"
+          :src="actualFacade.src"
+          :srcset="
+            actualFacade.sources
+              .map((source) => `${source.url} ${source.width}w`)
+              .join(', ')
+          "
+          sizes="(max-width: 760px) 100vw, 50vw"
+          :width="actualFacade.width"
+          :height="actualFacade.height"
           loading="lazy"
-          alt="Ilustrasi deretan hunian Bukit Flamboyan Indah 2 dari Rumah Rajasa; bukan foto kondisi aktual."
+          :alt="actualFacade.alt"
         />
         <figcaption>
-          Ilustrasi kawasan ·
-          <a
-            href="https://rumahrajasa.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Rumah Rajasa ↗</a
-          >
+          {{ actualFacade.caption }}
         </figcaption>
       </figure>
       <div class="intro-copy">
@@ -239,19 +241,19 @@ useHead({
       <div class="neighbourhood-grid">
         <figure>
           <img
-            src="/images/gerbang-kawasan-1920.webp"
-            srcset="
-              /images/gerbang-kawasan-960.webp   960w,
-              /images/gerbang-kawasan-1920.webp 1920w
+            :src="gateDusk.src"
+            :srcset="
+              gateDusk.sources
+                .map((source) => `${source.url} ${source.width}w`)
+                .join(', ')
             "
-            width="1920"
-            height="1434"
+            sizes="(max-width: 760px) 100vw, 50vw"
+            :width="gateDusk.width"
+            :height="gateDusk.height"
             loading="lazy"
-            alt="Gerbang kawasan Bukit Flamboyan Indah 2 · dokumentasi pengguna."
+            :alt="gateDusk.alt"
           />
-          <figcaption>
-            Gerbang kawasan Bukit Flamboyan Indah 2 · dokumentasi pengguna
-          </figcaption>
+          <figcaption>{{ gateDusk.caption }}</figcaption>
         </figure>
         <div class="neighbourhood-copy">
           <p class="eyebrow">BANDUNG TIMUR</p>
@@ -263,11 +265,13 @@ useHead({
             kami.
           </p>
           <p class="muted">
-            Gambar kawasan adalah dokumentasi pengguna; kondisi dan ketersediaan
-            unit dikonfirmasi saat konsultasi.
+            Gerbang di atas merupakan ilustrasi desain. Dokumentasi aktual
+            kawasan tersedia untuk membantu menyiapkan kunjungan.
           </p>
-          <NuxtLink class="text-link" to="/panduan/kunjungan-rumah"
-            >Panduan saat melihat rumah →</NuxtLink
+          <NuxtLink
+            class="text-link"
+            to="/perumahan/bukit-flamboyan-indah-2#dokumentasi"
+            >Lihat dokumentasi kawasan →</NuxtLink
           >
         </div>
       </div>
@@ -279,6 +283,11 @@ useHead({
         class="spotlight-image"
         ><img
           :src="heroCover.url"
+          :class="{
+            'is-illustration': /ilustrasi|inspirasi/i.test(
+              heroMedia?.alt ?? '',
+            ),
+          }"
           :alt="heroMedia?.alt ?? hero.property.title"
           :srcset="
             heroMedia?.sources
@@ -405,3 +414,9 @@ useHead({
     </section>
   </div>
 </template>
+<style scoped>
+.spotlight-image img.is-illustration {
+  object-fit: contain;
+  background: var(--cream);
+}
+</style>

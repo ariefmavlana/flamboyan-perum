@@ -190,3 +190,20 @@ test('a single floor plan has no empty photo group and remains usable on a narro
   expect(bounds!.x).toBeGreaterThanOrEqual(0)
   expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(320)
 })
+
+test('an illustration remains uncropped so embedded type labels can be read', async ({
+  page,
+  request,
+}) => {
+  await openGallery(page, request, [
+    image(91001, 'PHOTO', 'Ilustrasi fasad tipe 36/60'),
+  ])
+  const opener = page.getByRole('button', { name: 'Perbesar gambar properti' })
+  await expect(opener.getByRole('img')).toHaveCSS('object-fit', 'contain')
+  await opener.click()
+  await expect(
+    page
+      .getByRole('dialog', { name: 'Gambar properti diperbesar' })
+      .getByRole('img'),
+  ).toHaveCSS('object-fit', 'contain')
+})

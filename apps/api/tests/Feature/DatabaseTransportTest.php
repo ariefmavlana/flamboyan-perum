@@ -3,11 +3,31 @@
 namespace Tests\Feature;
 
 use App\Services\OperationalHealth;
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class DatabaseTransportTest extends TestCase
 {
+    public function test_provider_ca_paths_resolve_against_the_application_directory(): void
+    {
+        $environment = Env::getRepository();
+        $original = $environment->get('DB_SSLROOTCERT');
+        try {
+            foreach (['resources/certificates/supabase-ca-2021.crt' => base_path('resources/certificates/supabase-ca-2021.crt'), '/private/provider.pem' => '/private/provider.pem', 'C:/private/provider.pem' => 'C:/private/provider.pem'] as $path => $expected) {
+                $environment->set('DB_SSLROOTCERT', $path);
+                $database = require config_path('database.php');
+                $this->assertSame($expected, $database['connections']['pgsql']['sslrootcert']);
+            }
+        } finally {
+            if ($original === null) {
+                $environment->clear('DB_SSLROOTCERT');
+            } else {
+                $environment->set('DB_SSLROOTCERT', $original);
+            }
+        }
+    }
+
     public function test_production_checks_resolved_url_tls_before_database_queries(): void
     {
         $original = config('database.default');

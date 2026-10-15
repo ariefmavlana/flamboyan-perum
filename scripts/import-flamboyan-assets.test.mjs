@@ -1,386 +1,658 @@
-import test from "node:test";
+import { test } from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import {
-  assertWorkerReady,
-  processedDimensions,
-  descriptionNew,
-  descriptionOld,
-  findByMarker,
-  markerFor,
-  nextDescription,
-  photoTypes,
-  planPropertyPhotos,
-  planSiteplan,
-  propertyFingerprint,
+  validateOptions,
+  validateOrigin,
   validateManifest,
   verifyBytes,
-  youtubeId,
+  manifestFingerprint,
+  propertyFingerprint,
+  planProperty,
+  validateJournal,
+  storagePreflight,
+  importAssets,
 } from "./import-flamboyan-assets.mjs";
 
-const types = [
-  "36/60",
-  "36/72",
-  "36/90",
-  "62/70",
-  "62/84",
-  "69/80",
-  "56/90",
-  "56/108",
-  "62/140",
-];
+const types = ["36/60", "36/90", "56/90", "62/70", "69/80"];
+const counts = [9, 8, 10, 14, 9];
+const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 
-function slugFor(houseType) {
-  return `bukit-flamboyan-indah-2-${houseType.replace("/", "-")}`;
+function webp(width, height, tag = "source") {
+  const image = Buffer.alloc(18);
+  image.write("VP8X", 0);
+  image.writeUInt32LE(10, 4);
+  image.writeUIntLE(width - 1, 12, 3);
+  image.writeUIntLE(height - 1, 15, 3);
+  const tail = Buffer.from(tag);
+  const chunk = Buffer.alloc(8 + tail.length + (tail.length % 2));
+  chunk.write("JUNK");
+  chunk.writeUInt32LE(tail.length, 4);
+  tail.copy(chunk, 8);
+  const header = Buffer.alloc(12);
+  header.write("RIFF");
+  header.writeUInt32LE(4 + image.length + chunk.length, 4);
+  header.write("WEBP", 8);
+  return Buffer.concat([header, image, chunk]);
 }
 
-let hashCounter = 0;
-function sha() {
-  hashCounter += 1;
-  return hashCounter.toString(16).padStart(64, "0");
-}
-
-function makeAsset(houseType, position, overrides = {}) {
-  const key = `${houseType.replace("/", "-")}-${position + 1}`;
-  return {
-    key,
-    file: `edited/${houseType.replace("/", "-")}/${key}.jpg`,
-    sha256: sha(),
-    bytes: 1000,
-    width: 2752,
-    height: 1536,
-    kind: "PHOTO",
-    house_type: houseType,
-    alt: `Dokumentasi tipe ${houseType} #${position + 1} · Foto dokumentasi pengguna; kondisi unit dikonfirmasi saat kunjungan. ${markerFor(key)}`,
-    position,
-    ...overrides,
-  };
-}
-
-function makeManifest(overrides = {}) {
-  const assets = [];
-  for (const houseType of photoTypes) {
-    assets.push(makeAsset(houseType, 0));
-    assets.push(makeAsset(houseType, 1));
-  }
-  return {
+function inventory() {
+  const buffers = new Map();
+  const manifest = {
     schema_version: 1,
-    properties: types.map((houseType) => ({
-      house_type: houseType,
-      slug: slugFor(houseType),
+    properties: types.map((house_type) => ({
+      house_type,
+      slug: `bukit-flamboyan-indah-2-${house_type.replace("/", "-")}`,
     })),
-    assets,
-    siteplan: {
-      key: "siteplan",
-      file: "shared/Siteplan.jpg",
-      sha256: sha(),
-      bytes: 2000,
-      width: 2400,
-      height: 1792,
-      kind: "MASTERPLAN",
-      alt: `Site plan Bukit Flamboyan Indah 2 · dokumentasi pengguna; warna bukan status ketersediaan. ${markerFor("siteplan")}`,
-    },
-    videos: [],
-    ...overrides,
-  };
-}
-
-function mediaItem(overrides = {}) {
-  return {
-    id: 1,
-    kind: "PHOTO",
-    alt: "x",
-    position: 0,
-    published: true,
-    state: "READY",
-    width: 1920,
-    height: 1072,
-    ...overrides,
-  };
-}
-
-test("valid manifest passes and gemini alt rules are enforced", () => {
-  const manifest = makeManifest();
-  assert.doesNotThrow(() => validateManifest(manifest));
-  const gemini = makeAsset("62/70", 2, {
-    key: "gemini-abc",
-    file: "edited/62-70/Gemini_Generated_Image_abc.jpg",
-    alt: `Ilustrasi AI · tipe 62/70 · bukan foto kondisi aktual. ${markerFor("gemini-abc")}`,
-  });
-  manifest.assets.push(gemini);
-  assert.doesNotThrow(() => validateManifest(manifest));
-  const badIllustration = makeAsset("36/60", 2, {
-    alt: `Ilustrasi desain · ${markerFor("36-60-3")}`,
-  });
-  assert.throws(
-    () =>
-      validateManifest(
-        makeManifest({ assets: [...manifest.assets, badIllustration] }),
-      ),
-    /Invalid gallery asset/,
-  );
-  const badGenerated = makeAsset("62/70", 3, {
-    key: "gemini-def",
-    alt: `Foto dokumentasi tanpa label. ${markerFor("gemini-def")}`,
-  });
-  const broken = makeManifest();
-  broken.assets.push(badGenerated);
-  assert.throws(() => validateManifest(broken), /Invalid gallery asset/);
-});
-
-test("manifest rejects wrong mapping, order, duplicates and limits", () => {
-  const wrongSlug = makeManifest();
-  wrongSlug.properties[0].slug = "salah-slug";
-  assert.throws(() => validateManifest(wrongSlug), /property mapping/);
-
-  const gap = makeManifest();
-  gap.assets = gap.assets.map((a) =>
-    a.house_type === "36/60" && a.position === 1 ? { ...a, position: 5 } : a,
-  );
-  assert.throws(() => validateManifest(gap), /gallery order/);
-
-  const duplicateHash = makeManifest();
-  duplicateHash.assets[1].sha256 = duplicateHash.assets[0].sha256;
-  assert.throws(() => validateManifest(duplicateHash), /Invalid gallery asset/);
-
-  const tooBig = makeManifest();
-  tooBig.assets[0].bytes = 5 * 1024 * 1024 + 1;
-  assert.throws(() => validateManifest(tooBig), /Invalid gallery asset/);
-
-  const missingMarker = makeManifest();
-  missingMarker.assets[0].alt = "Dokumentasi tanpa marker.";
-  assert.throws(() => validateManifest(missingMarker), /Invalid gallery asset/);
-});
-
-test("manifest rejects repeated video types before any import writes", () => {
-  const video = {
-    house_type: "36/60",
-    alt: "Video resmi [ED:video-36-60]",
-    url: "https://youtu.be/abcdefghijk",
-  };
-  assert.doesNotThrow(() =>
-    validateManifest(makeManifest({ videos: [video] })),
-  );
-  for (const url of [video.url, "https://youtu.be/lmnopqrstuv"]) {
-    assert.throws(
-      () =>
-        validateManifest(makeManifest({ videos: [video, { ...video, url }] })),
-      /Invalid video definition/,
-    );
-  }
-  assert.doesNotThrow(() =>
-    validateManifest(
-      makeManifest({
-        videos: [
-          video,
-          {
-            house_type: "36/90",
-            alt: "Video resmi [ED:video-36-90]",
-            url: video.url,
-          },
-        ],
+    assets: types.flatMap((house_type, typeIndex) =>
+      Array.from({ length: counts[typeIndex] + 1 }, (_, position) => {
+        const key = `${house_type.replace("/", "-")}-${position}`;
+        const bytes = webp(1200, 900, key);
+        buffers.set(key, bytes);
+        return {
+          key,
+          house_type,
+          kind: position === counts[typeIndex] ? "FLOOR_PLAN" : "PHOTO",
+          file: `.tools/real-flamboyan-assets/import/${key}.webp`,
+          bytes: bytes.length,
+          sha256: hash(bytes),
+          width: 1200,
+          height: 900,
+          alt: `Ilustrasi tipe ${house_type} [BFI2:${key}]`,
+          position,
+        };
       }),
     ),
-  );
-});
-
-test("verifyBytes rejects changed source and oversized files", () => {
-  const bytes = Buffer.from("hello");
-  const asset = {
-    key: "x",
-    bytes: bytes.length,
-    sha256: "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
   };
-  assert.doesNotThrow(() => verifyBytes(asset, bytes));
-  assert.throws(
-    () => verifyBytes(asset, Buffer.from("hello!")),
-    /Source changed/,
-  );
-  assert.throws(
-    () =>
-      verifyBytes(
-        { ...asset, bytes: 6 * 1024 * 1024 },
-        Buffer.alloc(6 * 1024 * 1024),
-      ),
-    /Source changed/,
-  );
-});
+  return { manifest, buffers };
+}
 
-test("findByMarker is exact and rejects duplicates", () => {
-  const media = [mediaItem({ id: 1, alt: `a ${markerFor("36-60-1")}` })];
-  assert.equal(findByMarker(media, "36-60-1")?.id, 1);
-  assert.equal(findByMarker(media, "36-60-10"), undefined);
-  assert.throws(
-    () =>
-      findByMarker(
-        [...media, mediaItem({ id: 2, alt: `b ${markerFor("36-60-1")}` })],
-        "36-60-1",
-      ),
-    /Duplicate import marker/,
-  );
-});
+const { manifest, buffers } = inventory();
+const assets = manifest.assets.filter((a) => a.house_type === "36/60");
+const property = {
+  id: 1,
+  slug: "bukit-flamboyan-indah-2-36-60",
+  house_type: "36/60",
+  publication: "PUBLISHED",
+  owner_id: 12,
+  price_idr: 700000000,
+  version: 1,
+};
+const origin = "http://127.0.0.1:3000";
 
-test("planPropertyPhotos enforces capacity, reuse and readiness", () => {
-  const houseType = "36/60";
-  const assets = [makeAsset(houseType, 0), makeAsset(houseType, 1)];
-  const property = {
-    id: 1,
-    slug: slugFor(houseType),
-    house_type: houseType,
-    publication: "PUBLISHED",
+function receipt(asset, id, published = false) {
+  return {
+    key: asset.key,
+    source_sha256: asset.sha256,
+    property_id: property.id,
+    media_id: id,
+    published,
+    position: asset.position,
+    state: "READY",
+    processed_sha256: hash(buffers.get(asset.key)),
   };
-  const existing = mediaItem({ id: 7, alt: assets[0].alt });
-  const plan = planPropertyPhotos(property, [existing], assets);
-  assert.equal(plan[0].existing?.id, 7);
-  assert.equal(plan[1].existing, undefined);
+}
 
-  const full = Array.from({ length: 20 }, (_, index) =>
-    mediaItem({ id: 100 + index, alt: `lama ${index}` }),
-  );
-  assert.throws(
-    () => planPropertyPhotos(property, full, assets),
-    /Photo capacity exceeded/,
-  );
-
-  const changed = mediaItem({ id: 7, alt: assets[0].alt, width: 100 });
-  assert.throws(
-    () => planPropertyPhotos(property, [changed], assets),
-    /Imported media changed or not ready/,
-  );
-});
-
-test("planSiteplan refuses destructive replacement and reuses processed media", () => {
-  const siteplan = makeManifest().siteplan;
-  const oldMasterplan = mediaItem({
-    id: 5,
-    kind: "MASTERPLAN",
-    alt: "Masterplan brosur.",
-  });
-  assert.throws(
-    () => planSiteplan([oldMasterplan], siteplan),
-    /will not archive or replace/,
-  );
-  assert.equal(planSiteplan([], siteplan).existing, undefined);
-
-  const imported = mediaItem({
-    id: 9,
-    kind: "MASTERPLAN",
-    alt: siteplan.alt,
-    width: 1920,
-    height: 1434,
-    position: 1,
-  });
-  const rerun = planSiteplan([imported], siteplan);
-  assert.equal(rerun.existing?.id, 9);
-  assert.throws(
-    () => planSiteplan([imported, oldMasterplan], siteplan),
-    /will not archive or replace/,
-  );
-  assert.throws(
-    () => planSiteplan([{ ...imported, width: 2400, height: 1792 }], siteplan),
-    /not ready/,
-  );
-});
-
-test("nextDescription rewrites once, then reports done", () => {
-  const before = `Ringkasan tipe. ${descriptionOld} Ketersediaan unit dan dokumen legalitas dikonfirmasi sebelum transaksi.`;
-  const update = nextDescription(before);
-  assert.equal(update.state, "update");
-  assert.match(
-    update.value,
-    new RegExp(descriptionNew.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
-  );
-  const again = nextDescription(update.value);
-  assert.equal(again.state, "done");
-  assert.deepEqual(nextDescription("Deskripsi faktual yang disusun Admin."), {
-    state: "preserved",
-  });
-});
-
-test("propertyFingerprint ignores volatile fields but keeps the rest", () => {
-  const base = {
-    id: 1,
-    title: "A",
-    version: 3,
-    updated_at: "x",
-    owner: { id: 1 },
-    description: "d",
+function media(asset, id, published = false) {
+  return {
+    id,
+    property_id: property.id,
+    kind: asset.kind,
+    alt: asset.alt,
+    mime: "image/webp",
+    size_bytes: asset.bytes,
+    width: asset.width,
+    height: asset.height,
+    state: "READY",
+    published,
+    position: asset.position,
   };
+}
+
+test("inventory covers 50 type photos and five distinct floor plans", () => {
+  validateManifest(manifest);
+  assert.equal(manifest.assets.length, 55);
+});
+
+test("CLI defaults to read-only and rejects unknown or repeated flags", () => {
+  assert.deepEqual(validateOptions([]), { apply: false });
+  assert.deepEqual(validateOptions(["--apply"]), { apply: true });
+  for (const flags of [["--force"], ["--apply", "--apply"], ["--delete"]])
+    assert.throws(() => validateOptions(flags));
+});
+
+test("origins are exact and never accept credentials, paths or lookalike domains", () => {
+  for (const value of [
+    "https://evil.test",
+    "https://flamboyan-web.vercel.app.evil.test",
+    "https://user:pass@flamboyan-web.vercel.app",
+    "https://flamboyan-web.vercel.app/",
+    "http://127.0.0.1:3001",
+  ])
+    assert.throws(() => validateOrigin(value));
+  assert.equal(validateOrigin(origin), origin);
   assert.equal(
-    propertyFingerprint(base),
-    propertyFingerprint({
-      ...base,
-      version: 9,
-      updated_at: "y",
-      owner: null,
-      description: "z",
+    validateOrigin("https://flamboyan-web.vercel.app"),
+    "https://flamboyan-web.vercel.app",
+  );
+});
+
+test("manifest rejects wrong types, duplicate keys, hashes, traversal and missing denah", () => {
+  for (const mutate of [
+    (m) => (m.properties[0].house_type = "36/72"),
+    (m) => (m.assets[0].house_type = "69/80"),
+    (m) => (m.assets[1].key = m.assets[0].key),
+    (m) => (m.assets[1].sha256 = m.assets[0].sha256),
+    (m) => (m.assets[0].file = ".tools/real-flamboyan-assets/import/../a.webp"),
+    (m) => (m.assets[0].file = "https://evil.test/a.webp"),
+    (m) => (m.assets[9].kind = "PHOTO"),
+    (m) => (m.assets[1].position = 0),
+    (m) => (m.assets[0].alt = "without marker"),
+    (m) => (m.assets[0].width = 20001),
+  ]) {
+    const bad = structuredClone(manifest);
+    mutate(bad);
+    assert.throws(() => validateManifest(bad));
+  }
+});
+
+test("source verification checks SHA256, bytes, WebP signature and source dimensions", () => {
+  const asset = assets[0];
+  const bytes = buffers.get(asset.key);
+  verifyBytes(asset, bytes);
+  assert.throws(() => verifyBytes(asset, Buffer.from("changed")));
+  assert.throws(() => verifyBytes({ ...asset, width: 1 }, bytes));
+  const invalid = Buffer.from("not a webp");
+  assert.throws(() =>
+    verifyBytes(
+      { ...asset, bytes: invalid.length, sha256: hash(invalid) },
+      invalid,
+    ),
+  );
+});
+
+test("resumes only journal-bound exact media IDs with the original source SHA", () => {
+  const existing = media(assets[0], 10);
+  const entry = receipt(assets[0], 10);
+  assert.equal(
+    planProperty(property, [existing], assets, [entry])[0].existing.id,
+    10,
+  );
+  for (const patch of [
+    { id: 11 },
+    { property_id: 99 },
+    { kind: "PHOTO", mime: "image/jpeg" },
+    { width: 1 },
+    { size_bytes: 1 },
+    { published: true },
+    { state: "FAILED" },
+    { alt: "changed" },
+  ])
+    assert.throws(() =>
+      planProperty(property, [{ ...existing, ...patch }], assets, [entry]),
+    );
+  assert.throws(() =>
+    planProperty(property, [existing], assets, [
+      { ...entry, source_sha256: "a".repeat(64) },
+    ]),
+  );
+  assert.throws(() => planProperty(property, [existing], assets));
+  assert.throws(() =>
+    planProperty(property, [existing, { ...existing, id: 11 }], assets, [
+      entry,
+    ]),
+  );
+});
+
+test("preflight refuses property identity/publication changes and full active quotas", () => {
+  for (const patch of [
+    { publication: "DRAFT" },
+    { house_type: "36/72" },
+    { slug: "another-project" },
+  ])
+    assert.throws(() => planProperty({ ...property, ...patch }, [], assets));
+  const full = Array.from({ length: 12 }, (_, i) => ({
+    id: 100 + i,
+    property_id: property.id,
+    kind: "PHOTO",
+    state: "READY",
+    published: false,
+  }));
+  assert.throws(() => planProperty(property, full, assets), /capacity/i);
+  assert.equal(planProperty(property, full.slice(0, 11), assets).length, 10);
+  assert.equal(
+    planProperty(
+      property,
+      full.map((m) => ({ ...m, state: "ARCHIVED" })),
+      assets,
+    ).length,
+    10,
+  );
+});
+
+test("storage preflight reserves staging plus three variants and rejects more than 100 MiB", () => {
+  assert.equal(
+    storagePreflight([{ asset: { bytes: 100 }, existing: null }]),
+    400,
+  );
+  assert.equal(storagePreflight([{ asset: { bytes: 100 }, existing: {} }]), 0);
+  assert.throws(() =>
+    storagePreflight([{ asset: { bytes: 26 * 1024 * 1024 }, existing: null }]),
+  );
+  assert.equal(
+    storagePreflight([{ asset: { bytes: 25 * 1024 * 1024 }, existing: null }]),
+    100 * 1024 * 1024,
+  );
+});
+
+test("journal binding rejects changed manifest, origin, property version and unfinished writes", () => {
+  const journal = {
+    schema_version: 1,
+    manifest_sha256: manifestFingerprint(manifest),
+    origin,
+    properties: [{ property, version: 1, media: [], entries: [] }],
+    pending: null,
+  };
+  validateJournal(journal, manifest, origin, [property]);
+  assert.throws(() =>
+    validateJournal(
+      { ...journal, origin: "https://evil.test" },
+      manifest,
+      origin,
+      [property],
+    ),
+  );
+  assert.throws(() =>
+    validateJournal(journal, { ...manifest, schema_version: 2 }, origin, [
+      property,
+    ]),
+  );
+  assert.throws(() =>
+    validateJournal(journal, manifest, origin, [{ ...property, version: 2 }]),
+  );
+  assert.throws(
+    () =>
+      validateJournal(
+        { ...journal, pending: { key: assets[0].key } },
+        manifest,
+        origin,
+        [property],
+      ),
+    /unconfirmed/i,
+  );
+});
+
+test("metadata fingerprint protects commercial data and ownership while allowing media version bumps", () => {
+  assert.equal(
+    propertyFingerprint(property),
+    propertyFingerprint({ ...property, version: 10, updated_at: "today" }),
+  );
+  for (const patch of [
+    { price_idr: 1 },
+    { owner_id: 99 },
+    { publication: "DRAFT" },
+  ])
+    assert.notEqual(
+      propertyFingerprint(property),
+      propertyFingerprint({ ...property, ...patch }),
+    );
+});
+
+function fakeApi() {
+  const properties = manifest.properties.map((p, index) => ({
+    ...property,
+    ...p,
+    id: index + 1,
+  }));
+  const calls = [];
+  const galleries = new Map(properties.map((p) => [p.id, []]));
+  let nextId = 100;
+  return {
+    properties,
+    galleries,
+    calls,
+    async call(url, options = {}) {
+      calls.push({ url, ...options });
+      if (url.startsWith("/api/v1/internal/properties?"))
+        return { data: structuredClone(properties), meta: { last_page: 1 } };
+      const propertyId = Number(url.match(/properties\/(\d+)/)?.[1]);
+      const current = properties.find((p) => p.id === propertyId);
+      if (!url.includes("/media")) return { data: structuredClone(current) };
+      const gallery = galleries.get(propertyId);
+      if (!options.method || options.method === "GET")
+        return {
+          data: structuredClone(gallery),
+          property_version: current.version,
+          meta: { last_page: 1 },
+          process_in_request: false,
+          supports_unpublished_uploads: true,
+        };
+      assert.equal(
+        Number(options.data?.version ?? options.multipart.version),
+        current.version,
+      );
+      current.version++;
+      if (options.method === "POST") {
+        assert.equal(options.multipart.published, "0");
+        const asset = manifest.assets.find(
+          (a) => a.alt === options.multipart.alt,
+        );
+        const item = {
+          ...media(asset, nextId++),
+          property_id: propertyId,
+          position: gallery.length,
+        };
+        gallery.push(item);
+        return {
+          data: structuredClone(item),
+          property_version: current.version,
+        };
+      }
+      assert.equal(options.method, "PATCH");
+      const id = Number(url.match(/media\/(\d+)/)[1]);
+      const item = gallery.find((m) => m.id === id);
+      Object.assign(item, options.data);
+      delete item.version;
+      return { data: structuredClone(item), property_version: current.version };
+    },
+    async readVariant(id) {
+      const item = [...galleries.values()].flat().find((m) => m.id === id);
+      const asset = manifest.assets.find((a) => a.alt === item.alt);
+      return buffers.get(asset.key);
+    },
+  };
+}
+
+test("default dry-run reads all properties without writing API records or local journals", async () => {
+  const api = fakeApi();
+  const report = await importAssets({
+    manifest,
+    origin,
+    apply: false,
+    call: api.call,
+    readAsset: async (a) => buffers.get(a.key),
+    saveJournal: async () => assert.fail("Dry-run must not save a journal"),
+  });
+  assert.equal(report.new, 55);
+  assert.equal(report.supports_unpublished_uploads, true);
+  assert.equal(
+    api.calls.every((c) => !c.method || c.method === "GET"),
+    true,
+  );
+});
+
+test("apply refuses missing/false upload capability on any target before API or journal writes", async () => {
+  for (const unsupportedProperty of [1, 5]) {
+    for (const capability of [undefined, false]) {
+      const api = fakeApi();
+      await assert.rejects(
+        () =>
+          importAssets({
+            manifest,
+            origin,
+            apply: true,
+            async call(url, options) {
+              const result = await api.call(url, options);
+              if (
+                url.startsWith(
+                  `/api/v1/internal/properties/${unsupportedProperty}/media?`,
+                )
+              ) {
+                if (capability === undefined)
+                  delete result.supports_unpublished_uploads;
+                else result.supports_unpublished_uploads = capability;
+              }
+              return result;
+            },
+            readAsset: async (a) => buffers.get(a.key),
+            readVariant: api.readVariant,
+            saveJournal: async () =>
+              assert.fail("Unsupported backend must not save a journal"),
+            pause: async () => {},
+          }),
+        /unpublished uploads/,
+      );
+      assert.equal(
+        api.calls.every((call) => !call.method || call.method === "GET"),
+        true,
+      );
+      assert.equal([...api.galleries.values()].flat().length, 0);
+    }
+  }
+});
+
+test("dry-run remains read-only on an old backend and reports unsupported upload capability", async () => {
+  const api = fakeApi();
+  const report = await importAssets({
+    manifest,
+    origin,
+    async call(url, options) {
+      const result = await api.call(url, options);
+      if (url.includes("/media?")) delete result.supports_unpublished_uploads;
+      return result;
+    },
+    readAsset: async (a) => buffers.get(a.key),
+    saveJournal: async () => assert.fail("Dry-run must not save a journal"),
+  });
+  assert.equal(report.new, 55);
+  assert.equal(report.supports_unpublished_uploads, false);
+  assert.equal(
+    report.properties.every((p) => p.supports_unpublished_uploads === false),
+    true,
+  );
+  assert.equal(
+    api.calls.every((call) => !call.method || call.method === "GET"),
+    true,
+  );
+});
+
+test("apply publishes after every imported image is READY, leaves prices/owners intact and resumes without duplicates", async () => {
+  const api = fakeApi();
+  let journal;
+  const options = {
+    manifest,
+    origin,
+    apply: true,
+    call: api.call,
+    readAsset: async (a) => buffers.get(a.key),
+    readVariant: api.readVariant,
+    saveJournal: async (value) => {
+      journal = structuredClone(value);
+    },
+    pause: async () => {},
+  };
+  await importAssets(options);
+  assert.equal([...api.galleries.values()].flat().length, 55);
+  assert.equal(
+    [...api.galleries.values()].flat().every((m) => m.published),
+    true,
+  );
+  assert.equal(
+    api.properties.every(
+      (p) =>
+        p.price_idr === property.price_idr && p.owner_id === property.owner_id,
+    ),
+    true,
+  );
+  const firstPatch = api.calls.findIndex((c) => c.method === "PATCH");
+  assert.equal(
+    api.calls.slice(0, firstPatch).filter((c) => c.method === "POST").length,
+    55,
+  );
+  api.calls.length = 0;
+  await importAssets({ ...options, journal });
+  assert.equal(
+    api.calls.every((c) => !c.method || c.method === "GET"),
+    true,
+  );
+  const imported = [...api.galleries.values()].flat()[0];
+  imported.width = 1;
+  await assert.rejects(() => importAssets({ ...options, journal }));
+});
+
+test("source changes stop before any uploads", async () => {
+  const api = fakeApi();
+  await assert.rejects(() =>
+    importAssets({
+      manifest,
+      origin,
+      apply: true,
+      call: api.call,
+      readAsset: async () => Buffer.from("tampered"),
+      saveJournal: async () => {},
     }),
   );
-  assert.notEqual(
-    propertyFingerprint(base),
-    propertyFingerprint({ ...base, title: "B" }),
-  );
-});
-
-test("youtubeId accepts canonical forms and rejects others", () => {
   assert.equal(
-    youtubeId("https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
-    "dQw4w9WgXcQ",
+    api.calls.some((c) => c.method === "POST" || c.method === "PATCH"),
+    false,
   );
-  assert.equal(youtubeId("https://youtu.be/dQw4w9WgXcQ"), "dQw4w9WgXcQ");
+});
+
+test("only superseded photos and floor plans are hidden after all replacements are ready", async () => {
+  const api = fakeApi();
+  const gallery = api.galleries.get(1);
+  for (const [index, kind] of [
+    "PHOTO",
+    "FLOOR_PLAN",
+    "MASTERPLAN",
+    "VIDEO",
+  ].entries())
+    gallery.push({
+      id: 10 + index,
+      property_id: 1,
+      kind,
+      alt: `Original ${kind}`,
+      position: index,
+      state: "READY",
+      published: true,
+    });
+  let journal;
+  await importAssets({
+    manifest,
+    origin,
+    apply: true,
+    call: api.call,
+    readAsset: async (a) => buffers.get(a.key),
+    readVariant: api.readVariant,
+    saveJournal: async (value) => {
+      journal = structuredClone(value);
+    },
+    pause: async () => {},
+  });
+  assert.equal(gallery.find((m) => m.id === 10).published, false);
+  assert.equal(gallery.find((m) => m.id === 11).published, false);
+  assert.equal(gallery.find((m) => m.id === 12).published, true);
+  assert.equal(gallery.find((m) => m.id === 13).published, true);
   assert.equal(
-    youtubeId("https://youtube.com/watch?v=dQw4w9WgXcQ&t=30s"),
-    "dQw4w9WgXcQ",
+    gallery.slice(0, 4).every((m) => m.state === "READY"),
+    true,
   );
-  assert.throws(
-    () => youtubeId("https://example.com/watch?v=dQw4w9WgXcQ"),
-    /Invalid YouTube URL/,
+  assert.equal(
+    journal.properties[0].media.every((m) => m.published),
+    true,
   );
-  assert.throws(
-    () => youtubeId("https://youtu.be/short"),
-    /Invalid YouTube URL/,
-  );
-});
-
-test("dimensions follow server resizing without upscaling", () => {
-  assert.deepEqual(processedDimensions({ width: 2752, height: 1536 }), {
-    width: 1920,
-    height: 1072,
-  });
-  assert.deepEqual(processedDimensions({ width: 2400, height: 1792 }), {
-    width: 1920,
-    height: 1434,
-  });
-  assert.deepEqual(processedDimensions({ width: 800, height: 600 }), {
-    width: 800,
-    height: 600,
-  });
-  assert.throws(
-    () => processedDimensions({ width: 0, height: 1 }),
-    /Invalid source/,
+  const hidden = api.calls.filter((c) => c.data?.published === false);
+  assert.deepEqual(
+    hidden.map((c) => Number(c.url.split("/").at(-1))),
+    [10, 11],
   );
 });
 
-test("worker acknowledgement is required before new asynchronous uploads", () => {
-  const pending = {
-    current: { process_in_request: false },
-    photos: [{ existing: null }],
-    siteplan: { existing: null },
+test("FAILED processing and an API that ignores private uploads never publish replacements", async () => {
+  for (const state of ["FAILED", "published"]) {
+    const api = fakeApi();
+    await assert.rejects(() =>
+      importAssets({
+        manifest,
+        origin,
+        apply: true,
+        async call(url, options) {
+          const result = await api.call(url, options);
+          if (options?.method === "POST") {
+            if (state === "FAILED") result.data.state = "FAILED";
+            else result.data.published = true;
+          }
+          return result;
+        },
+        readAsset: async (a) => buffers.get(a.key),
+        readVariant: api.readVariant,
+        saveJournal: async () => {},
+        pause: async () => {},
+      }),
+    );
+    assert.equal(
+      api.calls.some((c) => c.method === "PATCH"),
+      false,
+    );
+  }
+});
+
+test("concurrent commercial changes stop before any publication and preserve the user's edit", async () => {
+  const api = fakeApi();
+  await assert.rejects(
+    () =>
+      importAssets({
+        manifest,
+        origin,
+        apply: true,
+        async call(url, options) {
+          if (url === "/api/v1/internal/properties/1") {
+            api.properties[0].price_idr = 900000000;
+            api.properties[0].version++;
+          }
+          return api.call(url, options);
+        },
+        readAsset: async (a) => buffers.get(a.key),
+        readVariant: api.readVariant,
+        saveJournal: async () => {},
+        pause: async () => {},
+      }),
+    /metadata changed/,
+  );
+  assert.equal(
+    api.calls.some((c) => c.method === "PATCH"),
+    false,
+  );
+  assert.equal(api.properties[0].price_idr, 900000000);
+});
+
+test("a response lost after an upload leaves a source-bound pending intent and refuses automatic retry", async () => {
+  const api = fakeApi();
+  let journal;
+  const options = {
+    manifest,
+    origin,
+    apply: true,
+    readAsset: async (a) => buffers.get(a.key),
+    readVariant: api.readVariant,
+    saveJournal: async (value) => {
+      journal = structuredClone(value);
+    },
+    pause: async () => {},
   };
-  assert.throws(
-    () => assertWorkerReady([pending], false),
-    /Separate media worker required/,
+  await assert.rejects(
+    () =>
+      importAssets({
+        ...options,
+        async call(url, requestOptions) {
+          const result = await api.call(url, requestOptions);
+          if (requestOptions?.method === "POST") throw Error("Response lost");
+          return result;
+        },
+      }),
+    /Response lost/,
   );
-  assert.doesNotThrow(() => assertWorkerReady([pending], true));
-  assert.doesNotThrow(() =>
-    assertWorkerReady(
-      [{ ...pending, current: { process_in_request: true } }],
-      false,
-    ),
+  assert.equal(journal.pending.source_sha256, assets[0].sha256);
+  assert.equal(journal.pending.property_id, 1);
+  assert.deepEqual(journal.pending.baseline_media_ids, []);
+  assert.equal(api.galleries.get(1).length, 1);
+  api.calls.length = 0;
+  await assert.rejects(
+    () => importAssets({ ...options, journal, call: api.call }),
+    /Unconfirmed/,
   );
-  assert.doesNotThrow(() =>
-    assertWorkerReady(
-      [{ ...pending, photos: [{ existing: {} }], siteplan: { existing: {} } }],
-      false,
-    ),
+  assert.equal(
+    api.calls.some((c) => c.method === "POST" || c.method === "PATCH"),
+    false,
   );
 });

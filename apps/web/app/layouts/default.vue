@@ -28,7 +28,7 @@ function trackWhatsapp() {
     <a class="skip-link" href="#main">Lewati ke konten</a>
     <header class="public-header">
       <div class="site-header container">
-        <BrandLogo logotype />
+        <BrandLogo />
         <ResponsiveNav id="public-navigation" label="Navigasi utama">
           <NuxtLink to="/">Beranda</NuxtLink>
           <NuxtLink to="/perumahan">Perumahan</NuxtLink>
@@ -91,13 +91,16 @@ function trackWhatsapp() {
       </div>
       <div class="container footer-main">
         <div>
-          <BrandLogo />
+          <BrandLogo variant="footer" />
           <p>
             Berbeda suasana. Satu naungan.<br />Ruang untuk cerita berikutnya.
           </p>
         </div>
         <nav aria-label="Navigasi footer">
           <NuxtLink to="/perumahan">Pilihan perumahan</NuxtLink>
+          <NuxtLink to="/perumahan/bukit-flamboyan-indah-2"
+            >Bukit Flamboyan Indah 2</NuxtLink
+          >
           <NuxtLink to="/perumahan/banjaran">Banjaran · mendatang</NuxtLink>
           <NuxtLink to="/properti">Katalog properti</NuxtLink
           ><NuxtLink to="/bandingkan">Bandingkan rumah</NuxtLink

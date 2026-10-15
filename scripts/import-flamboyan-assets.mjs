@@ -1,4 +1,3 @@
-// Explicit, resumable content import for the operator asset set. Default is a read-only plan; see docs/flamboyan-assets.md.
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
@@ -6,57 +5,20 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { setTimeout as pause } from "node:timers/promises";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const assetsRoot = path.join(root, ".tools/flamboyan-assets");
-const manifestFile = path.join(root, "scripts/flamboyan-house-assets.json");
+const photoCounts = new Map([
+  ["36/60", 9],
+  ["36/90", 8],
+  ["56/90", 10],
+  ["62/70", 14],
+  ["69/80", 9],
+]);
+const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
+const isHash = (value) => /^[a-f0-9]{64}$/.test(value);
 
-const types = [
-  "36/60",
-  "36/72",
-  "36/90",
-  "62/70",
-  "62/84",
-  "69/80",
-  "56/90",
-  "56/108",
-  "62/140",
-];
-export const photoTypes = ["36/60", "36/90", "56/90", "62/70", "69/80"];
-export const maxBytes = 5 * 1024 * 1024;
-export const descriptionOld =
-  "Gambar merupakan ilustrasi desain developer, bukan foto kondisi unit.";
-export const descriptionNew =
-  "Galeri menampilkan dokumentasi pengguna; ilustrasi diberi label sesuai sumbernya. Kondisi unit dikonfirmasi saat kunjungan.";
-
-// Match MediaProcessor's largest variant; the manifest retains original dimensions/hash.
-export function processedDimensions({ width, height }) {
-  if (
-    !Number.isInteger(width) ||
-    width < 1 ||
-    !Number.isInteger(height) ||
-    height < 1
-  )
-    throw Error("Invalid source dimensions");
-  const outputWidth = Math.min(1920, width);
-  return {
-    width: outputWidth,
-    height: Math.max(1, Math.round((height * outputWidth) / width)),
-  };
-}
-
-export function assertWorkerReady(plans, acknowledged) {
-  const needsWorker = plans.some(
-    (plan) =>
-      !plan.current.process_in_request &&
-      (plan.photos.some((photo) => !photo.existing) || !plan.siteplan.existing),
-  );
-  if (needsWorker && !acknowledged)
-    throw Error(
-      "Separate media worker required. Start queue:work --queue=media,notifications,default and confirm it is running before --apply --worker-ready. This flag is an operator acknowledgement, not a health probe.",
-    );
-}
-
-export function markerFor(key) {
-  return `[ED:${key}]`;
+export function validateOptions(args) {
+  if (args.length > 1 || args.some((a) => a !== "--apply"))
+    throw Error("Supported option: --apply (default: read-only dry-run)");
+  return { apply: args.includes("--apply") };
 }
 
 export function validateOrigin(value) {
@@ -69,228 +31,602 @@ export function validateOrigin(value) {
   return value;
 }
 
-export function verifyBytes(asset, bytes) {
-  if (
-    bytes.length !== asset.bytes ||
-    bytes.length > maxBytes ||
-    createHash("sha256").update(bytes).digest("hex") !== asset.sha256
-  )
-    throw Error(`Source changed: ${asset.key}`);
-}
-
-export function youtubeId(value) {
-  const match =
-    /^https:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})(?:&\S*)?$/.exec(
-      value,
-    );
-  if (!match) throw Error(`Invalid YouTube URL: ${value}`);
-  return match[1];
-}
-
 export function validateManifest(manifest) {
   if (
     manifest.schema_version !== 1 ||
-    manifest.properties.length !== 9 ||
-    new Set(manifest.properties.map((p) => p.house_type)).size !== 9
+    !Array.isArray(manifest.properties) ||
+    manifest.properties.length !== photoCounts.size ||
+    new Set(manifest.properties.map((p) => p.house_type)).size !==
+      photoCounts.size ||
+    !Array.isArray(manifest.assets) ||
+    manifest.assets.length !== 55
   )
-    throw Error("Expected nine unique house types");
+    throw Error("Expected five house types and 55 images");
   for (const p of manifest.properties) {
     if (
-      !types.includes(p.house_type) ||
+      !photoCounts.has(p.house_type) ||
       p.slug !== `bukit-flamboyan-indah-2-${p.house_type.replace("/", "-")}`
     )
       throw Error("Unexpected property mapping");
   }
-  if (!Array.isArray(manifest.assets) || !manifest.assets.length)
-    throw Error("Missing gallery assets");
   const keys = new Set();
   const hashes = new Set();
-  for (const asset of manifest.assets) {
+  const files = new Set();
+  for (const a of manifest.assets) {
     if (
-      !photoTypes.includes(asset.house_type) ||
-      asset.kind !== "PHOTO" ||
-      typeof asset.file !== "string" ||
-      asset.file.includes("..") ||
-      !/^[a-f0-9]{64}$/.test(asset.sha256) ||
-      !Number.isInteger(asset.bytes) ||
-      asset.bytes <= 0 ||
-      asset.bytes > maxBytes ||
-      !Number.isInteger(asset.width) ||
-      !Number.isInteger(asset.height) ||
-      keys.has(asset.key) ||
-      hashes.has(asset.sha256) ||
-      !asset.alt?.endsWith(markerFor(asset.key)) ||
-      asset.alt.length > 240 ||
-      /ilustrasi|inspirasi/i.test(asset.alt) === !/^gemini/i.test(asset.key)
-    )
-      throw Error("Invalid gallery asset");
-    keys.add(asset.key);
-    hashes.add(asset.sha256);
-  }
-  for (const type of photoTypes) {
-    const assets = manifest.assets
-      .filter((a) => a.house_type === type)
-      .sort((a, b) => a.position - b.position);
-    if (!assets.length || assets.some((a, i) => a.position !== i))
-      throw Error("Missing cover or invalid gallery order");
-    if (
-      assets.some((a) => /^gemini/i.test(a.key)) &&
-      !assets.some((a) => !/^gemini/i.test(a.key))
-    )
-      throw Error("Generated assets must not lead a gallery");
-  }
-  const siteplan = manifest.siteplan;
-  if (
-    !siteplan ||
-    siteplan.kind !== "MASTERPLAN" ||
-    typeof siteplan.file !== "string" ||
-    siteplan.file.includes("..") ||
-    !/^[a-f0-9]{64}$/.test(siteplan.sha256) ||
-    !Number.isInteger(siteplan.bytes) ||
-    siteplan.bytes <= 0 ||
-    siteplan.bytes > maxBytes ||
-    !siteplan.alt?.endsWith(markerFor("siteplan")) ||
-    !Number.isInteger(siteplan.width) ||
-    !Number.isInteger(siteplan.height)
-  )
-    throw Error("Invalid siteplan definition");
-  if (!Array.isArray(manifest.videos)) throw Error("Invalid videos list");
-  const videoTypes = new Set();
-  for (const video of manifest.videos) {
-    if (
-      !types.includes(video.house_type) ||
-      videoTypes.has(video.house_type) ||
-      !video.alt?.endsWith(
-        markerFor(`video-${video.house_type.replace("/", "-")}`),
+      !/^[a-zA-Z0-9_-]{1,80}$/.test(a.key) ||
+      keys.has(a.key) ||
+      !photoCounts.has(a.house_type) ||
+      !["PHOTO", "FLOOR_PLAN"].includes(a.kind) ||
+      !/^\.tools\/real-flamboyan-assets\/import\/[a-zA-Z0-9_/-]+\.webp$/.test(
+        a.file,
       ) ||
-      video.alt.length > 240
+      a.file.includes("//") ||
+      files.has(a.file) ||
+      !isHash(a.sha256) ||
+      hashes.has(a.sha256) ||
+      !Number.isInteger(a.bytes) ||
+      a.bytes < 1 ||
+      a.bytes > 5 * 1024 * 1024 ||
+      !Number.isInteger(a.width) ||
+      !Number.isInteger(a.height) ||
+      a.width < 1 ||
+      a.height < 1 ||
+      a.width > 20000 ||
+      a.height > 20000 ||
+      a.width * a.height > 40000000 ||
+      typeof a.alt !== "string" ||
+      !a.alt.endsWith(`[BFI2:${a.key}]`) ||
+      a.alt.length > 240 ||
+      !Number.isInteger(a.position)
     )
-      throw Error("Invalid video definition");
-    youtubeId(video.url);
-    videoTypes.add(video.house_type);
+      throw Error(`Invalid or duplicate source asset: ${a.key}`);
+    keys.add(a.key);
+    hashes.add(a.sha256);
+    files.add(a.file);
+  }
+  for (const [houseType, count] of photoCounts) {
+    const assets = manifest.assets
+      .filter((a) => a.house_type === houseType)
+      .sort((a, b) => a.position - b.position);
+    if (
+      assets.length !== count + 1 ||
+      assets.some(
+        (a, i) =>
+          a.position !== i || a.kind !== (i < count ? "PHOTO" : "FLOOR_PLAN"),
+      )
+    )
+      throw Error(
+        `Missing photos, floor plan or contiguous order: ${houseType}`,
+      );
   }
 }
 
-export function findByMarker(media, key) {
-  const marker = markerFor(key);
-  const matches = media.filter((m) => m.alt?.includes(marker));
-  if (matches.length > 1) throw Error(`Duplicate import marker: ${key}`);
-  return matches[0];
-}
-
-export function planPropertyPhotos(property, media, assets) {
+function webpDimensions(bytes) {
   if (
-    property.publication !== "PUBLISHED" ||
-    property.slug !==
-      `bukit-flamboyan-indah-2-${property.house_type.replace("/", "-")}`
+    bytes.length < 30 ||
+    bytes.toString("ascii", 0, 4) !== "RIFF" ||
+    bytes.toString("ascii", 8, 12) !== "WEBP" ||
+    bytes.readUInt32LE(4) + 8 !== bytes.length
   )
-    throw Error("Property identity/status mismatch");
-  const selected = assets.map((asset) => {
-    const existing = findByMarker(media, asset.key);
-    const dimensions = processedDimensions(asset);
+    throw Error("Invalid WebP source");
+  for (let offset = 12; offset + 8 <= bytes.length;) {
+    const kind = bytes.toString("ascii", offset, offset + 4);
+    const size = bytes.readUInt32LE(offset + 4);
+    const data = offset + 8;
+    if (data + size > bytes.length) throw Error("Truncated WebP source");
+    if (kind === "VP8X" && size >= 10)
+      return {
+        width: bytes.readUIntLE(data + 4, 3) + 1,
+        height: bytes.readUIntLE(data + 7, 3) + 1,
+      };
+    if (kind === "VP8L" && size >= 5 && bytes[data] === 0x2f) {
+      const bits = bytes.readUInt32LE(data + 1);
+      return {
+        width: (bits & 0x3fff) + 1,
+        height: ((bits >>> 14) & 0x3fff) + 1,
+      };
+    }
     if (
-      existing &&
-      (existing.alt !== asset.alt ||
-        existing.kind !== "PHOTO" ||
-        !existing.published ||
-        existing.state !== "READY" ||
-        existing.width !== dimensions.width ||
-        existing.height !== dimensions.height)
+      kind === "VP8 " &&
+      size >= 10 &&
+      bytes.toString("hex", data + 3, data + 6) === "9d012a"
     )
-      throw Error(`Imported media changed or not ready: ${asset.key}`);
-    return { asset, existing };
-  });
-  const capacity =
-    media.filter((m) => m.kind === "PHOTO").length +
-    selected.filter((s) => !s.existing).length;
-  if (capacity > 20) throw Error("Photo capacity exceeded");
-  return selected;
+      return {
+        width: bytes.readUInt16LE(data + 6) & 0x3fff,
+        height: bytes.readUInt16LE(data + 8) & 0x3fff,
+      };
+    offset = data + size + (size % 2);
+  }
+  throw Error("Missing WebP dimensions");
 }
 
-export function planSiteplan(media, siteplan) {
-  const existing = findByMarker(media, "siteplan");
-  const dimensions = processedDimensions(siteplan);
-  if (
-    existing &&
-    (existing.alt !== siteplan.alt ||
-      existing.kind !== "MASTERPLAN" ||
-      !existing.published ||
-      existing.state !== "READY" ||
-      existing.width !== dimensions.width ||
-      existing.height !== dimensions.height)
-  )
-    throw Error("Imported siteplan changed or not ready");
-  if (
-    media.some(
-      (m) =>
-        m.kind === "MASTERPLAN" &&
-        m.state !== "ARCHIVED" &&
-        m.id !== existing?.id,
-    )
-  )
-    throw Error(
-      "Existing masterplan requires manual review; importer will not archive or replace it",
+export function verifyBytes(asset, bytes) {
+  if (bytes.length !== asset.bytes || sha256(bytes) !== asset.sha256)
+    throw Error(`Source changed: ${asset.key}`);
+  const dimensions = webpDimensions(bytes);
+  if (dimensions.width !== asset.width || dimensions.height !== asset.height)
+    throw Error(`Source dimensions changed: ${asset.key}`);
+}
+
+function canonical(value) {
+  if (Array.isArray(value)) return value.map(canonical);
+  if (value && typeof value === "object")
+    return Object.fromEntries(
+      Object.keys(value)
+        .sort()
+        .map((key) => [key, canonical(value[key])]),
     );
-  return { existing };
+  return value;
 }
 
-export function nextDescription(description) {
-  if (description.includes(descriptionNew)) return { state: "done" };
-  if (!description.includes(descriptionOld)) return { state: "preserved" };
-  return {
-    state: "update",
-    value: description.replace(descriptionOld, descriptionNew),
-  };
+export function manifestFingerprint(manifest) {
+  return sha256(JSON.stringify(canonical(manifest)));
 }
 
 export function propertyFingerprint(property) {
   return JSON.stringify(
-    Object.fromEntries(
-      Object.entries(property)
-        .filter(
-          ([key]) =>
-            !["version", "updated_at", "owner", "description"].includes(key),
-        )
-        .sort(([a], [b]) => a.localeCompare(b)),
+    canonical(
+      Object.fromEntries(
+        Object.entries(property).filter(
+          ([key]) => !["version", "updated_at", "owner"].includes(key),
+        ),
+      ),
     ),
   );
 }
 
-async function loadAssetBytes(file) {
-  return fs.readFile(path.join(assetsRoot, file));
+function checkMedia(property, asset, media, entry) {
+  const width = Math.min(asset.width, 1920);
+  const height = Math.max(1, Math.round((asset.height * width) / asset.width));
+  if (
+    entry.key !== asset.key ||
+    entry.source_sha256 !== asset.sha256 ||
+    entry.property_id !== property.id ||
+    entry.media_id !== media.id ||
+    !["PROCESSING", "READY"].includes(entry.state) ||
+    media.property_id !== property.id ||
+    media.kind !== asset.kind ||
+    media.alt !== asset.alt ||
+    media.mime !== "image/webp" ||
+    media.size_bytes !== asset.bytes ||
+    !["PROCESSING", "READY"].includes(media.state) ||
+    (entry.state === "READY" && media.state !== "READY") ||
+    media.published !== entry.published ||
+    media.position !== entry.position ||
+    (media.state === "READY" &&
+      (media.width !== width || media.height !== height))
+  )
+    throw Error(
+      `Journal-bound media changed: ${asset.key} (id ${entry.media_id})`,
+    );
+}
+
+export function planProperty(property, media, assets, entries = []) {
+  if (
+    property.publication !== "PUBLISHED" ||
+    property.house_type !== assets[0]?.house_type ||
+    property.slug !==
+      `bukit-flamboyan-indah-2-${property.house_type.replace("/", "-")}`
+  )
+    throw Error("Property identity/status mismatch");
+  if (
+    new Set(entries.map((e) => e.key)).size !== entries.length ||
+    new Set(entries.map((e) => e.media_id)).size !== entries.length
+  )
+    throw Error("Duplicate journal receipt");
+  const selected = assets.map((asset) => {
+    const entry = entries.find((e) => e.key === asset.key);
+    const markers = media.filter((m) => m.alt?.includes(`[BFI2:${asset.key}]`));
+    if (markers.length > 1)
+      throw Error(`Duplicate import marker: ${asset.key}`);
+    if (!entry) {
+      if (markers.length)
+        throw Error(
+          `Unconfirmed upload without source-hash receipt: ${asset.key}`,
+        );
+      return { asset, existing: null, entry: null };
+    }
+    const existing = media.find((m) => m.id === entry.media_id);
+    if (!existing) throw Error(`Recorded media missing: ${asset.key}`);
+    checkMedia(property, asset, existing, entry);
+    return { asset, existing, entry };
+  });
+  for (const [kind, limit] of [
+    ["PHOTO", 20],
+    ["FLOOR_PLAN", 5],
+  ]) {
+    const current = media.filter(
+      (m) => m.kind === kind && m.state !== "ARCHIVED",
+    );
+    const missing = selected.filter(
+      (s) => s.asset.kind === kind && !s.existing,
+    ).length;
+    if (current.length + missing > limit)
+      throw Error(
+        `${kind} capacity exceeded for ${property.house_type}: ${current.length} active + ${missing} new > ${limit}; review existing IDs ${current.map((m) => `${m.id}:${m.state}:${m.published}`).join(",")}. No originals were archived.`,
+      );
+  }
+  return selected;
+}
+
+export function storagePreflight(selected) {
+  const reserved = selected.reduce(
+    (sum, s) => sum + (s.existing ? 0 : s.asset.bytes * 4),
+    0,
+  );
+  if (reserved > 100 * 1024 * 1024)
+    throw Error(`Storage import budget exceeded: ${reserved} bytes > 100 MiB`);
+  return reserved;
+}
+
+export function validateJournal(journal, manifest, origin, properties) {
+  if (
+    journal.schema_version !== 1 ||
+    journal.origin !== origin ||
+    journal.manifest_sha256 !== manifestFingerprint(manifest) ||
+    !Array.isArray(journal.properties) ||
+    journal.properties.length !== properties.length ||
+    new Set(journal.properties.map((p) => p.property.id)).size !==
+      properties.length
+  )
+    throw Error(
+      "Import journal belongs to another manifest/origin/property set",
+    );
+  if (journal.pending)
+    throw Error(
+      `Unconfirmed API write in journal: ${journal.pending.operation}; review its response before any retry`,
+    );
+  for (const snapshot of journal.properties) {
+    const property = properties.find((p) => p.id === snapshot.property.id);
+    if (
+      !property ||
+      property.version !== snapshot.version ||
+      propertyFingerprint(property) !== propertyFingerprint(snapshot.property)
+    )
+      throw Error(
+        `Concurrent property change: ${snapshot.property.id}; review snapshot before rerunning`,
+      );
+    if (!Array.isArray(snapshot.entries) || !Array.isArray(snapshot.media))
+      throw Error("Invalid import journal snapshot");
+    for (const entry of snapshot.entries) {
+      const asset = manifest.assets.find((a) => a.key === entry.key);
+      if (
+        !asset ||
+        asset.house_type !== property.house_type ||
+        entry.source_sha256 !== asset.sha256 ||
+        entry.property_id !== property.id ||
+        !Number.isInteger(entry.media_id) ||
+        entry.media_id < 1 ||
+        typeof entry.published !== "boolean" ||
+        !Number.isInteger(entry.position) ||
+        !["PROCESSING", "READY"].includes(entry.state)
+      )
+        throw Error("Invalid source-bound journal receipt");
+    }
+  }
+}
+
+export async function importAssets({
+  manifest,
+  origin,
+  apply = false,
+  call,
+  readAsset,
+  readVariant,
+  journal,
+  saveJournal,
+  pause: wait = pause,
+}) {
+  validateOrigin(origin);
+  validateManifest(manifest);
+  const sources = new Map();
+  for (const asset of manifest.assets) {
+    const bytes = await readAsset(asset);
+    verifyBytes(asset, bytes);
+    sources.set(asset.key, bytes);
+  }
+  const catalog = [];
+  for (let page = 1; page <= 100; page++) {
+    const result = await call(
+      `/api/v1/internal/properties?per_page=48&page=${page}`,
+    );
+    catalog.push(...result.data);
+    if (page >= result.meta.last_page) break;
+    if (page === 100) throw Error("Property pagination exceeded");
+  }
+  const properties = manifest.properties.map((mapping) => {
+    const matches = catalog.filter((p) => p.slug === mapping.slug);
+    if (matches.length !== 1)
+      throw Error(`Missing or duplicate property ${mapping.slug}`);
+    return matches[0];
+  });
+  if (journal) validateJournal(journal, manifest, origin, properties);
+  const plans = [];
+  for (const property of properties) {
+    const endpoint = `/api/v1/internal/properties/${property.id}/media`;
+    const current = await call(`${endpoint}?per_page=50`);
+    if (
+      current.meta.last_page > 1 ||
+      current.property_version !== property.version
+    )
+      throw Error(
+        "Media pagination or concurrent property change; stopped before writes",
+      );
+    if (apply && current.supports_unpublished_uploads !== true)
+      throw Error(
+        `API does not support unpublished uploads for property ${property.id}; deploy a compatible backend before --apply`,
+      );
+    const snapshot = journal?.properties.find(
+      (p) => p.property.id === property.id,
+    );
+    const assets = manifest.assets
+      .filter((a) => a.house_type === property.house_type)
+      .sort((a, b) => a.position - b.position);
+    plans.push({
+      property,
+      endpoint,
+      current,
+      snapshot,
+      selected: planProperty(property, current.data, assets, snapshot?.entries),
+    });
+  }
+  const selected = plans.flatMap((p) => p.selected);
+  const reserved = storagePreflight(selected);
+  const report = {
+    origin,
+    apply,
+    new: selected.filter((s) => !s.existing).length,
+    reused: selected.filter((s) => s.existing).length,
+    storage_reserved_bytes: reserved,
+    supports_unpublished_uploads: plans.every(
+      (p) => p.current.supports_unpublished_uploads === true,
+    ),
+    properties: plans.map((p) => ({
+      id: p.property.id,
+      house_type: p.property.house_type,
+      new: p.selected.filter((s) => !s.existing).length,
+      reused: p.selected.filter((s) => s.existing).length,
+      supports_unpublished_uploads:
+        p.current.supports_unpublished_uploads === true,
+    })),
+  };
+  // A marker cannot prove original bytes after server re-encoding. Receipts bind the source hash and processed variant hash to its exact API ID.
+  const verifiedVariants = new Set();
+  for (const s of selected.filter((s) => s.entry?.processed_sha256)) {
+    if (
+      !isHash(s.entry.processed_sha256) ||
+      sha256(await readVariant(s.entry.media_id)) !== s.entry.processed_sha256
+    )
+      throw Error(`Processed media bytes changed: ${s.asset.key}`);
+    verifiedVariants.add(s.entry.media_id);
+  }
+  if (!apply) return report;
+  if (!journal) {
+    journal = {
+      schema_version: 1,
+      origin,
+      manifest_sha256: manifestFingerprint(manifest),
+      started_at: new Date().toISOString(),
+      pending: null,
+      properties: plans.map((p) => ({
+        property: p.property,
+        version: p.property.version,
+        media: p.current.data,
+        entries: [],
+      })),
+    };
+    await saveJournal(journal);
+    for (const plan of plans)
+      plan.snapshot = journal.properties.find(
+        (p) => p.property.id === plan.property.id,
+      );
+  }
+  async function write(plan, operation, url, options, asset) {
+    const snapshot = plan.snapshot;
+    journal.pending = {
+      operation,
+      property_id: plan.property.id,
+      expected_version: snapshot.version,
+      key: asset?.key,
+      source_sha256: asset?.sha256,
+      url,
+      fields: options.data ?? {
+        kind: asset.kind,
+        alt: asset.alt,
+        published: false,
+      },
+      baseline_media_ids: plan.current.data.map((m) => m.id),
+    };
+    await saveJournal(journal);
+    const result = await call(url, options);
+    if (result.property_version !== snapshot.version + 1)
+      throw Error(
+        "Unexpected property version after write; inspect pending journal",
+      );
+    snapshot.version = result.property_version;
+    return result.data;
+  }
+  async function confirm() {
+    journal.pending = null;
+    await saveJournal(journal);
+  }
+  for (const plan of plans) {
+    for (const s of plan.selected) {
+      if (s.existing) continue;
+      const media = await write(
+        plan,
+        "upload",
+        plan.endpoint,
+        {
+          method: "POST",
+          multipart: {
+            version: String(plan.snapshot.version),
+            kind: s.asset.kind,
+            alt: s.asset.alt,
+            published: "0",
+            file: {
+              name: `flamboyan-${s.asset.key}.webp`,
+              mimeType: "image/webp",
+              buffer: sources.get(s.asset.key),
+            },
+          },
+        },
+        s.asset,
+      );
+      const entry = {
+        key: s.asset.key,
+        source_sha256: s.asset.sha256,
+        property_id: plan.property.id,
+        media_id: media.id,
+        published: false,
+        position: media.position,
+        state: media.state,
+      };
+      checkMedia(plan.property, s.asset, media, entry);
+      s.existing = media;
+      s.entry = entry;
+      plan.snapshot.entries.push(entry);
+      await confirm();
+    }
+  }
+  for (const plan of plans) {
+    let current;
+    for (let attempt = 0; attempt < 40; attempt++) {
+      current = await call(`${plan.endpoint}?per_page=50`);
+      if (current.property_version !== plan.snapshot.version)
+        throw Error("Concurrent property change while waiting for media");
+      for (const s of plan.selected) {
+        const media = current.data.find((m) => m.id === s.entry.media_id);
+        if (!media) throw Error(`Uploaded media missing: ${s.asset.key}`);
+        checkMedia(plan.property, s.asset, media, s.entry);
+        s.existing = media;
+      }
+      if (plan.selected.every((s) => s.existing.state === "READY")) break;
+      if (attempt === 39)
+        throw Error("Media processing incomplete; rerun after queue review");
+      if (current.process_in_request)
+        await call(`${plan.endpoint}/process`, { method: "POST" });
+      await wait(1500);
+    }
+    for (const s of plan.selected) {
+      if (!verifiedVariants.has(s.entry.media_id))
+        s.entry.processed_sha256 = sha256(await readVariant(s.entry.media_id));
+      s.entry.state = "READY";
+    }
+    await saveJournal(journal);
+  }
+  // Keep every old published gallery intact until all five replacement galleries are READY.
+  for (const plan of plans) {
+    const fresh = (
+      await call(`/api/v1/internal/properties/${plan.property.id}`)
+    ).data;
+    if (
+      fresh.version !== plan.snapshot.version ||
+      propertyFingerprint(fresh) !== propertyFingerprint(plan.snapshot.property)
+    )
+      throw Error(
+        "Property metadata changed before publication; inspect journal",
+      );
+  }
+  for (const plan of plans) {
+    for (const s of plan.selected) {
+      const changes = {};
+      if (!s.entry.published) changes.published = true;
+      if (s.entry.position !== s.asset.position)
+        changes.position = s.asset.position;
+      if (!Object.keys(changes).length) continue;
+      const media = await write(
+        plan,
+        "publish/order",
+        `${plan.endpoint}/${s.entry.media_id}`,
+        {
+          method: "PATCH",
+          data: { version: plan.snapshot.version, ...changes },
+        },
+        s.asset,
+      );
+      const next = { ...s.entry, published: true, position: s.asset.position };
+      checkMedia(plan.property, s.asset, media, next);
+      Object.assign(s.entry, next);
+      await confirm();
+    }
+    const selectedIds = new Set(plan.selected.map((s) => s.entry.media_id));
+    const current = await call(`${plan.endpoint}?per_page=50`);
+    if (current.property_version !== plan.snapshot.version)
+      throw Error("Concurrent property change before hiding superseded media");
+    for (const before of plan.snapshot.media.filter(
+      (m) =>
+        ["PHOTO", "FLOOR_PLAN"].includes(m.kind) &&
+        m.published &&
+        !selectedIds.has(m.id),
+    )) {
+      const media = current.data.find((m) => m.id === before.id);
+      if (
+        !media ||
+        media.property_id !== plan.property.id ||
+        media.kind !== before.kind ||
+        media.alt !== before.alt ||
+        media.state !== before.state ||
+        media.position !== before.position
+      )
+        throw Error(
+          `Superseded media changed: ${before.id}; stopped before hiding it`,
+        );
+      if (!media.published) continue;
+      await write(
+        plan,
+        "unpublish superseded",
+        `${plan.endpoint}/${media.id}`,
+        {
+          method: "PATCH",
+          data: { version: plan.snapshot.version, published: false },
+        },
+      );
+      await confirm();
+    }
+    const after = (
+      await call(`/api/v1/internal/properties/${plan.property.id}`)
+    ).data;
+    if (
+      after.version !== plan.snapshot.version ||
+      propertyFingerprint(after) !== propertyFingerprint(plan.snapshot.property)
+    )
+      throw Error("Property metadata changed during import; inspect journal");
+  }
+  journal.completed_at = new Date().toISOString();
+  await saveJournal(journal);
+  return { ...report, completed: true };
 }
 
 async function main() {
+  const { apply } = validateOptions(process.argv.slice(2));
+  const origin = validateOrigin(process.env.FLAMBOYAN_ORIGIN);
   if (
-    process.argv
-      .slice(2)
-      .some((a) => !["--apply", "--worker-ready"].includes(a))
+    !process.env.FLAMBOYAN_ADMIN_EMAIL ||
+    !process.env.FLAMBOYAN_ADMIN_PASSWORD
   )
-    throw Error("Supported options: --apply --worker-ready");
-  const apply = process.argv.includes("--apply");
-  const origin = validateOrigin(process.env.FLAMBOYAN_IMPORT_ORIGIN);
-  if (
-    !process.env.FLAMBOYAN_IMPORT_ADMIN_EMAIL ||
-    !process.env.FLAMBOYAN_IMPORT_ADMIN_PASSWORD
-  )
-    throw Error(
-      "Set FLAMBOYAN_IMPORT_ADMIN_EMAIL and FLAMBOYAN_IMPORT_ADMIN_PASSWORD",
-    );
-  const manifest = JSON.parse(await fs.readFile(manifestFile, "utf8"));
+    throw Error("Set FLAMBOYAN_ADMIN_EMAIL and FLAMBOYAN_ADMIN_PASSWORD");
+  const manifest = JSON.parse(
+    await fs.readFile(
+      path.join(root, "scripts/flamboyan-house-assets.json"),
+      "utf8",
+    ),
+  );
   validateManifest(manifest);
-  const photoBytes = new Map();
-  for (const asset of manifest.assets) {
-    const bytes = await loadAssetBytes(asset.file);
-    verifyBytes(asset, bytes);
-    photoBytes.set(asset.key, bytes);
-  }
-  const siteplanBytes = await loadAssetBytes(manifest.siteplan.file);
-  verifyBytes({ ...manifest.siteplan, key: "siteplan" }, siteplanBytes);
   const folder = path.join(
     root,
-    ".tools/flamboyan-import",
-    new URL(origin).hostname,
+    ".tools/real-flamboyan-assets/import-state",
+    new URL(origin).host.replace(":", "-"),
   );
+  const journalFile = path.join(folder, "journal.json");
+  let journal;
+  try {
+    journal = JSON.parse(await fs.readFile(journalFile, "utf8"));
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  let lock;
   const { request } =
     await import("../apps/web/node_modules/@playwright/test/index.mjs");
   const api = await request.newContext({
@@ -300,10 +636,14 @@ async function main() {
       Origin: origin,
       Referer: origin,
     },
-    timeout: 90000,
+    timeout: 60000,
   });
   try {
-    const csrf = await api.get("/sanctum/csrf-cookie");
+    if (apply) {
+      await fs.mkdir(folder, { recursive: true });
+      lock = await fs.open(path.join(folder, "import.lock"), "wx");
+    }
+    const csrf = await api.get("/sanctum/csrf-cookie", { maxRedirects: 0 });
     if (!csrf.ok()) throw Error("CSRF initialization failed");
     async function call(url, options = {}) {
       await pause(650);
@@ -325,276 +665,62 @@ async function main() {
     const login = await call("/auth/login", {
       method: "POST",
       data: {
-        email: process.env.FLAMBOYAN_IMPORT_ADMIN_EMAIL,
-        password: process.env.FLAMBOYAN_IMPORT_ADMIN_PASSWORD,
+        email: process.env.FLAMBOYAN_ADMIN_EMAIL,
+        password: process.env.FLAMBOYAN_ADMIN_PASSWORD,
       },
     });
     if (login.data.role !== "ADMIN")
       throw Error("An active admin session is required");
-    const properties = [];
-    for (let page = 1; page <= 100; page++) {
-      const result = await call(
-        `/api/v1/internal/properties?per_page=48&page=${page}`,
-      );
-      properties.push(...result.data);
-      if (page >= result.meta.last_page) break;
-      if (page === 100) throw Error("Property pagination exceeded");
-    }
-    const plans = [];
-    for (const mapping of manifest.properties) {
-      const matches = properties.filter((p) => p.slug === mapping.slug);
-      if (matches.length !== 1)
-        throw Error(`Missing or duplicate property ${mapping.slug}`);
-      const property = matches[0];
-      const endpoint = `/api/v1/internal/properties/${property.id}/media`;
-      const current = await call(`${endpoint}?per_page=50`);
-      if (current.meta.last_page > 1)
-        throw Error("Unexpected media pagination");
-      const assets = manifest.assets
-        .filter((a) => a.house_type === property.house_type)
-        .sort((a, b) => a.position - b.position);
-      const photos = assets.length
-        ? planPropertyPhotos(property, current.data, assets)
-        : [];
-      const siteplan = planSiteplan(current.data, manifest.siteplan);
-      const description = photoTypes.includes(property.house_type)
-        ? nextDescription(property.description)
-        : { state: "done" };
-      plans.push({
-        property,
-        endpoint,
-        current,
-        assets,
-        photos,
-        siteplan,
-        description,
-        videos: manifest.videos.filter(
-          (v) => v.house_type === property.house_type,
-        ),
-      });
-    }
-    const report = {
+    const sourceFolder = await fs.realpath(
+      path.join(root, ".tools/real-flamboyan-assets/import"),
+    );
+    const report = await importAssets({
+      manifest,
       origin,
       apply,
-      started_at: new Date().toISOString(),
-      properties: plans.map((p) => ({
-        id: p.property.id,
-        type: p.property.house_type,
-        photos_new: p.photos.filter((s) => !s.existing).length,
-        photos_reused: p.photos.filter((s) => s.existing).length,
-        separate_worker_required: !p.current.process_in_request,
-        masterplan: p.siteplan.existing ? "reused" : "new",
-        description: p.description.state,
-      })),
-    };
-    console.log(JSON.stringify(report, null, 2));
-    if (!apply) return;
-    assertWorkerReady(plans, process.argv.includes("--worker-ready"));
-    await fs.mkdir(folder, { recursive: true });
-    const snapshot = path.join(folder, `before-${Date.now()}.json`);
-    await fs.writeFile(
-      snapshot,
-      JSON.stringify(
-        {
-          origin,
-          properties: plans.map((p) => ({
-            property: p.property,
-            media: p.current.data,
-          })),
-        },
-        null,
-        2,
-      ),
-      { flag: "wx" },
-    );
-    for (const plan of plans) {
-      let version = plan.current.property_version;
-      const selectedIds = [];
-      const newPhotoIds = [];
-      for (const { asset, existing } of plan.photos) {
-        let media = existing;
-        if (!media) {
-          const result = await call(plan.endpoint, {
-            method: "POST",
-            multipart: {
-              version: String(version),
-              kind: "PHOTO",
-              alt: asset.alt,
-              file: {
-                name: `flamboyan-${asset.key}.jpg`,
-                mimeType: "image/jpeg",
-                buffer: photoBytes.get(asset.key),
-              },
-            },
-          });
-          version = result.property_version;
-          media = result.data;
-          newPhotoIds.push(media.id);
-        }
-        selectedIds.push(media.id);
-      }
-      if (newPhotoIds.length) {
-        for (let attempt = 0; attempt < 40; attempt++) {
-          const listing = await call(`${plan.endpoint}?per_page=50`);
-          if (listing.property_version !== version)
-            throw Error("Concurrent property change; review before rerunning");
-          const pending = newPhotoIds.map((id) =>
-            listing.data.find((m) => m.id === id),
-          );
-          if (pending.every((m) => m && m.state === "READY")) break;
-          if (pending.some((m) => m?.state === "FAILED") || attempt === 39)
-            throw Error(
-              "Media processing incomplete; review queue before rerunning",
-            );
-          if (listing.process_in_request)
-            await call(`${plan.endpoint}/process`, { method: "POST" });
-          await pause(1500);
-        }
-      }
-      if (selectedIds.length) {
-        const listing = await call(`${plan.endpoint}?per_page=50`);
-        if (listing.property_version !== version)
-          throw Error("Concurrent property change; review before rerunning");
-        for (const [position, id] of selectedIds.entries()) {
-          const media = listing.data.find((m) => m.id === id);
-          const dimensions = processedDimensions(plan.photos[position].asset);
-          if (
-            !media ||
-            media.state !== "READY" ||
-            media.width !== dimensions.width ||
-            media.height !== dimensions.height ||
-            !media.published
-          )
-            throw Error("Processed media dimensions/publication mismatch");
-          if (media.position !== position) {
-            const result = await call(`${plan.endpoint}/${id}`, {
-              method: "PATCH",
-              data: { version, position },
-            });
-            version = result.property_version;
-          }
-        }
-      }
-      if (!plan.siteplan.existing) {
-        let masterplan = null;
-        const uploaded = await call(plan.endpoint, {
-          method: "POST",
-          multipart: {
-            version: String(version),
-            kind: "MASTERPLAN",
-            alt: manifest.siteplan.alt,
-            file: {
-              name: "flamboyan-siteplan.jpg",
-              mimeType: "image/jpeg",
-              buffer: siteplanBytes,
-            },
-          },
+      journal,
+      call,
+      async readAsset(asset) {
+        const file = await fs.realpath(path.join(root, asset.file));
+        const relative = path.relative(sourceFolder, file);
+        if (!relative || relative.startsWith("..") || path.isAbsolute(relative))
+          throw Error(`Source escapes import folder: ${asset.key}`);
+        return fs.readFile(file);
+      },
+      async readVariant(id) {
+        await pause(650);
+        const response = await api.get(`/api/v1/internal/media/${id}/1920`, {
+          maxRedirects: 0,
         });
-        version = uploaded.property_version;
-        masterplan = uploaded.data;
-        let readyMasterplan;
-        for (let attempt = 0; attempt < 40; attempt++) {
-          const listing = await call(`${plan.endpoint}?per_page=50`);
-          if (listing.property_version !== version)
-            throw Error("Concurrent property change; review before rerunning");
-          readyMasterplan = listing.data.find((m) => m.id === masterplan.id);
-          if (readyMasterplan?.state === "READY") break;
-          if (readyMasterplan?.state === "FAILED" || attempt === 39)
-            throw Error(
-              "Siteplan processing incomplete; review queue before rerunning",
-            );
-          if (listing.process_in_request)
-            await call(`${plan.endpoint}/process`, { method: "POST" });
-          await pause(1500);
-        }
-        const dimensions = processedDimensions(manifest.siteplan);
         if (
-          readyMasterplan.width !== dimensions.width ||
-          readyMasterplan.height !== dimensions.height ||
-          !readyMasterplan.published
+          !response.ok() ||
+          !response.headers()["content-type"]?.startsWith("image/webp")
         )
-          throw Error("Processed siteplan dimensions/publication mismatch");
-        if (readyMasterplan.position !== 1) {
-          const result = await call(`${plan.endpoint}/${masterplan.id}`, {
-            method: "PATCH",
-            data: { version, position: 1 },
-          });
-          version = result.property_version;
-        }
-      }
-      for (const video of plan.videos) {
-        const key = `video-${video.house_type.replace("/", "-")}`;
-        if (findByMarker(plan.current.data, key)) continue;
-        const result = await call(plan.endpoint, {
-          method: "POST",
-          multipart: {
-            version: String(version),
-            kind: "VIDEO",
-            alt: video.alt,
-            url: video.url,
-          },
+          throw Error(`Processed variant unavailable: ${id}`);
+        return response.body();
+      },
+      async saveJournal(value) {
+        const temporary = `${journalFile}.tmp`;
+        await fs.writeFile(temporary, JSON.stringify(value, null, 2), {
+          mode: 0o600,
         });
-        version = result.property_version;
-      }
-      const currentAfterMedia = await call(`${plan.endpoint}?per_page=50`);
-      if (currentAfterMedia.property_version !== version)
-        throw Error("Concurrent property change; review before rerunning");
-      const oldPhotos = currentAfterMedia.data
-        .filter((m) => m.kind === "PHOTO" && !selectedIds.includes(m.id))
-        .sort((a, b) => a.position - b.position || a.id - b.id);
-      for (const [index, media] of oldPhotos.entries()) {
-        const position = 100 + index;
-        if (media.position === position) continue;
-        const result = await call(`${plan.endpoint}/${media.id}`, {
-          method: "PATCH",
-          data: { version, position },
-        });
-        version = result.property_version;
-      }
-      let expectedDescription = plan.property.description;
-      if (plan.description.state === "update") {
-        const result = await call(
-          `/api/v1/internal/properties/${plan.property.id}`,
-          {
-            method: "PATCH",
-            data: { version, description: plan.description.value },
-          },
-        );
-        version = result.data.version;
-        expectedDescription = plan.description.value;
-      }
-      const after = (
-        await call(`/api/v1/internal/properties/${plan.property.id}`)
-      ).data;
-      if (after.version !== version)
-        throw Error("Unexpected property version after writes");
-      if (after.description !== expectedDescription)
-        throw Error("Property description mismatch after import");
-      if (propertyFingerprint(after) !== propertyFingerprint(plan.property))
-        throw Error(
-          "Property metadata changed during import; inspect snapshot",
-        );
+        await fs.rename(temporary, journalFile);
+      },
+    });
+    console.log(JSON.stringify(report, null, 2));
+    if (apply)
       console.log(
-        `Tipe ${plan.property.house_type}: ${
-          selectedIds.length ? `${selectedIds.length} foto READY` : "foto tetap"
-        }; masterplan ${plan.siteplan.existing ? "reused" : "baru"}; deskripsi ${plan.description.state}.`,
+        `Import journal and original gallery snapshot: ${journalFile}. Originals remain stored; no deletion or archival was performed.`,
       );
-    }
-    await fs.writeFile(
-      path.join(folder, `result-${Date.now()}.json`),
-      JSON.stringify(
-        { ...report, completed_at: new Date().toISOString(), snapshot },
-        null,
-        2,
-      ),
-    );
-    console.log(
-      "Import complete. Source files and rollback snapshots are stored privately in .tools/flamboyan-assets and .tools/flamboyan-import.",
-    );
   } finally {
     await api.dispose();
+    if (lock) {
+      await lock.close();
+      await fs.unlink(path.join(folder, "import.lock"));
+    }
   }
 }
+
 if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href
