@@ -4,6 +4,7 @@ import { marketingUser } from './helpers'
 test('Admin creates catalog, records and assigns lead; Marketing processes assigned work', async ({
   page,
   browser,
+  baseURL,
 }) => {
   test.setTimeout(120000)
   const suffix = Date.now().toString()
@@ -103,7 +104,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
   await account.getByRole('button', { name: 'Simpan akun' }).click()
   await expect(account).not.toBeVisible()
   await expect(page.getByText(`tim-${suffix}@example.test`)).toBeVisible()
-  const context = await browser.newContext({ baseURL: 'http://127.0.0.1:3000' })
+  const context = await browser.newContext({ baseURL })
   const marketing = await context.newPage()
   try {
     await marketing.goto('/login')
@@ -135,7 +136,9 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
       panel.getByText('Perubahan status', { exact: false }),
     ).toBeVisible()
     await expect(
-      panel.getByText(`Rumah Operasi ${suffix} · ${owner.name}`, { exact: true }),
+      panel.getByText(`Rumah Operasi ${suffix} · ${owner.name}`, {
+        exact: true,
+      }),
     ).toBeVisible()
     await marketing.keyboard.press('Escape')
     await marketing.getByRole('link', { name: 'Profil', exact: true }).click()
