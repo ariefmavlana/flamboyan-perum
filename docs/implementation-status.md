@@ -2,7 +2,7 @@
 
 ## Review rilis gabungan — 2026-10-15
 
-Seluruh PR30–34 direkonsiliasi pada branch codex/release-assets-review-20261015 dari main c1cecaf. Koreksi tambahan: kegagalan audit login membatalkan sesi, CA resmi Supabase + path relatif portabel, satu importer/manifest aset, marker publik ED/RR/BFI2 konsisten, serta penghapusan turunan brand lama. Lint/typecheck/48unit/build, Composer/Pint, SQLite112tes/901assertion +10regresi operasional/84assertion dan19importer lulus; runtime audit0. PostgreSQL/browser/preview TLS masih dalam validasi. Source audit11high/0critical tetapFAIL dan membutuhkan keputusan risiko eksplisit; izin TLS sudah diberikan. Main/live/import cloud belum berubah. Bukti dan rollback: [release-assets-review.md](release-assets-review.md).
+Seluruh PR30–34 direkonsiliasi pada branch codex/release-assets-review-20261015 dari main c1cecaf. Koreksi tambahan: kegagalan audit login membatalkan sesi, CA resmi Supabase + path relatif portabel, satu importer/manifest aset, marker publik ED/RR/BFI2 konsisten, serta penghapusan turunan brand lama. Lint/typecheck/48unit/build final19.2s, Composer/Pint, masing-masing SQLite/PostgreSQL113tes/905assertion dan19importer lulus; runtime audit0.20browser terdampak diverifikasi dalam kelompok yang mematuhi limiter; run gabungan mencatat4HTTP429 lalu diulang. Smoke produksi CSP204/413/429 dan private API401 lulus; build API Linux113tes/904assertion lulus. Preview HTTP dengan alias allowlist exact menunggu redeploy metadata. Source audit11high/0critical tetapFAIL dan membutuhkan keputusan risiko eksplisit; izin TLS sudah diberikan. Main/live/import cloud belum berubah. Bukti dan rollback: [release-assets-review.md](release-assets-review.md).
 
 ## Aset asli Bukit Flamboyan Indah 2 — 2026-10-15
 

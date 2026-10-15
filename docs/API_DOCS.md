@@ -12,6 +12,10 @@ CLI `flamboyan:media-cleanup --json` default dry-run, mendukung disk lokal/R2 de
 
 `/perumahan/bukit-flamboyan-indah-2` merupakan route editorial SSR, canonical/sitemap dan konteks konsultasi yang allowlisted. Harga, spesifikasi dan card berasal dari API; hanya slug yang tepat cocok dengan house_type ditampilkan. Foto aktual yang tipenya belum dikonfirmasi disajikan pada galeri kawasan. Tidak menambah multi-proyek CMS, unit fallback atau record Lead. Manifest, pemrosesan dan rollback: [real-flamboyan-assets.md](real-flamboyan-assets.md).
 
+## Koreksi integrasi rilis — 2026-10-15
+
+Audit LOGIN yang gagal membatalkan sesi dan CSRF sebelum error diteruskan; respons500 tidak meninggalkan sesi authenticated. Proxy produksi Nuxt hanya menangani namespace Laravel /api/v1/**; /api/csp-report tetap di Nuxt dan memenuhi204/413/429. Referensi CA relatif DB_SSLROOTCERT diselesaikan terhadap app directory; CA resmi Supabase disertakan sebagai sertifikat publik, tanpa private key.
+
 ## Koreksi review keamanan — 2026-10-15
 
 `POST /api/csp-report` pada Nuxt menerima body maksimal 16 KiB (413 jika
