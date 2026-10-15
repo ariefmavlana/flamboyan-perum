@@ -21,14 +21,18 @@ Windows, Node24.21.0, PHP8.4.26, Laravel13.36.0/PHPUnit12.5.39, Nuxt4.6.1/Nitro2
 
 - npm ci sesuai lock pada worktree terisolasi; lint/typecheck/48unit pada11file lulus dan diulang sesudah patch CSP. Build produksi final node-server dengan proxy Vercel lulus19.2s; audit runtime final0. Build dingin pertama5m35s. Warning upstream DEP0155 dan runner NO_COLOR/FORCE_COLOR dicatat.
 - Pint final dan Composer validate strict/audit0 lulus. Suite final SQLite113tes/905assertion lulus15.120s dan PostgreSQL113tes/905assertion lulus23.808s; cluster test dihentikan. Run awal artisan test112tes menghasilkan109warning harness; hasil itu tidak dianggap bebas warning. PHPUnit langsung dengan key fixture eksplisit lulus tanpa warning.
--19regresi importer lulus.20kasus browser terdampak:6Admin,6project,4gallery,3residences,1routing CSP. Run serentak final16lulus/4gagal karenaHTTP429 (trace Retry-After19–32detik), bukan assertion produk; kelompok7gallery/residences diulang setelah jendela limiter. Limiter120request/menit tidak diubah. Screenshot desktop1440/mobile390 dan0pageerror diperiksa.
+-19regresi importer lulus.20kasus browser terdampak:6Admin,6project,4gallery,3residences,1routing CSP. Run serentak final16lulus/4gagal karenaHTTP429 (trace Retry-After19–32detik), bukan assertion produk; kelompok7gallery/residences diulang setelah jendela limiter dan seluruh7lulus16.1s; seluruh20kasus telah lulus pada build final dalam kelompok. Limiter120request/menit tidak diubah. Screenshot desktop1440/mobile390 dan0pageerror diperiksa.
 - File mentah, video, env, DB/storage fixture, journal, token dan runtime tetap ignored. Source pengguna di checkout utama tidak diubah oleh integrasi worktree ini. Tidak ada migration, seed cloud, penghapusan cloud, atau GitHub Actions.
+
+## Keputusan pemilik — 15 Oktober 2026
+
+Pemilik menjawab eksplisit **"Terima risiko sementara; lanjutkan"** untuk11high source dari braces/node-forge tanpa patched release, dengan runtime audit0, dev loopback dan build dari source/config tepercaya. Izin konfigurasi TLS preview/production juga telah diberikan terpisah. Ini penerimaan risiko sementara pada rilis ini, bukan hasil auditPASS, suppression, approval GitHub palsu, atau penerimaan otomatis untuk dependency/perubahan baru. Merge tetap mensyaratkan HEAD/main/review/check terbaru, probe TLS hosting dan hasil fungsional yang lulus. Temuan harus ditangani saat patch resmi tersedia.
 
 ## Gate source audit
 
 Source npm audit masih FAIL/exit1:11high/0critical, dua akar braces3.0.3 dan node-forge1.4.0. Dua critical lama simple-git/argv-parser terselesaikan oleh lock PR32. Registry resmi dan [advisory braces](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) / [advisory node-forge](https://github.com/advisories/GHSA-86w9-cpqp-85rv) masih belum menyediakan patched release saat pemeriksaan15Oktober2026.
 
-Keduanya digunakan pada tooling glob/dev TLS; aplikasi tidak menerima glob pengguna atau memakai forge untuk signature. Keduanya tidak dikirim pada artefak runtime yang diaudit. Dev tetap loopback, tanpa tunnel/TLS dev, build hanya source/config terpercaya. Mitigasi tersebut bukan patch atau penerimaan risiko manusia. Source audit gagal tetap gate: merge/deploy memerlukan remediation resmi atau penerimaan risiko sementara eksplisit dari pemilik. Izin konfigurasi TLS bukan penerimaan risiko advisory.
+Keduanya digunakan pada tooling glob/dev TLS; aplikasi tidak menerima glob pengguna atau memakai forge untuk signature. Keduanya tidak dikirim pada artefak runtime yang diaudit. Dev tetap loopback, tanpa tunnel/TLS dev, build hanya source/config terpercaya. Mitigasi tersebut bukan patch atau penerimaan risiko manusia. Source audit tetapFAIL. Gate penerimaan risiko sementara telah dipenuhi melalui jawaban eksplisit pemilik di atas; gate teknis lain tetap wajib lulus. Tidak ada klaim patched release atau audit source bersih.
 
 ## Rollout dan rollback
 
