@@ -3,15 +3,14 @@ import { canonicalUrl } from '#shared/utils/seo'
 import { formatDate } from '#shared/utils/format'
 const config = useRuntimeConfig()
 const { development } = await useDevelopment()
-const toList = (value?: string | null) =>
-  [
-    ...new Set(
-      (value ?? '')
-        .split('\n')
-        .map((item) => item.trim())
-        .filter(Boolean),
-    ),
-  ]
+const toList = (value?: string | null) => [
+  ...new Set(
+    (value ?? '')
+      .split('\n')
+      .map((item) => item.trim())
+      .filter(Boolean),
+  ),
+]
 const facilities = computed(() => toList(development.value?.facilities))
 const nearby = computed(() => toList(development.value?.nearby))
 useSeoMeta({
@@ -45,20 +44,18 @@ useHead({
       </div>
       <figure>
         <img
-          src="/images/editorial-garden-960.webp"
-          width="960"
-          height="640"
-          alt="Ilustrasi hunian tropis dengan taman, bukan dokumentasi lokasi Flamboyan."
+          src="/images/bandung-timur-gerbang-1920.webp"
+          srcset="
+            /images/bandung-timur-gerbang-960.webp   960w,
+            /images/bandung-timur-gerbang-1920.webp 1920w
+          "
+          width="1920"
+          height="1434"
+          alt="Gerbang kawasan Bukit Flamboyan Indah 2 · dokumentasi pengguna."
           fetchpriority="high"
         />
         <figcaption>
-          Foto suasana, bukan lokasi perumahan ·
-          <a
-            href="https://unsplash.com/photos/Pfp0MP8QB7M"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Sergei Bezzubov / Unsplash ↗</a
-          >
+          Gerbang kawasan Bukit Flamboyan Indah 2 · dokumentasi pengguna
         </figcaption>
       </figure>
     </section>
