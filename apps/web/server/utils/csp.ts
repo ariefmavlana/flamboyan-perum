@@ -26,6 +26,7 @@ export interface CspOptions {
   tourHosts: string
   gtmId?: string
   metaPixelId?: string
+  upgradeInsecureRequests?: boolean
 }
 
 export function tourFrameSources(tourHosts: string): string[] {
@@ -78,5 +79,9 @@ export function buildContentSecurityPolicy(options: CspOptions): string {
     `connect-src ${connect.join(' ')}`,
     `frame-src ${frame.join(' ')}`,
     `form-action 'self'`,
+    `worker-src 'none'`,
+    `manifest-src 'self'`,
+    `report-uri /api/csp-report`,
+    ...(options.upgradeInsecureRequests ? [`upgrade-insecure-requests`] : []),
   ].join('; ')
 }

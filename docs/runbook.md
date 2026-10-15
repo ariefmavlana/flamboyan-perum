@@ -31,7 +31,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Buka `http://127.0.0.1:3000`. Default Nitro devProxy private routes mengarah ke127.0.0.1:8000; public proxy memakai NUXT_API_BASE. Jika port/host backend berbeda, ubah devProxy config dan env sesuai. `NUXT_PUBLIC_SITE_URL` untuk canonical harus memakai origin frontend sebenarnya. `NUXT_PUBLIC_WHATSAPP_NUMBER` tanpa `+`; kosong menyembunyikan CTA. Default nomor sementara pengguna 6287776734038; konten properti nyata tetap perlu diisi dan diverifikasi. Sanctum local stateful domain mengizinkan localhost:3000 dan127.0.0.1:3000. `.env` production private APP_DEBUG=false, SESSION_SECURE_COOKIE=true, exact stateful domains, valid APP_URL/frontend URL.
+Buka `http://127.0.0.1:3000`. Default Nitro devProxy private routes mengarah ke127.0.0.1:8000; public proxy memakai NUXT_API_BASE. Jika port/host backend berbeda, ubah devProxy config dan env sesuai. `NUXT_PUBLIC_SITE_URL` untuk canonical harus memakai origin frontend sebenarnya. `NUXT_PUBLIC_WHATSAPP_NUMBER` tanpa `+`; kosong menyembunyikan CTA. Default nomor sementara pengguna 6287776734038; konten properti nyata tetap perlu diisi dan diverifikasi. Sanctum local stateful domain mengizinkan localhost:3000 dan127.0.0.1:3000. `.env` production private APP_DEBUG=false, SESSION_SECURE_COOKIE=true, SESSION_ENCRYPT=true, exact stateful domains, valid APP_URL/frontend URL.
 
 ## Validasi
 
@@ -128,7 +128,7 @@ Migration000006 nullablephone/anonymized/redacted/index+dailyaggregate compatibl
 
 ## Konfigurasi edge dan acceptance final
 
-Routing `/ready` ke Laravel bersama `/up`; probe setiap≤1menit tanpa credential lalu alert saat503/unreachable. Admin `/backoffice/operasi` memperlihatkan queue/backlog/media/backup, bukan koneksi provider. Set APP_ENV=production, APP_DEBUG=false, APP_KEY generatedsekali/persistent, SESSION_SECURE_COOKIE=true, HTTPS APP_URL/FRONTEND_URL/site canonical dan exact Sanctum domains. API TRUSTED_HOSTS serta Nuxt NUXT_ALLOWED_HOSTS harus domain yang benar; jangan defaultlocalhost pada domain asli. API TRUSTED_PROXY_IPS dan Nuxt NUXT_TRUSTED_PROXY_IPS hanya actual reverse-proxy hops; kosong bila tanpa proxy; wildcard dilarang. Edge wajib menimpa header forwarded dari client sebelum menambahkan observed IP. Verifikasi auth/login/logout/CSRF419/no-store/Host400 pada deployment nyata.
+Routing `/ready` ke Laravel bersama `/up`; probe setiap≤1menit tanpa credential lalu alert saat503/unreachable. Admin `/backoffice/operasi` memperlihatkan queue/backlog/media/backup, bukan koneksi provider. Set APP_ENV=production, APP_DEBUG=false, APP_KEY generatedsekali/persistent, SESSION_SECURE_COOKIE=true, SESSION_ENCRYPT=true, DB_SSLMODE=require (default produksi), HTTPS APP_URL/FRONTEND_URL/site canonical dan exact Sanctum domains. API TRUSTED_HOSTS serta Nuxt NUXT_ALLOWED_HOSTS harus domain yang benar; jangan defaultlocalhost pada domain asli. API TRUSTED_PROXY_IPS dan Nuxt NUXT_TRUSTED_PROXY_IPS hanya actual reverse-proxy hops; kosong bila tanpa proxy; wildcard dilarang. Edge wajib menimpa header forwarded dari client sebelum menambahkan observed IP. Verifikasi auth/login/logout/CSRF419/no-store/Host400 pada deployment nyata.
 
 Generate API_PROXY_SECRET≥32randombytes secara private melalui native CSPRNG; nilai identik NUXT_API_PROXY_SECRET di Node. Jangan taruh di args/chat/git/public runtime config. Rotasi kedua proses bersamaan dan restart; mismatch menghasilkan403 public proxy. Public SSR allowlist hanya GET katalog/content/compare/sitemap dan strict analytics POST, tanpa cookie/bearer forwarding. CSP NUXT_TOUR_HOSTS harus sinkron dengan Laravel TOUR_ALLOWED_HOSTS; YouTube nocookie/OSM/Pusher official allowlisted. Header/security configs diuji setelah edge/CDN karena host-provided policy bisa menimpa. Jangan cache HTML bersama nonce perresponse tanpa policy CSP/cache yang ditinjau.
 
@@ -141,3 +141,20 @@ Backup job hosting/operator hanya sesudah consistent DB+media snapshot, encrypti
 Local acceptance scripts berada di tests/acceptance dan scripts: fixture seed guardedlocal/fixedDB/emptytable, encrypted SQLite/native snapshot drill, localhost bounded load≤20rps/900s. Ikuti acceptance-validation.md; set private env proses saja dan laporan ke ignored.tools. Production E2E case memerlukan E2E_PRODUCTION_ORIGIN pada builtSSR terisolasi; suitebrowser menggunakan demoDB terpisah. Setelah drill, hapus hanya direktori backup-drill-[16hex] yang resolvedpath berada di workspace.tools; jangan recursive-delete computed target tanpa memverifikasi batas path. Stop hanya proses/cluster fixture yang dimiliki tugas; data bisnis tidak dipakai.
 
 PR operational acceptance tidak menambah migration. Rollback pairedAPI/Nuxt config+code sebagai satu release; preserve migration000006/privacy guards. Jangan mengaktifkan kode lama yang menulis PII ke anonymized rows. Tidak ada GitHub Actions/deploy/merge otomatis.
+
+
+### Perbaikan review keamanan — 15 Oktober 2026
+
+Laporan CSP dibatasi16KiB pada stream sebelum parsing (termasuk chunked/tanpa
+Content-Length); oversized menghasilkan413. Log hanya directive allowlist dan
+originHTTP(S), tidak menyimpan userinfo/path/query/fragment/nonce. Kuota tetap
+60/menit per instance; edge limit terpisah diperlukan.
+
+Produksi memeriksa sslmode koneksi PostgreSQL efektif setelah DB_URL diparse;
+prefer/allow/disable ditolak503 sebelum query. require/verify-ca/verify-full
+diizinkan; gunakan verify-full dengan trustedCA bila peeridentity diperlukan.
+DB_SSLMODE tidak boleh diasumsikan mengalahkan query DB_URL.
+
+Perubahan SESSION_ENCRYPT false→true mengakhiri sesi plaintext yang sudah ada;
+operator memberi tahu tim untuk login ulang. Rollback true→false juga mengakhiri
+sesi encrypted. Jangan mengganti APP_KEY atau memulihkan data sesi lama.

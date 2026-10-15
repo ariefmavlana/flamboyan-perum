@@ -1,5 +1,9 @@
 # Status implementasi
 
+## Hardening keamanan — 2026-10-14
+
+Branch `feat/security-hardening` dari `main` `43b92e9`. Implemented: CORS di-pin ke origin `FRONTEND_URL`/`APP_URL` (config baru; framework default `*` tidak lagi berlaku), HSTS `includeSubDomains`, `Cross-Origin-Resource-Policy: same-site`, perluasan `Permissions-Policy` (payment/usb/magnetometer/gyroscope), `Cross-Origin-Opener-Policy: same-origin` pada HTML, CSP diperluas (`worker-src`/`manifest-src`/`report-uri`/`upgrade-insecure-requests`) + endpoint laporan CSP tersanitasi (query/token dibuang, batas 16 KiB, 60 laporan/menit per instance), HSTS dipasang middleware untuk semua response Nuxt, `SESSION_ENCRYPT` default true + masuk gate `/ready` bersama `same_site`, `DB_SSLMODE` default `require` di produksi, audit `LOGIN` + log `login_failed` (tanpa kredensial). Validasi: PHPUnit 97 lulus, Pint lulus; lint/typecheck/40 tes frontend/build lulus; uji HTTP fungsional pada server build (header lengkap, preflight CORS diizinkan/diblokir benar, laporan CSP 204 dengan log tersanitasi tanpa query). Tidak ada migrasi atau perubahan data; rollback revert commit.
+
 ## Integrasi main terbaru — 2026-10-14
 
 Atas instruksi pengguna, seluruh PR terbuka diperiksa lalu di-merge ke `main`: PR #24 `codex/multi-residence-banjaran` (`68e6bc5`, draft dijadikan siap-review) menjadi merge commit `e6b5f86`, lalu PR #25 `feat/production-readiness` (`0467d08`) menjadi merge commit `808b69c`. Pemeriksaan sebelum tiap merge: `mergeable/clean`, tidak ada review yang meminta perubahan, tidak ada konflik yang dibiarkan, dan status Vercel kedua project (`flamboyan-web`, `flamboyan-api`) `success` lebih dulu; tidak ada bypass, approval palsu, GitHub Actions, atau force-push.
