@@ -21,7 +21,7 @@ const contentPurposes = [
   {
     kind: 'HERO' as const,
     title: 'Sorotan beranda',
-    description: 'Judul, pengantar, dan gambar utama website.',
+    description: 'Judul, gambar pendamping, dan video YouTube beranda.',
   },
   {
     kind: 'DEVELOPMENT' as const,
@@ -80,6 +80,7 @@ function addPhase() {
 const heroProperty = ref<number | null>(null)
 const heroMediaId = ref<number | null>(null)
 const heroMediaOptions = ref<InternalMedia[]>([])
+const heroPropertyVersion = ref<number | null>(null)
 const mediaLoading = ref(false)
 const mediaError = ref('')
 const logoFile = ref<File | null>(null)
@@ -91,11 +92,17 @@ async function loadHeroMedia(propertyId: number | null) {
   heroMediaOptions.value = []
   mediaError.value = ''
   if (!propertyId) {
+    heroPropertyVersion.value = null
     mediaLoading.value = false
     return
   }
   mediaLoading.value = true
   try {
+    const property = await api.request<{ data: { version: number } }>(
+      `/api/v1/internal/properties/${propertyId}`,
+    )
+    if (request === mediaRequest)
+      heroPropertyVersion.value = property.data.version
     const media: InternalMedia[] = []
     let page = 1
     let lastPage = 1
@@ -156,6 +163,27 @@ const schemas = {
       max: 1000,
     },
     { key: 'eyebrow', label: 'Label hero', type: 'text', max: 100 },
+    {
+      key: 'video_url',
+      label: 'Tautan YouTube beranda (opsional)',
+      type: 'url',
+      max: 2048,
+      optional: true,
+    },
+    {
+      key: 'video_title',
+      label: 'Judul video beranda',
+      type: 'text',
+      max: 240,
+      optional: true,
+    },
+    {
+      key: 'video_autoplay',
+      label: 'Pemutaran video beranda',
+      type: 'select',
+      max: 0,
+      optional: true,
+    },
   ],
   TESTIMONIAL: [
     { key: 'name', label: 'Nama publik berizin', type: 'text', max: 160 },
@@ -438,6 +466,7 @@ watch(
   (propertyId) => {
     verified.value = false
     heroMediaId.value = null
+    heroPropertyVersion.value = null
     void loadHeroMedia(propertyId)
   },
   { flush: 'sync' },
@@ -504,7 +533,11 @@ function open(record?: EditorialContent) {
     typeof record?.payload.media_id === 'number'
       ? record.payload.media_id
       : null
-  if (kind.value === 'HERO') void loadHeroMedia(heroProperty.value)
+  if (kind.value === 'HERO') {
+    form.payload.video_autoplay =
+      record?.payload.video_autoplay === false ? 0 : 1
+    void loadHeroMedia(heroProperty.value)
+  }
   logoFile.value = null
   logoVerified.value = false
   if (logoInput.value) logoInput.value.value = ''
@@ -541,6 +574,13 @@ async function save() {
         .split(',')
         .map((value) => value.trim())
         .filter(Boolean)
+    if (kind.value === 'HERO') {
+      payload.video_autoplay = Number(form.payload.video_autoplay) === 1
+      if (!payload.video_url) {
+        payload.video_url = null
+        payload.video_title = null
+      }
+    }
     if (kind.value === 'BANK_RATE' && phases.value.length)
       payload.phases = phases.value
     if (kind.value === 'FINANCING_PROGRAM') {
@@ -751,6 +791,14 @@ onMounted(() => load())
               <option value="REFERENCE_ONLY">
                 Informasi bank — tarif belum dikonfirmasi
               </option></select
+            ><select
+              v-else-if="kind === 'HERO' && field.key === 'video_autoplay'"
+              v-model="form.payload.video_autoplay"
+            >
+              <option :value="1">Otomatis tanpa suara · putar berulang</option>
+              <option :value="0">
+                Putar setelah dipilih pengunjung
+              </option></select
             ><textarea
               v-else-if="field.type === 'textarea'"
               v-model="form.payload[field.key]"
@@ -876,13 +924,30 @@ onMounted(() => load())
           >
           <p v-if="mediaLoading" role="status">Memuat media siap tayang…</p>
           <p v-if="mediaError" role="alert">{{ mediaError }}</p>
+          <button
+            type="button"
+            class="text-button"
+            :disabled="mediaLoading"
+            @click="loadHeroMedia(heroProperty)"
+          >
+            Perbarui pilihan gambar
+          </button>
           <p class="muted">
             Hanya foto dan video siap yang diaktifkan untuk publik dari properti
-            ini. Unggah melalui Katalog properti → Edit properti → Foto & media.
-            Video diputar setelah pengunjung memilihnya; foto sampul menjadi
-            poster.
+            ini. Tambahkan gambar melalui panel Foto & media di bawah, lalu
+            perbarui pilihan gambar. Tautan YouTube di atas dipakai untuk film
+            kawasan; foto pilihan menjadi gambar pendamping saat video belum
+            diputar atau gagal dimuat. Video properti pilihan tetap didukung
+            bila tautan beranda kosong.
           </p>
         </template>
+        <p v-if="kind === 'HERO'" class="notice">
+          Tempel tautan YouTube milik kawasan, termasuk waktu mulai bila
+          diperlukan. Video tetap utuh dengan kontrol YouTube dan berulang;
+          autoplay tanpa suara mengikuti izin browser. Pilih properti dan foto
+          untuk gambar pendamping, atau gunakan ilustrasi kawasan yang sudah
+          tersedia.
+        </p>
         <p v-if="kind === 'BANK_PARTNER'" class="notice">
           Logo mitra hanya tampil setelah logo diunggah, izin kemitraan
           diverifikasi, dan konten dipublikasikan. Referensi suku bunga bukan
@@ -919,6 +984,27 @@ onMounted(() => load())
           {{ message }}
         </p>
       </form>
+      <details
+        v-if="kind === 'HERO' && heroProperty && heroPropertyVersion"
+        class="section hero-media-upload"
+      >
+        <summary>Tambahkan foto & media beranda</summary>
+        <p class="muted">
+          Gambar disimpan di katalog properti pilihan. Setelah siap, pilih
+          gambar pendamping pada formulir di atas dan simpan konten beranda.
+        </p>
+        <MediaManager
+          :key="heroProperty"
+          :property-id="heroProperty"
+          :version="heroPropertyVersion"
+          @version="
+            (value) => {
+              heroPropertyVersion = value
+              void loadHeroMedia(heroProperty)
+            }
+          "
+        />
+      </details>
       <form
         v-if="kind === 'BANK_PARTNER' && selected"
         class="section"

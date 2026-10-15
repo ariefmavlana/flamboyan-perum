@@ -35,7 +35,7 @@ const visiblePrograms = computed(() =>
     <article
       v-for="program in visiblePrograms"
       :key="program.id"
-      class="notice"
+      class="financing-card"
     >
       <h3>{{ program.bank }} · {{ program.product }}</h3>
       <p v-if="program.house_types?.length">
@@ -95,18 +95,21 @@ const visiblePrograms = computed(() =>
         Angsuran {{ program.bank }} mengikuti harga tipe rumah, DP, tenor dan
         penawaran bank.
       </p>
-      <p>{{ program.conditions }}</p>
-      <p class="muted">
-        Sumber: {{ program.source_name }} · diperiksa
-        {{ formatDate(program.checked_date) }}.
-        <a
-          v-if="program.source_url"
-          :href="program.source_url"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Informasi resmi bank ↗</a
-        >
-      </p>
+      <details class="financing-conditions">
+        <summary>Ketentuan & sumber informasi</summary>
+        <p>{{ program.conditions }}</p>
+        <p class="muted">
+          Sumber: {{ program.source_name }} · diperiksa
+          {{ formatDate(program.checked_date) }}.
+          <a
+            v-if="program.source_url"
+            :href="program.source_url"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Informasi resmi bank ↗</a
+          >
+        </p>
+      </details>
     </article>
     <NuxtLink
       class="button secondary"
@@ -116,6 +119,57 @@ const visiblePrograms = computed(() =>
   </section>
 </template>
 <style scoped>
+.financing-card {
+  padding: 24px;
+  border: 1px solid var(--line);
+  margin-block: 16px;
+  background: #f7f5ef;
+}
+.financing-card h3 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.3;
+  margin: 0 0 12px;
+}
+.financing-card > p {
+  font-size: 13px;
+  line-height: 1.75;
+}
+.financing-card .notice {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  margin-block: 12px;
+}
+.financing-conditions {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+  margin-top: 20px;
+}
+.financing-conditions summary {
+  min-height: 44px;
+  display: list-item;
+  padding-block: 12px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+.financing-conditions p {
+  font-size: 12px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.financing-card .spec-list dd {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+@media (max-width: 540px) {
+  .financing-card {
+    padding: 20px;
+  }
+}
+
 @media (max-width: 540px) {
   .spec-list > div {
     flex-direction: column;

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\ContentLogo;
 use App\Support\FinancingContent;
 use App\Support\MediaDisk;
+use App\Support\YouTubeUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
@@ -83,7 +84,7 @@ class ContentController extends Controller
         abort_unless($request->user()->role === 'ADMIN', 403);
         $data = $request->validate(['kind' => ['required', Rule::in(['HERO', 'TESTIMONIAL', 'BANK_RATE', 'BANK_PARTNER', 'DEVELOPMENT', 'FINANCING_PROGRAM'])], 'published' => 'required|boolean', 'position' => 'required|integer|between:0,1000', 'verified' => 'sometimes|boolean', 'version' => $id ? 'required|integer|min:1' : 'prohibited', 'payload' => 'required|array']);
         $rules = match ($data['kind']) {
-            'HERO' => ['payload' => 'array:title,description,eyebrow,property_id,media_id', 'payload.title' => 'required|string|max:160', 'payload.description' => 'required|string|max:1000', 'payload.eyebrow' => 'required|string|max:100', 'payload.property_id' => ['present', 'nullable', 'integer', Rule::exists('properties', 'id')], 'payload.media_id' => 'sometimes|nullable|integer|min:1'],
+            'HERO' => ['payload' => 'array:title,description,eyebrow,property_id,media_id,video_url,video_title,video_autoplay', 'payload.title' => 'required|string|max:160', 'payload.description' => 'required|string|max:1000', 'payload.eyebrow' => 'required|string|max:100', 'payload.property_id' => ['present', 'nullable', 'integer', Rule::exists('properties', 'id')], 'payload.media_id' => 'sometimes|nullable|integer|min:1', 'payload.video_url' => 'sometimes|nullable|url:https|max:2048', 'payload.video_title' => 'required_with:payload.video_url|nullable|string|max:240', 'payload.video_autoplay' => 'sometimes|boolean'],
             'BANK_PARTNER' => ['payload' => 'array:name,website', 'payload.name' => 'required|string|max:120', 'payload.website' => 'required|url:https|max:2048'],
             'TESTIMONIAL' => ['payload' => 'array:name,quote,context', 'payload.name' => 'required|string|max:160', 'payload.quote' => 'required|string|max:2000', 'payload.context' => 'required|string|max:160'],
             'BANK_RATE' => FinancingContent::rules(),
@@ -108,6 +109,12 @@ class ContentController extends Controller
             'DEVELOPMENT' => ['payload' => 'array:name,developer,address,whatsapp,website,planned_units,house_types,facilities,nearby,source_name,source_date,notes', 'payload.name' => 'required|string|max:160', 'payload.developer' => 'required|string|max:160', 'payload.address' => 'required|string|max:500', 'payload.whatsapp' => 'required|regex:/^62[0-9]{8,13}$/', 'payload.website' => 'required|url:https|max:2048', 'payload.planned_units' => 'required|integer|between:1,100000', 'payload.house_types' => 'required|integer|between:1,1000', 'payload.facilities' => 'required|string|max:3000', 'payload.nearby' => 'required|string|max:3000', 'payload.source_name' => 'required|string|max:200', 'payload.source_date' => 'required|date_format:Y-m-d|before_or_equal:'.now('Asia/Jakarta')->toDateString(), 'payload.notes' => 'required|string|max:2000'],
         };
         $payload = $request->validate($rules)['payload'];
+        if ($data['kind'] === 'HERO' && ! empty($payload['video_url'])) {
+            $payload['video_url'] = YouTubeUrl::embed($payload['video_url'], 'payload.video_url');
+        }
+        if ($data['kind'] === 'HERO' && isset($payload['video_autoplay'])) {
+            $payload['video_autoplay'] = (bool) $payload['video_autoplay'];
+        }
         if ($data['kind'] === 'BANK_RATE') {
             FinancingContent::validate($payload);
             $payload = FinancingContent::normalize($payload);

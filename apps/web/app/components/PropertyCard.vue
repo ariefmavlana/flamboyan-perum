@@ -6,7 +6,7 @@ import {
   whatsappLink,
   propertyUrl,
 } from '#shared/utils/catalog'
-import { formatArea } from '#shared/utils/format'
+import { formatArea, formatDate } from '#shared/utils/format'
 const props = defineProps<{ property: Property }>()
 const config = useRuntimeConfig()
 const { whatsappNumber } = await useDevelopment()
@@ -32,6 +32,13 @@ function trackWhatsapp() {
 const cover = computed(() =>
   props.property.media?.find((item) => item.kind === 'PHOTO'),
 )
+const offer = computed(() => {
+  const terms = props.property.commercial
+  return terms?.offer_until &&
+    Number(terms.normal_price_idr) > Number(props.property.price_idr)
+    ? terms
+    : null
+})
 const wa = computed(() =>
   whatsappLink(
     whatsappNumber.value,
@@ -72,6 +79,7 @@ const wa = computed(() =>
       <span class="badge" :data-state="property.availability">{{
         availabilityLabels[property.availability]
       }}</span>
+      <span class="card-house-type">Tipe {{ property.house_type }}</span>
     </NuxtLink>
     <div class="card-content">
       <p class="card-location"><AppIcon name="pin" />{{ property.location }}</p>
@@ -80,8 +88,14 @@ const wa = computed(() =>
           property.title
         }}</NuxtLink>
       </h3>
-      <p class="price">{{ formatIdr(property.price_idr) }}</p>
-      <p class="muted">{{ property.address }}</p>
+      <div class="card-pricing">
+        <p class="card-price-label">Harga rumah</p>
+        <p class="price">{{ formatIdr(property.price_idr) }}</p>
+        <p v-if="offer" class="card-offer">
+          <del>{{ formatIdr(offer.normal_price_idr) }}</del
+          ><span>Program s.d. {{ formatDate(offer.offer_until!) }}</span>
+        </p>
+      </div>
       <dl class="spec-inline">
         <div>
           <dt>Luas Tanah</dt>
@@ -92,16 +106,28 @@ const wa = computed(() =>
           <dd>{{ formatArea(property.building_area) }}</dd>
         </div>
         <div>
-          <dt>Jumlah Kamar</dt>
-          <dd>
-            {{ property.bedrooms }} Kamar Tidur · {{ property.bathrooms }} Kamar Mandi
-          </dd>
+          <dt>Kamar tidur</dt>
+          <dd>{{ property.bedrooms }}</dd>
+        </div>
+        <div>
+          <dt>Kamar mandi</dt>
+          <dd>{{ property.bathrooms }}</dd>
         </div>
       </dl>
-      <p class="muted">
+      <p class="muted card-property-note">
         {{ property.condition === 'NEW' ? 'Rumah baru' : 'Rumah bekas' }} ·
-        {{ property.certificate }} · {{ property.house_type }}
+        {{
+          property.commercial?.lot_dimensions
+            ? `Kavling ${property.commercial.lot_dimensions}`
+            : property.certificate
+        }}
       </p>
+      <NuxtLink
+        :to="`/properti/${property.slug}`"
+        class="card-detail-link"
+        @click="trackSelect"
+        >Lihat rumah & denah <AppIcon name="arrow"
+      /></NuxtLink>
       <div class="card-actions">
         <CompareButton :id="property.id" /><a
           v-if="wa"
@@ -122,5 +148,98 @@ const wa = computed(() =>
 .card-photo.is-illustration {
   object-fit: contain;
   background: var(--cream);
+}
+
+.card-house-type {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  padding: 8px 12px;
+  color: #fff;
+  background: #252b26ed;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.card-pricing {
+  padding-bottom: 18px;
+}
+.card-price-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 6px;
+  color: var(--muted);
+}
+.property-card .card-content .price {
+  font-size: clamp(23px, 2.3vw, 30px);
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.card-offer {
+  margin: 8px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.card-offer span {
+  color: #7e4b31;
+}
+.property-card .spec-inline {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding-block: 16px;
+  border-block: 1px solid var(--line);
+  margin-block: 0 14px;
+}
+.spec-inline dt {
+  font-size: 10px;
+  line-height: 1.5;
+}
+.spec-inline dd {
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.card-property-note {
+  margin-block: 0 12px;
+}
+.card-detail-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 48px;
+  padding-block: 12px;
+  margin-bottom: 12px;
+  border-block: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.card-detail-link:hover {
+  color: #8f4a33;
+}
+.property-card .card-actions {
+  border: 0;
+}
+.card-actions :deep(label),
+.card-actions a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+@media (max-width: 540px) {
+  .property-card .spec-inline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .card-house-type {
+    right: 12px;
+    bottom: 12px;
+  }
 }
 </style>

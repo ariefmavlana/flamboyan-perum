@@ -7,6 +7,7 @@ use App\Models\Property;
 use App\Models\PropertyMedia;
 use App\Models\SiteContent;
 use App\Models\User;
+use App\Support\YouTubeUrl;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -59,6 +60,52 @@ class EditorialAssetsTest extends TestCase
         $this->getJson('/api/v1/content')->assertJsonPath('data.hero.media', null);
         $property->update(['publication' => 'DRAFT']);
         $this->getJson('/api/v1/content')->assertJsonPath('data.hero.media', null)->assertJsonPath('data.hero.property_id', null);
+    }
+
+    public function test_admin_can_publish_a_home_video_and_photo_independently_with_start_time(): void
+    {
+        $this->admin();
+        $property = $this->property();
+        $photo = $property->media()->create(['kind' => 'PHOTO', 'alt' => 'Foto pendamping', 'state' => 'READY', 'published' => true]);
+        $data = $this->hero($property, $photo->id);
+        $data['payload'] += ['video_url' => 'https://www.youtube.com/watch?v=-0al2pEnNDk&t=10s&utm_source=ignored', 'video_title' => 'Film kawasan', 'video_autoplay' => true];
+        $created = $this->postJson('/api/v1/internal/content', $data)->assertCreated();
+        $this->getJson('/api/v1/content')->assertJsonPath('data.hero.video_url', 'https://www.youtube-nocookie.com/embed/-0al2pEnNDk?start=10')->assertJsonPath('data.hero.video_title', 'Film kawasan')->assertJsonPath('data.hero.video_autoplay', true)->assertJsonPath('data.hero.media.id', $photo->id)->assertJsonMissingPath('data.hero.updated_by');
+        $data['payload']['video_autoplay'] = false;
+        $this->patchJson('/api/v1/internal/content/'.$created->json('data.id'), $data + ['version' => 1])->assertOk();
+        $this->getJson('/api/v1/content')->assertJsonPath('data.hero.video_autoplay', false);
+        $this->patchJson('/api/v1/internal/content/'.$created->json('data.id'), $data + ['version' => 1])->assertConflict();
+        $data['payload']['video_url'] = null;
+        $data['payload']['video_title'] = null;
+        $this->patchJson('/api/v1/internal/content/'.$created->json('data.id'), $data + ['version' => 2])->assertOk();
+        $this->getJson('/api/v1/content')->assertJsonPath('data.hero.video_url', null)->assertJsonPath('data.hero.media.id', $photo->id);
+        $this->assertDatabaseCount('activity_logs', 3);
+    }
+
+    public function test_home_video_rejects_unsafe_sources_and_requires_title_verification_and_admin(): void
+    {
+        $admin = $this->admin();
+        $data = $this->hero($this->property());
+        $data['payload'] += ['video_url' => 'https://youtu.be/-0al2pEnNDk', 'video_title' => 'Film kawasan'];
+        $this->actingAs(User::factory()->create(['role' => 'MARKETING', 'is_active' => true]));
+        $this->postJson('/api/v1/internal/content', $data)->assertForbidden();
+        $this->actingAs($admin);
+        $this->postJson('/api/v1/internal/content', array_replace($data, ['verified' => false]))->assertUnprocessable();
+        foreach (['https://youtube.com.evil.test/watch?v=-0al2pEnNDk', 'https://user@youtube.com/watch?v=-0al2pEnNDk', 'https://youtube.com:444/watch?v=-0al2pEnNDk', 'https://youtube.com/watch?v[]=invalid', 'https://youtu.be/-0al2pEnNDk?t=-1', 'https://youtu.be/-0al2pEnNDk?start=86401'] as $url) {
+            $invalid = $data;
+            $invalid['payload']['video_url'] = $url;
+            $this->postJson('/api/v1/internal/content', $invalid)->assertUnprocessable();
+        }
+        unset($data['payload']['video_title']);
+        $this->postJson('/api/v1/internal/content', $data)->assertUnprocessable();
+        $this->assertDatabaseCount('site_contents', 0);
+    }
+
+    public function test_youtube_normalization_accepts_share_shorts_and_embed_without_tracking_parameters(): void
+    {
+        foreach (['https://youtu.be/-0al2pEnNDk?t=1m10s', 'https://www.youtube.com/shorts/-0al2pEnNDk?start=70', 'https://www.youtube-nocookie.com/embed/-0al2pEnNDk?start=70'] as $url) {
+            $this->assertSame('https://www.youtube-nocookie.com/embed/-0al2pEnNDk?start=70', YouTubeUrl::embed($url));
+        }
     }
 
     public function test_hero_selection_rejects_wrong_property_kind_state_and_publication(): void

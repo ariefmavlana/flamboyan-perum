@@ -5,7 +5,7 @@ import {
 } from '../server/utils/csp'
 
 const baseline =
-  "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-TEST'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' wss://*.pusher.com https://*.pusher.com; frame-src https://www.youtube-nocookie.com https://www.openstreetmap.org https://my.matterport.com; form-action 'self'; worker-src 'none'; manifest-src 'self'; report-uri /api/csp-report"
+  "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-TEST' https://www.youtube.com/iframe_api https://www.youtube.com/s/player/; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' wss://*.pusher.com https://*.pusher.com; frame-src https://www.youtube-nocookie.com https://www.openstreetmap.org https://my.matterport.com; form-action 'self'; worker-src 'none'; manifest-src 'self'; report-uri /api/csp-report"
 
 describe('Content Security Policy builder', () => {
   it('reproduces the current policy exactly when no tracking is configured', () => {
@@ -23,7 +23,7 @@ describe('Content Security Policy builder', () => {
       gtmId: 'GTM-TEST0',
     })
     expect(policy).toContain(
-      "script-src 'self' 'nonce-TEST' 'strict-dynamic' https://www.googletagmanager.com",
+      "script-src 'self' 'nonce-TEST' https://www.youtube.com/iframe_api https://www.youtube.com/s/player/ 'strict-dynamic' https://www.googletagmanager.com",
     )
     expect(policy).toContain('https://www.google-analytics.com')
     expect(policy).toContain('https://*.analytics.google.com')

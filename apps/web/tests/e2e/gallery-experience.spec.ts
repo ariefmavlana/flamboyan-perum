@@ -152,6 +152,10 @@ test('video and tour requests wait for separate consent and retain iframe restri
     'allow-scripts allow-same-origin allow-presentation',
   )
   await expect.poll(() => requested.length).toBe(1)
+  await expect(page.locator('#video-properti iframe')).toHaveAttribute(
+    'referrerpolicy',
+    'strict-origin-when-cross-origin',
+  )
   await expect(page.locator('#tur-properti iframe')).toHaveCount(0)
   await page
     .locator('#tur-properti')

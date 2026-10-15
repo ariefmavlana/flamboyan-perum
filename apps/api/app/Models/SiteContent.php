@@ -26,7 +26,7 @@ class SiteContent extends Model
     {
         $keys = match ($this->kind) {
             'DEVELOPMENT' => ['name', 'developer', 'address', 'whatsapp', 'website', 'planned_units', 'house_types', 'facilities', 'nearby', 'source_name', 'source_date', 'notes'],
-            'HERO' => ['title', 'description', 'eyebrow', 'property_id'],
+            'HERO' => ['title', 'description', 'eyebrow', 'property_id', 'video_url', 'video_title', 'video_autoplay'],
             'TESTIMONIAL' => ['name', 'quote', 'context'],
             'BANK_PARTNER' => ['name', 'website'],
             'FINANCING_PROGRAM' => ['bank', 'product', 'development_name', 'method', 'house_types', 'monthly_idr', 'tenor_months', 'price_idr', 'down_payment_idr', 'total_margin_idr', 'source_name', 'source_url', 'checked_date', 'conditions'],

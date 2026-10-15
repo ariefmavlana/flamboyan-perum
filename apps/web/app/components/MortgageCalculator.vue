@@ -479,7 +479,11 @@ const yearlyChart = computed(() =>
               step="0.01" /></label
         ></template>
       </div>
-      <p v-if="!result" class="error-text" role="alert">
+      <p
+        v-if="!result"
+        :class="annualRate === '' ? 'notice' : 'error-text'"
+        :role="annualRate === '' ? 'status' : 'alert'"
+      >
         Isi uang muka, tenor dan bunga sesuai penawaran BNI. Untuk masa fixed
         yang lebih singkat dari tenor, isi juga skenario floating. Periksa
         seluruh nilai. Masa fixed harus lebih singkat dari tenor. Referensi bank
