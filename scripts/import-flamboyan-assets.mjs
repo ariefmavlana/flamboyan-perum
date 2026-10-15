@@ -155,9 +155,11 @@ export function validateManifest(manifest) {
   )
     throw Error("Invalid siteplan definition");
   if (!Array.isArray(manifest.videos)) throw Error("Invalid videos list");
+  const videoTypes = new Set();
   for (const video of manifest.videos) {
     if (
       !types.includes(video.house_type) ||
+      videoTypes.has(video.house_type) ||
       !video.alt?.endsWith(
         markerFor(`video-${video.house_type.replace("/", "-")}`),
       ) ||
@@ -165,6 +167,7 @@ export function validateManifest(manifest) {
     )
       throw Error("Invalid video definition");
     youtubeId(video.url);
+    videoTypes.add(video.house_type);
   }
 }
 

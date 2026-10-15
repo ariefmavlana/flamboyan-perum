@@ -96,7 +96,8 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
-            'sslmode' => env('DB_SSLMODE', env('APP_ENV') === 'production' ? 'require' : 'prefer'),
+            'sslmode' => env('DB_SSLMODE', env('APP_ENV') === 'production' ? 'verify-full' : 'prefer'),
+            'sslrootcert' => env('DB_SSLROOTCERT') ?: null,
         ],
 
         'sqlsrv' => [

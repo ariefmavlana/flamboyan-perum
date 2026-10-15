@@ -151,6 +151,38 @@ test("manifest rejects wrong mapping, order, duplicates and limits", () => {
   assert.throws(() => validateManifest(missingMarker), /Invalid gallery asset/);
 });
 
+test("manifest rejects repeated video types before any import writes", () => {
+  const video = {
+    house_type: "36/60",
+    alt: "Video resmi [ED:video-36-60]",
+    url: "https://youtu.be/abcdefghijk",
+  };
+  assert.doesNotThrow(() =>
+    validateManifest(makeManifest({ videos: [video] })),
+  );
+  for (const url of [video.url, "https://youtu.be/lmnopqrstuv"]) {
+    assert.throws(
+      () =>
+        validateManifest(makeManifest({ videos: [video, { ...video, url }] })),
+      /Invalid video definition/,
+    );
+  }
+  assert.doesNotThrow(() =>
+    validateManifest(
+      makeManifest({
+        videos: [
+          video,
+          {
+            house_type: "36/90",
+            alt: "Video resmi [ED:video-36-90]",
+            url: video.url,
+          },
+        ],
+      }),
+    ),
+  );
+});
+
 test("verifyBytes rejects changed source and oversized files", () => {
   const bytes = Buffer.from("hello");
   const asset = {
