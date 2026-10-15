@@ -37,4 +37,3 @@ Hasil pemeriksaan tambahan, self-review, build Vercel dan smoke produksi dicatat
 ## Rollback
 
 Revert PR/redeploy Git. Untuk konten, pulihkan payload HERO terpilih dari snapshot memakai versi terbaru dan audit baru; jangan restore database seluruhnya. Field baru opsional, gambar fallback tetap ada. Hapus/nonaktifkan video melalui CMS untuk menghentikan pemuatan YouTube tanpa deploy. Media uji hanya pada fixture lokal; media bisnis tidak diarsipkan/dihapus oleh rilis ini.
-
