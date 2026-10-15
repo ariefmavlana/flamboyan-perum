@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PublicMedia } from '#shared/types'
+import { gateDay } from '#shared/content/flamboyan-assets'
 const props = defineProps<{
   media?: PublicMedia | null
   poster?: PublicMedia | null
@@ -54,24 +55,23 @@ const sourceSet = computed(() =>
   <img
     v-else
     class="editorial-hero-photo"
-    src="/images/flamboyan-kawasan.webp"
+    :src="gateDay.src"
+    :srcset="
+      gateDay.sources
+        .map((source) => `${source.url} ${source.width}w`)
+        .join(', ')
+    "
     sizes="100vw"
-    width="1080"
-    height="800"
+    :width="gateDay.width"
+    :height="gateDay.height"
     fetchpriority="high"
-    alt="Ilustrasi kawasan Bukit Flamboyan Indah 2 dari Rumah Rajasa; bukan foto kondisi aktual."
+    :alt="gateDay.alt"
   />
   <p v-if="photo?.sources.length" class="photo-credit hero-media-caption">
     {{ photo.alt }}
   </p>
   <p v-else class="photo-credit">
-    Ilustrasi kawasan ·
-    <a
-      href="https://rumahrajasa.com/"
-      target="_blank"
-      rel="noopener noreferrer"
-      >Rumah Rajasa ↗</a
-    >
+    {{ gateDay.caption }}
   </p>
   <div v-if="video?.url" class="hero-video-control">
     <button

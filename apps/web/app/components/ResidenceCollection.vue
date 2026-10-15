@@ -1,33 +1,42 @@
+<script setup lang="ts">
+import { gateDay } from '#shared/content/flamboyan-assets'
+</script>
 <template>
   <div class="residence-collection">
     <article class="residence-card">
       <NuxtLink
-        to="/bandung-timur"
+        to="/perumahan/bukit-flamboyan-indah-2"
         class="residence-card-image"
         aria-label="Kenali Bukit Flamboyan Indah 2"
       >
         <img
-          src="/images/flamboyan-kawasan.webp"
-          width="1080"
-          height="800"
+          :src="gateDay.src"
+          :srcset="
+            gateDay.sources
+              .map((source) => `${source.url} ${source.width}w`)
+              .join(', ')
+          "
+          sizes="(max-width: 760px) 100vw, 50vw"
+          :width="gateDay.width"
+          :height="gateDay.height"
           loading="lazy"
-          alt="Ilustrasi kawasan Bukit Flamboyan Indah 2 dari Rumah Rajasa, bukan kondisi aktual."
+          :alt="gateDay.alt"
         />
         <span class="residence-status">Jelajahi kawasan</span>
-        <span class="residence-image-note"
-          >Ilustrasi pengembang · Rumah Rajasa</span
-        >
+        <span class="residence-image-note">Ilustrasi desain gerbang</span>
       </NuxtLink>
       <div class="residence-card-copy">
         <p class="eyebrow">01 / BANDUNG TIMUR</p>
         <h3>
-          <NuxtLink to="/bandung-timur">Bukit Flamboyan Indah 2</NuxtLink>
+          <NuxtLink to="/perumahan/bukit-flamboyan-indah-2"
+            >Bukit Flamboyan Indah 2</NuxtLink
+          >
         </h3>
         <p>
           Kenali kawasan, pelajari pilihan rumah, dan pertimbangkan ruang untuk
           langkah berikutnya.
         </p>
-        <NuxtLink to="/bandung-timur" class="text-link"
+        <NuxtLink to="/perumahan/bukit-flamboyan-indah-2" class="text-link"
           >Kenali perumahan <AppIcon name="arrow"
         /></NuxtLink>
       </div>

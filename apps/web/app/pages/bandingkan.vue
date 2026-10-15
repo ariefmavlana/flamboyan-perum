@@ -77,6 +77,12 @@ useSeoMeta({
             :aria-label="'Lihat ' + property.title"
           >
             <img
+              :class="{
+                'is-illustration': /ilustrasi|inspirasi/i.test(
+                  property.media.find((media) => media.kind === 'PHOTO')?.alt ??
+                    '',
+                ),
+              }"
               :src="
                 property.media.find((media) => media.kind === 'PHOTO')
                   ?.sources[0]?.url
@@ -142,3 +148,9 @@ useSeoMeta({
     >
   </section>
 </template>
+<style scoped>
+.compare-photo img.is-illustration {
+  object-fit: contain;
+  background: var(--cream);
+}
+</style>

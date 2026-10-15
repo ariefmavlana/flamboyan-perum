@@ -1,5 +1,17 @@
 # Status implementasi
 
+## Aset asli Bukit Flamboyan Indah 2 — 2026-10-15
+
+Branch `codex/real-flamboyan-assets` disinkronkan ke `origin/main` terbaru (`c1cecaf`) atas instruksi pengguna. Perubahan wording kartu, DemoSeeder dan lockfile main dipertahankan; vendor lokal dipasang sesuai Laravel 13.36.0/PHPUnit 12.5.39.
+
+Implemented: seluruh 58 gambar EDITED dipetakan (50 PHOTO + 5 FLOOR_PLAN untuk lima tipe, 2 ilustrasi gerbang + 1 siteplan kawasan), 17 foto lapangan dikoreksi warna deterministik dengan full frame tetap, logo resmi transparan pada identitas publik/workspace/favicon, halaman kawasan SSR beserta galeri keyboard/responsif, navigasi/konsultasi/canonical/sitemap. Harga, spesifikasi dan card tetap dari API; tipe foto aktual tidak diasumsikan. Video 22 berkas ditunda sampai YouTube sesuai instruksi pengguna.
+
+Importer opt-in memverifikasi sumber/journal/hash/versi/kapasitas; 55 gambar masuk unpublished dan seluruhnya READY sebelum publikasi. Backend menerima `published` opsional pada upload, default true kompatibel; caption publik tidak menampilkan suffix provenance BFI2. Cleanup lokal/R2 melaporkan objek/bytes dan melindungi seluruh refs privat/shared/CMS dengan grace orphan 30 hari. Sumber asli/video disimpan utuh di arsip lokal `.tools`, tidak ikut build/Git. Tidak ada migration atau dependency baru dari fitur aset.
+
+Apply lokal menghasilkan 55 READY/published; rerun pada API final 0 upload/55 reused. Seluruh 220 objek hasil impor tersedia dengan total 31.755.552 bytes. Validasi akhir: Pint/Composer lulus, masing-masing SQLite/PostgreSQL 105 tests/840 assertions, importer 19 tests, frontend lint/typecheck/39unit/build dan 13 browser flows lulus. Seluruh 165 varian API + 63 aset statis berhasil dimuat; sweep produksi semua 55 gambar decoded tanpa page error. Bukti di [real-flamboyan-assets.md](real-flamboyan-assets.md). Audit runtime 0; source 14 temuan (12 high/2 critical) pada tooling existing tetap menjadi gate.
+
+Cloud hanya dibaca: 784 objek/94,765 MiB, 640 refs/0 hilang; cleanup dry-run 0 eligible/0 deleted. Belum di-merge/deploy/import live. Semua 58 EDITED digunakan pada implementasi; 55 media tipe baru di cloud menunggu backend deployed yang mendukung private upload. Tidak ada seed otomatis, perubahan harga/CRM, penghapusan cloud atau GitHub Actions. Cakupan, proses, bukti dan rollback ada di [real-flamboyan-assets.md](real-flamboyan-assets.md).
+
 ## Integrasi main terbaru — 2026-10-14
 
 Atas instruksi pengguna, seluruh PR terbuka diperiksa lalu di-merge ke `main`: PR #24 `codex/multi-residence-banjaran` (`68e6bc5`, draft dijadikan siap-review) menjadi merge commit `e6b5f86`, lalu PR #25 `feat/production-readiness` (`0467d08`) menjadi merge commit `808b69c`. Pemeriksaan sebelum tiap merge: `mergeable/clean`, tidak ada review yang meminta perubahan, tidak ada konflik yang dibiarkan, dan status Vercel kedua project (`flamboyan-web`, `flamboyan-api`) `success` lebih dulu; tidak ada bypass, approval palsu, GitHub Actions, atau force-push.

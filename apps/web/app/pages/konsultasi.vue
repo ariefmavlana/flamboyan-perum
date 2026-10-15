@@ -2,6 +2,8 @@
 import type { Property } from '#shared/types'
 import { consultationLink, propertyUrl } from '#shared/utils/catalog'
 import { canonicalUrl } from '#shared/utils/seo'
+import { developmentPhotos } from '#shared/content/flamboyan-assets'
+const actualFacade = developmentPhotos[0]!
 const config = useRuntimeConfig()
 const { whatsappNumber } = await useDevelopment()
 const route = useRoute()
@@ -24,6 +26,9 @@ const { data, error, status, refresh } = await useAsyncData(
 const property = computed(() => data.value?.data)
 const banjaran = computed(
   () => !slug.value && route.query.kawasan === 'banjaran',
+)
+const flamboyan = computed(
+  () => !slug.value && route.query.kawasan === 'bukit-flamboyan-indah-2',
 )
 const purposes = {
   kunjungan: 'Kunjungan rumah',
@@ -49,7 +54,11 @@ const contextUrl = computed(() =>
     ? propertyUrl(config.public.siteUrl, property.value.slug)
     : canonicalUrl(
         String(config.public.siteUrl),
-        banjaran.value ? '/perumahan/banjaran' : '/properti',
+        banjaran.value
+          ? '/perumahan/banjaran'
+          : flamboyan.value
+            ? '/perumahan/bukit-flamboyan-indah-2'
+            : '/properti',
       ),
 )
 const handoff = computed(() => {
@@ -62,7 +71,11 @@ const handoff = computed(() => {
     whatsappNumber.value,
     purposes[purpose.value],
     property.value?.title ??
-      (banjaran.value ? 'Rencana hunian Banjaran — Flamboyan' : ''),
+      (banjaran.value
+        ? 'Rencana hunian Banjaran — Flamboyan'
+        : flamboyan.value
+          ? 'Bukit Flamboyan Indah 2'
+          : ''),
     contextUrl.value,
   )
   if (!link) return null
@@ -140,11 +153,17 @@ useHead({
       <figure class="consultation-image">
         <img
           v-if="!banjaran"
-          src="/images/flamboyan-fasad.webp"
-          width="747"
-          height="420"
+          :src="actualFacade.src"
+          :srcset="
+            actualFacade.sources
+              .map((source) => `${source.url} ${source.width}w`)
+              .join(', ')
+          "
+          sizes="(max-width: 760px) 100vw, 50vw"
+          :width="actualFacade.width"
+          :height="actualFacade.height"
           loading="lazy"
-          alt="Ilustrasi fasad hunian Bukit Flamboyan Indah 2 dari Rumah Rajasa."
+          :alt="actualFacade.alt"
         />
         <img
           v-else
@@ -155,8 +174,7 @@ useHead({
           alt="Foto inspirasi hunian tropis, bukan lokasi atau rancangan final Banjaran."
         />
         <figcaption v-if="!banjaran">
-          Ilustrasi hunian · Rumah Rajasa. Kondisi aktual dikonfirmasi saat
-          kunjungan.
+          {{ actualFacade.caption }}
         </figcaption>
         <figcaption v-else>
           Foto inspirasi, bukan lokasi proyek · Sergei Bezzubov / Unsplash.
@@ -196,6 +214,17 @@ useHead({
         </p>
         <NuxtLink class="text-link" to="/perumahan/banjaran"
           >Lihat kembali konsep Banjaran →</NuxtLink
+        >
+      </div>
+      <div v-else-if="flamboyan" class="consultation-property">
+        <span class="muted">Kawasan yang Anda minati</span>
+        <h3>Bukit Flamboyan Indah 2</h3>
+        <p>
+          Pilihan tipe, ketersediaan unit, dan jadwal kunjungan dikonfirmasi
+          bersama Admin.
+        </p>
+        <NuxtLink class="text-link" to="/perumahan/bukit-flamboyan-indah-2"
+          >Lihat kembali kawasan →</NuxtLink
         >
       </div>
       <label

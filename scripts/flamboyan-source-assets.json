@@ -1,0 +1,2554 @@
+{
+  "schema_version": 1,
+  "source_images": 76,
+  "deferred_videos": 22,
+  "assets": [
+    {
+      "path": "Bahan flamboyan/20261011_132900.mp4",
+      "bytes": 23367238,
+      "sha256": "3c2a04f2fda869a6b01449cfb1ec4e2e7eb3a5e7d6c25d0b0297bc42faab75df",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-132900",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133028.mp4",
+      "bytes": 40548718,
+      "sha256": "95936eb42fe680c4680774274a78a9f5d0323357e3194b1b72fea9190428e03e",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-133028",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133109.jpg",
+      "bytes": 3308908,
+      "sha256": "b12b7b4e0e7f72cfd87c1044db00b00bafc6589b4b29f634343b0a2621cd678c",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Fasad rumah contoh aktual",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133109",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133109.jpg",
+        "bytes": 3484554,
+        "sha256": "ea9e0b56e2e83c96e06963c7ade67926a2cbccb046a0a5f11594e2d8bfddd2d2",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.025,
+        "gamma": 0.985,
+        "contrast": 1.015,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.014, 1.0, 0.989]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133109-640.webp",
+          "bytes": 71606,
+          "sha256": "14174abbd011e1a8af9d8e65e0be4a291ef2b534f0721465ff533262124335c4",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133109-1280.webp",
+          "bytes": 271440,
+          "sha256": "3a8077b6da1379878a9a2b580167539f1690261753e3522e2de4265434baa035",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133109-1920.webp",
+          "bytes": 523154,
+          "sha256": "bc2c785ed303bacda320b954459212cb71ef823dda0dd3150bcfa2970a34c91f",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133136.mp4",
+      "bytes": 19291418,
+      "sha256": "bd456f4568f69fe53b01122a944fa93b579ef368c039831b9bcea54595efa0d5",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-133136",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133157.mp4",
+      "bytes": 39245724,
+      "sha256": "34eed12c83aa9d5bf1fbc68c3e92427417c7a78685f5bed0c341bc871edb613e",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-133157",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133227.mp4",
+      "bytes": 31011202,
+      "sha256": "a5eabf606fddaa46f9517d085d00c0c804c04b847ad58d45e698cdb83201e717",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-133227",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133318.mp4",
+      "bytes": 26929312,
+      "sha256": "5fe84e8e2cd6de984ccdbba7841252cfea95a5b465378ac5ce1c4543ac36ec93",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-133318",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133351.mp4",
+      "bytes": 18137497,
+      "sha256": "d2c86466f4e60b8eb8121adfde656e7b52cf81305595f416d7756a9f8f4ee051",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-133351",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133420.mp4",
+      "bytes": 35357879,
+      "sha256": "3dba8ab887bc9c401e22bcbe2c0a62fa001de582a726bc34497358ef3434ae9e",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-133420",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133507.mp4",
+      "bytes": 23310310,
+      "sha256": "1b4c3ff9aafe0f76813a4ea65a4ce28b70f120fed74f775e0d2536cfa6adec02",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-133507",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133601.jpg",
+      "bytes": 1981245,
+      "sha256": "054843ad68b3a742787f1650cfe29cca0c3c7fbfd7b7a9af3efcf0598848b3ef",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Ruang dalam dan bukaan tinggi",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133601",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133601.jpg",
+        "bytes": 2038407,
+        "sha256": "410e49de1c948879b37b37626cd21f723dbad7c99640c3c86daa8c3fa9819334",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.035,
+        "gamma": 0.97,
+        "contrast": 0.99,
+        "saturation": 0.99,
+        "white_balance_rgb": [1.006, 1.0, 0.998]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133601-640.webp",
+          "bytes": 20496,
+          "sha256": "e6a3867e83df4754934cfceb2233dd31c5b347125a15df592c9ed6f3b73f67fc",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133601-1280.webp",
+          "bytes": 55854,
+          "sha256": "ae4011a7fe451757ea06e3394308a105e437b6193d59b5ea50e2f13ac90be581",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133601-1920.webp",
+          "bytes": 98188,
+          "sha256": "6aaac94694d16fcfbe483ab77216ac7f5698bd17b8c14ce672695d7e2a40071d",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133631.jpg",
+      "bytes": 1886438,
+      "sha256": "cf9bf74b376cb8282df1664d3db0b70d6deec59e8bda8ea19bfe2b3924bd6621",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Kamar dengan jendela",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133631",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133631.jpg",
+        "bytes": 1981443,
+        "sha256": "c5b3c5bfc9be4136d3c7e0d9190af844761272111a8f19b3c89516e121e7d310",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.05,
+        "gamma": 0.965,
+        "contrast": 0.99,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.008, 1.0, 0.997]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133631-640.webp",
+          "bytes": 22070,
+          "sha256": "accfdffaedeea8d1100e126df97c308bce3bed3b2850121874d337ea9880e683",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133631-1280.webp",
+          "bytes": 62772,
+          "sha256": "d632e603066cdc51dfa9c0759a6656f7917ae62a845b332278e9688dee4af3cf",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133631-1920.webp",
+          "bytes": 113942,
+          "sha256": "cb88ae0621a6edcdcc5669bf2c4c98ae2391e2b785affbccc59817894df0444d",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133657.jpg",
+      "bytes": 1395123,
+      "sha256": "5859641dc57a0ab9199383c743b722609bcd5575a4bb588b4a2e839f7acc1738",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Kamar, sudut kedua",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133657",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133657.jpg",
+        "bytes": 1554690,
+        "sha256": "84c5f18a0ea64915a6d02e10f7233d5013dd16dc1816828b412ad15f81692ba2",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.015,
+        "gamma": 0.99,
+        "contrast": 1.0,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.004, 1.0, 1.002]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133657-640.webp",
+          "bytes": 9524,
+          "sha256": "726ee19fe3717d194206e97bbfe63bc674f711c42e42737cf4eda1d095639487",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133657-1280.webp",
+          "bytes": 26998,
+          "sha256": "5898ca9d0a3e6ca7d122d53679fb74f6b7c7c851758550501ff5c4f3bc85050e",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133657-1920.webp",
+          "bytes": 51198,
+          "sha256": "20a75d4532a62ce7fde3bd6ebe285578c1ca8894630846740b512dcbe234cb64",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133703.jpg",
+      "bytes": 1811924,
+      "sha256": "387dfe198ed49d7c83e4a86ce89dd485eb97dfc3ec56087dd05a0eed198bb8ba",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Koridor dan bukaan samping",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133703",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133703.jpg",
+        "bytes": 1887192,
+        "sha256": "f51225fde36ad922e934d6e3d4987e95809c54f483832acbe34818be739040c2",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.035,
+        "gamma": 0.975,
+        "contrast": 0.99,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.005, 1.0, 0.998]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133703-640.webp",
+          "bytes": 8638,
+          "sha256": "3d6e99b7457d072db4ab2f77d69834aaee6fd7c9704682d1f59bed68e9896297",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133703-1280.webp",
+          "bytes": 23962,
+          "sha256": "6c29f42e9a0c6d11995a603a17a19910d8045f8336659a1d5fb15405f23d4ca4",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133703-1920.webp",
+          "bytes": 50960,
+          "sha256": "fa97e070b3a8e27d1ed65c3efa5de5a6a050da7f464758ebb69f0fadc8904a3c",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133720.jpg",
+      "bytes": 2292150,
+      "sha256": "b84a95f8e28c24c9cfeaeda89aa48c1d16c97c80938de9faf2ff9416dedd93f4",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Kamar mandi aktual",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133720",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133720.jpg",
+        "bytes": 2446780,
+        "sha256": "5488dc59bc9aa95bc7b3d84ff013a7fc8efa00fe3e618b75d47c2ce86e962765",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.04,
+        "gamma": 0.975,
+        "contrast": 1.005,
+        "saturation": 0.99,
+        "white_balance_rgb": [1.008, 1.0, 0.996]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133720-640.webp",
+          "bytes": 62288,
+          "sha256": "3262dc2dd86c67a086ee5b0f4f57836dcddc639e62ef3e3600a11f1544b822f4",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133720-1280.webp",
+          "bytes": 163180,
+          "sha256": "2b950dcf0fa359b3ffbb456a2298ae0b7163d8e0f77ee9277a8c267379c6c0bd",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133720-1920.webp",
+          "bytes": 256180,
+          "sha256": "d86c85a1796fe8eb02378ed7be5ad195e67e916f199349662bba36f6120c0583",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133735.jpg",
+      "bytes": 2976280,
+      "sha256": "e2f1dcf2d90e5a317e4bbee2933b46112a1b1bc19e6e22dad805b109e82ca7ae",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Dinding dan shower kamar mandi",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133735",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133735.jpg",
+        "bytes": 2992885,
+        "sha256": "ae5a1c5f2299e8705a95de007081df2230f607641b52051c71efaf33c1cf7f66",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.01,
+        "gamma": 0.99,
+        "contrast": 1.005,
+        "saturation": 0.995,
+        "white_balance_rgb": [1.006, 1.0, 0.998]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133735-640.webp",
+          "bytes": 67158,
+          "sha256": "a5c47f2b55a1702891ff96edfb31a0cbe340973227655fe193126a37b9fd6033",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133735-1280.webp",
+          "bytes": 198132,
+          "sha256": "f0b817aa23d1ef9bddc803cecc059bd518b0079a2dba59a02b7303aa4132c0c0",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133735-1920.webp",
+          "bytes": 353364,
+          "sha256": "bfe15e7664bfba12bbd280b6fcd5a25bf2a0bca2e8be565323e0db3e6edfe740",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133805.jpg",
+      "bytes": 2574033,
+      "sha256": "f282627eb85819c9b2f682009787899e7148af83563960e659563fb4e3d30c1e",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Area belakang/laundry, sudut pertama",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133805",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133805.jpg",
+        "bytes": 2652029,
+        "sha256": "acc36412c99a22cfb2d5f2ad96061a274ee312307a039c5f2e91c4e7ea7ea6ef",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.02,
+        "gamma": 0.985,
+        "contrast": 1.005,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.005, 1.0, 1.002]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133805-640.webp",
+          "bytes": 45562,
+          "sha256": "71a34ccad24f37e9413af9a2609193cb4fd4ddaa46bf94c63aebda82c29f119d",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133805-1280.webp",
+          "bytes": 162508,
+          "sha256": "48f1c14a5188c19a733eddff72b0ff43b319f73472c4e60f52a075496d773eba",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133805-1920.webp",
+          "bytes": 316510,
+          "sha256": "766f023d218b46cab00eaf62da06aa936c38dc4ebaac848afa22cf810dcea2a9",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133822.jpg",
+      "bytes": 2102019,
+      "sha256": "ddaa20a70b47d8d636c8eb0563b5ad2c924f0c0f118b792a30e6fd3700a4df42",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Area belakang/laundry, sudut kedua",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133822",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133822.jpg",
+        "bytes": 2191850,
+        "sha256": "c0a79603db60e23755392a58b78588fb9480a17044e7e74dcc1ec86f507e26b3",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.035,
+        "gamma": 0.975,
+        "contrast": 0.995,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.006, 1.0, 0.999]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133822-640.webp",
+          "bytes": 35028,
+          "sha256": "b5136d1ff53f2e498b3e677a3aed876716ca42ddfd79365594b41e018d8e0cc6",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133822-1280.webp",
+          "bytes": 131538,
+          "sha256": "9074c6d26f115c7820b2bf16b7b565777f74e6a2c25b2e792ad2b4481deec15d",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133822-1920.webp",
+          "bytes": 256716,
+          "sha256": "3e419de18d1f6ddb4414d30e55088e6df3a014b3800ee65e8f6b17ba8bf2606c",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133900.jpg",
+      "bytes": 1883447,
+      "sha256": "9491d921200b060f1bdca1707ba8920de0f7f8464dba0a563a760e5692c3d9f9",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Detail sisi bangunan dan tangki air",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133900",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133900.jpg",
+        "bytes": 2018622,
+        "sha256": "9fc5de250720a52a7be111902b0a65fc57621d753a17c338f34cfa4b8695e3ed",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.03,
+        "gamma": 0.98,
+        "contrast": 1.01,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.01, 1.0, 0.993]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133900-640.webp",
+          "bytes": 20416,
+          "sha256": "e37a93d77bd57ab9dc3d8b663953dbb4f6ae60aa39031512a73fe2a2a7c13a34",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133900-1280.webp",
+          "bytes": 58894,
+          "sha256": "e9e0fd797bc0dda30bb8cffbcb7b3436c3020eb85fcd4c34e075cb9895954186",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133900-1920.webp",
+          "bytes": 105998,
+          "sha256": "309b4e985c05b6775e179f0ab6bd6873a89dac91014c209b07698ee25d5fc594",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133908.mp4",
+      "bytes": 18397348,
+      "sha256": "63aab28e3c65e142f780b62d54c4c253c3785a6f9905a0a3a4f5677a94e12804",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-133908",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133933.jpg",
+      "bytes": 2343463,
+      "sha256": "1bef1385d2c19fb006cb6052f0fb69d975ed8e64bf170803bacf404c59155463",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Akses area belakang",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133933",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133933.jpg",
+        "bytes": 2366715,
+        "sha256": "b0f122cb8fbd1dce32ac5991568e28fb09883dd873ac0984b97d7a72ede76436",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.035,
+        "gamma": 0.975,
+        "contrast": 0.99,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.006, 1.0, 0.998]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133933-640.webp",
+          "bytes": 40972,
+          "sha256": "294f9828798861471122c4d937724aaac2eb47eb200508d10502723ea449d711",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133933-1280.webp",
+          "bytes": 128516,
+          "sha256": "5bfff0b52d8fb471c508ced0320d7db8ce9db9024745c42e492c7330703f7631",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133933-1920.webp",
+          "bytes": 226220,
+          "sha256": "e1ed5db0085f347face351c970d6e85b34117abaed4405619a82702a767b79d1",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_133952.jpg",
+      "bytes": 2105747,
+      "sha256": "420e827832308a6b3fe975065b3773728f70a32ea11fc63f859a547b83a3c770",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Ruang keluarga aktual, sudut pertama",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-133952",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-133952.jpg",
+        "bytes": 2114740,
+        "sha256": "58e01dc691d1a156ec5dd0fe90f274a8cacd1c4f2801893d091fbfb22b38611e",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.045,
+        "gamma": 0.965,
+        "contrast": 0.99,
+        "saturation": 0.99,
+        "white_balance_rgb": [1.007, 1.0, 0.997]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133952-640.webp",
+          "bytes": 16344,
+          "sha256": "4abfd9410064f28a1468d46c2c69b3a0367a9b46551ee2c5adc97cae700f8a49",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133952-1280.webp",
+          "bytes": 44944,
+          "sha256": "6535a77fd01f309cc5c1890de115cf29aef66bc7341940634a1eddda109a9794",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-133952-1920.webp",
+          "bytes": 82908,
+          "sha256": "3169c93843c90afbb8877cadb69bc39c5c18b2f72578195888650e4efa03b119",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_134002.jpg",
+      "bytes": 2136969,
+      "sha256": "5795512c76027368b2b983878ba0c0da28e090c02ecec68ad81db1905f80c02f",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Ruang keluarga aktual, sudut kedua",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-134002",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-134002.jpg",
+        "bytes": 2149568,
+        "sha256": "0077612cb48ee0504e0eb59453ac54553ff3e826a9a1ff1f0df3ef2f0d3a1482",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.035,
+        "gamma": 0.975,
+        "contrast": 0.995,
+        "saturation": 0.99,
+        "white_balance_rgb": [1.006, 1.0, 0.998]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-134002-640.webp",
+          "bytes": 19918,
+          "sha256": "d6d649117e31a4846411442cd9cdb8d3f963a4f26b22f6f74c59778e3e0aaada",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-134002-1280.webp",
+          "bytes": 52292,
+          "sha256": "590e571ad3e8778b224ab0501791155cc818df6e0fbb096a96e2406578d03e0a",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-134002-1920.webp",
+          "bytes": 96152,
+          "sha256": "8b8c45e738a737c7b49d601a73d55b8f28eeb344aeb6633c646aa66c086261b0",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_134100.jpg",
+      "bytes": 1440351,
+      "sha256": "33b2f68525e13a69e38461bac7b121ba4000297939af1134bf9ad0aa22541a9e",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Ruang/kamar aktual, sudut ketiga",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-134100",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-134100.jpg",
+        "bytes": 1510845,
+        "sha256": "63f863e1ca399ad17e2cbc251de2942d4b6163217fd29e256bee5c61ac24ed16",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.025,
+        "gamma": 0.985,
+        "contrast": 0.995,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.003, 1.0, 1.003]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-134100-640.webp",
+          "bytes": 8534,
+          "sha256": "c8d5bccdaaf9064119530d3e6f3c86e1609217b32028ebfc261a9f337f2ef8c9",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-134100-1280.webp",
+          "bytes": 22534,
+          "sha256": "992d8e8917ef42b4967d2c9e0b08ea0b49f50842c0ed758fe62edebda620a5ef",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-134100-1920.webp",
+          "bytes": 41500,
+          "sha256": "0bf89df256e6cdc72c95a11e002fe19383e87abbe0e956f0fdff5b8a653548f9",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_134312.mp4",
+      "bytes": 15986672,
+      "sha256": "8c983b531eb0691b0b47beb0a621bd370e6e70fefc7cda132c3f0d4143f8ede9",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-134312",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_134339.mp4",
+      "bytes": 41178482,
+      "sha256": "7cdce427721a6ad1b9f495993772ca400e3ea27834c07f1565fe2a19d9c14537",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-134339",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_134720.mp4",
+      "bytes": 41463335,
+      "sha256": "ff9f478da761ea44be5e508750d2229f15899d0116a309ca443c1d816b821bdd",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-134720",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_134834.mp4",
+      "bytes": 17358550,
+      "sha256": "0d20bc88b1e2ce1ea8739bc76c7abc9b3f063deebe6690fe8fe6dfd270d54a65",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-134834",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_134847.mp4",
+      "bytes": 16354987,
+      "sha256": "2f0ea9a06be2746a694afcd98e994e4390d2af0e993f593666f57989ae7891bd",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-134847",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_140924.jpg",
+      "bytes": 3285111,
+      "sha256": "0db443a32a3218121c8991cb63d8e5d51526667963e1969b4f53534ff3c32850",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Papan identitas akses kawasan, dekat",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-140924",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-140924.jpg",
+        "bytes": 3513161,
+        "sha256": "67b23ee31339124a507485f3e1941a193baf33da0fc3c061b2279e5e77a29f68",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.015,
+        "gamma": 0.99,
+        "contrast": 1.015,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.012, 1.0, 0.991]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-140924-640.webp",
+          "bytes": 78434,
+          "sha256": "1e236236c91d6aeea06fab99c39ae0eeb728b2d98f380a0732f5179dca45195d",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-140924-1280.webp",
+          "bytes": 246958,
+          "sha256": "0da687ba63768d250d6187960e12c64be8f8c9e9b0d693c0cf7c1365f4f30247",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-140924-1920.webp",
+          "bytes": 451702,
+          "sha256": "b19457536ef0ea668d1ac84473e7a2c7049a335c3bc520462cfdcde5d4c29719",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_140945.mp4",
+      "bytes": 36240373,
+      "sha256": "de0b2b36b1dec006ac27b81fc629a715edfb7b6d528cae04f529bb42756211db",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-140945",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_141011.mp4",
+      "bytes": 41894511,
+      "sha256": "06842af3a51a47a2fa447332203f5ccb0af239412c51c910615f7e319d98bea9",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-141011",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_141058.jpg",
+      "bytes": 3225013,
+      "sha256": "72654eedb7b7cd6fe31183780c282896455cb53fc86eccd1d39c7ce7d477fb68",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Papan identitas dan akses kawasan, lebar",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-141058",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-141058.jpg",
+        "bytes": 3461315,
+        "sha256": "b088bec1c4c2c37cd036dae21b896b1d4efb4c20c9f5b3d5a5c8eb294cea2fe9",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.025,
+        "gamma": 0.985,
+        "contrast": 1.015,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.011, 1.0, 0.992]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-141058-640.webp",
+          "bytes": 93958,
+          "sha256": "ff497cdcd098602e9d26a25db462c83176f1d5ea485e4971957684e7b7fc8e8c",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-141058-1280.webp",
+          "bytes": 297512,
+          "sha256": "d64e5a97a1221a3e2166720bb83f5d65ad5049de66171e1a75f3002820b98021",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-141058-1920.webp",
+          "bytes": 526418,
+          "sha256": "60fe7edb0e340aa8dcbac69244c579f04e415067e83ccbad3becdd3d97476fc4",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_141109.mp4",
+      "bytes": 24467037,
+      "sha256": "42e5447d347eefe7abb964bc6e48e3e221e4b7027d7b018ca82a216001d9d1f6",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-141109",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_141126.jpg",
+      "bytes": 3935153,
+      "sha256": "20f9d23c13bdc3d9c02758de7818de3cb8c317a05a2fa933cd91e6e5559bdfde",
+      "house_type": null,
+      "kind": "ACTUAL_PHOTO",
+      "caption": "Jalan lingkungan saat dokumentasi",
+      "label": "Dokumentasi aktual; tipe tidak diasumsikan",
+      "width": 3060,
+      "height": 4080,
+      "orientation": 6,
+      "key": "actual-20261011-141126",
+      "graded": {
+        "file": ".tools/real-flamboyan-assets/graded/actual-20261011-141126.jpg",
+        "bytes": 4134906,
+        "sha256": "e0cd50dd0722c690b388dd974e74832de1d41786ce7f22736f88725811ad4837",
+        "width": 3060,
+        "height": 4080
+      },
+      "grade": {
+        "exposure": 1.02,
+        "gamma": 0.985,
+        "contrast": 1.01,
+        "saturation": 0.985,
+        "white_balance_rgb": [1.011, 1.0, 0.992]
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-141126-640.webp",
+          "bytes": 104550,
+          "sha256": "1e4f6196bbcdf7efc06b6989b9e9ac963b23ac65d5f634d20ec010300a13a0d7",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-141126-1280.webp",
+          "bytes": 384902,
+          "sha256": "a173ebecf366db2d6d2cad55e88a150aa9569ae39fe6e01a51fd0c7092435e7c",
+          "width": 1280,
+          "height": 1707
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/actual-20261011-141126-1920.webp",
+          "bytes": 725576,
+          "sha256": "94a4e6ea89494ecd7620f20598d5e0e96d92042541bc6f26820339e60044101c",
+          "width": 1920,
+          "height": 2560
+        }
+      ]
+    },
+    {
+      "path": "Bahan flamboyan/20261011_141131.mp4",
+      "bytes": 15041235,
+      "sha256": "f0b1cb5d929cf63b0be19fcefc888ae2b3d3379f19fe754c2edebda755664c94",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-141131",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "Bahan flamboyan/20261011_141141.mp4",
+      "bytes": 13435824,
+      "sha256": "44ffa67d5cede53ccf89c1e2bd962f8bdec0ddf69e917dda1cbf3c7bfb8fb6b4",
+      "house_type": null,
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-20261011-141141",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "EDITED/36-60/36-60-1.jpg",
+      "bytes": 3137521,
+      "sha256": "53430b66024510eee7b2929c20e36d109d2fd5c067f7627d19729e4ab8d90abf",
+      "house_type": "36/60",
+      "kind": "PHOTO",
+      "caption": "Fasad utama",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 0,
+      "key": "house-36-60-photo-01",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-60-photo-01.webp",
+          "bytes": 395514,
+          "sha256": "c35b882ed17f14fbab841913c088237301965b6bc7af259b8b2a5d043b010480",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-60/36-60-10.jpg",
+      "bytes": 2575893,
+      "sha256": "4cbdcd75092a2d686cc7d83fa291660bce73cc8fa2bce07e1ddc13f68eefd1a0",
+      "house_type": "36/60",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur utama",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 8,
+      "key": "house-36-60-photo-09",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-60-photo-09.webp",
+          "bytes": 177748,
+          "sha256": "eb59292af6942f15d3ce2428326398a7f9dcf22ce7c1e881669279eae5696bee",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-60/36-60-11.mp4",
+      "bytes": 4399266,
+      "sha256": "5102fea87492ad9ae1f44faa4dc5a6e4ac1ab65b0dc9758a4c554ba112564435",
+      "house_type": "36/60",
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-36-60-11",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "EDITED/36-60/36-60-2.jpg",
+      "bytes": 3295793,
+      "sha256": "7e5334770407a8c7cba730886bf31e9b957b8ee8602e24c0114f6b6676d81de2",
+      "house_type": "36/60",
+      "kind": "PHOTO",
+      "caption": "Fasad perspektif",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 1,
+      "key": "house-36-60-photo-02",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-60-photo-02.webp",
+          "bytes": 621858,
+          "sha256": "d7d6695e919fec0e0a0a39502663b6fdbc4d4c6052bdc0a32961cf2f15d13d84",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-60/36-60-3.jpg",
+      "bytes": 2246211,
+      "sha256": "45c0800da34a1c5a1bd3520e1744a30004d76e0ee7ce1cfcede7b227744115ff",
+      "house_type": "36/60",
+      "kind": "FLOOR_PLAN",
+      "caption": "Denah bangunan",
+      "label": "Denah sumber pemilik",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 9,
+      "key": "house-36-60-floor-plan",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-60-floor-plan.webp",
+          "bytes": 159146,
+          "sha256": "65ce0421c302ae6333d5fe4f1565e22feff63b4d3912a781e17af21545bc5204",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-60/36-60-4.jpg",
+      "bytes": 2980990,
+      "sha256": "9e602f9300a96a11f8310cf8fe604a439eded7835210d862ba749399161de91c",
+      "house_type": "36/60",
+      "kind": "PHOTO",
+      "caption": "Taman dan laundry belakang",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 2,
+      "key": "house-36-60-photo-03",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-60-photo-03.webp",
+          "bytes": 314224,
+          "sha256": "bf338e9998a7ffe7e39b159a6dce3e6064c728d696d95b45c7aa28a4ff956d7d",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-60/36-60-5.jpg",
+      "bytes": 2562157,
+      "sha256": "3fe7b1dfd78c7636ae3b7a6fe9b831f2d39410a7bd7c2298fd88dd6f9c1548d1",
+      "house_type": "36/60",
+      "kind": "PHOTO",
+      "caption": "Kamar mandi",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 3,
+      "key": "house-36-60-photo-04",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-60-photo-04.webp",
+          "bytes": 164590,
+          "sha256": "49a25e7463296e493d5a9d2e315f4bb3d888e5e311815ae828e7d0d77055f272",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-60/36-60-6.jpg",
+      "bytes": 2623232,
+      "sha256": "f2459e1d3cb4d8db9a89eb9fff9595fa5936e51fda1d75c89e811b9b4d44dccc",
+      "house_type": "36/60",
+      "kind": "PHOTO",
+      "caption": "Dapur",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 4,
+      "key": "house-36-60-photo-05",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-60-photo-05.webp",
+          "bytes": 181598,
+          "sha256": "debf6eb5c161509a4af7c77ac2efabafee47b11e38503ca67b41fb2e93a51d21",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-60/36-60-7.jpg",
+      "bytes": 2648601,
+      "sha256": "923c5511a5cd7b16c638187e55c9083b3b9a18887057e2776a9a6121c5cd1409",
+      "house_type": "36/60",
+      "kind": "PHOTO",
+      "caption": "Ruang keluarga dan makan, sudut lebar",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 5,
+      "key": "house-36-60-photo-06",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-60-photo-06.webp",
+          "bytes": 194492,
+          "sha256": "8087f43076e7b77aa3810d7d533fda468078af30a0fb51adc3a71b1d49b02ace",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-60/36-60-8.jpg",
+      "bytes": 2481613,
+      "sha256": "8a51550e40d3f615bab3293e536cd22500d0cd243aac6dc32693667293cfa708",
+      "house_type": "36/60",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur anak",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 6,
+      "key": "house-36-60-photo-07",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-60-photo-07.webp",
+          "bytes": 133136,
+          "sha256": "239cef3a0e301c423be53302a15dbdbcecd96b3806defc81affd4993fbe2f487",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-60/36-60-9.jpg",
+      "bytes": 2556685,
+      "sha256": "f84f9f39b7b00293f7cb573dadbd9d4552c66aa234fdb1fdf22a81c85ec4c4c2",
+      "house_type": "36/60",
+      "kind": "PHOTO",
+      "caption": "Ruang keluarga dan makan, sudut kedua",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 7,
+      "key": "house-36-60-photo-08",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-60-photo-08.webp",
+          "bytes": 183672,
+          "sha256": "ca4193c6747fc755e5320298bebd440c6e16da445672bd1843460df0c0c0fee3",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-90/36-90-1.jpg",
+      "bytes": 3210513,
+      "sha256": "d37aa569f6eba8d34c4a4e0245231e7b9a5ab3190a90c9212d7c50f374f71396",
+      "house_type": "36/90",
+      "kind": "PHOTO",
+      "caption": "Fasad utama",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 0,
+      "key": "house-36-90-photo-01",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-90-photo-01.webp",
+          "bytes": 526610,
+          "sha256": "28fa8e6df9691319ed3a0959fc9a221b67219064e92bd2ac64f7c4a74c8858db",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-90/36-90-10.mp4",
+      "bytes": 4850895,
+      "sha256": "33712914932f1efb56c0bb5207b6f3c6aa7708528067381fc72de0d2cef9b663",
+      "house_type": "36/90",
+      "kind": "DEFERRED_VIDEO",
+      "caption": "Video menunggu URL YouTube",
+      "label": null,
+      "key": "deferred-36-90-10",
+      "status": "DEFERRED_BY_USER",
+      "outputs": []
+    },
+    {
+      "path": "EDITED/36-90/36-90-2.jpg",
+      "bytes": 3479881,
+      "sha256": "27e0733028aaff23efb2e851de0183a45f71ab9737323f9756bac8239cdf7561",
+      "house_type": "36/90",
+      "kind": "PHOTO",
+      "caption": "Perspektif bangunan dari atas",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 1,
+      "key": "house-36-90-photo-02",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-90-photo-02.webp",
+          "bytes": 673602,
+          "sha256": "6a4fcfee2969d6e7ba304101d072a8c2e2661506c70b949f24b5067dd8fe8fca",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-90/36-90-3.jpg",
+      "bytes": 2433801,
+      "sha256": "53ea3fdfd91d7d35f543417b97f143c14b53567973945419f0c0582a168dee4b",
+      "house_type": "36/90",
+      "kind": "FLOOR_PLAN",
+      "caption": "Denah bangunan",
+      "label": "Denah sumber pemilik",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 8,
+      "key": "house-36-90-floor-plan",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-90-floor-plan.webp",
+          "bytes": 249514,
+          "sha256": "50c43a2d4945002db393b6b03ca35330e553a733bb999026902f5af3da6079c4",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-90/36-90-4.jpg",
+      "bytes": 2822480,
+      "sha256": "933a0aefa7e7547559dd714d4978256d8426e9fe606a99a58d0eaefd2bc57362",
+      "house_type": "36/90",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur depan/anak",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 2,
+      "key": "house-36-90-photo-03",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-90-photo-03.webp",
+          "bytes": 196700,
+          "sha256": "42896cec746c2de49f3449739398deab496f16161f8551f1498aaf990745ed5f",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-90/36-90-5.jpg",
+      "bytes": 2595634,
+      "sha256": "cd653f9f8dbade2db60f6a73ab6cfb1896ce3448c6c5151f381360b072eb20fc",
+      "house_type": "36/90",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur utama belakang",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 3,
+      "key": "house-36-90-photo-04",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-90-photo-04.webp",
+          "bytes": 205714,
+          "sha256": "c28a22abb149fcb431306a2c5f902494bcc990c22191bf23a61f14954ae86704",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-90/36-90-6.jpg",
+      "bytes": 2967464,
+      "sha256": "0f664da8cb4f5a75521f5c0af293fe1e156453063dd6c480b1104e695b4b06d6",
+      "house_type": "36/90",
+      "kind": "PHOTO",
+      "caption": "Taman depan dan teras",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 4,
+      "key": "house-36-90-photo-05",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-90-photo-05.webp",
+          "bytes": 363900,
+          "sha256": "03cb7e4861f19d5070598d621c9109df16eff3c2b92521ff020f5bc7bf5e14b9",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-90/36-90-7.jpg",
+      "bytes": 2401430,
+      "sha256": "146423c77ae434f0d3fcc009f67ff341785a44aee22e23dd1fd46e6810b210e8",
+      "house_type": "36/90",
+      "kind": "PHOTO",
+      "caption": "Kamar mandi",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 5,
+      "key": "house-36-90-photo-06",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-90-photo-06.webp",
+          "bytes": 156606,
+          "sha256": "37ea5fd37c6c5c490cf688c7f8e02a3f924fb278a26ae9e06989b3c0fe257ec5",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-90/36-90-8.jpg",
+      "bytes": 2732705,
+      "sha256": "fb2c0acc8d5190366113b24cb104b292088fa5730c33716b0eb24d54cb5e856a",
+      "house_type": "36/90",
+      "kind": "PHOTO",
+      "caption": "Dapur",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 6,
+      "key": "house-36-90-photo-07",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-90-photo-07.webp",
+          "bytes": 208382,
+          "sha256": "9bc466b08b5f23ae36bc16c5443983cdcdc73c5de47f6527aaf458ac17191bb9",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/36-90/36-90-9.jpg",
+      "bytes": 2802130,
+      "sha256": "463f7c7d09be695ef165bc883c1782b40754ff537c44dc71104dc231e6bcf6f7",
+      "house_type": "36/90",
+      "kind": "PHOTO",
+      "caption": "Ruang keluarga dan makan",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 7,
+      "key": "house-36-90-photo-08",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-36-90-photo-08.webp",
+          "bytes": 243808,
+          "sha256": "2e3e4098133dbe35ab359624a7e31b575cd3af1d90b62b4e32f07801e58053a1",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/56-90/56-90-1.jpg",
+      "bytes": 2940110,
+      "sha256": "8fead468ccf0503ee9c1afe8752dd1b793f5191514256160029a5401c2f8c884",
+      "house_type": "56/90",
+      "kind": "PHOTO",
+      "caption": "Fasad utama",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 0,
+      "key": "house-56-90-photo-01",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-56-90-photo-01.webp",
+          "bytes": 423134,
+          "sha256": "34756786c4b0555534e2e3bfed8983a4982b8a7e4db44c41a43197b071ed07f2",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/56-90/56-90-10.jpg",
+      "bytes": 2991603,
+      "sha256": "1bb6d9b3731becba448a694b1fd75e6a8e6e524eeeb78bdc3ee62a6de35fa397",
+      "house_type": "56/90",
+      "kind": "PHOTO",
+      "caption": "Taman depan dan teras",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 8,
+      "key": "house-56-90-photo-09",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-56-90-photo-09.webp",
+          "bytes": 379912,
+          "sha256": "9dd6073fdf94fb359465b588c70e67ea088b7a47d463e49177a8acc8a00ab9f3",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/56-90/56-90-11.jpg",
+      "bytes": 2614492,
+      "sha256": "11a3ee0c5f30cc98f6985e61050299680020a0936f75990c7a1b0c3360558c6f",
+      "house_type": "56/90",
+      "kind": "PHOTO",
+      "caption": "Ruang keluarga dan makan",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 9,
+      "key": "house-56-90-photo-10",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-56-90-photo-10.webp",
+          "bytes": 228392,
+          "sha256": "d9d91612f7c8db6b9b1244d5263f1acb20c4299c6f0ebe04db7a32016adf689b",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/56-90/56-90-2.jpg",
+      "bytes": 3974159,
+      "sha256": "658a78e92a39eef8de71560e620b280f3076e47f24f8c720ee531ad7d64602b1",
+      "house_type": "56/90",
+      "kind": "PHOTO",
+      "caption": "Perspektif bangunan dari atas",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 1,
+      "key": "house-56-90-photo-02",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-56-90-photo-02.webp",
+          "bytes": 909742,
+          "sha256": "98a01764beac526e3e0505f9054419cbde233d229550790af76a14e1e5a64f44",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/56-90/56-90-3.jpg",
+      "bytes": 2255948,
+      "sha256": "6b9ae6a5cca8eb01310937eec98094dec5599303115b4d16d5e277b92b5757b4",
+      "house_type": "56/90",
+      "kind": "FLOOR_PLAN",
+      "caption": "Denah bangunan",
+      "label": "Denah sumber pemilik",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 10,
+      "key": "house-56-90-floor-plan",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-56-90-floor-plan.webp",
+          "bytes": 210548,
+          "sha256": "872b224d1105db81960341d384bf026ee41f0289db0b0a39e7bae3e59f6f49a8",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/56-90/56-90-4.jpg",
+      "bytes": 2550983,
+      "sha256": "0eff185f986425beed8cd4e123e31cd5d7cee865f2bddbf20f3d3a658224db50",
+      "house_type": "56/90",
+      "kind": "PHOTO",
+      "caption": "Dapur",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 2,
+      "key": "house-56-90-photo-03",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-56-90-photo-03.webp",
+          "bytes": 191350,
+          "sha256": "ef966b69b27050f86f1db900e42e9cc0a3990c7e7072f10828c1ae741331a925",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/56-90/56-90-5.jpg",
+      "bytes": 2656358,
+      "sha256": "b00f33496975a3443585dd13731ab2f55acb2265816c63a891dcaa4ccb2a0d73",
+      "house_type": "56/90",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur utama depan",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 3,
+      "key": "house-56-90-photo-04",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-56-90-photo-04.webp",
+          "bytes": 221138,
+          "sha256": "054665c9a104a516ff64ec6dd2496c68765063874fc452cb1abef35fbe905fe5",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/56-90/56-90-6.jpg",
+      "bytes": 2543092,
+      "sha256": "0ebc79c2c48fe34ddf4f44953249e9faa70801b62a7aedd40f7afa0d9bd78df7",
+      "house_type": "56/90",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur belakang",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 4,
+      "key": "house-56-90-photo-05",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-56-90-photo-05.webp",
+          "bytes": 169406,
+          "sha256": "c26f7d37a8889fb56ccd789e0ed9021c763eaff141dd1cbf866da45f4049c016",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/56-90/56-90-7.jpg",
+      "bytes": 2554457,
+      "sha256": "861cf6a3a8b193790c83bca284f070354ba05f97005e9e0890d7686c35664afd",
+      "house_type": "56/90",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur samping",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 5,
+      "key": "house-56-90-photo-06",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-56-90-photo-06.webp",
+          "bytes": 173340,
+          "sha256": "b2af1bd5a276c9e8c5dcc526e09e1b8a37850dfe826d178020b92d4a0a91acc3",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/56-90/56-90-8.jpg",
+      "bytes": 2384976,
+      "sha256": "63417c98084a477ec838b58c27b38c3cffac227bfecba8e2805a3f29e57ad98d",
+      "house_type": "56/90",
+      "kind": "PHOTO",
+      "caption": "Kamar mandi",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 6,
+      "key": "house-56-90-photo-07",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-56-90-photo-07.webp",
+          "bytes": 146546,
+          "sha256": "6fcbba106375ab673a6763e93e7170fff096cd278c91d6efae2b37733c13b10e",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/56-90/56-90-9.jpg",
+      "bytes": 3116314,
+      "sha256": "61b6b14d01a4f52346e474620d878bbb3fd5d21a3905ede9831d213111234c47",
+      "house_type": "56/90",
+      "kind": "PHOTO",
+      "caption": "Laundry dan taman belakang",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 7,
+      "key": "house-56-90-photo-08",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-56-90-photo-08.webp",
+          "bytes": 432690,
+          "sha256": "d97df2335f9d8c42fd88601f33feaa13113fb200ed78e416f31c7686752321d3",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/62-70-1.jpg",
+      "bytes": 3008722,
+      "sha256": "34c5469eb5903cfe9793cdbd194d3a8965ab64ca26911ad11a7441836b16006c",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Fasad utama",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 0,
+      "key": "house-62-70-photo-01",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-01.webp",
+          "bytes": 417786,
+          "sha256": "5cd2b91252ff796e1a0caf5a9b7e569dcca65c5d648e3eadc0bf2bb2d8e81ac0",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/62-70-2.jpg",
+      "bytes": 4011244,
+      "sha256": "5a895e57fc8ac7d4fa11616f8ad72b2fc310b6c268f2b6564d1bbf61889e043a",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Perspektif bangunan dari atas",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 1,
+      "key": "house-62-70-photo-02",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-02.webp",
+          "bytes": 877840,
+          "sha256": "7250a11158af636e0d44d7223d2e5315bbfbe245138c9aea19cdd37397a49e59",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/62-70-3.jpg",
+      "bytes": 2584200,
+      "sha256": "51bb1b4705c19d6b0cf0ef44a6d1b1bf475cd62df03dbdb0045f333604804d37",
+      "house_type": "62/70",
+      "kind": "FLOOR_PLAN",
+      "caption": "Denah dua lantai",
+      "label": "Denah sumber pemilik",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 14,
+      "key": "house-62-70-floor-plan",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-floor-plan.webp",
+          "bytes": 202044,
+          "sha256": "6350245a4fe8f18057f157ef7d977aa7ef55f2ae5d0a36c8e177dee9d2f00831",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_7t6q2w7t6q2w7t6q.jpg",
+      "bytes": 2392587,
+      "sha256": "fbfebc51b275749ae3f9ac176d87e63fc52a83de8c0cf2e4412b85b6e745a3ee",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Kamar mandi, variasi A",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 2,
+      "key": "house-62-70-photo-03",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-03.webp",
+          "bytes": 151660,
+          "sha256": "1d55285723f335a3e79dab170c3b503dd8b3056438403cea70311c4cf4f033a7",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_81mu3u81mu3u81mu.jpg",
+      "bytes": 3332918,
+      "sha256": "0d0846272e227ef9ed8ee4ae1e9ed5b4070fca30a261f632b12e44f1dbae3670",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur utama, inspirasi interior",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 3,
+      "key": "house-62-70-photo-04",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-04.webp",
+          "bytes": 472048,
+          "sha256": "3e6685ac6c4f6522bc59b265601e63a065cbb478467591ed4e2f380705c1514b",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_a0kgc6a0kgc6a0kg.jpg",
+      "bytes": 2958583,
+      "sha256": "9d390b51da764b3aefe451228003df0882629b7c0a9441c19800e34b7c8b05a2",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur anak, ilustrasi lantai dua",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 4,
+      "key": "house-62-70-photo-05",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-05.webp",
+          "bytes": 297090,
+          "sha256": "92641f6a9567ea372eabf47d1d8d10cc339bbbe28c430edd882a9a3ab34cc0ab",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_bgmq52bgmq52bgmq.jpg",
+      "bytes": 867729,
+      "sha256": "a293cedf3d66405e86bd529b0d8ec096eb4fa2cfd1c7bf612d50441800a82de9",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Ruang keluarga dan makan dengan tangga",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 1200,
+      "height": 896,
+      "orientation": 1,
+      "position": 5,
+      "key": "house-62-70-photo-06",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-06.webp",
+          "bytes": 148888,
+          "sha256": "47177c88eee6ebd0a6de42a1ad2bc0a27303ecb41d99378aa53a27f43f3dc453",
+          "width": 1200,
+          "height": 896
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_jz7n29jz7n29jz7n.jpg",
+      "bytes": 859017,
+      "sha256": "49d1dfad8af75188fcd0a69a9214592953b991e532571edec5484574099773ea",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Inspirasi ruang kerja; bukan tambahan spesifikasi standar",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 1200,
+      "height": 896,
+      "orientation": 1,
+      "position": 6,
+      "key": "house-62-70-photo-07",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-07.webp",
+          "bytes": 181184,
+          "sha256": "5e9c9ed5dffab9470284e554d2ccc4b90883827f396d4c1c1c6af42de36a634d",
+          "width": 1200,
+          "height": 896
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_l5vqtjl5vqtjl5vq (1).jpg",
+      "bytes": 2940966,
+      "sha256": "22f00936ae52949e13ff9bc32f3b75596eb292bc246a2b939d2e7673584c4225",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Void dan balkon dalam",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 7,
+      "key": "house-62-70-photo-08",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-08.webp",
+          "bytes": 221068,
+          "sha256": "6202bcbc0948c080488f851ed6c09283de91cf46e04bb0e4984938102bb5e90d",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_l5vqtjl5vqtjl5vq (2).jpg",
+      "bytes": 3767948,
+      "sha256": "0e32e1e085eb4bd2a2196e983aa22d9d4b3d5834d607fadd93038923a56ffc65",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Variasi ilustrasi fasad; cek terhadap rancangan standar",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 8,
+      "key": "house-62-70-photo-09",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-09.webp",
+          "bytes": 557710,
+          "sha256": "0541c6cfb1ec23ef742229eecd4afb569c48dd325639596130efba411eb111a9",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_l5vqtjl5vqtjl5vq.jpg",
+      "bytes": 2807679,
+      "sha256": "255d34472774b7fdd1618a84d530260172621ffcc1450d63ce4b1221da729c7b",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Kamar mandi, variasi B",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2528,
+      "height": 1696,
+      "orientation": 1,
+      "position": 9,
+      "key": "house-62-70-photo-10",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-10.webp",
+          "bytes": 248870,
+          "sha256": "0334f34835422aa13d773f0bc57d6c09a9d3dba1d14193359d03d10386f2e486",
+          "width": 1920,
+          "height": 1288
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_nl9ucknl9ucknl9u.jpg",
+      "bytes": 675797,
+      "sha256": "32c11d858c3865254f637192e9927af88d59be5027dd8d623c71722b95a09b6a",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Area tangga dan void",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 1200,
+      "height": 896,
+      "orientation": 1,
+      "position": 10,
+      "key": "house-62-70-photo-11",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-11.webp",
+          "bytes": 97160,
+          "sha256": "99857ae26a120315815cef784c228339f4b0941cf2fd97872f74c0a88183d23f",
+          "width": 1200,
+          "height": 896
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_qynztkqynztkqynz.jpg",
+      "bytes": 994410,
+      "sha256": "eee6a201aa0d0def3a6bca84c071c8103605ecf86cbd372dd04d30cfb79e6c17",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Kamar mandi, variasi C",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 1200,
+      "height": 896,
+      "orientation": 1,
+      "position": 11,
+      "key": "house-62-70-photo-12",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-12.webp",
+          "bytes": 217834,
+          "sha256": "b51deb94ec985165744c3e06713f21dcbeeeaeb946d278c280e35f6630a9697c",
+          "width": 1200,
+          "height": 896
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_sr44u7sr44u7sr44.jpg",
+      "bytes": 890520,
+      "sha256": "c019599803c316ca6fd5af9d32f6ac50a115645989bdd57a496869c27500e7f2",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Dapur",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 1200,
+      "height": 896,
+      "orientation": 1,
+      "position": 12,
+      "key": "house-62-70-photo-13",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-13.webp",
+          "bytes": 135048,
+          "sha256": "bc6329da7f8085106889d0fc26246ef399f5cc35e84cce8ccd5038e064527eb6",
+          "width": 1200,
+          "height": 896
+        }
+      ]
+    },
+    {
+      "path": "EDITED/62-70/Gemini_Generated_Image_tq0sgwtq0sgwtq0s.jpg",
+      "bytes": 2987040,
+      "sha256": "6a4263ec5dbf408fb054f139e14fbbb6f0370fdd226aa66d5667b33cc1f169b8",
+      "house_type": "62/70",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur, variasi inspirasi",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 13,
+      "key": "house-62-70-photo-14",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-62-70-photo-14.webp",
+          "bytes": 323338,
+          "sha256": "b3387bbe5d43411ceab4c08babed40d2c2f5dadb9063ae9fa5eba8a31a12dcc6",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/69-80/69-80-1.jpg",
+      "bytes": 2938866,
+      "sha256": "7990b62d9513eb19ad9d9bf457ff31337e90843bebcb62fa31d453a6c9311b26",
+      "house_type": "69/80",
+      "kind": "PHOTO",
+      "caption": "Fasad utama; koreksi 69/70 menjadi 69/80 pada label kecil",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 0,
+      "key": "house-69-80-photo-01",
+      "artwork": {
+        "file": ".tools/real-flamboyan-assets/artwork/cover-69-80.png",
+        "bytes": 1915665,
+        "sha256": "f2171a0854e76100944c912436203bffed59f21df3eb3c218de6be86765c4461"
+      },
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-69-80-photo-01.webp",
+          "bytes": 191080,
+          "sha256": "78bb0dc9f6f45cc14480d95821d21256b28af1fd3eaec00e337bd3062a36ef08",
+          "width": 1451,
+          "height": 1084
+        }
+      ]
+    },
+    {
+      "path": "EDITED/69-80/69-80-2.jpg",
+      "bytes": 2586806,
+      "sha256": "8a8f305bfe0e60f130e7d757c24a804e6125812a00d7978fafbe128bcf4ced3a",
+      "house_type": "69/80",
+      "kind": "FLOOR_PLAN",
+      "caption": "Denah dua lantai",
+      "label": "Denah sumber pemilik",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 9,
+      "key": "house-69-80-floor-plan",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-69-80-floor-plan.webp",
+          "bytes": 232302,
+          "sha256": "d0bcfc848c1ab3bab722f7167c7f37c2a29f487d2177a0dae580563b87ca6143",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml (1).jpg",
+      "bytes": 3430043,
+      "sha256": "a25ab6a88eea5db68274187c670a1dc5040199f82b3f88f97d37f95448db5278",
+      "house_type": "69/80",
+      "kind": "PHOTO",
+      "caption": "Laundry dan taman belakang",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 1,
+      "key": "house-69-80-photo-02",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-69-80-photo-02.webp",
+          "bytes": 458396,
+          "sha256": "a1ab17ac8282b0ac3fd5e486c42f4deb7b77a468cee1976325140a0a508dbf63",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml (2).jpg",
+      "bytes": 2977619,
+      "sha256": "3a3aedbae73435bc9b339acd513f62031cb19b8830fa73fcdd9472139cc6e2a4",
+      "house_type": "69/80",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur utama lantai dua",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 2,
+      "key": "house-69-80-photo-03",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-69-80-photo-03.webp",
+          "bytes": 281948,
+          "sha256": "cede5685192211eb6521ae0a8720b60e36ecf83e83d965818253066a629cf1fb",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml (3).jpg",
+      "bytes": 2902670,
+      "sha256": "e5cf0ab8c34278fa9994a2cbd3003c525a0a6010b24f360bf7c08920feb187c7",
+      "house_type": "69/80",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur anak",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 3,
+      "key": "house-69-80-photo-04",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-69-80-photo-04.webp",
+          "bytes": 266626,
+          "sha256": "1fdd1f6172b45e670c430e39d315ae328b1b46b714bdf032dbab48f50daeff0f",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml (4).jpg",
+      "bytes": 2843748,
+      "sha256": "c1bc3b9e92c78dfa02476eb8257bed7aff4c719562af41a8fb684a39d96295e2",
+      "house_type": "69/80",
+      "kind": "PHOTO",
+      "caption": "Kamar mandi lantai dua; nomor caption diperiksa",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 4,
+      "key": "house-69-80-photo-05",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-69-80-photo-05.webp",
+          "bytes": 244094,
+          "sha256": "02e0ebe36242591d4f237e888926b91dcb6e6119c98795c1be35219e4cf7073a",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml (5).jpg",
+      "bytes": 3387395,
+      "sha256": "a3cb8ff980dcca965b2a6d240f1633d750177cb2fdadf634281301f1b1710cf3",
+      "house_type": "69/80",
+      "kind": "PHOTO",
+      "caption": "Variasi ilustrasi fasad",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2752,
+      "height": 1536,
+      "orientation": 1,
+      "position": 5,
+      "key": "house-69-80-photo-06",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-69-80-photo-06.webp",
+          "bytes": 456886,
+          "sha256": "f3a679813e4279e9b7b1167f7405ff74e16f68318114df734c1c22c3c7b401e6",
+          "width": 1920,
+          "height": 1072
+        }
+      ]
+    },
+    {
+      "path": "EDITED/69-80/Gemini_Generated_Image_m9ml6tm9ml6tm9ml.jpg",
+      "bytes": 2828161,
+      "sha256": "6470bb882c06d295c3becbc003f8e180c6afba5334f8583c0970914a413829bf",
+      "house_type": "69/80",
+      "kind": "PHOTO",
+      "caption": "Kamar mandi lantai satu; nomor caption diperiksa",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 6,
+      "key": "house-69-80-photo-07",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-69-80-photo-07.webp",
+          "bytes": 303970,
+          "sha256": "d4519b27b14207fad50bcf3cec0548ca0e2cf081c2f288ee4f226621aea2d453",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/69-80/Gemini_Generated_Image_y1dc8by1dc8by1dc.jpg",
+      "bytes": 3052308,
+      "sha256": "e5907ccdb3148c07f70fb3ffbe3cc9c4cb1bad804218d24a8b9cf55f7b4764f5",
+      "house_type": "69/80",
+      "kind": "PHOTO",
+      "caption": "Kamar tidur utama lantai satu",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 7,
+      "key": "house-69-80-photo-08",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-69-80-photo-08.webp",
+          "bytes": 388050,
+          "sha256": "260763b07cd667ebfba102d415b9901fb11d65b072a3b900b63508763d75da15",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/69-80/Gemini_Generated_Image_za317uza317uza31.jpg",
+      "bytes": 3179697,
+      "sha256": "f1042c3a46ceb356b99c3abf278c0baec3522b9a9d44306dca1cd8c9218196bf",
+      "house_type": "69/80",
+      "kind": "PHOTO",
+      "caption": "Ruang keluarga dan makan lantai satu",
+      "label": "Ilustrasi desain/inspirasi interior",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "position": 8,
+      "key": "house-69-80-photo-09",
+      "outputs": [
+        {
+          "file": ".tools/real-flamboyan-assets/import/house-69-80-photo-09.webp",
+          "bytes": 447042,
+          "sha256": "73d6949a6d68bc928fab5da7aea50266304825a9098c22198012a8c66e2fa780",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/GATE 1.jpg",
+      "bytes": 3577018,
+      "sha256": "abcca1799827033516d3487ac236d39eb1cabe8b7e15eff1a99e2a8dbab84f24",
+      "house_type": null,
+      "kind": "PROJECT_ILLUSTRATION",
+      "caption": "Ilustrasi gerbang siang",
+      "label": "Ilustrasi desain gerbang",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "key": "gate-day",
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/gate-day-640.webp",
+          "bytes": 56054,
+          "sha256": "2fff82d2753084988d5dd65922c901c76781d46ac93928a1383e1b6cfec8f44a",
+          "width": 640,
+          "height": 478
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/gate-day-1280.webp",
+          "bytes": 189202,
+          "sha256": "d0ffe5c165c78dd15b7bdeced548cb3df622b90d930661b6693b3f0bc9b920f2",
+          "width": 1280,
+          "height": 956
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/gate-day-1920.webp",
+          "bytes": 395708,
+          "sha256": "576de453d948d35623f733fc4046bdd327ec408c4983211892518fd3bf297000",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/GATE 2.jpg",
+      "bytes": 3239714,
+      "sha256": "ee78bfb3708403aaf3ec91ef4dc9e7259328d48a51e8a80dcc90414191908ec7",
+      "house_type": null,
+      "kind": "PROJECT_ILLUSTRATION",
+      "caption": "Ilustrasi gerbang senja",
+      "label": "Ilustrasi desain gerbang",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "key": "gate-dusk",
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/gate-dusk-640.webp",
+          "bytes": 42182,
+          "sha256": "37749095112de1f846039427164b1cccff9f5f5f2fcb5f2df0bbc418f01e44e6",
+          "width": 640,
+          "height": 478
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/gate-dusk-1280.webp",
+          "bytes": 136580,
+          "sha256": "8aa56447a620a4335bb9ca106c758ea5e40cb216f8889bfea54efa6dcaf8b040",
+          "width": 1280,
+          "height": 956
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/gate-dusk-1920.webp",
+          "bytes": 280756,
+          "sha256": "f762d17d3bd0ba8ce96c4999bf4c5f1c0cb1bdb1e03fb2a3af64fd26edb00e86",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "EDITED/Siteplan.jpg",
+      "bytes": 3199386,
+      "sha256": "106f0d6155e741a404fb997700bd2f35605fb7e62db646451244a81931253141",
+      "house_type": null,
+      "kind": "MASTERPLAN",
+      "caption": "Rencana siteplan kawasan",
+      "label": "Rencana siteplan dari sumber pemilik",
+      "width": 2400,
+      "height": 1792,
+      "orientation": 1,
+      "key": "siteplan",
+      "outputs": [
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/siteplan-640.webp",
+          "bytes": 83090,
+          "sha256": "10b62bed6fe56a5fe8dcf9338ddfd448133f0fe0b4ad10a45287e94d7b17114f",
+          "width": 640,
+          "height": 478
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/siteplan-1280.webp",
+          "bytes": 300972,
+          "sha256": "1983d0fa5b74f591c560ac385efcd5ab6084d130d4b2f8b161ee7f0fc36600d0",
+          "width": 1280,
+          "height": 956
+        },
+        {
+          "file": "apps/web/public/images/flamboyan-indah-2/siteplan-1920.webp",
+          "bytes": 609134,
+          "sha256": "488cf4af3a86ef7a792bf7615a55dffe9b457d6f8a66905accef502fa286d359",
+          "width": 1920,
+          "height": 1434
+        }
+      ]
+    },
+    {
+      "path": "LOGO (1).jpg",
+      "bytes": 1654943,
+      "sha256": "f8d862984ae779eadbc385e873acfb0437a2bb6d7385b42c1fcd0005662939bf",
+      "house_type": null,
+      "kind": "BRAND",
+      "caption": "Video menunggu URL YouTube",
+      "label": "Bukit Flamboyan Indah",
+      "width": 3700,
+      "height": 1152,
+      "key": "brand-logo",
+      "artwork": {
+        "logo": {
+          "file": ".tools/real-flamboyan-assets/artwork/logo.png",
+          "bytes": 685450,
+          "sha256": "15f2f160f0903b09870ce5b5bc802df78828ce3cf46723ff68f59ae20f57fb0d"
+        },
+        "mark": {
+          "file": ".tools/real-flamboyan-assets/artwork/mark.png",
+          "bytes": 731609,
+          "sha256": "91da0f6a21dd96545ca98c89d6a07109bbcaaf2170035505a871f10b622433b5"
+        }
+      },
+      "outputs": [
+        {
+          "file": "apps/web/public/images/brand/flamboyan-logo.webp",
+          "bytes": 108776,
+          "sha256": "67dbe64a4f81cf92cc5636c388af706f26a5d4b1c2af1776480d0d54d57e4375",
+          "width": 1200,
+          "height": 400
+        },
+        {
+          "file": "apps/web/public/images/brand/flamboyan-mark.webp",
+          "bytes": 23416,
+          "sha256": "1702ac3e5acbb8cc6828187cd77df921545c9f92dfe29882cef36bf8f9438233",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "file": "apps/web/public/images/brand/flamboyan-mark.png",
+          "bytes": 47584,
+          "sha256": "129f74f467343c701908bb858d9a86e25d5e58e7415701331940c46008c60f30",
+          "width": 256,
+          "height": 256
+        }
+      ]
+    }
+  ],
+  "recipe": {
+    "actual_photos": "EXIF transpose; per-scene tonal LUT, gentle contrast and saturation; full frame preserved",
+    "edited": "No color grading; width-limited WebP; selected 69/80 label correction only",
+    "siteplan": "Original colors, labels and full frame; WebP quality 94",
+    "public_webp_quality": 82,
+    "import_webp_quality": 92,
+    "responsive_widths": [640, 1280, 1920]
+  }
+}

@@ -125,6 +125,14 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'id' },
       title: 'Flamboyan Perum',
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: '/images/brand/flamboyan-mark.png',
+        },
+        { rel: 'apple-touch-icon', href: '/images/brand/flamboyan-mark.png' },
+      ],
       meta: [
         {
           name: 'description',

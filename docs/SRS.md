@@ -1,5 +1,11 @@
 # Software Requirements Specification — Flamboyan Perum
 
+## Integrasi aset pemilik — 2026-10-15
+
+Halaman SSR `/perumahan/bukit-flamboyan-indah-2` memuat 17 foto aktual, 2 ilustrasi gerbang dan 1 siteplan, tanpa MP4. Lima paket tipe 36/60, 36/90, 56/90, 62/70 dan 69/80 dipetakan dari folder sumber ke 50 PHOTO + 5 FLOOR_PLAN; empat tipe lain mempertahankan katalog/media existing. Foto aktual tidak dialokasikan ke tipe tanpa konfirmasi. Label, denah dan ilustrasi ditampilkan utuh; galeri mendukung keyboard, Escape dan pengembalian fokus.
+
+Manifest menyimpan SHA-256, bytes, dimensi dan urutan sumber/keluaran. Importer menggunakan session/CSRF, exact origin/slug/type allowlists, kuota backend existing, private upload, property_version, journal provenance dan verifikasi hash varian. Default dry-run; konflik/respons write ambigu berhenti tanpa retry write. Publikasi dilakukan setelah 55 READY; galeri lama hanya unpublished dan tersedia untuk rollback. Metadata bisnis tetap. Cleanup enumerasi objek lokal/R2 melindungi semua refs belum purged dan logo CMS; grace orphan 30 hari, backup/write-pause sebelum execute. Detail [real-flamboyan-assets.md](real-flamboyan-assets.md) dan [API_DOCS.md](API_DOCS.md).
+
 ## Pengenalan kawasan Banjaran — 2026-10-08
 
 `/perumahan` dan `/perumahan/banjaran` adalah halaman editorial SSR dengan canonical, sitemap dan navigasi publik. Nama proyek sementara serta foto inspirasi bukan record Property, penawaran, atau fallback API. Konten kawasan mengikuti pola editorial terkurasi di source; kontrak DEVELOPMENT masih tunggal dan tidak diklaim sebagai CMS multi-proyek.

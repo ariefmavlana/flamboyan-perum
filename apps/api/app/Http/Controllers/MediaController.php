@@ -23,7 +23,7 @@ class MediaController extends Controller
             $query->where('state', '!=', 'ARCHIVED');
         }
 
-        return JsonResource::collection($query->paginate($data['per_page'] ?? 20))->additional(['property_version' => $property->version, 'process_in_request' => (bool) config('media.process_in_request')]);
+        return JsonResource::collection($query->paginate($data['per_page'] ?? 20))->additional(['property_version' => $property->version, 'process_in_request' => (bool) config('media.process_in_request'), 'supports_unpublished_uploads' => true]);
     }
 
     public function processPending(Request $request, int $id)
@@ -36,7 +36,7 @@ class MediaController extends Controller
     public function store(Request $request, int $id)
     {
         $this->operations->scoped($request->user(), $id);
-        $data = $request->validate(['version' => 'required|integer|min:1', 'kind' => ['required', Rule::in(['PHOTO', 'FLOOR_PLAN', 'MASTERPLAN', 'VIDEO', 'TOUR', 'BROCHURE'])], 'alt' => 'required|string|max:240', 'file' => 'required_if:kind,PHOTO,FLOOR_PLAN,MASTERPLAN,BROCHURE|prohibited_if:kind,VIDEO,TOUR|file|max:10240', 'url' => 'required_if:kind,VIDEO,TOUR|prohibited_if:kind,PHOTO,FLOOR_PLAN,MASTERPLAN,BROCHURE|string|max:2048|url:https']);
+        $data = $request->validate(['version' => 'required|integer|min:1', 'kind' => ['required', Rule::in(['PHOTO', 'FLOOR_PLAN', 'MASTERPLAN', 'VIDEO', 'TOUR', 'BROCHURE'])], 'alt' => 'required|string|max:240', 'published' => 'sometimes|required|boolean', 'file' => 'required_if:kind,PHOTO,FLOOR_PLAN,MASTERPLAN,BROCHURE|prohibited_if:kind,VIDEO,TOUR|file|max:10240', 'url' => 'required_if:kind,VIDEO,TOUR|prohibited_if:kind,PHOTO,FLOOR_PLAN,MASTERPLAN,BROCHURE|string|max:2048|url:https']);
 
         return response()->json($this->operations->create($request->user(), $id, $data, $request->file('file')), 201);
     }

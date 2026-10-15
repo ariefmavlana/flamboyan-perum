@@ -33,6 +33,11 @@ if (!data.value)
     statusMessage: 'Properti belum dapat dimuat',
   })
 const property = computed(() => data.value!.data)
+const isFlamboyan = computed(
+  () =>
+    property.value.slug ===
+    `bukit-flamboyan-indah-2-${property.value.house_type.replace('/', '-')}`,
+)
 const analytics = usePropertyAnalytics()
 const tracking = useAnalytics()
 onMounted(() => {
@@ -149,6 +154,11 @@ useHead(() => ({
       <a v-if="hasMedia('TOUR')" href="#tur-properti">Virtual tour</a>
       <a v-if="hasMedia('BROCHURE')" href="#brosur-properti">Brosur</a>
       <a href="#lokasi-rumah">Lokasi</a><a href="#simulasi-kpr">Simulasi KPR</a>
+      <NuxtLink
+        v-if="isFlamboyan"
+        to="/perumahan/bukit-flamboyan-indah-2#siteplan"
+        >Siteplan kawasan</NuxtLink
+      >
     </nav>
     <div class="detail-grid">
       <div class="detail-gallery">
@@ -226,6 +236,16 @@ useHead(() => ({
           v-if="property.commercial"
           :commercial="property.commercial"
         />
+        <p v-if="isFlamboyan" class="notice">
+          <NuxtLink
+            class="text-link"
+            to="/perumahan/bukit-flamboyan-indah-2#dokumentasi"
+            >Lihat dokumentasi aktual & rencana kawasan →</NuxtLink
+          >
+          <br />Foto kawasan dan rumah contoh ditampilkan terpisah dari
+          ilustrasi tipe ini. Furnitur pada ilustrasi tidak menyatakan
+          kelengkapan penjualan.
+        </p>
         <PropertyLocation :property="property" />
       </div>
     </div>
