@@ -213,8 +213,8 @@ class OperationsTest extends TestCase
         $this->postJson('/auth/reset-password', ['email' => strtolower($user->email), 'token' => $token, 'password' => 'Sandi-kapital-2026', 'password_confirmation' => 'Sandi-kapital-2026'])->assertOk();
         $this->partialMock(OperationalHealth::class)->shouldReceive('databaseTransportIsSecure')->andReturn(true);
         config(['app.env' => 'production', 'mail.default' => 'log', 'operations.hosts' => ['localhost']]);
-        $this->postJson('/auth/forgot-password', ['email' => $user->email])->assertStatus(503)->assertJsonPath('message', 'Pemulihan email belum dikonfigurasi.');
-        $this->postJson('/auth/forgot-password', ['email' => 'absent-production@example.test'])->assertStatus(503)->assertJsonPath('message', 'Pemulihan email belum dikonfigurasi.');
+        $this->postJson('/auth/forgot-password', ['email' => $user->email])->assertStatus(503)->assertJsonPath('message', 'Layanan mengalami kendala. Silakan coba lagi.');
+        $this->postJson('/auth/forgot-password', ['email' => 'absent-production@example.test'])->assertStatus(503)->assertJsonPath('message', 'Layanan mengalami kendala. Silakan coba lagi.');
         Notification::assertNothingSent();
     }
 
