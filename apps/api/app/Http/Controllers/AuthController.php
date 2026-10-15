@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -15,6 +17,7 @@ class AuthController extends Controller
         $account = User::query()->whereRaw('LOWER(email) = ?', [mb_strtolower($data['email'])])->first();
         $data['email'] = $account?->email ?? mb_strtolower($data['email']);
         if (! Auth::guard('web')->attempt(array_merge($data, ['is_active' => true]))) {
+            Log::warning('login_failed', ['request_id' => $request->attributes->get('request_id'), 'ip_hash' => substr(hash('sha256', (string) $request->ip()), 0, 16)]);
             throw ValidationException::withMessages(['email' => 'Email atau kata sandi tidak sesuai.']);
         }
         $user = Auth::guard('web')->user();
@@ -24,6 +27,7 @@ class AuthController extends Controller
         }
         $request->session()->regenerate();
         $request->session()->put('account_security_stamp', (string) $user->remember_token);
+        ActivityLog::create(['actor_id' => $user->id, 'subject_type' => 'USER', 'subject_id' => $user->id, 'action' => 'LOGIN', 'changes' => ['role' => $user->role]]);
 
         return response()->json(['data' => $user->only(['id', 'name', 'role'])]);
     }

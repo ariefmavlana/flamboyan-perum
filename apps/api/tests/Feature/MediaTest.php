@@ -45,6 +45,38 @@ class MediaTest extends TestCase
         $this->get('/media/'.$id.'/640')->assertNotFound();
     }
 
+    public function test_large_gallery_and_siteplan_dimensions_match_the_actual_processed_variants(): void
+    {
+        Storage::fake('media');
+        Queue::fake();
+        $property = $this->property();
+        $path = '/api/v1/internal/properties/'.$property->id.'/media';
+        foreach ([['PHOTO', 2752, 1536, 1072], ['MASTERPLAN', 2400, 1792, 1434]] as $index => [$kind, $width, $height, $outputHeight]) {
+            $result = $this->postJson($path, ['version' => $index + 1, 'kind' => $kind, 'alt' => 'Dokumentasi pengguna', 'file' => UploadedFile::fake()->image('source.jpg', $width, $height)])->assertCreated();
+            $media = PropertyMedia::findOrFail($result->json('data.id'));
+            (new ProcessPropertyMedia($media->id))->handle(app(MediaProcessor::class));
+            $media->refresh();
+            $this->assertSame('READY', $media->state);
+            $this->assertSame(1920, $media->width);
+            $this->assertSame($outputHeight, $media->height);
+            $decoded = imagecreatefromstring(Storage::disk('media')->get($media->variants['1920']['path']));
+            $this->assertSame(1920, imagesx($decoded));
+            $this->assertSame($outputHeight, imagesy($decoded));
+        }
+    }
+
+    public function test_public_alt_removes_only_terminal_import_markers_and_retains_source_disclosure(): void
+    {
+        $property = $this->property();
+        foreach (['ED:gemini-62-70-1', 'RR:front-1'] as $marker) {
+            $property->media()->create(['kind' => 'PHOTO', 'alt' => 'Ilustrasi AI · bukan foto kondisi aktual. ['.$marker.']', 'state' => 'READY', 'published' => true]);
+        }
+        $property->media()->create(['kind' => 'PHOTO', 'alt' => 'Dokumentasi [catatan pengguna] tetap.', 'state' => 'READY', 'published' => true]);
+        $this->getJson('/api/v1/properties/media-test')->assertJsonPath('data.media.0.alt', 'Ilustrasi AI · bukan foto kondisi aktual.')->assertJsonPath('data.media.1.alt', 'Ilustrasi AI · bukan foto kondisi aktual.')->assertJsonPath('data.media.2.alt', 'Dokumentasi [catatan pengguna] tetap.');
+        $this->getJson('/api/v1/internal/properties/'.$property->id.'/media')->assertJsonPath('data.0.alt', 'Ilustrasi AI · bukan foto kondisi aktual. [ED:gemini-62-70-1]');
+        $this->assertSame('Ilustrasi AI · bukan foto kondisi aktual. [ED:gemini-62-70-1]', $property->media()->first()->alt);
+    }
+
     public function test_images_are_private_until_decoded_reencoded_and_published(): void
     {
         Storage::fake('media');

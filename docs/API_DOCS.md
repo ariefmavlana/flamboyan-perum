@@ -1,5 +1,18 @@
 # REST API — katalog, workspace dan operasi
 
+## Koreksi review keamanan — 2026-10-15
+
+`POST /api/csp-report` pada Nuxt menerima body maksimal 16 KiB (413 jika
+terlalu besar). Maksimal 60 request diterima per menit per instance; berikutnya
+menghasilkan429 sebelum body dibaca/parsing. Ini bukan kuota global provider.
+Log hanya directive allowlist dan origin; tidak ada path/query/token/nonce.
+
+Laravel production hanya menerima PostgreSQL dengan sslmode efektif
+`verify-full`; mode yang lebih lemah menghasilkan503 sebelum query, termasuk
+bila berasal dari DB_URL. Koneksi yang tidak dapat memverifikasi CA/hostname
+juga gagal tertutup. `/ready` tetap hanya `ready`/`not_ready`, tanpa konfigurasi
+atau kredensial. Persiapan CA dan rollout ada di [runbook.md](runbook.md).
+
 ## Impor aset Rumah Rajasa — 2026-10-05
 
 Tidak ada perubahan wire contract. Importer opt-in memakai session/CSRF serta GET/POST/PATCH media internal existing dengan `property_version`, menunggu READY, dan menyimpan provenance pada alt. Hanya 21 gambar terpilih untuk sembilan tipe yang dipublikasikan; 33 sumber tercatat dalam manifest. API tidak mengambil URL sumber: skrip operator mengunduh berkas terverifikasi lalu mengirim multipart. Public DTO tetap allowlist, original/staging privat; harga, spesifikasi, CMS dan CRM tidak dimutasi. Aturan resolusi, idempotensi, snapshot dan rollback ada di [rajasa-assets.md](rajasa-assets.md).
@@ -215,3 +228,7 @@ Pergantian filter pada `GET /api/v1/leads` langsung menonaktifkan detail daftar 
 ## Pengenalan perumahan — 2026-10-08
 
 Tidak ada perubahan kontrak REST, schema database, atau izin. `/perumahan` dan `/perumahan/banjaran` adalah route editorial Nuxt. `/konsultasi?kawasan=banjaran` merupakan query frontend allowlisted yang menyiapkan pesan WhatsApp berkonteks Banjaran; tidak diteruskan sebagai filter katalog, tidak menghasilkan record Property/Lead, dan tidak mengirim pesan. Konteks properti published tetap diutamakan bila parameter `properti` valid hadir. `GET /api/v1/content` tetap mengembalikan satu `development`; multi-proyek CMS dan relasi proyek–properti belum diimplementasikan. Banjaran tidak ditambahkan sebagai unit dummy ke API bisnis.
+
+## Alt media publik — 2026-10-15
+
+Public media DTO membuang hanya marker impor terminal `[ED:key]` atau `[RR:key]` dari `alt`. Label dokumentasi/ilustrasi dan catatan pengguna dipertahankan. API internal tetap menyimpan dan mengembalikan alt asli; tidak ada endpoint, schema database, atau izin baru. Dimensi READY tetap dimensi varian 1920 yang diproses server, bukan dimensi unggahan sumber.

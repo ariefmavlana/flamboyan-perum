@@ -25,7 +25,8 @@ class PropertyMedia extends Model
 
     public function publicData(): array
     {
-        return array_merge($this->only(['id', 'kind', 'alt', 'position', 'url', 'width', 'height']), [
+        return array_merge($this->only(['id', 'kind', 'position', 'url', 'width', 'height']), [
+            'alt' => preg_replace('/\s+\[(?:ED|RR):[a-z0-9-]+\]$/i', '', $this->alt ?? ''),
             'sources' => collect($this->variants ?? [])->map(fn ($variant, $key) => ['url' => '/media/'.$this->id.'/'.$key, 'width' => $variant['width'] ?? null, 'height' => $variant['height'] ?? null])->values()->all(),
         ]);
     }

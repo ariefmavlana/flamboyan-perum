@@ -2,11 +2,30 @@
 
 Tanggal: 14 Oktober 2026 (Asia/Jakarta). Base: `origin/main` commit
 `43b92e9f8987904e01ec2225723dd0e0fab1eb70`, diperbarui dengan fetch sebelum
-branch `codex/local-role-production-audit` dibuat. Status: **rencana disetujui
+branch awal `codex/local-role-production-audit` dibuat. Karena checkout/branch
+kemudian berubah oleh pekerjaan lain, perubahan tugas ini diisolasi pada managed
+worktree dengan branch `codex/local-role-verification` dari SHA audit yang sama. Status: **rencana disetujui
 pengguna pada 14 Oktober 2026; implementasi/verifikasi berlangsung**. Persetujuan
 eksplisit: "Setuju, implementasikan rencana tersebut". Akun menunggu input
 password privat pengguna; tidak ada persetujuan AI yang dianggap approval manusia.
 
+## Integrasi verifikasi akhir
+
+Implementasi dipisahkan ke managed worktree `local-role-audit` pada branch
+`codex/local-role-verification` karena checkout utama dipakai pekerjaan lain.
+Perubahan yang tidak berkaitan dipertahankan. Setelah fetch ulang, branch
+fast-forward tanpa konflik ke main `c1cecaf126a909e06257ff721db4465bbac6a355`;
+commit upstream memperbarui lockfile Composer, label PropertyCard, dan fixture
+DemoSeeder. Dependency mengikuti lockfile tersebut; bukan upgrade pada PR ini.
+Semua check yang terdampak diulang pada base baru.
+
+Audit flow existing juga menemukan tombol hapus perbandingan dapat diklik sebelum
+hydration selesai. Guard readiness pada `/bandingkan` termasuk perbaikan flow
+publik yang sudah disetujui; tidak menambah fitur atau mengubah kontrak API.
+Label tes browser lama diselaraskan dengan UI existing (harga IDR, penanggung
+jawab, cari properti, deskripsi media); assertion permission/flow tetap berlaku.
+Hasil akhir dan gate yang belum lulus tersedia pada
+[local-role-production-validation.md](local-role-production-validation.md).
 ## Kebutuhan dan batas
 
 Pengguna meminta pemeriksaan dan perbaikan login **Tim Flamboyan**, kelengkapan
