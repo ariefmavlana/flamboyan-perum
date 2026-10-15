@@ -25,7 +25,7 @@ if (
 const sameOriginProxy =
   process.env.VERCEL === '1'
     ? Object.fromEntries(
-        ['/api/**', '/auth/**', '/sanctum/**', '/media/**', '/up'].map(
+        ['/api/v1/**', '/auth/**', '/sanctum/**', '/media/**', '/up'].map(
           (path) => [path, { proxy: `${apiOrigin}${path}` }],
         ),
       )

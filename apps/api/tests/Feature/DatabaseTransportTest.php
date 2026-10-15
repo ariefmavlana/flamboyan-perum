@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Services\OperationalHealth;
-use Illuminate\Support\Env;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -11,24 +10,32 @@ class DatabaseTransportTest extends TestCase
 {
     public function test_provider_ca_paths_resolve_against_the_application_directory(): void
     {
-        $environment = Env::getRepository();
-        $original = $environment->get('DB_SSLROOTCERT');
+        $originalEnv = $_ENV['DB_SSLROOTCERT'] ?? null;
+        $originalServer = $_SERVER['DB_SSLROOTCERT'] ?? null;
+        $originalProcess = getenv('DB_SSLROOTCERT');
         try {
             $paths = ['resources/certificates/supabase-ca-2021.crt' => base_path('resources/certificates/supabase-ca-2021.crt'), '/private/provider.pem' => '/private/provider.pem'];
-            if (DIRECTORY_SEPARATOR === '\\') {
+            if (PHP_OS_FAMILY === 'Windows') {
                 $paths['C:/private/provider.pem'] = 'C:/private/provider.pem';
             }
             foreach ($paths as $path => $expected) {
-                $environment->set('DB_SSLROOTCERT', $path);
+                $_ENV['DB_SSLROOTCERT'] = $_SERVER['DB_SSLROOTCERT'] = $path;
+                putenv('DB_SSLROOTCERT='.$path);
                 $database = require config_path('database.php');
                 $this->assertSame($expected, $database['connections']['pgsql']['sslrootcert']);
             }
         } finally {
-            if ($original === null) {
-                $environment->clear('DB_SSLROOTCERT');
+            if ($originalEnv === null) {
+                unset($_ENV['DB_SSLROOTCERT']);
             } else {
-                $environment->set('DB_SSLROOTCERT', $original);
+                $_ENV['DB_SSLROOTCERT'] = $originalEnv;
             }
+            if ($originalServer === null) {
+                unset($_SERVER['DB_SSLROOTCERT']);
+            } else {
+                $_SERVER['DB_SSLROOTCERT'] = $originalServer;
+            }
+            putenv($originalProcess === false ? 'DB_SSLROOTCERT' : 'DB_SSLROOTCERT='.$originalProcess);
         }
     }
 
