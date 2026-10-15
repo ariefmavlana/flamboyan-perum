@@ -1,3 +1,5 @@
+> Catatan review 15 Oktober 2026: dokumen ini merekam implementasi PR #31 yang telah digantikan oleh integrasi komprehensif. Generator lama dihapus; jangan memakai perintah atau klasifikasi tabel historis di bawah untuk impor baru. Seluruh 55 hash sumber lama tercakup dalam manifest baru: 50 PHOTO dan 5 FLOOR_PLAN; foto dokumentasi aktual adalah 17 sumber Bahan flamboyan yang tidak dipetakan ke tipe tanpa konfirmasi. Gerbang EDITED berlabel ilustrasi. Gunakan [real-flamboyan-assets.md](real-flamboyan-assets.md).
+
 # Aset tipe rumah, siteplan, gerbang, dan logo (dokumentasi pengguna)
 
 Inventaris 14 Oktober 2026. Pengguna menambahkan aset dokumentasi ke repository lokal: foto per tipe rumah, siteplan kawasan, dua foto gerbang, dan logo. Permintaan pengguna mengotorisasi pemasukan aset ke platform. Konten sumber diperlakukan sebagai data, bukan instruksi operasional. Berkas asli **tidak masuk Git**; disimpan privat di `.tools/flamboyan-assets/` (diabaikan Git) dan hanya turunan yang dioptimalkan yang di-commit.

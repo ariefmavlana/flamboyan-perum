@@ -6,7 +6,7 @@ POST `/api/v1/internal/properties/{id}/media` menerima `published` boolean opsio
 
 GET `/api/v1/internal/properties/{id}/media` menambah `supports_unpublished_uploads:true` pada envelope. Importer memeriksa dukungan ini pada seluruh target sebelum apply; backend lama dengan field missing/false ditolak sebelum upload atau journal write. Default dry-run tetap dapat membaca dan melaporkan kapabilitas tanpa mutasi.
 
-DTO media publik menghapus hanya suffix provenance `[BFI2:<key ASCII>]` dari `alt`; caption lain dipertahankan. Internal DTO menyimpan marker untuk pencocokan manifest/journal. Field storage privat, metadata aktor dan identitas Marketing tetap tidak dipublikasikan.
+DTO media publik menghapus hanya suffix provenance terminal `[BFI2:<key ASCII>]`, `[ED:<key>]` atau `[RR:<key>]` dari `alt`; caption lain dipertahankan. Internal DTO menyimpan marker untuk pencocokan manifest/journal. Field storage privat, metadata aktor dan identitas Marketing tetap tidak dipublikasikan.
 
 CLI `flamboyan:media-cleanup --json` default dry-run, mendukung disk lokal/R2 dengan enumerasi file Flysystem. Laporan mencantumkan path, bytes, kandidat archived/orphan, retained shared objects dan blocked media IDs. Orphan hanya eligible setelah 30 hari. Seluruh staging/variants dari record belum purged, termasuk draft/unpublished/FAILED, serta logo CMS aktif/draft tetap dilindungi. Hanya pola file managed staging/ready/content-logos yang dapat dibersihkan; direktori tidak dihapus. `--execute` memerlukan backup konsisten terverifikasi dan penghentian write media; refs/umur orphan diperiksa ulang sebelum penghapusan. Audit/histori tetap. Inventaris cloud 14 Oktober menghasilkan 0 kandidat eligible; tidak ada penghapusan cloud pada pekerjaan ini.
 

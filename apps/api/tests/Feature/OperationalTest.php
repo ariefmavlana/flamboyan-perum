@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\ActivityLog;
 use App\Models\User;
 use App\Services\OperationalHealth;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -60,6 +61,20 @@ class OperationalTest extends TestCase
         config(['app.env' => 'production', 'operations.hosts' => ['flamboyan.example.test']]);
         $this->getJson('https://hostile.example.test/api/v1/properties')->assertStatus(400);
         $this->getJson('https://flamboyan.example.test/api/v1/properties')->assertOk()->assertHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    }
+
+    public function test_failed_login_audit_does_not_leave_an_authenticated_session(): void
+    {
+        $user = User::factory()->create(['role' => 'ADMIN', 'is_active' => true, 'password' => bcrypt('secret-password')]);
+        ActivityLog::creating(fn () => throw new \RuntimeException('Injected login audit failure'));
+        try {
+            $this->postJson('/auth/login', ['email' => $user->email, 'password' => 'secret-password'])->assertStatus(500);
+            $this->assertGuest('web');
+            $this->getJson('/api/v1/me')->assertUnauthorized();
+            $this->assertDatabaseCount('activity_logs', 0);
+        } finally {
+            ActivityLog::flushEventListeners();
+        }
     }
 
     public function test_login_activity_is_audited_without_credentials_in_logs(): void

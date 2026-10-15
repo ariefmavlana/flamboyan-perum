@@ -1,5 +1,9 @@
 # Status implementasi
 
+## Review rilis gabungan — 2026-10-15
+
+Seluruh PR30–34 direkonsiliasi pada branch codex/release-assets-review-20261015 dari main c1cecaf. Koreksi tambahan: kegagalan audit login membatalkan sesi, CA resmi Supabase + path relatif portabel, satu importer/manifest aset, marker publik ED/RR/BFI2 konsisten, serta penghapusan turunan brand lama. Lint/typecheck/48unit/build, Composer/Pint, SQLite112tes/901assertion +10regresi operasional/84assertion dan19importer lulus; runtime audit0. PostgreSQL/browser/preview TLS masih dalam validasi. Source audit11high/0critical tetapFAIL dan membutuhkan keputusan risiko eksplisit; izin TLS sudah diberikan. Main/live/import cloud belum berubah. Bukti dan rollback: [release-assets-review.md](release-assets-review.md).
+
 ## Aset asli Bukit Flamboyan Indah 2 — 2026-10-15
 
 Branch `codex/real-flamboyan-assets` disinkronkan ke `origin/main` terbaru (`c1cecaf`) atas instruksi pengguna. Perubahan wording kartu, DemoSeeder dan lockfile main dipertahankan; vendor lokal dipasang sesuai Laravel 13.36.0/PHPUnit 12.5.39.

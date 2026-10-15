@@ -27,7 +27,7 @@ for (const target of adminPages) {
       if (new URL(request.url()).pathname === `/api/v1/internal/${target.api}`)
         adminRequests.push(request.url())
     })
-    await page.goto(target.path)
+    await page.goto(target.path, { waitUntil: 'domcontentloaded' })
     await expect(page).toHaveURL(/\/backoffice$/)
     await expect(
       page.getByRole('heading', { name: target.heading }),
@@ -48,7 +48,7 @@ for (const target of adminPages) {
   })
 
   test(`Visitor direct URL ${target.path} reaches login`, async ({ page }) => {
-    await page.goto(target.path)
+    await page.goto(target.path, { waitUntil: 'domcontentloaded' })
     await expect(page).toHaveURL(/\/login$/)
     await expect(page.getByLabel('Email', { exact: true })).toBeEnabled()
     await expect(
@@ -69,7 +69,7 @@ for (const target of adminPages) {
     await page.route('**/api/v1/me', (route) =>
       route.fulfill({ status: 503, json: { message: 'Service unavailable' } }),
     )
-    await page.goto(target.path)
+    await page.goto(target.path, { waitUntil: 'domcontentloaded' })
     await expect(
       page.getByRole('heading', { name: target.heading }),
     ).toHaveCount(0)
@@ -84,3 +84,4 @@ for (const target of adminPages) {
     await expect(page).toHaveURL(new RegExp(`${target.path}$`))
   })
 }
+

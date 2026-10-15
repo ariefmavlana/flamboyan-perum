@@ -27,7 +27,14 @@ class AuthController extends Controller
         }
         $request->session()->regenerate();
         $request->session()->put('account_security_stamp', (string) $user->remember_token);
-        ActivityLog::create(['actor_id' => $user->id, 'subject_type' => 'USER', 'subject_id' => $user->id, 'action' => 'LOGIN', 'changes' => ['role' => $user->role]]);
+        try {
+            ActivityLog::create(['actor_id' => $user->id, 'subject_type' => 'USER', 'subject_id' => $user->id, 'action' => 'LOGIN', 'changes' => ['role' => $user->role]]);
+        } catch (\Throwable $error) {
+            Auth::guard('web')->logoutCurrentDevice();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            throw $error;
+        }
 
         return response()->json(['data' => $user->only(['id', 'name', 'role'])]);
     }
