@@ -9,5 +9,8 @@ export async function useDevelopment() {
   const whatsappNumber = computed(
     () => development.value?.whatsapp ?? config.public.whatsappNumber,
   )
-  return { development, whatsappNumber }
+  const financingPrograms = computed(
+    () => data.value?.data.financing_programs ?? [],
+  )
+  return { development, whatsappNumber, financingPrograms }
 }

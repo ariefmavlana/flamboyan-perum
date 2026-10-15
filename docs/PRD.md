@@ -1,5 +1,9 @@
 # Product Requirements Document — Flamboyan Perum
 
+## Revisi pemilik: lima tipe, BSI/BNI dan data riil — 2026-10-15
+
+Katalog aktif hanya 36/60, 36/90, 56/90, 62/70 dan 69/80 sesuai EDITED. Angsuran BSI tetap Rp3,7 juta/bulan selama 15 tahun berlaku untuk kelima tipe; DP dan biaya dikonfirmasi terpisah. BNI Griya didasarkan riset resmi tanpa menganggap promo expired/developer lain berlaku untuk proyek ini. Program angsuran tetap dan informasi bank dipisahkan dari kalkulasi anuitas manual melalui CMS existing. Dataset sintetis operasi, termasuk CRM/notifikasi/akun uji tambahan dan draf weje, telah dihapus setelah backup dan rehearsal; akun operasional serta media terverifikasi dipertahankan. Ini menggantikan kebutuhan evaluasi dummy dan sembilan tipe sebelumnya. Bukti dan batas rollout: [real-catalog-financing-revision.md](real-catalog-financing-revision.md).
+
 ## Aset pemilik Bukit Flamboyan Indah 2 — 2026-10-15
 
 Seluruh 58 gambar EDITED dan 17 foto lapangan dipetakan, dengan logo resmi pada identitas website. Foto lapangan menerima koreksi warna deterministik yang mempertahankan kondisi fisik; ilustrasi dan dokumentasi aktual diberi caption berbeda. Lima tipe memiliki 50 ilustrasi rumah dan 5 denah; dua ilustrasi gerbang serta satu siteplan disajikan di halaman kawasan. Harga dan spesifikasi tetap dari katalog API. Video 22 berkas ditunda sesuai instruksi pengguna sampai URL YouTube tersedia.

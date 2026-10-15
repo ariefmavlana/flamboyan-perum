@@ -1,5 +1,11 @@
 # REST API — katalog, workspace dan operasi
 
+## Revisi program pembiayaan — 2026-10-15
+
+`GET /api/v1/content` menambah `data.financing_programs` (array, dapat kosong). Hanya published+verified. DTO: id, bank (`BSI|BNI`), product, development_name, method, source_name, checked_date, conditions dan source_url HTTPS opsional. `FIXED_INSTALLMENT` juga memuat monthly_idr dan tenor_months integer positif; `REFERENCE_ONLY` tidak memuat kedua field itu. Tidak memuat annual_rate, principal, identitas aktor atau metadata verifikasi.
+
+CRUD Admin existing `/api/v1/internal/content` menerima/filter kind `FINANCING_PROGRAM`. Payload allowlist sama dengan DTO tanpa id. development_name harus `Bukit Flamboyan Indah 2`; product≤160, source_name≤200, conditions≤2500; checked_date≤hari Asia/Jakarta. FIXED_INSTALLMENT mewajibkan monthly_idr 1..10^12 dan tenor_months 12..360; REFERENCE_ONLY melarang keduanya. Unknown key/URL tidak aman/tanggal masa depan ditolak422. Attestation publikasi, active Admin403, version stale409 dan audit transaksi mengikuti kontrak CMS existing. Tidak ada DELETE CRM/history baru.
+
 ## Aset asli Bukit Flamboyan Indah 2 — 2026-10-15
 
 POST `/api/v1/internal/properties/{id}/media` menerima `published` boolean opsional; default `true` mempertahankan kompatibilitas klien existing. Multipart `published=0` menyimpan media privat, termasuk setelah READY. Publikasi melalui PATCH existing tetap memakai scope, CSRF, version guard dan audit. Kuota menghitung seluruh media non-ARCHIVED, termasuk unpublished: PHOTO 20/FLOOR_PLAN 5 tidak dinaikkan. Tidak ada migrasi atau endpoint baru.

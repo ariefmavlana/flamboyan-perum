@@ -172,8 +172,9 @@ const yearlyChart = computed(() =>
 </script>
 <template>
   <section class="mortgage-panel" aria-labelledby="kpr-title">
+    <FinancingPrograms :programs="data?.data.financing_programs ?? []" />
     <p class="eyebrow">RENCANA PEMBIAYAAN</p>
-    <h2 id="kpr-title">Simulasi KPR</h2>
+    <h2 id="kpr-title">Simulasi KPR — asumsi manual</h2>
     <p class="muted">
       Estimasi anuitas, bukan penawaran atau persetujuan bank. Angka awal adalah
       asumsi simulasi. Biaya provisi, administrasi, asuransi, pajak, dan biaya
