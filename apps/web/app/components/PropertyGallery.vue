@@ -286,7 +286,11 @@ const srcset = (item: PublicMedia) =>
         :src="item.url ?? undefined"
         :title="item.alt"
         loading="lazy"
-        referrerpolicy="no-referrer"
+        :referrerpolicy="
+          item.kind === 'VIDEO'
+            ? 'strict-origin-when-cross-origin'
+            : 'no-referrer'
+        "
         sandbox="allow-scripts allow-same-origin allow-presentation"
         allow="fullscreen; accelerometer; gyroscope"
         allowfullscreen

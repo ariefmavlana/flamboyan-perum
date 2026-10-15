@@ -37,7 +37,7 @@ onMounted(() => {
 })
 const { data, error, refresh } = await useFetch<Paginated<Property>>(
   '/api/v1/properties',
-  { query: { featured: 1, per_page: 3 } },
+  { query: { per_page: 6, sort: 'price_asc' } },
 )
 const wa = computed(() =>
   whatsappLink(
@@ -66,11 +66,10 @@ useHead({
 
 <template>
   <div>
-    <section class="editorial-hero" aria-label="Selamat datang di Flamboyan">
-      <EditorialHeroMedia
-        :media="hero?.media"
-        :poster="hero?.media?.kind === 'VIDEO' ? heroMedia : undefined"
-      />
+    <section
+      class="editorial-hero home-hero"
+      aria-label="Selamat datang di Flamboyan"
+    >
       <div class="editorial-hero-content">
         <div class="editorial-headline">
           <p class="eyebrow">
@@ -90,6 +89,13 @@ useHead({
             >Kenali perumahan kami <AppIcon name="arrow"
           /></NuxtLink>
         </div>
+        <EditorialHeroMedia
+          :media="hero?.media"
+          :video-url="hero?.video_url"
+          :video-title="hero?.video_title"
+          :autoplay="hero?.video_autoplay ?? true"
+          :poster="hero?.media?.kind === 'VIDEO' ? heroMedia : undefined"
+        />
         <form
           class="editorial-search"
           @submit.prevent="
@@ -157,7 +163,7 @@ useHead({
       <div class="section-heading">
         <div>
           <p class="eyebrow">PILIHAN FLAMBOYAN</p>
-          <h2>Pilihan untuk langkah berikutnya.</h2>
+          <h2>Temukan ruang yang paling sesuai.</h2>
           <p class="muted">Kenali lokasi, harga, dan ruang yang ditawarkan.</p>
         </div>
         <NuxtLink class="text-link" to="/properti">Seluruh properti →</NuxtLink>
@@ -176,6 +182,12 @@ useHead({
       <p v-else class="notice">
         Pilihan properti akan tampil setelah katalog tersedia.
       </p>
+    </section>
+    <section
+      v-if="content?.data.financing_programs?.length"
+      class="section container home-financing"
+    >
+      <FinancingPrograms :programs="content.data.financing_programs" />
     </section>
     <section class="editorial-intro container">
       <figure class="editorial-interior">
@@ -418,5 +430,134 @@ useHead({
 .spotlight-image img.is-illustration {
   object-fit: contain;
   background: var(--cream);
+}
+
+.home-hero.editorial-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.3fr);
+  grid-template-areas: 'copy media' 'search media';
+  gap: 28px 56px;
+  align-items: start;
+  margin: 0 auto;
+  max-width: 1536px;
+  min-height: 0;
+  padding: 56px 64px 48px;
+  background: #f7f5ef;
+  color: var(--ink);
+}
+.home-hero::before {
+  display: none;
+}
+.home-hero .editorial-hero-content {
+  display: contents;
+}
+.home-hero .editorial-headline {
+  grid-area: copy;
+}
+.home-hero :deep(.hero-media) {
+  grid-area: media;
+  align-self: center;
+}
+.home-hero .editorial-headline h1 {
+  color: var(--ink);
+  font-size: clamp(44px, 4.8vw, 72px);
+  line-height: 1.05;
+  margin: 20px 0 24px;
+}
+.home-hero .editorial-headline .eyebrow {
+  color: #8f4a33;
+  font-size: 10px;
+  line-height: 1.7;
+}
+.home-hero .editorial-headline > p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.85;
+  max-width: 450px;
+}
+.home-hero .editorial-link {
+  color: var(--ink);
+  border-color: #c1bbad;
+  gap: 16px;
+}
+.home-hero .editorial-search {
+  grid-area: search;
+  padding: 20px 0 0;
+  border-top: 1px solid var(--line);
+}
+.home-hero .editorial-search > .eyebrow {
+  display: none;
+}
+.home-hero .editorial-search > label {
+  margin: 0 0 8px;
+  font-size: 12px;
+}
+.home-hero .editorial-search > p {
+  margin-top: 12px;
+}
+.home-financing {
+  border-block: 1px solid var(--line);
+}
+.home-financing :deep(section) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.home-financing :deep(section > .eyebrow),
+.home-financing :deep(section > h2),
+.home-financing :deep(section > .button) {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+.home-financing :deep(section > .button) {
+  justify-self: start;
+}
+.home-financing :deep(.financing-card) {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.home-financing :deep(.financing-conditions) {
+  margin-top: auto;
+}
+@media (max-width: 1100px) {
+  .home-hero.editorial-hero {
+    padding-inline: 36px;
+    gap: 28px 32px;
+  }
+}
+@media (max-width: 900px) {
+  .home-financing :deep(section) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .home-hero.editorial-hero {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'copy' 'media' 'search';
+    padding: 36px 24px 32px;
+    gap: 28px;
+  }
+  .home-hero .editorial-headline h1 {
+    max-width: 640px;
+    font-size: clamp(42px, 8.5vw, 64px);
+  }
+  .home-hero .editorial-headline > p:not(.eyebrow) {
+    max-width: 600px;
+  }
+  .home-hero .editorial-search {
+    padding: 20px;
+    background: #ece8de;
+    border: 0;
+  }
+  .home-hero .editorial-search input {
+    font-size: 16px;
+  }
+}
+@media (max-width: 360px) {
+  .home-hero.editorial-hero {
+    padding-inline: 16px;
+  }
+  .home-hero .editorial-headline h1 {
+    font-size: 40px;
+  }
 }
 </style>

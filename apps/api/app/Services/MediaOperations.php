@@ -7,6 +7,7 @@ use App\Models\ActivityLog;
 use App\Models\Property;
 use App\Models\PropertyMedia;
 use App\Models\User;
+use App\Support\YouTubeUrl;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Queue\Worker;
 use Illuminate\Queue\WorkerOptions;
@@ -172,11 +173,7 @@ class MediaOperations
         $valid = $parts && ($parts['scheme'] ?? '') === 'https' && ! isset($parts['user']) && ! isset($parts['pass']) && (! isset($parts['port']) || $parts['port'] === 443);
         $host = strtolower($parts['host'] ?? '');
         if ($valid && $kind === 'VIDEO') {
-            parse_str($parts['query'] ?? '', $query);
-            $id = $host === 'youtu.be' ? trim($parts['path'] ?? '', '/') : ($query['v'] ?? '');
-            if (in_array($host, ['youtu.be', 'youtube.com', 'www.youtube.com', 'm.youtube.com'], true) && is_string($id) && preg_match('/^[a-zA-Z0-9_-]{11}$/', $id)) {
-                return 'https://www.youtube-nocookie.com/embed/'.$id;
-            }
+            return YouTubeUrl::embed($url);
         } elseif ($valid && in_array($host, config('media.tour_hosts'), true)) {
             return $url;
         }

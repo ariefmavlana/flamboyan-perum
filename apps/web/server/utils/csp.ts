@@ -44,6 +44,8 @@ export function buildContentSecurityPolicy(options: CspOptions): string {
   const script = [
     `'self'`,
     `'nonce-${options.nonce}'`,
+    'https://www.youtube.com/iframe_api',
+    'https://www.youtube.com/s/player/',
     ...(dynamic ? [`'strict-dynamic'`] : []),
     ...(gtm ? GTM_SCRIPT_SOURCES : []),
     ...(meta ? META_SCRIPT_SOURCES : []),

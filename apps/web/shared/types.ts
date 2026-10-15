@@ -139,6 +139,9 @@ export interface PublicContent {
     property_id: number | null
     property?: Property | null
     media?: PublicMedia | null
+    video_url?: string | null
+    video_title?: string | null
+    video_autoplay?: boolean
   } | null
   testimonials: { id: number; name: string; quote: string; context: string }[]
   bank_rates: BankRate[]
@@ -159,7 +162,10 @@ export interface EditorialContent {
     | 'BANK_PARTNER'
     | 'DEVELOPMENT'
     | 'FINANCING_PROGRAM'
-  payload: Record<string, string | number | null | RatePhase[] | string[]>
+  payload: Record<
+    string,
+    string | number | boolean | null | RatePhase[] | string[]
+  >
   published: boolean
   position: number
   version: number

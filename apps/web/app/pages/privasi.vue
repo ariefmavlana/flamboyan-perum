@@ -56,10 +56,7 @@ const contact = whatsappLink(
     </button>
     <h2>Penyedia eksternal</h2>
     <p>
-      WhatsApp dibuka ketika Anda memilih tautannya. Peta, video dan virtual
-      tour dimuat setelah Anda memilih untuk memuatnya; penyedia tersebut dapat
-      memproses informasi koneksi menurut kebijakannya sendiri. Sesi masuk tim
-      memakai cookie untuk keamanan akses.
+      WhatsApp dibuka ketika Anda memilih tautannya. Film YouTube pada beranda dapat dimuat otomatis tanpa suara jika pengelola mengaktifkannya; pemuatan ini mengirim informasi koneksi kepada YouTube. Anda dapat menjeda video melalui area pemutar atau kontrol Jeda. Peta, video galeri properti, dan virtual tour lainnya dimuat setelah Anda memilihnya. Penyedia eksternal memproses informasi menurut kebijakannya sendiri. Sesi masuk tim memakai cookie untuk keamanan akses.
     </p>
     <h2>Kontak dan permintaan Anda</h2>
     <p>

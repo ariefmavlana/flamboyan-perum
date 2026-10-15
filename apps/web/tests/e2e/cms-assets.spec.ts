@@ -143,7 +143,7 @@ test('CMS photo selection updates SSR hero and video stays consent gated', async
     const html = await (await request.get('/')).text()
     expect(html).toContain(changed.hero!.media!.sources.at(-1)!.url)
     await page.goto('/')
-    await expect(page.locator('.editorial-hero-photo')).toHaveAttribute(
+    await expect(page.locator('.hero-media-stage > img')).toHaveAttribute(
       'alt',
       photo.alt,
     )
@@ -176,36 +176,72 @@ test('CMS photo selection updates SSR hero and video stays consent gated', async
     }
     const current = await findContent(page, 'HERO', original.id)
     await saveContent(page, current, {
-      payload: { ...current.payload, media_id: video.id },
+      payload: {
+        ...current.payload,
+        media_id: video.id,
+        video_url: null,
+        video_title: null,
+        video_autoplay: false,
+      },
     })
     let externalRequests = 0
-    await page.route('https://www.youtube-nocookie.com/**', (route) => {
+    await page.route('https://www.youtube.com/iframe_api', (route) => {
       externalRequests++
       return route.fulfill({
-        contentType: 'text/html',
-        body: '<html><body>Video contract fixture</body></html>',
+        contentType: 'text/javascript',
+        body: `
+        window.YT = { Player: class {
+          constructor(element, options) {
+            this.options = options; this.muted = true;
+            this.frame = document.createElement('iframe'); this.frame.src = 'https://www.youtube-nocookie.com/embed/fixture'; element.replaceWith(this.frame);
+            queueMicrotask(() => options.events.onReady({target:this}));
+          }
+          getIframe() { return this.frame; }
+          mute() { this.muted = true; }
+          unMute() { this.muted = false; }
+          isMuted() { return this.muted; }
+          playVideo() { this.options.events.onStateChange({data:1,target:this}); }
+          pauseVideo() { this.options.events.onStateChange({data:2,target:this}); }
+          seekTo() {}
+          destroy() { this.frame.remove(); }
+        }};
+        window.onYouTubeIframeAPIReady();
+      `,
       })
     })
+    await page.route('https://www.youtube-nocookie.com/**', (route) =>
+      route.fulfill({
+        contentType: 'text/html',
+        body: '<html><body>Video contract fixture</body></html>',
+      }),
+    )
     await page.goto('/')
-    await expect(page.locator('.hero-video-dialog iframe')).toHaveCount(0)
+    await expect(page.locator('.hero-player iframe')).toHaveCount(0)
     expect(externalRequests).toBe(0)
     for (const width of [320, 768, 1440]) {
       await page.setViewportSize({ width, height: 900 })
-      const control = await page.locator('.hero-video-control').boundingBox()
-      const headline = await page.locator('h1').boundingBox()
-      expect(control).not.toBeNull()
-      expect(headline).not.toBeNull()
-      expect(control!.y + control!.height).toBeLessThanOrEqual(headline!.y)
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true)
+      await expect(page.locator('.hero-start')).toBeVisible()
     }
-    await page.getByRole('button', { name: 'Putar video hunian' }).click()
+    await page
+      .getByRole('button', { name: 'Putar video kawasan', exact: true })
+      .first()
+      .click()
+    await expect(page.locator('.hero-player iframe')).toBeVisible()
     await expect(
-      page
-        .getByRole('dialog', { name: 'Video hunian', exact: true })
-        .locator('iframe'),
+      page.getByRole('button', { name: 'Jeda video kawasan', exact: true }),
     ).toBeVisible()
-    await expect.poll(() => externalRequests).toBeGreaterThan(0)
-    await page.keyboard.press('Escape')
-    await expect(page.locator('.hero-video-dialog iframe')).toHaveCount(0)
+    await page
+      .getByRole('button', { name: 'Jeda video kawasan', exact: true })
+      .click()
+    await expect(
+      page.getByRole('button', { name: 'Putar video kawasan', exact: true }),
+    ).toHaveCount(1)
+    expect(externalRequests).toBe(1)
     const last = await findContent(page, 'HERO', original.id)
     await saveContent(page, last, { published: false })
     const unpublished = (await (await request.get('/api/v1/content')).json())
