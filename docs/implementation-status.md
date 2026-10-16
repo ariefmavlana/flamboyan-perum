@@ -1,5 +1,9 @@
 # Status implementasi
 
+## Draft spesifikasi Hostinger, SEO dan akuisisi — 16 Oktober 2026
+
+[Paket spesifikasi growth](growth/README.md) merangkum arah pengguna: shared Hostinger yang lolos kualifikasi, Supabase/R2 tetap, BFI2 untuk calon pembeli Kota Bandung, Google Search lebih dulu dengan total Rp500.000 satu bulan, WhatsApp Admin ditambah formulir konsultasi/survei, serta pelaporan sampai akad terverifikasi. Meta paid awal Rp0. Ini **DRAFT/PLANNED**, bukan fitur selesai, persetujuan implementasi, perubahan deployment, pembuatan akun, atau otorisasi belanja. Runtime/routing, intake/atribusi/outcome, privasi, domain, paket dan queue SLO masih memerlukan review/bukti sesuai dokumen. Kontrak API existing belum berubah.
+
 ## Input angka Indonesia dan banner multi-foto — 16 Oktober 2026
 
 Input numerik publik, katalog Admin/Marketing, komersial, lokasi, media dan CMS memakai titik ribuan/koma desimal dengan payload kanonis; kontak/kode/tanggal tetap. Admin dapat menambah, mengurutkan dan menghapus hingga lima foto HERO. Banner memakai kontrol/transisi/decode/reduced-motion carousel existing, dengan video terpisah. Tidak ada migrasi atau dependency baru. Kontrak baru `banner_media_ids`/`banner_media` ada di API_DOCS. Validasi, keterbatasan browser/audit dan bukti deployment dicatat pada PR rilis.
