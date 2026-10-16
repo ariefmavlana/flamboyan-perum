@@ -79,6 +79,34 @@ function addPhase() {
 }
 const heroProperty = ref<number | null>(null)
 const heroMediaId = ref<number | null>(null)
+const bannerMediaIds = ref<number[]>([])
+const bannerPhotoId = ref<number | null>(null)
+const bannerPhotoOptions = computed(() =>
+  heroMediaOptions.value.filter((item) => item.kind === 'PHOTO'),
+)
+function addBannerPhoto() {
+  if (
+    !bannerPhotoId.value ||
+    bannerMediaIds.value.length >= 5 ||
+    bannerMediaIds.value.includes(bannerPhotoId.value)
+  )
+    return
+  bannerMediaIds.value.push(bannerPhotoId.value)
+  bannerPhotoId.value = null
+}
+function moveBannerPhoto(index: number, direction: number) {
+  const target = index + direction
+  if (target < 0 || target >= bannerMediaIds.value.length) return
+  const [id] = bannerMediaIds.value.splice(index, 1)
+  bannerMediaIds.value.splice(target, 0, id!)
+}
+watch(
+  bannerMediaIds,
+  () => {
+    verified.value = false
+  },
+  { deep: true, flush: 'sync' },
+)
 const heroMediaOptions = ref<InternalMedia[]>([])
 const heroPropertyVersion = ref<number | null>(null)
 const mediaLoading = ref(false)
@@ -466,6 +494,8 @@ watch(
   (propertyId) => {
     verified.value = false
     heroMediaId.value = null
+    bannerMediaIds.value = []
+    bannerPhotoId.value = null
     heroPropertyVersion.value = null
     void loadHeroMedia(propertyId)
   },
@@ -533,6 +563,10 @@ function open(record?: EditorialContent) {
     typeof record?.payload.media_id === 'number'
       ? record.payload.media_id
       : null
+  bannerMediaIds.value = Array.isArray(record?.payload.banner_media_ids)
+    ? ([...record.payload.banner_media_ids] as number[])
+    : []
+  bannerPhotoId.value = null
   if (kind.value === 'HERO') {
     form.payload.video_autoplay =
       record?.payload.video_autoplay === false ? 0 : 1
@@ -551,7 +585,11 @@ async function save() {
     const payload: EditorialContent['payload'] = {
       ...form.payload,
       ...(kind.value === 'HERO'
-        ? { property_id: heroProperty.value, media_id: heroMediaId.value }
+        ? {
+            property_id: heroProperty.value,
+            media_id: heroMediaId.value,
+            banner_media_ids: bannerMediaIds.value,
+          }
         : {}),
     }
     for (const field of schemas[kind.value]) {
@@ -803,7 +841,25 @@ onMounted(() => load())
               v-else-if="field.type === 'textarea'"
               v-model="form.payload[field.key]"
               :required="!('optional' in field && field.optional)"
-              :maxlength="field.max" /><input
+              :maxlength="field.max" /><NumberInput
+              v-else-if="field.type === 'number'"
+              v-model="form.payload[field.key]"
+              :required="!('optional' in field && field.optional)"
+              :max="field.max"
+              :min="
+                field.key === 'fixed_months' || field.key === 'monthly_idr'
+                  ? 1
+                  : field.key === 'tenor_months'
+                    ? 12
+                    : 0
+              "
+              :step="
+                field.key === 'annual_rate' ||
+                field.key.endsWith('_rate') ||
+                field.key.endsWith('_percent')
+                  ? '0.01'
+                  : '1'
+              " /><input
               v-else
               v-model="form.payload[field.key]"
               :required="!('optional' in field && field.optional)"
@@ -812,30 +868,10 @@ onMounted(() => load())
                 field.type === 'text' || field.type === 'url'
                   ? field.max
                   : undefined
-              "
-              :max="field.type === 'number' ? field.max : undefined"
-              :min="
-                field.key === 'fixed_months' || field.key === 'monthly_idr'
-                  ? 1
-                  : field.key === 'tenor_months'
-                    ? 12
-                    : field.type === 'number'
-                      ? 0
-                      : undefined
-              "
-              :step="
-                field.key === 'annual_rate' ||
-                field.key.endsWith('_rate') ||
-                field.key.endsWith('_percent')
-                  ? '0.01'
-                  : field.type === 'number'
-                    ? '1'
-                    : undefined
               " /></label
           ><label
-            >Urutan<input
+            >Urutan<NumberInput
               v-model.number="form.position"
-              type="number"
               min="0"
               max="1000"
               step="1"
@@ -852,18 +888,16 @@ onMounted(() => load())
           </p>
           <div v-for="(phase, index) in phases" :key="index" class="form-grid">
             <label
-              >Durasi tahap {{ index + 1 }} (bulan)<input
+              >Durasi tahap {{ index + 1 }} (bulan)<NumberInput
                 v-model.number="phase.months"
-                type="number"
                 min="1"
                 max="360"
                 required
                 @input="verified = false"
             /></label>
             <label
-              >Bunga efektif tahap {{ index + 1 }} (% per tahun)<input
+              >Bunga efektif tahap {{ index + 1 }} (% per tahun)<NumberInput
                 v-model.number="phase.annual_rate"
-                type="number"
                 min="0"
                 max="30"
                 step="0.01"
@@ -923,6 +957,81 @@ onMounted(() => load())
             </select></label
           >
           <p v-if="mediaLoading" role="status">Memuat media siap tayang…</p>
+          <fieldset class="banner-photo-editor">
+            <legend>Foto banner beranda · maksimal 5</legend>
+            <p class="muted">
+              Pilih beberapa foto dari properti di atas. Urutan pertama tampil
+              saat halaman dibuka, lalu berganti otomatis. Jika daftar kosong,
+              foto tunggal pilihan atau ilustrasi gerbang tetap digunakan. Video
+              kawasan tetap tampil terpisah.
+            </p>
+            <ol v-if="bannerMediaIds.length">
+              <li v-for="(id, index) in bannerMediaIds" :key="id">
+                <span
+                  >{{ index + 1 }}.
+                  {{
+                    bannerPhotoOptions.find((photo) => photo.id === id)?.alt ??
+                    'Foto tidak tersedia — hapus atau pilih ulang'
+                  }}</span
+                >
+                <div class="action-row">
+                  <button
+                    type="button"
+                    class="button secondary"
+                    :disabled="index === 0"
+                    :aria-label="`Naikkan foto banner ${index + 1}`"
+                    @click="moveBannerPhoto(index, -1)"
+                  >
+                    ↑
+                  </button>
+                  <button
+                    type="button"
+                    class="button secondary"
+                    :disabled="index === bannerMediaIds.length - 1"
+                    :aria-label="`Turunkan foto banner ${index + 1}`"
+                    @click="moveBannerPhoto(index, 1)"
+                  >
+                    ↓
+                  </button>
+                  <button
+                    type="button"
+                    class="button secondary"
+                    :aria-label="`Hapus foto banner ${index + 1}`"
+                    @click="bannerMediaIds.splice(index, 1)"
+                  >
+                    Hapus
+                  </button>
+                </div>
+              </li>
+            </ol>
+            <label
+              >Tambahkan foto banner<select
+                v-model="bannerPhotoId"
+                :disabled="
+                  mediaLoading || bannerMediaIds.length >= 5 || !heroProperty
+                "
+              >
+                <option :value="null">Pilih foto siap tayang</option>
+                <option
+                  v-for="photo in bannerPhotoOptions.filter(
+                    (item) => !bannerMediaIds.includes(item.id),
+                  )"
+                  :key="photo.id"
+                  :value="photo.id"
+                >
+                  {{ photo.alt }}
+                </option>
+              </select></label
+            >
+            <button
+              type="button"
+              class="button secondary"
+              :disabled="!bannerPhotoId || bannerMediaIds.length >= 5"
+              @click="addBannerPhoto"
+            >
+              Tambahkan ke banner
+            </button>
+          </fieldset>
           <p v-if="mediaError" role="alert">{{ mediaError }}</p>
           <button
             type="button"

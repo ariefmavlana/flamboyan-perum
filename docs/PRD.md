@@ -1,5 +1,9 @@
 # Product Requirements Document — Flamboyan Perum
 
+## Input Indonesia dan banner multi-foto — 16 Oktober 2026
+
+Seluruh form kuantitas/harga publik dan workspace memakai titik ribuan otomatis, desimal koma, serta nilai kosong yang tetap berbeda dari nol. Input mendukung pengetikan, tempel dan edit di tengah; nomor kontak, tanggal dan kode tidak diubah. Admin dapat memilih dan mengurutkan hingga lima foto banner. Banner dan galeri memakai transisi, loop serta kontrol jeda yang sama; video tetap tersedia terpisah.
+
 ## Banner, gerakan dan bantuan pembeli — 16 Oktober 2026
 
 Beranda menampilkan foto banner dan video kawasan sekaligus dalam bagian terpisah. Identitas editorial, keterbacaan mobile dan disclosure ilustrasi dipertahankan. Navigasi bagian memakai scroll halus native; reveal ringan dan transisi foto mengikuti reduced-motion tanpa menghalangi konten SSR. CTA WhatsApp Admin menyebut tujuan dan membawa konteks rumah. Simulasi menyediakan langkah pengisian BNI/BSI, ringkasan harga/DP/tenor dan bantuan meminta penawaran. Foto kartu serta galeri dapat berputar, dijeda dan dipilih manual; denah tetap manual.

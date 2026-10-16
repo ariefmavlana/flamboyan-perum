@@ -47,7 +47,7 @@ const financingSteps = computed(() => [
   },
   {
     title: 'Isi DP dan lama pembiayaan',
-    text: 'Uang muka diisi dalam rupiah tanpa titik/koma. Tenor diisi dalam tahun; 1 tahun sama dengan 12 bulan. DP awal 20% adalah titik awal yang dapat diubah.',
+    text: 'Ketik uang muka dalam rupiah; titik ribuan muncul otomatis, misalnya 1.000.000. Tenor diisi dalam tahun; 1 tahun sama dengan 12 bulan. DP awal 20% dapat diubah.',
   },
   {
     title:
@@ -348,15 +348,16 @@ const yearlyChart = computed(() =>
       </div>
     </div>
     <p id="mortgage-dp-help" class="mortgage-field-help">
-      DP ditulis dalam rupiah, tanpa pemisah ribuan. Tidak boleh melebihi harga
-      rumah. Tanda jadi dan biaya transaksi dikonfirmasi terpisah.
+      Titik ribuan ditambahkan otomatis, misalnya 1.000.000 untuk satu juta
+      rupiah. DP tidak boleh melebihi harga rumah. Tanda jadi dan biaya
+      transaksi dikonfirmasi terpisah.
     </p>
     <p id="mortgage-terms-help" class="mortgage-field-help">
       Isi tenor sesuai penawaran bank.
       {{
         bank === 'BSI'
           ? 'Total margin adalah jumlah rupiah untuk seluruh akad; jangan memasukkan persentase atau nominal angsuran bulanan.'
-          : 'Bunga diisi sebagai persentase efektif per tahun, bukan bunga flat atau nominal rupiah.'
+          : 'Bunga diisi sebagai persentase efektif per tahun; gunakan koma untuk desimal, misalnya 8,5. Bukan bunga flat atau nominal rupiah.'
       }}
     </p>
     <template v-if="bank === 'BSI'">
@@ -384,31 +385,28 @@ const yearlyChart = computed(() =>
       </p>
       <div class="form-grid">
         <label
-          >Uang muka (IDR)<input
+          >Uang muka (IDR)<NumberInput
             v-model.number="downPayment"
             aria-describedby="mortgage-dp-help"
             :disabled="!interactive || !!bsiQuote"
-            type="number"
             min="0"
             :max="price"
             step="1"
         /></label>
         <label
-          >Tenor (tahun)<input
+          >Tenor (tahun)<NumberInput
             v-model.number="years"
             aria-describedby="mortgage-terms-help"
             :disabled="!interactive || !!bsiQuote"
-            type="number"
             min="1"
             max="30"
             step="1"
         /></label>
         <label
-          >Total margin akad BSI (IDR)<input
+          >Total margin akad BSI (IDR)<NumberInput
             v-model.number="totalMargin"
             aria-describedby="mortgage-terms-help"
             :disabled="!interactive || !!bsiQuote"
-            type="number"
             min="0"
             max="1000000000000"
             step="1"
@@ -509,40 +507,36 @@ const yearlyChart = computed(() =>
       </p>
       <div class="form-grid">
         <label v-if="selected?.max_ltv_percent !== undefined"
-          >Asumsi nilai penilaian agunan (IDR)<input
+          >Asumsi nilai penilaian agunan (IDR)<NumberInput
             v-model.number="appraisalValue"
             :disabled="!interactive"
-            type="number"
             min="1"
             max="1000000000000"
             step="1"
         /></label>
         <label
-          >Uang muka (IDR)<input
+          >Uang muka (IDR)<NumberInput
             v-model.number="downPayment"
             aria-describedby="mortgage-dp-help"
             :disabled="!interactive"
-            type="number"
             min="0"
             :max="price"
             step="1"
         /></label>
         <label
-          >Tenor (tahun)<input
+          >Tenor (tahun)<NumberInput
             v-model.number="years"
             aria-describedby="mortgage-terms-help"
             :disabled="!interactive"
-            type="number"
             :min="Math.ceil((selected?.min_tenor_months ?? 12) / 12)"
             :max="Math.floor((selected?.max_tenor_months ?? 360) / 12)"
             step="1"
         /></label>
         <label
-          >Bunga efektif tahunan awal (%)<input
+          >Bunga efektif tahunan awal (%)<NumberInput
             v-model.number="annualRate"
             aria-describedby="mortgage-terms-help"
             :disabled="!interactive || !!selected"
-            type="number"
             min="0"
             max="30"
             step="0.01"
@@ -554,18 +548,16 @@ const yearlyChart = computed(() =>
         <template
           v-if="floating || (selected && selected.fixed_months < years * 12)"
           ><label v-if="!selected"
-            >Masa fixed (bulan)<input
+            >Masa fixed (bulan)<NumberInput
               v-model.number="fixedMonths"
               :disabled="!interactive"
-              type="number"
               min="1"
               :max="years * 12 - 1"
               step="1" /></label
           ><label
-            >Asumsi bunga floating (%)<input
+            >Asumsi bunga floating (%)<NumberInput
               v-model.number="floatingRate"
               :disabled="!interactive"
-              type="number"
               min="0"
               max="30"
               step="0.01" /></label

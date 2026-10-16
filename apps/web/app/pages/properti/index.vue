@@ -78,9 +78,8 @@ const activeFilters = computed(() =>
             : key === 'condition'
               ? ({ NEW: 'Baru', RESALE: 'Bekas' }[raw] ?? raw)
               : key === 'availability'
-                ? (availabilityLabels[
-                    raw as keyof typeof availabilityLabels
-                  ] ?? raw)
+                ? (availabilityLabels[raw as keyof typeof availabilityLabels] ??
+                  raw)
                 : raw
       return { key, label: filterLabels[key], value }
     }),
@@ -187,9 +186,8 @@ useHead({
               placeholder="Nama, lokasi, atau alamat" /></label
           ><label v-for="field in numberFields.slice(0, 2)" :key="field.key"
             >{{ field.label
-            }}<input
+            }}<NumberInput
               v-model="form[field.key]"
-              type="number"
               :min="field.min"
               :max="field.max"
               :step="field.step"
@@ -216,9 +214,8 @@ useHead({
                 :maxlength="field.max" /></label
             ><label v-for="field in numberFields.slice(2)" :key="field.key"
               >{{ field.label
-              }}<input
+              }}<NumberInput
                 v-model="form[field.key]"
-                type="number"
                 :min="field.min"
                 :max="field.max"
                 :step="field.step" /></label

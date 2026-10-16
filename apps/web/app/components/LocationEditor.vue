@@ -58,16 +58,14 @@ async function save() {
     <form @submit.prevent="save">
       <div class="form-grid">
         <label
-          >Latitude<input
+          >Latitude<NumberInput
             v-model="latitude"
-            type="number"
             min="-90"
             max="90"
             step="0.0000001" /></label
         ><label
-          >Longitude<input
+          >Longitude<NumberInput
             v-model="longitude"
-            type="number"
             min="-180"
             max="180"
             step="0.0000001"
@@ -90,9 +88,8 @@ async function save() {
               <option value="OTHER">Lainnya</option>
             </select></label
           ><label
-            >Jarak (meter)<input
+            >Jarak (meter)<NumberInput
               v-model.number="poi.distance_m"
-              type="number"
               required
               min="0"
               max="1000000"

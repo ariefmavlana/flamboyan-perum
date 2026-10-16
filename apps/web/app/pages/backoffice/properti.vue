@@ -357,40 +357,35 @@ onMounted(() => load())
               required
               maxlength="160" /></label
           ><label
-            >Harga (IDR)<input
+            >Harga (IDR)<NumberInput
               v-model="form.price_idr"
-              type="number"
               required
               min="1"
               max="1000000000000"
               step="1" /></label
           ><label
-            >Luas tanah (m²)<input
+            >Luas tanah (m²)<NumberInput
               v-model="form.land_area"
-              type="number"
               required
               min="0.01"
               max="1000000"
               step="0.01" /></label
           ><label
-            >Luas bangunan (m²)<input
+            >Luas bangunan (m²)<NumberInput
               v-model="form.building_area"
-              type="number"
               required
               min="0.01"
               max="1000000"
               step="0.01" /></label
           ><label
-            >Kamar tidur<input
+            >Kamar tidur<NumberInput
               v-model.number="form.bedrooms"
-              type="number"
               required
               min="0"
               max="50" /></label
           ><label
-            >Kamar mandi<input
+            >Kamar mandi<NumberInput
               v-model.number="form.bathrooms"
-              type="number"
               required
               min="1"
               max="50" /></label

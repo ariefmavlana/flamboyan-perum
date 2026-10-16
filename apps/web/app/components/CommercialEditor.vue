@@ -145,9 +145,8 @@ function addPlan() {
     </p>
     <div class="form-grid">
       <label
-        >Lantai<input
+        >Lantai<NumberInput
           v-model.number="form.floors"
-          type="number"
           min="1"
           max="20"
           required
@@ -159,17 +158,15 @@ function addPlan() {
           required
       /></label>
       <label
-        >Rencana jumlah unit tipe<input
+        >Rencana jumlah unit tipe<NumberInput
           v-model.number="form.planned_units"
-          type="number"
           min="1"
           max="100000"
           required
       /></label>
       <label
-        >Harga program (IDR, opsional)<input
+        >Harga program (IDR, opsional)<NumberInput
           v-model="form.offer_price_idr"
-          type="number"
           min="1"
           max="1000000000000"
           step="1"
@@ -187,9 +184,8 @@ function addPlan() {
           :required="!!form.offer_price_idr"
       /></label>
       <label
-        >Harga berikutnya (IDR, opsional)<input
+        >Harga berikutnya (IDR, opsional)<NumberInput
           v-model="form.next_price_idr"
-          type="number"
           min="1"
           max="1000000000000"
           step="1"
@@ -201,9 +197,8 @@ function addPlan() {
           :required="!!form.next_price_idr"
       /></label>
       <label
-        >Biaya program pengembang (IDR, opsional)<input
+        >Biaya program pengembang (IDR, opsional)<NumberInput
           v-model="form.program_fee_idr"
-          type="number"
           min="0"
           max="1000000000000"
           step="1"
@@ -221,9 +216,8 @@ function addPlan() {
           :required="form.program_fee_idr !== ''"
       /></label>
       <label
-        >Biaya berikutnya (IDR, opsional)<input
+        >Biaya berikutnya (IDR, opsional)<NumberInput
           v-model="form.next_fee_idr"
-          type="number"
           min="0"
           max="1000000000000"
           step="1"
@@ -299,9 +293,8 @@ function addPlan() {
               total_idr: 'Total pembayaran (IDR)',
               quota: 'Kuota program',
             }[field]
-          }}<input
+          }}<NumberInput
             v-model.number="plan[field]"
-            type="number"
             min="0"
             :max="
               field === 'months'

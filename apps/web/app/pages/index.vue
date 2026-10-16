@@ -30,18 +30,26 @@ const { data: content, error: contentError } = await useFetch<{
   data: PublicContent
 }>('/api/v1/content')
 const hero = computed(() => content.value?.data.hero)
-const banner = computed(() => {
+const bannerPhotos = computed(() => {
+  const selected =
+    hero.value?.banner_media?.filter(
+      (photo) => photo.kind === 'PHOTO' && photo.sources.length,
+    ) ?? []
+  if (selected.length) return selected
   const photo = hero.value?.media
-  return photo?.kind === 'PHOTO' && photo.sources.length
-    ? {
-        src: photo.sources.at(-1)!.url,
-        sources: photo.sources,
-        width: photo.width,
-        height: photo.height,
-        alt: photo.alt,
-        caption: photo.alt,
-      }
-    : gateDay
+  if (photo?.kind === 'PHOTO' && photo.sources.length) return [photo]
+  return [
+    {
+      id: -1,
+      kind: 'PHOTO' as const,
+      alt: gateDay.alt,
+      position: 0,
+      url: null,
+      width: gateDay.width,
+      height: gateDay.height,
+      sources: gateDay.sources,
+    },
+  ]
 })
 const hasHeroVideo = computed(
   () => !!hero.value?.video_url || hero.value?.media?.kind === 'VIDEO',
@@ -86,23 +94,7 @@ useHead({
 
 <template>
   <div>
-    <section class="photo-banner" aria-label="Selamat datang di Flamboyan">
-      <img
-        class="photo-banner-image"
-        :src="banner.src"
-        :srcset="
-          banner.sources
-            .filter((source) => source.width)
-            .map((source) => `${source.url} ${source.width}w`)
-            .join(', ')
-        "
-        sizes="100vw"
-        :width="banner.width ?? undefined"
-        :height="banner.height ?? undefined"
-        :alt="banner.alt"
-        fetchpriority="high"
-      />
-      <div class="photo-banner-shade" aria-hidden="true" />
+    <PhotoBanner :photos="bannerPhotos" :has-video="hasHeroVideo">
       <div class="container photo-banner-copy">
         <p class="eyebrow">
           {{ hero?.eyebrow ?? 'FLAMBOYAN · PROPERTI & HUNIAN' }}
@@ -132,11 +124,7 @@ useHead({
           Tanyakan tipe, harga, dan rencana kunjungan bersama Admin.
         </p>
       </div>
-      <span class="photo-banner-caption">{{ banner.caption }}</span>
-      <a v-if="hasHeroVideo" class="banner-scroll" href="#film-kawasan"
-        >Lihat video kawasan <span aria-hidden="true">↓</span></a
-      >
-    </section>
+    </PhotoBanner>
     <section class="home-search container" aria-label="Pencarian rumah">
       <form
         class="editorial-search"

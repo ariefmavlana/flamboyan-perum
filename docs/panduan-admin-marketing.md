@@ -36,6 +36,8 @@ Marketing tidak dapat mencatat calon pembeli baru, membagi/mengalihkan penugasan
 
 ## Katalog dan media
 
+Ketik nominal seperti biasa: `1000000` otomatis terlihat sebagai `1.000.000`. Untuk desimal, gunakan koma: luas `60,5` atau bunga `8,5`. Nilai kosong berbeda dari nol. Titik hanya pemisah ribuan; nomor telepon, tanggal dan kode tipe tetap memakai formatnya sendiri. Batas minimum/maksimum dan kelipatan tetap diperiksa saat mengisi/menyimpan.
+
 Cari rumah melalui **Katalog properti**, lalu **Edit properti**. Periksa luas, kamar, alamat, kondisi dan ketersediaan berdasarkan sumber aktual. Status konfirmasi unit digunakan saat stok belum dipastikan. Jumlah rencana bukan stok tersedia.
 
 Pada **Foto & media**, bedakan foto, denah, masterplan dan video. Beri keterangan sesuai isi, verifikasi izin, tunggu media siap, dan pilih publikasi. Bedakan foto aktual dari ilustrasi. Draf/arsip serta media tidak dipublikasikan tidak muncul untuk pengunjung. Periksa hasil melalui website publik setelah simpan.
@@ -48,7 +50,8 @@ Admin mengatur **Harga & pembayaran**: harga dasar, program bertanggal, biaya da
 2. Perbarui judul/pengantar dan tautan YouTube beserta judul video. Waktu mulai pada tautan didukung.
 3. Pilih **Otomatis tanpa suara · putar berulang** atau **Putar setelah dipilih pengunjung**. Browser tetap dapat membatasi autoplay.
 4. Pilih properti dan foto banner. Foto tampil di bagian pembuka, sedangkan video tetap ada pada bagian video kawasan di bawahnya. Bila mengunggah melalui **Tambahkan foto & media beranda**, tunggu siap, pilih **Perbarui pilihan gambar**, lalu pilih gambar tersebut. Tanpa foto pilihan, ilustrasi gerbang existing tampil dengan keterangan ilustrasi.
-5. Periksa isi/izin, centang verifikasi, pilih publikasi, lalu **Simpan konten**. Periksa hasil publik. Kosongkan tautan video untuk memakai gambar saja.
+5. Untuk beberapa foto, gunakan **Foto banner beranda → Tambahkan foto banner → Tambahkan ke banner**. Maksimal lima foto dari properti terpilih. Panah naik/turun mengatur urutan; Hapus mengeluarkan foto dari banner tanpa menghapus media asal. Daftar kosong kembali ke foto tunggal/ilustrasi gerbang. Foto pertama tampil saat halaman dibuka, lalu berulang dengan kontrol jeda, sesuai preferensi gerakan pengunjung.
+6. Periksa isi/izin, centang verifikasi, pilih publikasi, lalu **Simpan konten**. Periksa hasil publik. Kosongkan tautan video untuk memakai gambar saja.
 
 **Kawasan & kontak** mengelola alamat, WhatsApp, fasilitas dan sumber. Bedakan fasilitas terbangun dari rencana. Testimoni dan logo bank hanya dipublikasikan setelah izin/sumbernya benar.
 

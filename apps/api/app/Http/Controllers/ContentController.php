@@ -28,6 +28,7 @@ class ContentController extends Controller
         if ($heroData) {
             $heroData['media'] = null;
             $heroData['property'] = null;
+            $heroData['banner_media'] = [];
         }
         if ($heroData && $heroData['property_id']) {
             $property = Property::query()->with('coverMedia')->where('publication', 'PUBLISHED')->find($heroData['property_id']);
@@ -36,6 +37,11 @@ class ContentController extends Controller
             $mediaId = $hero->payload['media_id'] ?? null;
             $media = $property && $mediaId ? $property->publicMedia()->whereIn('kind', ['PHOTO', 'VIDEO'])->whereKey($mediaId)->first() : null;
             $heroData['media'] = $media?->publicData();
+            $bannerIds = $hero->payload['banner_media_ids'] ?? [];
+            if ($property && $bannerIds) {
+                $photos = $property->publicMedia()->where('kind', 'PHOTO')->whereKey($bannerIds)->get()->keyBy('id');
+                $heroData['banner_media'] = collect($bannerIds)->map(fn ($id) => $photos->get($id)?->publicData())->filter()->values()->all();
+            }
         }
         $today = now('Asia/Jakarta')->toDateString();
 
@@ -84,7 +90,7 @@ class ContentController extends Controller
         abort_unless($request->user()->role === 'ADMIN', 403);
         $data = $request->validate(['kind' => ['required', Rule::in(['HERO', 'TESTIMONIAL', 'BANK_RATE', 'BANK_PARTNER', 'DEVELOPMENT', 'FINANCING_PROGRAM'])], 'published' => 'required|boolean', 'position' => 'required|integer|between:0,1000', 'verified' => 'sometimes|boolean', 'version' => $id ? 'required|integer|min:1' : 'prohibited', 'payload' => 'required|array']);
         $rules = match ($data['kind']) {
-            'HERO' => ['payload' => 'array:title,description,eyebrow,property_id,media_id,video_url,video_title,video_autoplay', 'payload.title' => 'required|string|max:160', 'payload.description' => 'required|string|max:1000', 'payload.eyebrow' => 'required|string|max:100', 'payload.property_id' => ['present', 'nullable', 'integer', Rule::exists('properties', 'id')], 'payload.media_id' => 'sometimes|nullable|integer|min:1', 'payload.video_url' => 'sometimes|nullable|url:https|max:2048', 'payload.video_title' => 'required_with:payload.video_url|nullable|string|max:240', 'payload.video_autoplay' => 'sometimes|boolean'],
+            'HERO' => ['payload' => 'array:title,description,eyebrow,property_id,media_id,banner_media_ids,video_url,video_title,video_autoplay', 'payload.title' => 'required|string|max:160', 'payload.description' => 'required|string|max:1000', 'payload.eyebrow' => 'required|string|max:100', 'payload.property_id' => ['present', 'nullable', 'integer', Rule::exists('properties', 'id')], 'payload.media_id' => 'sometimes|nullable|integer|min:1', 'payload.banner_media_ids' => 'sometimes|array|list|max:5', 'payload.banner_media_ids.*' => 'required|integer|min:1|distinct', 'payload.video_url' => 'sometimes|nullable|url:https|max:2048', 'payload.video_title' => 'required_with:payload.video_url|nullable|string|max:240', 'payload.video_autoplay' => 'sometimes|boolean'],
             'BANK_PARTNER' => ['payload' => 'array:name,website', 'payload.name' => 'required|string|max:120', 'payload.website' => 'required|url:https|max:2048'],
             'TESTIMONIAL' => ['payload' => 'array:name,quote,context', 'payload.name' => 'required|string|max:160', 'payload.quote' => 'required|string|max:2000', 'payload.context' => 'required|string|max:160'],
             'BANK_RATE' => FinancingContent::rules(),
@@ -150,6 +156,15 @@ class ContentController extends Controller
                 if (! $media) {
                     throw ValidationException::withMessages(['payload.media_id' => 'Pilih foto atau video siap dan ditampilkan dari properti yang dipublikasikan.']);
                 }
+            }
+            if ($data['kind'] === 'HERO' && ! empty($payload['banner_media_ids'])) {
+                $property = Property::query()->whereKey($payload['property_id'])->where('publication', 'PUBLISHED')->lockForUpdate()->first();
+                $ids = $payload['banner_media_ids'];
+                $photos = $property?->publicMedia()->where('kind', 'PHOTO')->whereKey($ids)->lockForUpdate()->get();
+                if (! $photos || $photos->count() !== count($ids)) {
+                    throw ValidationException::withMessages(['payload.banner_media_ids' => 'Pilih maksimal lima foto siap dan ditampilkan dari properti yang dipublikasikan.']);
+                }
+                $payload['banner_media_ids'] = array_map('intval', $ids);
             }
             if ($data['kind'] === 'BANK_PARTNER' && isset($record?->payload['_logo'])) {
                 $payload['_logo'] = $record->payload['_logo'];
