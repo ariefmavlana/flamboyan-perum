@@ -59,6 +59,11 @@ class Property extends Model
         return $this->hasOne(PropertyMedia::class)->ofMany(['position' => 'min', 'id' => 'min'], fn ($query) => $query->where('kind', 'PHOTO')->where('state', 'READY')->where('published', true));
     }
 
+    public function previewMedia(): HasMany
+    {
+        return $this->publicMedia()->where('kind', 'PHOTO');
+    }
+
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id')->select(['id', 'name']);

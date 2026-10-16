@@ -1,5 +1,9 @@
 # Software Requirements Specification — Flamboyan Perum
 
+## Banner dan pergantian foto — 16 Oktober 2026
+
+Foto HERO menjadi banner; tautan YouTube existing tampil pada bagian film dan dimuat ketika bagian terlihat. Tanpa foto pilihan, ilustrasi gerbang existing tampil dengan keterangannya. Foto kartu memakai maksimal lima preview publik; detail memakai seluruh PHOTO. Pergantian setiap 6,5 detik menggunakan decode sebelum transisi opacity 800ms; foto terakhir kembali ke pertama. Kontrol manual menjeda otomatis. Hover mouse, fokus keyboard, tab tersembunyi, area di luar layar, reduced-motion, denah dan lightbox menghentikan pergantian otomatis. Gagal decode mempertahankan foto aktif dan menyediakan pesan/retry melalui pilihan manual. Tidak ada tarif KPR baru; petunjuk membedakan bunga efektif BNI dan total margin murabahah BSI.
+
 ## Navigasi workspace dan panduan peran — 16 Oktober 2026
 
 Workspace memakai sidebar khusus desktop dan drawer modal mobile dengan menu sesuai peran, penanda halaman aktif, akses profil/keluar, serta bantuan kontekstual. `/backoffice/panduan` menyediakan langkah Admin/Marketing dan tampilan cetak setelah pemeriksaan sesi; panduan tidak menyatakan fitur yang belum tersedia sebagai otomatis. Kontrak REST, otorisasi backend dan data bisnis tidak berubah. Panduan pengguna: [panduan-admin-marketing.md](panduan-admin-marketing.md).

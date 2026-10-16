@@ -1,5 +1,11 @@
 # REST API — katalog, workspace dan operasi
 
+## Preview foto katalog — 16 Oktober 2026
+
+`GET /api/v1/properties` menambah `preview_media`: maksimal lima PHOTO READY+published per properti, berurutan position lalu id, memakai allowlist media publik existing. `media` tetap satu sampul untuk kompatibilitas; detail tetap mengirim galeri lengkap. Denah, media privat/gagal, storage path dan identitas aktor tidak masuk preview. Eager loading dibatasi per properti, bukan lima untuk seluruh halaman. Tidak ada endpoint, migrasi, izin atau mutasi baru.
+
+HERO tetap memakai kontrak existing: foto menjadi banner pembuka dan video YouTube tampil terpisah di bawahnya. Tidak ada perubahan payload CMS. Kartu memakai `preview_media`, dengan fallback `media` untuk respons API lama.
+
 ## Navigasi workspace dan panduan peran — 16 Oktober 2026
 
 Workspace memakai sidebar khusus desktop dan drawer modal mobile dengan menu sesuai peran, penanda halaman aktif, akses profil/keluar, serta bantuan kontekstual. `/backoffice/panduan` menyediakan langkah Admin/Marketing dan tampilan cetak setelah pemeriksaan sesi; panduan tidak menyatakan fitur yang belum tersedia sebagai otomatis. Kontrak REST, otorisasi backend dan data bisnis tidak berubah. Panduan pengguna: [panduan-admin-marketing.md](panduan-admin-marketing.md).

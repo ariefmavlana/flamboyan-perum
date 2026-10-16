@@ -47,11 +47,11 @@ function trackWhatsapp() {
           <a
             v-if="wa"
             :href="wa"
-            class="button"
+            class="button whatsapp-button"
             target="_blank"
             rel="noopener noreferrer"
             @click="trackWhatsapp"
-            >Hubungi Admin <AppIcon name="arrow"
+            ><AppIcon name="chat" />WhatsApp Admin <AppIcon name="external"
           /></a>
         </ResponsiveNav>
       </div>
@@ -82,11 +82,11 @@ function trackWhatsapp() {
         <a
           v-if="wa"
           :href="wa"
-          class="button"
+          class="button whatsapp-button"
           target="_blank"
           rel="noopener noreferrer"
           @click="trackWhatsapp"
-          >Hubungi Admin <AppIcon name="arrow"
+          ><AppIcon name="chat" />WhatsApp Admin <AppIcon name="external"
         /></a>
       </div>
       <div class="container footer-main">

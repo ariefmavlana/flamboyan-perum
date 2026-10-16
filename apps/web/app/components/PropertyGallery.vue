@@ -30,17 +30,26 @@ const groups = computed(() =>
     .filter((group) => group.count > 0),
 )
 const activeKind = ref<ImageKind>('PHOTO')
-const selectedId = ref<number | null>(null)
 const activeImages = computed(() =>
   images.value.filter((item) => item.kind === activeKind.value),
 )
-const selected = computed(
-  () =>
-    activeImages.value.find((item) => item.id === selectedId.value) ??
-    activeImages.value[0],
-)
-const activeIndex = computed(() =>
-  activeImages.value.findIndex((item) => item.id === selected.value?.id),
+const previewOpen = ref(false)
+const photoSizes = '(max-width: 1280px) 100vw, 1200px'
+const {
+  stage,
+  selected,
+  index: activeIndex,
+  paused,
+  motionAllowed,
+  loading,
+  message,
+  choose,
+  move,
+  toggle,
+} = usePhotoCarousel(
+  activeImages,
+  photoSizes,
+  () => activeKind.value === 'PHOTO' && !previewOpen.value,
 )
 const preview = ref<HTMLDialogElement | null>(null)
 const opener = ref<HTMLButtonElement | null>(null)
@@ -50,23 +59,26 @@ watch(
     if (!images.value.some((item) => item.kind === activeKind.value)) {
       activeKind.value = groups.value[0]?.kind ?? 'PHOTO'
     }
-    if (!activeImages.value.some((item) => item.id === selectedId.value)) {
-      selectedId.value = activeImages.value[0]?.id ?? null
-    }
     if (!selected.value) preview.value?.close()
   },
   { immediate: true },
 )
 function chooseKind(kind: ImageKind) {
   activeKind.value = kind
-  selectedId.value = activeImages.value[0]?.id ?? null
+  activeIndex.value = 0
+  paused.value = true
+}
+function openPreview() {
+  previewOpen.value = true
+  paused.value = true
+  preview.value?.showModal()
+}
+function closePreview() {
+  previewOpen.value = false
+  opener.value?.focus()
 }
 function moveImage(direction: number) {
-  if (activeImages.value.length < 2) return
-  const index =
-    (activeIndex.value + direction + activeImages.value.length) %
-    activeImages.value.length
-  selectedId.value = activeImages.value[index]?.id ?? null
+  move(direction)
 }
 function handlePreviewKey(event: KeyboardEvent) {
   const target = event.target
@@ -121,7 +133,7 @@ const srcset = (item: PublicMedia) =>
 </script>
 
 <template>
-  <div id="galeri" class="property-gallery">
+  <div id="galeri" ref="stage" class="property-gallery">
     <template v-if="selected">
       <div class="gallery-toolbar">
         <div
@@ -153,17 +165,21 @@ const srcset = (item: PublicMedia) =>
         type="button"
         aria-label="Perbesar gambar properti"
         :disabled="!hydrated"
-        @click="preview?.showModal()"
+        @click="openPreview"
       >
-        <img
-          :src="selected.sources.at(-1)?.url"
-          :srcset="srcset(selected)"
-          sizes="(max-width: 1280px) 100vw, 1200px"
-          :alt="selected.alt"
-          :width="selected.width ?? undefined"
-          :height="selected.height ?? undefined"
-          fetchpriority="high"
-        />
+        <Transition
+          name="photo-dissolve"
+          @before-leave="(el) => el.setAttribute('aria-hidden', 'true')"
+          ><img
+            :key="selected.id"
+            :src="selected.sources.at(-1)?.url"
+            :srcset="srcset(selected)"
+            :sizes="photoSizes"
+            :alt="selected.alt"
+            :width="selected.width ?? undefined"
+            :height="selected.height ?? undefined"
+            fetchpriority="high"
+        /></Transition>
       </button>
       <div class="gallery-caption">
         <p>
@@ -172,16 +188,48 @@ const srcset = (item: PublicMedia) =>
         </p>
         <span>{{ activeIndex + 1 }} / {{ activeImages.length }}</span>
       </div>
+      <div v-if="activeImages.length > 1" class="gallery-rotation-controls">
+        <button
+          type="button"
+          :disabled="loading"
+          aria-label="Gambar sebelumnya di galeri"
+          @click="moveImage(-1)"
+        >
+          ← Sebelumnya
+        </button>
+        <button
+          v-if="activeKind === 'PHOTO' && motionAllowed"
+          type="button"
+          :aria-pressed="paused"
+          :aria-label="
+            paused ? 'Putar pergantian foto' : 'Jeda pergantian foto'
+          "
+          @click="toggle"
+        >
+          {{ paused ? '▷ Putar foto' : 'Ⅱ Jeda foto' }}
+        </button>
+        <button
+          type="button"
+          :disabled="loading"
+          aria-label="Gambar berikutnya di galeri"
+          @click="moveImage(1)"
+        >
+          Berikutnya →
+        </button>
+      </div>
+      <p v-if="message" class="photo-load-message" role="status">
+        {{ message }}
+      </p>
       <div v-if="activeImages.length > 1" class="gallery-thumbs">
         <button
-          v-for="item in activeImages"
+          v-for="(item, index) in activeImages"
           :key="item.id"
           type="button"
           :aria-label="`Lihat ${item.alt}`"
           :aria-pressed="selected.id === item.id"
           :disabled="!hydrated"
           :class="{ 'is-plan': item.kind === 'FLOOR_PLAN' }"
-          @click="selectedId = item.id"
+          @click="choose(index)"
         >
           <img
             :src="item.sources[0]?.url"
@@ -197,7 +245,7 @@ const srcset = (item: PublicMedia) =>
         class="image-dialog gallery-preview"
         aria-label="Gambar properti diperbesar"
         @keydown="handlePreviewKey"
-        @close="opener?.focus()"
+        @close="closePreview"
       >
         <div class="preview-header">
           <span>{{
@@ -369,9 +417,42 @@ const srcset = (item: PublicMedia) =>
 }
 .property-gallery .gallery-main.is-plan img,
 .property-gallery .gallery-main.is-illustration img {
-  height: min(660px, 75dvh);
   object-fit: contain;
   background: #fff;
+}
+.property-gallery .gallery-main {
+  position: relative;
+  aspect-ratio: 16 / 10;
+}
+.property-gallery .gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.property-gallery .gallery-main.is-plan {
+  aspect-ratio: auto;
+  height: min(660px, 75dvh);
+}
+.gallery-rotation-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-block: 12px;
+}
+.gallery-rotation-controls button {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  background: transparent;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--ink);
+}
+@media (max-width: 420px) {
+  .gallery-rotation-controls button {
+    font-size: 11px;
+    padding-inline: 8px;
+  }
 }
 .property-gallery .gallery-thumbs .is-plan img {
   object-fit: contain;

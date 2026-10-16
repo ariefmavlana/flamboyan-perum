@@ -1,5 +1,9 @@
 # Product Requirements Document — Flamboyan Perum
 
+## Banner, gerakan dan bantuan pembeli — 16 Oktober 2026
+
+Beranda menampilkan foto banner dan video kawasan sekaligus dalam bagian terpisah. Identitas editorial, keterbacaan mobile dan disclosure ilustrasi dipertahankan. Navigasi bagian memakai scroll halus native; reveal ringan dan transisi foto mengikuti reduced-motion tanpa menghalangi konten SSR. CTA WhatsApp Admin menyebut tujuan dan membawa konteks rumah. Simulasi menyediakan langkah pengisian BNI/BSI, ringkasan harga/DP/tenor dan bantuan meminta penawaran. Foto kartu serta galeri dapat berputar, dijeda dan dipilih manual; denah tetap manual.
+
 ## Navigasi workspace dan panduan peran — 16 Oktober 2026
 
 Workspace memakai sidebar khusus desktop dan drawer modal mobile dengan menu sesuai peran, penanda halaman aktif, akses profil/keluar, serta bantuan kontekstual. `/backoffice/panduan` menyediakan langkah Admin/Marketing dan tampilan cetak setelah pemeriksaan sesi; panduan tidak menyatakan fitur yang belum tersedia sebagai otomatis. Kontrak REST, otorisasi backend dan data bisnis tidak berubah. Panduan pengguna: [panduan-admin-marketing.md](panduan-admin-marketing.md).

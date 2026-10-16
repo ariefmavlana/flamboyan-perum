@@ -1,5 +1,9 @@
 # Arsitektur fondasi
 
+## Presentasi publik dan preview foto — 16 Oktober 2026
+
+Laravel eager-load `previewMedia` PHOTO READY+published dengan limit lima per parent; PublicPropertyResource memakai allowlist existing, tanpa N+1 atau perluasan akses. Vue memakai composable pergantian foto bersama untuk kartu/detail, IntersectionObserver dan visibility/reduced-motion listeners yang dibersihkan saat unmount. Foto berikutnya didekode sebelum dipilih. Directive reveal universal mempertahankan SSR terlihat; Web Animations hanya dipakai untuk elemen di bawah fold saat masuk layar. CSS scroll native menjaga navigasi browser. Tidak menambah GSAP, smooth-scroll engine atau dependency baru. HERO CMS existing tetap menjadi sumber foto/video; rumus pembiayaan dan penyimpanan tidak berubah.
+
 ## Navigasi workspace dan panduan peran — 16 Oktober 2026
 
 Workspace memakai sidebar khusus desktop dan drawer modal mobile dengan menu sesuai peran, penanda halaman aktif, akses profil/keluar, serta bantuan kontekstual. `/backoffice/panduan` menyediakan langkah Admin/Marketing dan tampilan cetak setelah pemeriksaan sesi; panduan tidak menyatakan fitur yang belum tersedia sebagai otomatis. Kontrak REST, otorisasi backend dan data bisnis tidak berubah. Panduan pengguna: [panduan-admin-marketing.md](panduan-admin-marketing.md).

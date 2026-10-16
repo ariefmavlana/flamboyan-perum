@@ -3,6 +3,7 @@ export interface Property {
   longitude?: string | null
   pois?: PointOfInterest[]
   media?: PublicMedia[]
+  preview_media?: PublicMedia[]
   id: number
   slug: string
   title: string

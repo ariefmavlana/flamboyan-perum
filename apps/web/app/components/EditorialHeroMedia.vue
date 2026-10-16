@@ -53,6 +53,7 @@ let observer: IntersectionObserver | undefined
 let motion: MediaQueryList | undefined
 let visible = true
 let resumeWhenVisible = false
+let autoPlay = false
 let generation = 0
 let readyTimeout: ReturnType<typeof setTimeout> | undefined
 let soundPoll: ReturnType<typeof setInterval> | undefined
@@ -119,7 +120,10 @@ async function load(play = false) {
             if (visible && !document.hidden && player)
               muted.value = player.isMuted()
           }, 1000)
-          if (play && visible && !document.hidden) event.target.playVideo()
+          if (play && !motion?.matches) {
+            if (visible && !document.hidden) event.target.playVideo()
+            else resumeWhenVisible = true
+          }
         },
         onStateChange(event) {
           if (current !== generation) return
@@ -183,8 +187,14 @@ watch(
     muted.value = true
     failed.value = false
     loading.value = false
-    if (interactive.value && video.value)
-      void load(props.autoplay && !motion?.matches)
+    if (
+      interactive.value &&
+      video.value &&
+      autoPlay &&
+      !motion?.matches &&
+      visible
+    )
+      void load(true)
   },
 )
 onMounted(() => {
@@ -195,18 +205,28 @@ onMounted(() => {
     navigator as Navigator & { connection?: { saveData?: boolean } }
   ).connection
   const auto = props.autoplay && !motion.matches && !connection?.saveData
+  autoPlay = auto
   if (stage.value) {
     observer = new IntersectionObserver(
       (entries) => {
         visible = entries[0]?.isIntersecting ?? false
-        visibilityChanged()
+        if (
+          visible &&
+          auto &&
+          !motion?.matches &&
+          video.value &&
+          !player &&
+          !loading.value &&
+          !failed.value
+        )
+          void load(true)
+        else visibilityChanged()
       },
       { threshold: 0.15 },
     )
     observer.observe(stage.value)
   }
   document.addEventListener('visibilitychange', visibilityChanged)
-  if (auto && video.value) void load(true)
 })
 onBeforeUnmount(() => {
   generation++

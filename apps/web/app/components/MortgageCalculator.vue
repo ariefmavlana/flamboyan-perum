@@ -5,7 +5,8 @@ import {
   simulateMurabahah,
   estimateBankFees,
 } from '#shared/utils/mortgage'
-import { formatIdr } from '#shared/utils/catalog'
+import { formatIdr, whatsappLink } from '#shared/utils/catalog'
+import { siteOrigin } from '#shared/utils/seo'
 import {
   formatDate,
   formatDateRange,
@@ -29,6 +30,52 @@ const appraisalValue = ref(Number(props.price))
 const years = ref(20)
 const annualRate = ref<number | ''>('')
 const bank = ref<'BNI' | 'BSI'>('BNI')
+const config = useRuntimeConfig()
+const route = useRoute()
+const { whatsappNumber } = await useDevelopment()
+const helpLink = computed(() =>
+  whatsappLink(
+    whatsappNumber.value,
+    `penawaran KPR ${bank.value} untuk rumah tipe ${props.houseType ?? ''}. Mohon rincian DP, tenor, ${bank.value === 'BSI' ? 'total margin akad' : 'bunga efektif dan skenario floating'}, serta biaya`,
+    siteOrigin(String(config.public.siteUrl)) + route.path,
+  ),
+)
+const financingSteps = computed(() => [
+  {
+    title: 'Harga sudah sesuai rumah',
+    text: `Harga ${formatIdr(props.price)} diambil dari tipe yang sedang Anda lihat, sehingga tidak perlu diketik ulang.`,
+  },
+  {
+    title: 'Isi DP dan lama pembiayaan',
+    text: 'Uang muka diisi dalam rupiah tanpa titik/koma. Tenor diisi dalam tahun; 1 tahun sama dengan 12 bulan. DP awal 20% adalah titik awal yang dapat diubah.',
+  },
+  {
+    title:
+      bank.value === 'BNI'
+        ? 'Gunakan bunga efektif BNI'
+        : 'Gunakan total margin BSI',
+    text:
+      bank.value === 'BNI'
+        ? 'Ambil bunga efektif tahunan dari penawaran BNI. Jika bunga berubah setelah fixed, isi asumsi floating. Referensi yang tersedia dapat dipilih pada form.'
+        : 'Isi total margin akad dalam rupiah dari penawaran BSI, bukan persentase bunga. Penawaran tersimpan hanya tersedia bila tipe dan harga rumah cocok.',
+  },
+  {
+    title: 'Tinjau hasil dan biaya',
+    text: 'Angsuran diperbarui saat isian lengkap dan valid. Bandingkan pokok, angsuran dan total pembayaran, kemudian konfirmasikan biaya serta jadwal final kepada bank.',
+  },
+])
+const downPaymentText = computed(() =>
+  typeof downPayment.value === 'number' && Number.isFinite(downPayment.value)
+    ? formatIdr(downPayment.value)
+    : 'Belum diisi',
+)
+function trackFinancingHelp() {
+  tracking.track('click_whatsapp', {
+    property_id: props.propertyId,
+    page_type: 'property',
+    lead_channel: 'whatsapp',
+  })
+}
 const totalMargin = ref<number | ''>('')
 const bsiQuoteId = ref('')
 const bsiQuotes = computed(
@@ -257,6 +304,15 @@ const yearlyChart = computed(() =>
     />
     <p class="eyebrow">RENCANA PEMBIAYAAN</p>
     <h2 id="kpr-title">Simulasi KPR BNI & BSI</h2>
+    <details class="mortgage-guide" open>
+      <summary>Cara mengisi simulasi KPR</summary>
+      <ol class="mortgage-guide-steps">
+        <li v-for="step in financingSteps" :key="step.title">
+          <strong>{{ step.title }}</strong>
+          <p>{{ step.text }}</p>
+        </li>
+      </ol>
+    </details>
     <p class="muted">
       Harga rumah {{ formatIdr(price) }}. DP awal 20% dapat diubah sesuai
       penawaran. Masukkan parameter penawaran bank; simulasi bukan persetujuan
@@ -273,6 +329,36 @@ const yearlyChart = computed(() =>
         <option value="BSI">BSI Griya · Murabahah</option>
       </select></label
     >
+    <div class="mortgage-input-summary">
+      <div>
+        <span>Harga tipe {{ houseType }}</span
+        ><strong>{{ formatIdr(price) }}</strong>
+      </div>
+      <div>
+        <span>Uang muka yang Anda isi</span
+        ><strong>{{ downPaymentText }}</strong>
+      </div>
+      <div>
+        <span>Jangka waktu</span
+        ><strong
+          >{{ years || '—' }} tahun<span v-if="years">
+            · {{ Math.round(years * 12) }} bulan</span
+          ></strong
+        >
+      </div>
+    </div>
+    <p id="mortgage-dp-help" class="mortgage-field-help">
+      DP ditulis dalam rupiah, tanpa pemisah ribuan. Tidak boleh melebihi harga
+      rumah. Tanda jadi dan biaya transaksi dikonfirmasi terpisah.
+    </p>
+    <p id="mortgage-terms-help" class="mortgage-field-help">
+      Isi tenor sesuai penawaran bank.
+      {{
+        bank === 'BSI'
+          ? 'Total margin adalah jumlah rupiah untuk seluruh akad; jangan memasukkan persentase atau nominal angsuran bulanan.'
+          : 'Bunga diisi sebagai persentase efektif per tahun, bukan bunga flat atau nominal rupiah.'
+      }}
+    </p>
     <template v-if="bank === 'BSI'">
       <p class="muted">
         Perhitungan murabahah angsuran sama: (harga rumah − DP + total margin
@@ -300,6 +386,7 @@ const yearlyChart = computed(() =>
         <label
           >Uang muka (IDR)<input
             v-model.number="downPayment"
+            aria-describedby="mortgage-dp-help"
             :disabled="!interactive || !!bsiQuote"
             type="number"
             min="0"
@@ -309,6 +396,7 @@ const yearlyChart = computed(() =>
         <label
           >Tenor (tahun)<input
             v-model.number="years"
+            aria-describedby="mortgage-terms-help"
             :disabled="!interactive || !!bsiQuote"
             type="number"
             min="1"
@@ -318,6 +406,7 @@ const yearlyChart = computed(() =>
         <label
           >Total margin akad BSI (IDR)<input
             v-model.number="totalMargin"
+            aria-describedby="mortgage-terms-help"
             :disabled="!interactive || !!bsiQuote"
             type="number"
             min="0"
@@ -431,6 +520,7 @@ const yearlyChart = computed(() =>
         <label
           >Uang muka (IDR)<input
             v-model.number="downPayment"
+            aria-describedby="mortgage-dp-help"
             :disabled="!interactive"
             type="number"
             min="0"
@@ -440,6 +530,7 @@ const yearlyChart = computed(() =>
         <label
           >Tenor (tahun)<input
             v-model.number="years"
+            aria-describedby="mortgage-terms-help"
             :disabled="!interactive"
             type="number"
             :min="Math.ceil((selected?.min_tenor_months ?? 12) / 12)"
@@ -449,6 +540,7 @@ const yearlyChart = computed(() =>
         <label
           >Bunga efektif tahunan awal (%)<input
             v-model.number="annualRate"
+            aria-describedby="mortgage-terms-help"
             :disabled="!interactive || !!selected"
             type="number"
             min="0"
@@ -626,5 +718,24 @@ const yearlyChart = computed(() =>
         </details>
       </template>
     </template>
+    <div class="mortgage-contact">
+      <div>
+        <h3>Belum memiliki penawaran bank?</h3>
+        <p>
+          Minta rincian {{ bank }} untuk tipe {{ houseType }} melalui Admin. Isi
+          parameter setelah penawarannya dikonfirmasi; nilai kosong bukan
+          berarti gratis.
+        </p>
+      </div>
+      <a
+        v-if="helpLink"
+        :href="helpLink"
+        class="button whatsapp-button"
+        target="_blank"
+        rel="noopener noreferrer"
+        @click="trackFinancingHelp"
+        ><AppIcon name="chat" />Minta rincian {{ bank }} ↗</a
+      >
+    </div>
   </section>
 </template>

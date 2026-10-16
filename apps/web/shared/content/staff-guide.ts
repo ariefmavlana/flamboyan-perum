@@ -84,7 +84,7 @@ export function staffGuide(role: StaffAccount['role']) {
               'Buka Konten publik, pilih bagian yang ingin diperbarui, lalu edit record yang sudah ada agar tidak membuat duplikasi.',
             steps: [
               'Sorotan beranda: isi judul/pengantar, tautan YouTube dan judul video. Pilih otomatis tanpa suara atau putar setelah dipilih pengunjung.',
-              'Pilih properti dan gambar pendamping. Tambahkan foto melalui panel Foto & media, tunggu siap, lalu Perbarui pilihan gambar dan pilih hasilnya.',
+              'Pilih properti dan foto banner. Foto tampil di pembuka dan video tetap tampil pada bagian video kawasan di bawahnya. Tambahkan foto melalui panel Foto & media, tunggu siap, lalu Perbarui pilihan gambar dan pilih hasilnya.',
               'Kawasan & kontak: periksa alamat, WhatsApp, fasilitas dan sumber. Bedakan fasilitas yang sudah ada dari rencana.',
               'Tinjau isi dan izin, centang verifikasi, pilih Publikasikan, lalu Simpan konten. Periksa halaman publik setelah simpan.',
             ],

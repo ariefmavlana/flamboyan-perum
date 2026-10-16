@@ -124,9 +124,7 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
       await expect(page.locator('main input:disabled')).toHaveCount(0)
       await expect(page.locator('main h1')).toBeVisible()
       if (path === '/backoffice') {
-        await expect(
-          page.getByText(/calon pembeli.*Halaman/),
-        ).toBeVisible()
+        await expect(page.getByText(/calon pembeli.*Halaman/)).toBeVisible()
         await expect(
           page.getByText('Memuat ruang kerja…', { exact: true }),
         ).not.toBeVisible()
@@ -266,8 +264,9 @@ test('mobile detail places price and contact before description and location', a
   await page.setViewportSize({ width: 320, height: 800 })
   await page.goto(`/properti/${fixture.slug}`)
   await page.waitForLoadState('networkidle')
-  const contact = page.getByRole('link', {
-    name: 'Hubungi Admin melalui WhatsApp ↗',
+  const contact = page.locator('.detail-summary').getByRole('link', {
+    name: 'WhatsApp Admin',
+    exact: true,
   })
   await expect(contact).toBeVisible()
   const contactBox = await contact.boundingBox()
@@ -295,8 +294,7 @@ test('editorial images load and testimonial blocks do not overlap across viewpor
     await page.goto('/')
     await page.waitForLoadState('networkidle')
     await page.evaluate(() => document.fonts.ready)
-    // Hero now comes from verified CMS media; its caption is not a fixed stock asset.
-    const hero = page.locator('.editorial-hero-photo')
+    const hero = page.locator('.photo-banner-image')
     await expect(hero).toBeVisible()
     await expect(hero).toHaveAttribute('alt', /\S+/)
     for (const photo of await page.locator('main img').all()) {
