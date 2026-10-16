@@ -1,5 +1,9 @@
 # Status implementasi
 
+## Input angka Indonesia dan banner multi-foto — 16 Oktober 2026
+
+Input numerik publik, katalog Admin/Marketing, komersial, lokasi, media dan CMS memakai titik ribuan/koma desimal dengan payload kanonis; kontak/kode/tanggal tetap. Admin dapat menambah, mengurutkan dan menghapus hingga lima foto HERO. Banner memakai kontrol/transisi/decode/reduced-motion carousel existing, dengan video terpisah. Tidak ada migrasi atau dependency baru. Kontrak baru `banner_media_ids`/`banner_media` ada di API_DOCS. Validasi, keterbatasan browser/audit dan bukti deployment dicatat pada PR rilis.
+
 ## Banner foto, video dan bantuan pembeli — 16 Oktober 2026
 
 Banner foto dan video YouTube kini tampil bersamaan pada bagian terpisah; Admin tetap mengaturnya melalui HERO existing. Scroll native halus/reveal ringan, CTA WhatsApp Admin, petunjuk KPR per bank dan ringkasan isian tersedia. Kartu memutar maksimal lima preview PHOTO publik; galeri memutar semua foto, dengan jeda/manual, decode sebelum transisi, serta penghormatan reduced-motion/visibility/fokus. Denah dan lightbox manual. Tidak ada tarif, data bisnis, migrasi atau dependency baru. Kontrak `preview_media` ada di API_DOCS; panduan Admin diperbarui.

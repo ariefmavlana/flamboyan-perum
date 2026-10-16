@@ -1,5 +1,11 @@
 # REST API — katalog, workspace dan operasi
 
+## Banner multi-foto dan format angka — 16 Oktober 2026
+
+HERO menerima `payload.banner_media_ids` opsional: list maksimal lima ID integer positif unik, berurutan sesuai pilihan Admin. Semua ID harus PHOTO READY+published dari `property_id` yang PUBLISHED; pemeriksaan di transaksi, role Admin aktif, attestation, version guard dan audit existing tetap berlaku. List kosong memilih perilaku foto tunggal existing. GET content menambah `hero.banner_media` berupa DTO media publik dalam urutan pilihan, tanpa ID konfigurasi/storage/aktor; media yang dicabut publikasinya/tidak siap dan properti draf tidak diteruskan. Endpoint/migrasi baru tidak diperlukan.
+
+Format input Indonesia hanya presentasi: `1.000.000` dikirim sebagai `1000000`, desimal `8,5` sebagai `8.5`. Kontrak angka, integer IDR dan query filter existing tetap; API tidak menerima string rupiah berformat sebagai kontrak baru. Telepon/kode/tanggal tidak memakai pemisah ribuan.
+
 ## Preview foto katalog — 16 Oktober 2026
 
 `GET /api/v1/properties` menambah `preview_media`: maksimal lima PHOTO READY+published per properti, berurutan position lalu id, memakai allowlist media publik existing. `media` tetap satu sampul untuk kompatibilitas; detail tetap mengirim galeri lengkap. Denah, media privat/gagal, storage path dan identitas aktor tidak masuk preview. Eager loading dibatasi per properti, bukan lima untuk seluruh halaman. Tidak ada endpoint, migrasi, izin atau mutasi baru.

@@ -140,6 +140,7 @@ export interface PublicContent {
     property_id: number | null
     property?: Property | null
     media?: PublicMedia | null
+    banner_media?: PublicMedia[]
     video_url?: string | null
     video_title?: string | null
     video_autoplay?: boolean
@@ -165,7 +166,7 @@ export interface EditorialContent {
     | 'FINANCING_PROGRAM'
   payload: Record<
     string,
-    string | number | boolean | null | RatePhase[] | string[]
+    string | number | boolean | null | RatePhase[] | string[] | number[]
   >
   published: boolean
   position: number

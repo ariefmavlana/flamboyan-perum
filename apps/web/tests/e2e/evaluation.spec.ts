@@ -150,8 +150,8 @@ test('Admin curates verified testimonial and location; map stays consent gated',
   await dialog
     .getByRole('button', { name: 'Lokasi & sekitar', exact: true })
     .click()
-  await dialog.getByLabel('Latitude', { exact: true }).fill('-6.6')
-  await dialog.getByLabel('Longitude', { exact: true }).fill('106.8')
+  await dialog.getByLabel('Latitude', { exact: true }).fill('-6,6')
+  await dialog.getByLabel('Longitude', { exact: true }).fill('106,8')
   await dialog
     .getByRole('button', { name: 'Simpan lokasi', exact: true })
     .click()

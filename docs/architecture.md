@@ -1,5 +1,9 @@
 # Arsitektur fondasi
 
+## Input lokal dan konfigurasi banner — 16 Oktober 2026
+
+NumberInput bersama memisahkan draft tampilan Indonesia dari model kanonis. Parser/formatter dan validasi batas/step murni dapat diuji; custom validity mempertahankan validasi browser pada input text dengan keypad numerik/desimal. API/domain tidak memproses string UI berformat. HERO menyimpan list ID pada JSON existing; publicIndex mengambil hanya foto eligible dari properti publik lalu mengurutkan DTO sesuai list. PhotoBanner memakai usePhotoCarousel existing, tanpa engine animasi atau dependency baru.
+
 ## Presentasi publik dan preview foto — 16 Oktober 2026
 
 Laravel eager-load `previewMedia` PHOTO READY+published dengan limit lima per parent; PublicPropertyResource memakai allowlist existing, tanpa N+1 atau perluasan akses. Vue memakai composable pergantian foto bersama untuk kartu/detail, IntersectionObserver dan visibility/reduced-motion listeners yang dibersihkan saat unmount. Foto berikutnya didekode sebelum dipilih. Directive reveal universal mempertahankan SSR terlihat; Web Animations hanya dipakai untuk elemen di bawah fold saat masuk layar. CSS scroll native menjaga navigasi browser. Tidak menambah GSAP, smooth-scroll engine atau dependency baru. HERO CMS existing tetap menjadi sumber foto/video; rumus pembiayaan dan penyimpanan tidak berubah.

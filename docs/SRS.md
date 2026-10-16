@@ -1,5 +1,9 @@
 # Software Requirements Specification — Flamboyan Perum
 
+## Angka lokal dan pemilihan banner — 16 Oktober 2026
+
+NumberInput menampilkan `id-ID`, mengirim nilai kanonis tanpa grouping, mempertahankan model number/string, required/min/max/step dan status kosong. Notasi tidak valid/eksponen/nilai melebihi safe integer ditolak; titik desimal ambigu tidak diinterpretasikan sebagai rupiah. Caret dihitung berdasarkan digit/koma/minus, dengan penghapusan separator yang mengikuti digit. Rupiah tetap integer; luas, bunga dan koordinat memakai koma desimal. Banner maksimal lima PHOTO dipilih Admin, urutan persist, loop6,5detik/dissolve800ms/decode/jeda/visibility/reduced-motion memakai composable existing. Satu foto tidak menampilkan kontrol loop.
+
 ## Banner dan pergantian foto — 16 Oktober 2026
 
 Foto HERO menjadi banner; tautan YouTube existing tampil pada bagian film dan dimuat ketika bagian terlihat. Tanpa foto pilihan, ilustrasi gerbang existing tampil dengan keterangannya. Foto kartu memakai maksimal lima preview publik; detail memakai seluruh PHOTO. Pergantian setiap 6,5 detik menggunakan decode sebelum transisi opacity 800ms; foto terakhir kembali ke pertama. Kontrol manual menjeda otomatis. Hover mouse, fokus keyboard, tab tersembunyi, area di luar layar, reduced-motion, denah dan lightbox menghentikan pergantian otomatis. Gagal decode mempertahankan foto aktif dan menyediakan pesan/retry melalui pilihan manual. Tidak ada tarif KPR baru; petunjuk membedakan bunga efektif BNI dan total margin murabahah BSI.

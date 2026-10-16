@@ -63,6 +63,7 @@ export function staffGuide(role: StaffAccount['role']) {
         : 'Marketing mengelola properti miliknya. Properti tim lain tidak ditampilkan dalam daftar Anda.',
       steps: [
         'Cari tipe rumah, lalu pilih Edit properti. Periksa informasi utama, luas, kamar, alamat, dan ketersediaan dari sumber yang benar.',
+        'Ketik angka seperti biasa: 1000000 tampil menjadi 1.000.000. Gunakan koma untuk desimal, misalnya luas 60,5 atau bunga 8,5. Nomor telepon, tanggal dan kode tipe tidak memakai pemisah ribuan.',
         'Pada Foto & media, pilih jenis yang tepat: foto, denah, masterplan, atau video YouTube. Isi keterangan dan izin publikasi, lalu tunggu media berstatus siap.',
         ...(admin
           ? [
@@ -85,6 +86,7 @@ export function staffGuide(role: StaffAccount['role']) {
             steps: [
               'Sorotan beranda: isi judul/pengantar, tautan YouTube dan judul video. Pilih otomatis tanpa suara atau putar setelah dipilih pengunjung.',
               'Pilih properti dan foto banner. Foto tampil di pembuka dan video tetap tampil pada bagian video kawasan di bawahnya. Tambahkan foto melalui panel Foto & media, tunggu siap, lalu Perbarui pilihan gambar dan pilih hasilnya.',
+              'Pada Foto banner beranda, tambahkan maksimal lima foto dan atur urutannya dengan panah naik/turun. Foto pertama menjadi pembuka, lalu berulang dengan kontrol jeda. Hapus daftar untuk kembali memakai foto tunggal atau ilustrasi gerbang.',
               'Kawasan & kontak: periksa alamat, WhatsApp, fasilitas dan sumber. Bedakan fasilitas yang sudah ada dari rencana.',
               'Tinjau isi dan izin, centang verifikasi, pilih Publikasikan, lalu Simpan konten. Periksa halaman publik setelah simpan.',
             ],

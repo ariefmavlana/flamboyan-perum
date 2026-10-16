@@ -82,6 +82,48 @@ class EditorialAssetsTest extends TestCase
         $this->assertDatabaseCount('activity_logs', 3);
     }
 
+    public function test_banner_photos_preserve_admin_order_and_revoke_private_or_unpublished_media(): void
+    {
+        $this->admin();
+        $property = $this->property();
+        $first = $property->media()->create(['kind' => 'PHOTO', 'alt' => 'First', 'position' => 0, 'state' => 'READY', 'published' => true]);
+        $second = $property->media()->create(['kind' => 'PHOTO', 'alt' => 'Second', 'position' => 1, 'state' => 'READY', 'published' => true]);
+        $data = $this->hero($property, $first->id);
+        $data['payload']['banner_media_ids'] = [$second->id, $first->id];
+        $created = $this->postJson('/api/v1/internal/content', $data)->assertCreated();
+        $this->getJson('/api/v1/content')->assertJsonPath('data.hero.banner_media.0.id', $second->id)->assertJsonPath('data.hero.banner_media.1.id', $first->id)->assertJsonMissingPath('data.hero.banner_media_ids')->assertJsonMissingPath('data.hero.banner_media.0.staging_path')->assertJsonMissingPath('data.hero.banner_media.0.property_id');
+        $second->update(['published' => false]);
+        $this->getJson('/api/v1/content')->assertJsonCount(1, 'data.hero.banner_media')->assertJsonPath('data.hero.banner_media.0.id', $first->id);
+        $this->patchJson('/api/v1/internal/content/'.$created->json('data.id'), $data + ['version' => 1])->assertUnprocessable();
+        $property->update(['publication' => 'DRAFT']);
+        $this->getJson('/api/v1/content')->assertJsonPath('data.hero.banner_media', []);
+        $this->assertDatabaseCount('activity_logs', 1);
+    }
+
+    public function test_banner_photos_require_scoped_ready_photos_and_limit_unique_selection_to_five(): void
+    {
+        $admin = $this->admin();
+        $property = $this->property();
+        $photo = $property->media()->create(['kind' => 'PHOTO', 'alt' => 'Public', 'state' => 'READY', 'published' => true]);
+        $private = $property->media()->create(['kind' => 'PHOTO', 'alt' => 'Private', 'state' => 'READY', 'published' => false]);
+        $failed = $property->media()->create(['kind' => 'PHOTO', 'alt' => 'Failed', 'state' => 'FAILED', 'published' => true]);
+        $video = $property->media()->create(['kind' => 'VIDEO', 'alt' => 'Video', 'state' => 'READY', 'published' => true]);
+        $other = $this->property()->media()->create(['kind' => 'PHOTO', 'alt' => 'Other property', 'state' => 'READY', 'published' => true]);
+        $data = $this->hero($property);
+        foreach ([[$photo->id, $photo->id], ['slot' => $photo->id], [$private->id], [$failed->id], [$video->id], [$other->id], [999999], range(1000, 1005)] as $ids) {
+            $data['payload']['banner_media_ids'] = $ids;
+            $this->postJson('/api/v1/internal/content', $data)->assertUnprocessable();
+        }
+        $data['payload']['banner_media_ids'] = [$photo->id];
+        $this->actingAs(User::factory()->create(['role' => 'MARKETING', 'is_active' => true]));
+        $this->postJson('/api/v1/internal/content', $data)->assertForbidden();
+        $this->actingAs($admin);
+        $this->postJson('/api/v1/internal/content', array_replace($data, ['verified' => false]))->assertUnprocessable();
+        $created = $this->postJson('/api/v1/internal/content', $data)->assertCreated();
+        $this->patchJson('/api/v1/internal/content/'.$created->json('data.id'), $data + ['version' => 99])->assertConflict();
+        $this->assertDatabaseCount('activity_logs', 1);
+    }
+
     public function test_home_video_rejects_unsafe_sources_and_requires_title_verification_and_admin(): void
     {
         $admin = $this->admin();

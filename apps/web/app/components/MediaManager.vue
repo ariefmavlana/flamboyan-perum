@@ -196,10 +196,7 @@ watch(
           </option>
         </select></label
       ><label
-        >Deskripsi media<input
-          v-model="alt"
-          required
-          maxlength="240" /></label
+        >Deskripsi media<input v-model="alt" required maxlength="240" /></label
       ><label v-if="isLink"
         >URL HTTPS<input
           v-model="url"
@@ -289,9 +286,8 @@ watch(
         <label
           >Deskripsi media<input v-model="item.alt" maxlength="240" /></label
         ><label
-          >Urutan<input
+          >Urutan<NumberInput
             v-model.number="item.position"
-            type="number"
             min="0"
             max="1000" /></label
         ><label class="checkbox-label"
