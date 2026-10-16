@@ -1,0 +1,466 @@
+html:has(.public-shell) {
+  scroll-behavior: smooth;
+  scroll-padding-top: 28px;
+}
+.public-shell .photo-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 640px;
+  margin: 16px;
+  isolation: isolate;
+  color: #fff;
+  background: #22352b;
+  overflow: hidden;
+}
+.photo-banner-image,
+.photo-banner-shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+.photo-banner-image {
+  object-fit: cover;
+  object-position: 50% 28%;
+}
+.photo-banner-shade {
+  background: linear-gradient(
+    90deg,
+    #11241bef 0%,
+    #15251dcc 32%,
+    #15251d52 62%,
+    #15251d0d 100%
+  );
+}
+.photo-banner .photo-banner-copy {
+  width: 100%;
+  padding-block: 72px 112px;
+}
+.photo-banner .eyebrow,
+.photo-banner h1 {
+  color: #fff;
+}
+.photo-banner h1 {
+  max-width: 620px;
+  font-size: clamp(48px, 5.2vw, 78px);
+  line-height: 1.04;
+  margin: 24px 0;
+}
+.photo-banner-copy > p:not(.eyebrow) {
+  max-width: 470px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: #f2f0e9;
+}
+.banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px 28px;
+  margin-top: 30px;
+}
+.banner-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 48px;
+  border-bottom: 1px solid #e7e6d78c;
+  font-size: 13px;
+  font-weight: 600;
+}
+.photo-banner-copy > .banner-service {
+  margin: 16px 0 0;
+  font-size: 11px;
+  color: #e0e3d9;
+}
+.photo-banner-caption {
+  position: absolute;
+  bottom: 22px;
+  right: 28px;
+  max-width: 46%;
+  padding: 7px 10px;
+  background: #16251dbf;
+  font-size: 10px;
+  color: #fff;
+}
+.banner-scroll {
+  position: absolute;
+  bottom: 28px;
+  left: 64px;
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  min-height: 44px;
+}
+.banner-scroll > span {
+  font-size: 22px;
+}
+.public-shell .home-search {
+  padding-block: 30px;
+}
+.home-search .editorial-search {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  align-items: center;
+  gap: 48px;
+  background: #ece8dd;
+  padding: 28px 32px;
+  color: var(--ink);
+}
+.home-search .eyebrow {
+  margin: 0 0 8px;
+}
+.home-search h2 {
+  font-size: 30px;
+  margin: 0;
+}
+.home-search-field label {
+  font-size: 11px;
+  margin-bottom: 10px;
+}
+.home-search .editorial-search-control {
+  border-color: #b2aa98;
+}
+.home-search .editorial-search-control input {
+  color: var(--ink);
+  font-size: 16px;
+}
+.home-search .editorial-search-control input::placeholder {
+  color: #706c60;
+}
+.home-search .editorial-search-control button {
+  color: #fff;
+  background: #2e4637;
+}
+.public-shell .home-film {
+  display: grid;
+  grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+  gap: 64px;
+  align-items: center;
+  padding-block: 40px 56px;
+  scroll-margin-top: 28px;
+}
+.home-film h2 {
+  margin-block: 18px 22px;
+}
+.home-film-copy > p:not(.eyebrow) {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--muted);
+  max-width: 380px;
+}
+.home-film-copy > .text-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.public-shell .whatsapp-button,
+.public-shell .public-header .whatsapp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  color: #fff;
+  border-color: #304c3e;
+  background: #304c3e;
+  font-weight: 600;
+}
+.public-shell .whatsapp-button:hover,
+.public-shell .public-header .whatsapp-button:hover {
+  color: #fff;
+  background: #203c2d;
+  border-color: #203c2d;
+}
+.public-shell .photo-banner .whatsapp-button {
+  background: #f5f1e4;
+  border-color: #f5f1e4;
+  color: #243e2d;
+}
+.public-shell .photo-banner .whatsapp-button:hover {
+  background: #fff;
+  border-color: #fff;
+}
+.whatsapp-button > .icon:first-child {
+  width: 20px;
+  height: 20px;
+}
+.whatsapp-button > .icon:last-child {
+  width: 15px;
+  height: 15px;
+}
+.card-photo-stage {
+  min-width: 0;
+  background: #f1eee6;
+}
+.card-photo-controls {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 3px;
+  padding: 2px 8px;
+  border-bottom: 1px solid var(--line);
+}
+.card-photo-controls > span {
+  margin-right: auto;
+  padding-left: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.card-photo-controls button {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  color: var(--ink);
+  background: transparent;
+  font-size: 18px;
+}
+.card-photo-controls button:hover {
+  background: #e5e7dc;
+}
+.public-shell .property-card .whatsapp-card-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #bccbbd;
+  background: #eaf0e6;
+  color: #2f4d37;
+  padding: 8px 12px;
+  text-decoration: none;
+  font-size: 12px;
+}
+.whatsapp-card-link .icon {
+  width: 16px;
+  height: 16px;
+}
+.photo-load-message {
+  font-size: 12px;
+  padding: 10px;
+  margin: 0;
+  color: var(--muted);
+}
+.photo-dissolve-enter-active,
+.photo-dissolve-leave-active {
+  transition: opacity 800ms ease !important;
+}
+.photo-dissolve-enter-from,
+.photo-dissolve-leave-to {
+  opacity: 0;
+}
+.public-shell .photo-dissolve-leave-active {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.mortgage-guide {
+  padding: 8px 22px;
+  border: 1px solid var(--line);
+  background: #f6f4ed;
+  margin-block: 24px;
+}
+.mortgage-guide > summary {
+  font-size: 14px;
+  font-weight: 650;
+}
+.mortgage-guide-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 44px;
+  padding: 12px 0 12px 24px;
+}
+.mortgage-guide-steps li {
+  padding-left: 5px;
+  font-size: 13px;
+}
+.mortgage-guide-steps strong {
+  display: block;
+  margin-bottom: 8px;
+}
+.mortgage-guide-steps p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.mortgage-input-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  border-block: 1px solid var(--line);
+  padding-block: 22px;
+  margin: 24px 0;
+}
+.mortgage-input-summary > div {
+  min-width: 0;
+}
+.mortgage-input-summary > div > span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+.mortgage-input-summary strong {
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.mortgage-input-summary strong span {
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.mortgage-field-help {
+  font-size: 12px;
+  line-height: 1.85;
+  color: var(--muted);
+}
+.mortgage-contact {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26px;
+  background: #eaf0e6;
+  border: 1px solid #d0dbcb;
+  margin-top: 32px;
+}
+.mortgage-contact h3 {
+  font-size: 19px;
+  margin-bottom: 8px;
+}
+.mortgage-contact p {
+  margin: 0;
+  max-width: 630px;
+  font-size: 12px;
+  line-height: 1.9;
+}
+.mortgage-contact > .button {
+  flex: 0 0 auto;
+}
+@media (max-width: 1100px) {
+  .banner-scroll {
+    left: 36px;
+  }
+  .public-shell .home-film {
+    gap: 32px;
+  }
+  .mortgage-contact {
+    flex-direction: column;
+    align-items: start;
+  }
+}
+@media (max-width: 900px) {
+  .public-shell .photo-banner {
+    min-height: 620px;
+    margin: 0;
+  }
+  .photo-banner h1 {
+    max-width: 550px;
+    font-size: clamp(46px, 8vw, 66px);
+  }
+  .photo-banner-shade {
+    background: linear-gradient(90deg, #13261be8, #14251db3 60%, #14251d4d);
+  }
+  .home-search .editorial-search {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    padding: 24px;
+  }
+  .public-shell .home-film {
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: 30px 40px;
+  }
+  .home-film-copy > p:not(.eyebrow) {
+    max-width: 580px;
+  }
+  .home-film h2 br {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .public-shell .photo-banner {
+    min-height: 720px;
+    align-items: start;
+  }
+  .photo-banner .photo-banner-copy {
+    padding: 48px 24px 130px;
+  }
+  .photo-banner h1 {
+    font-size: clamp(44px, 11vw, 60px);
+    margin-block: 20px;
+  }
+  .photo-banner .eyebrow {
+    max-width: 260px;
+    line-height: 1.8;
+    font-size: 9px;
+  }
+  .photo-banner-copy > p:not(.eyebrow) {
+    font-size: 13px;
+  }
+  .photo-banner .banner-service {
+    font-size: 11px;
+  }
+  .photo-banner-shade {
+    background:
+      linear-gradient(90deg, #10251be8, #14251d9c),
+      linear-gradient(0deg, #14251d80, transparent);
+  }
+  .banner-actions {
+    align-items: start;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .banner-actions .whatsapp-button {
+    min-width: 200px;
+  }
+  .photo-banner-caption {
+    bottom: 14px;
+    left: 24px;
+    right: 24px;
+    max-width: none;
+    font-size: 9px;
+  }
+  .banner-scroll {
+    bottom: 58px;
+    left: 24px;
+  }
+  .public-shell .home-search {
+    padding-block: 22px;
+  }
+  .home-search h2 {
+    font-size: 27px;
+  }
+  .mortgage-guide-steps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .mortgage-input-summary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .mortgage-contact {
+    padding: 20px;
+  }
+  .mortgage-contact > .button {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has(.public-shell) {
+    scroll-behavior: auto;
+  }
+  .photo-dissolve-enter-active,
+  .photo-dissolve-leave-active {
+    transition: none !important;
+  }
+}

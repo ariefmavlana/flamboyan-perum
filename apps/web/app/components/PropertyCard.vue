@@ -29,9 +29,23 @@ function trackWhatsapp() {
     lead_channel: 'whatsapp',
   })
 }
-const cover = computed(() =>
-  props.property.media?.find((item) => item.kind === 'PHOTO'),
+const photos = computed(() =>
+  (props.property.preview_media ?? props.property.media ?? []).filter(
+    (item) => item.kind === 'PHOTO' && item.sources.length,
+  ),
 )
+const photoSizes = '(max-width: 540px) 100vw, (max-width: 1100px) 50vw, 33vw'
+const {
+  stage,
+  index,
+  selected: cover,
+  paused,
+  motionAllowed,
+  loading,
+  message,
+  move,
+  toggle,
+} = usePhotoCarousel(photos, photoSizes)
 const offer = computed(() => {
   const terms = props.property.commercial
   return terms?.offer_until &&
@@ -49,38 +63,82 @@ const wa = computed(() =>
 </script>
 
 <template>
-  <article class="property-card">
-    <NuxtLink
-      class="card-media"
-      :to="`/properti/${property.slug}`"
-      :aria-label="`Lihat ${property.title}`"
-    >
-      <img
-        v-if="cover?.sources[0]"
-        class="card-photo"
-        :class="{ 'is-illustration': /ilustrasi|inspirasi/i.test(cover.alt) }"
-        :src="cover.sources[0].url"
-        :srcset="
-          cover.sources
-            .filter((source) => source.width)
-            .map((source) => `${source.url} ${source.width}w`)
-            .join(',') || undefined
-        "
-        sizes="(max-width: 540px) 100vw, 50vw"
-        :alt="cover.alt"
-        :width="cover.sources[0].width ?? undefined"
-        :height="cover.sources[0].height ?? undefined"
-        loading="lazy"
-      />
-      <div v-else class="property-visual">
-        <AppIcon name="home" /><small>Foto belum tersedia</small>
+  <article v-reveal class="property-card">
+    <div ref="stage" class="card-photo-stage">
+      <NuxtLink
+        class="card-media"
+        :to="`/properti/${property.slug}`"
+        :aria-label="`Lihat ${property.title}`"
+      >
+        <Transition
+          name="photo-dissolve"
+          @before-leave="(el) => el.setAttribute('aria-hidden', 'true')"
+          ><img
+            v-if="cover?.sources[0]"
+            :key="cover.id"
+            class="card-photo"
+            :class="{
+              'is-illustration': /ilustrasi|inspirasi/i.test(cover.alt),
+            }"
+            :src="cover.sources[0].url"
+            :srcset="
+              cover.sources
+                .filter((source) => source.width)
+                .map((source) => `${source.url} ${source.width}w`)
+                .join(',') || undefined
+            "
+            :sizes="photoSizes"
+            :alt="cover.alt"
+            :width="cover.sources[0].width ?? undefined"
+            :height="cover.sources[0].height ?? undefined"
+            loading="lazy"
+          />
+          <div v-else class="property-visual">
+            <AppIcon name="home" /><small>Foto belum tersedia</small>
+          </div></Transition
+        >
+        <MediaDisclosure :alt="cover?.alt" />
+        <span class="badge" :data-state="property.availability">{{
+          availabilityLabels[property.availability]
+        }}</span>
+        <span class="card-house-type">Tipe {{ property.house_type }}</span>
+      </NuxtLink>
+      <div
+        v-if="photos.length > 1"
+        class="card-photo-controls"
+        :aria-label="`Foto tipe ${property.house_type}`"
+      >
+        <span>{{ index + 1 }} / {{ photos.length }} foto</span>
+        <button
+          type="button"
+          :aria-label="`Foto sebelumnya tipe ${property.house_type}`"
+          :disabled="loading"
+          @click="move(-1)"
+        >
+          ←
+        </button>
+        <button
+          v-if="motionAllowed"
+          type="button"
+          :aria-label="`${paused ? 'Putar' : 'Jeda'} foto tipe ${property.house_type}`"
+          :aria-pressed="paused"
+          @click="toggle"
+        >
+          {{ paused ? '▷' : 'Ⅱ' }}
+        </button>
+        <button
+          type="button"
+          :aria-label="`Foto berikutnya tipe ${property.house_type}`"
+          :disabled="loading"
+          @click="move(1)"
+        >
+          →
+        </button>
       </div>
-      <MediaDisclosure :alt="cover?.alt" />
-      <span class="badge" :data-state="property.availability">{{
-        availabilityLabels[property.availability]
-      }}</span>
-      <span class="card-house-type">Tipe {{ property.house_type }}</span>
-    </NuxtLink>
+      <p v-if="message" class="photo-load-message" role="status">
+        {{ message }}
+      </p>
+    </div>
     <div class="card-content">
       <p class="card-location"><AppIcon name="pin" />{{ property.location }}</p>
       <h3>
@@ -132,11 +190,11 @@ const wa = computed(() =>
         <CompareButton :id="property.id" /><a
           v-if="wa"
           :href="wa"
-          class="text-link"
+          class="text-link whatsapp-card-link"
           target="_blank"
           rel="noopener noreferrer"
           @click="trackWhatsapp"
-          >Hubungi Admin ↗</a
+          ><AppIcon name="chat" />WhatsApp Admin ↗</a
         ><NuxtLink v-else :to="`/properti/${property.slug}`" class="text-link"
           >Lihat detail →</NuxtLink
         >

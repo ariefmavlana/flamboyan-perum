@@ -170,14 +170,15 @@ useHead(() => ({
         <a
           v-if="wa"
           :href="wa"
-          class="button full"
+          class="button full whatsapp-button"
           target="_blank"
           rel="noopener noreferrer"
           @click="trackWhatsapp"
-          >Hubungi Admin melalui WhatsApp ↗</a
-        >
+          ><AppIcon name="chat" />WhatsApp Admin <AppIcon name="external"
+        /></a>
         <p class="muted">
-          Ketersediaan dan informasi transaksi dikonfirmasi bersama Admin.
+          Tanyakan ketersediaan tipe ini, rincian harga, atau jadwal kunjungan.
+          Pesan akan membawa tautan rumah yang Anda lihat.
         </p>
         <dl class="spec-list">
           <div>

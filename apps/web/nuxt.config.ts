@@ -41,6 +41,7 @@ export default defineNuxtConfig({
     '~/assets/editorial.css',
     '~/assets/residences.css',
     '~/assets/workspace.css',
+    '~/assets/public-experience.css',
   ],
   typescript: { strict: true },
   nitro: {

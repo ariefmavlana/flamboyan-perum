@@ -936,16 +936,16 @@ onMounted(() => load())
             Hanya foto dan video siap yang diaktifkan untuk publik dari properti
             ini. Tambahkan gambar melalui panel Foto & media di bawah, lalu
             perbarui pilihan gambar. Tautan YouTube di atas dipakai untuk film
-            kawasan; foto pilihan menjadi gambar pendamping saat video belum
-            diputar atau gagal dimuat. Video properti pilihan tetap didukung
-            bila tautan beranda kosong.
+            kawasan; foto pilihan tampil sebagai banner yang tetap terlihat
+            bersama video, serta pendamping saat video gagal dimuat. Video
+            properti pilihan tetap didukung bila tautan beranda kosong.
           </p>
         </template>
         <p v-if="kind === 'HERO'" class="notice">
           Tempel tautan YouTube milik kawasan, termasuk waktu mulai bila
           diperlukan. Video tetap utuh dengan kontrol YouTube dan berulang;
           autoplay tanpa suara mengikuti izin browser. Pilih properti dan foto
-          untuk gambar pendamping, atau gunakan ilustrasi kawasan yang sudah
+          untuk banner beranda, atau gunakan ilustrasi kawasan yang sudah
           tersedia.
         </p>
         <p v-if="kind === 'BANK_PARTNER'" class="notice">

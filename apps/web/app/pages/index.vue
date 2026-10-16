@@ -4,7 +4,11 @@ import { formatIdr, whatsappLink } from '#shared/utils/catalog'
 import { canonicalUrl } from '#shared/utils/seo'
 import { formatDateRange, formatPercent } from '#shared/utils/format'
 import { jsonLdText, websiteSchema } from '#shared/utils/structured-data'
-import { developmentPhotos, gateDusk } from '#shared/content/flamboyan-assets'
+import {
+  developmentPhotos,
+  gateDusk,
+  gateDay,
+} from '#shared/content/flamboyan-assets'
 const actualFacade = developmentPhotos[0]!
 const config = useRuntimeConfig()
 const { whatsappNumber } = await useDevelopment()
@@ -26,6 +30,22 @@ const { data: content, error: contentError } = await useFetch<{
   data: PublicContent
 }>('/api/v1/content')
 const hero = computed(() => content.value?.data.hero)
+const banner = computed(() => {
+  const photo = hero.value?.media
+  return photo?.kind === 'PHOTO' && photo.sources.length
+    ? {
+        src: photo.sources.at(-1)!.url,
+        sources: photo.sources,
+        width: photo.width,
+        height: photo.height,
+        alt: photo.alt,
+        caption: photo.alt,
+      }
+    : gateDay
+})
+const hasHeroVideo = computed(
+  () => !!hero.value?.video_url || hero.value?.media?.kind === 'VIDEO',
+)
 const development = computed(() => content.value?.data.development)
 const heroMedia = computed(() =>
   hero.value?.property?.media?.find((media) => media.kind === 'PHOTO'),
@@ -66,46 +86,69 @@ useHead({
 
 <template>
   <div>
-    <section
-      class="editorial-hero home-hero"
-      aria-label="Selamat datang di Flamboyan"
-    >
-      <div class="editorial-hero-content">
-        <div class="editorial-headline">
-          <p class="eyebrow">
-            {{ hero?.eyebrow ?? 'FLAMBOYAN · PROPERTI & HUNIAN' }}
-          </p>
-          <h1>{{ hero?.title ?? 'Ruang untuk cerita berikutnya.' }}</h1>
-          <p>
-            {{
-              hero?.description ??
-              'Berbeda suasana, satu rasa pulang. Jelajahi pilihan perumahan dalam naungan Flamboyan dan temukan ruang untuk keseharian yang Anda inginkan.'
-            }}
-          </p>
-          <NuxtLink class="editorial-link" to="/properti"
+    <section class="photo-banner" aria-label="Selamat datang di Flamboyan">
+      <img
+        class="photo-banner-image"
+        :src="banner.src"
+        :srcset="
+          banner.sources
+            .filter((source) => source.width)
+            .map((source) => `${source.url} ${source.width}w`)
+            .join(', ')
+        "
+        sizes="100vw"
+        :width="banner.width ?? undefined"
+        :height="banner.height ?? undefined"
+        :alt="banner.alt"
+        fetchpriority="high"
+      />
+      <div class="photo-banner-shade" aria-hidden="true" />
+      <div class="container photo-banner-copy">
+        <p class="eyebrow">
+          {{ hero?.eyebrow ?? 'FLAMBOYAN · PROPERTI & HUNIAN' }}
+        </p>
+        <h1>{{ hero?.title ?? 'Ruang untuk cerita berikutnya.' }}</h1>
+        <p>
+          {{
+            hero?.description ??
+            'Kenali pilihan rumah, pelajari ruangnya, dan rencanakan langkah berikutnya bersama kami.'
+          }}
+        </p>
+        <div class="banner-actions">
+          <a
+            v-if="wa"
+            :href="wa"
+            class="button whatsapp-button"
+            target="_blank"
+            rel="noopener noreferrer"
+            @click="trackWhatsapp"
+            ><AppIcon name="chat" />WhatsApp Admin <AppIcon name="external"
+          /></a>
+          <NuxtLink class="banner-secondary" to="/properti"
             >Jelajahi pilihan rumah <AppIcon name="arrow"
           /></NuxtLink>
-          <NuxtLink class="editorial-link hero-visit-link" to="/perumahan"
-            >Kenali perumahan kami <AppIcon name="arrow"
-          /></NuxtLink>
         </div>
-        <EditorialHeroMedia
-          :media="hero?.media"
-          :video-url="hero?.video_url"
-          :video-title="hero?.video_title"
-          :autoplay="hero?.video_autoplay ?? true"
-          :poster="hero?.media?.kind === 'VIDEO' ? heroMedia : undefined"
-        />
-        <form
-          class="editorial-search"
-          @submit.prevent="
-            navigateTo({
-              path: '/properti',
-              query: search ? { q: search } : {},
-            })
-          "
-        >
-          <p class="eyebrow">PILIHAN YANG LEBIH PERSONAL</p>
+        <p class="banner-service">
+          Tanyakan tipe, harga, dan rencana kunjungan bersama Admin.
+        </p>
+      </div>
+      <span class="photo-banner-caption">{{ banner.caption }}</span>
+      <a v-if="hasHeroVideo" class="banner-scroll" href="#film-kawasan"
+        >Lihat video kawasan <span aria-hidden="true">↓</span></a
+      >
+    </section>
+    <section class="home-search container" aria-label="Pencarian rumah">
+      <form
+        class="editorial-search"
+        @submit.prevent="
+          navigateTo({ path: '/properti', query: search ? { q: search } : {} })
+        "
+      >
+        <div>
+          <p class="eyebrow">LANGKAH PERTAMA</p>
+          <h2>Temukan rumah Anda.</h2>
+        </div>
+        <div class="home-search-field">
           <label for="home-search">Cari lokasi atau nama properti</label>
           <div class="editorial-search-control">
             <input
@@ -122,10 +165,38 @@ useHead({
               <AppIcon name="arrow" />
             </button>
           </div>
-          <p>Telusuri harga, luas, dan denah sebelum menentukan pilihan.</p>
-        </form>
-      </div>
+        </div>
+      </form>
     </section>
+    <section
+      v-if="hasHeroVideo"
+      id="film-kawasan"
+      v-reveal
+      class="home-film container"
+      aria-labelledby="film-title"
+    >
+      <div class="home-film-copy">
+        <p class="eyebrow">MENGENAL BUKIT FLAMBOYAN INDAH 2</p>
+        <h2 id="film-title">Lihat suasananya. <br />Kenali ruangnya.</h2>
+        <p>
+          Jelajahi gambaran kawasan dan tata ruang sebagai persiapan sebelum
+          berkunjung.
+        </p>
+        <NuxtLink
+          class="text-link"
+          to="/perumahan/bukit-flamboyan-indah-2#dokumentasi"
+          >Dokumentasi & siteplan kawasan →</NuxtLink
+        >
+      </div>
+      <EditorialHeroMedia
+        :media="hero?.media"
+        :video-url="hero?.video_url"
+        :video-title="hero?.video_title"
+        :autoplay="hero?.video_autoplay ?? true"
+        :poster="hero?.media?.kind === 'VIDEO' ? heroMedia : undefined"
+      />
+    </section>
+
     <nav class="buyer-shortcuts container" aria-label="Mulai mencari hunian">
       <NuxtLink to="/properti"
         ><span>01 / TEMUKAN</span><strong>Pilihan rumah</strong
@@ -141,6 +212,7 @@ useHead({
       /></NuxtLink>
     </nav>
     <section
+      v-reveal
       class="container home-residences"
       aria-labelledby="residences-title"
     >
@@ -159,7 +231,7 @@ useHead({
       </div>
       <ResidenceCollection />
     </section>
-    <section class="section container featured-collection">
+    <section v-reveal class="section container featured-collection">
       <div class="section-heading">
         <div>
           <p class="eyebrow">PILIHAN FLAMBOYAN</p>
@@ -185,6 +257,7 @@ useHead({
     </section>
     <section
       v-if="content?.data.financing_programs?.length"
+      v-reveal
       class="section container home-financing"
     >
       <FinancingPrograms :programs="content.data.financing_programs" />
@@ -432,69 +505,6 @@ useHead({
   background: var(--cream);
 }
 
-.home-hero.editorial-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.3fr);
-  grid-template-areas: 'copy media' 'search media';
-  gap: 28px 56px;
-  align-items: start;
-  margin: 0 auto;
-  max-width: 1536px;
-  min-height: 0;
-  padding: 56px 64px 48px;
-  background: #f7f5ef;
-  color: var(--ink);
-}
-.home-hero::before {
-  display: none;
-}
-.home-hero .editorial-hero-content {
-  display: contents;
-}
-.home-hero .editorial-headline {
-  grid-area: copy;
-}
-.home-hero :deep(.hero-media) {
-  grid-area: media;
-  align-self: center;
-}
-.home-hero .editorial-headline h1 {
-  color: var(--ink);
-  font-size: clamp(44px, 4.8vw, 72px);
-  line-height: 1.05;
-  margin: 20px 0 24px;
-}
-.home-hero .editorial-headline .eyebrow {
-  color: #8f4a33;
-  font-size: 10px;
-  line-height: 1.7;
-}
-.home-hero .editorial-headline > p:not(.eyebrow) {
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.85;
-  max-width: 450px;
-}
-.home-hero .editorial-link {
-  color: var(--ink);
-  border-color: #c1bbad;
-  gap: 16px;
-}
-.home-hero .editorial-search {
-  grid-area: search;
-  padding: 20px 0 0;
-  border-top: 1px solid var(--line);
-}
-.home-hero .editorial-search > .eyebrow {
-  display: none;
-}
-.home-hero .editorial-search > label {
-  margin: 0 0 8px;
-  font-size: 12px;
-}
-.home-hero .editorial-search > p {
-  margin-top: 12px;
-}
 .home-financing {
   border-block: 1px solid var(--line);
 }
@@ -520,44 +530,9 @@ useHead({
 .home-financing :deep(.financing-conditions) {
   margin-top: auto;
 }
-@media (max-width: 1100px) {
-  .home-hero.editorial-hero {
-    padding-inline: 36px;
-    gap: 28px 32px;
-  }
-}
 @media (max-width: 900px) {
   .home-financing :deep(section) {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .home-hero.editorial-hero {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'copy' 'media' 'search';
-    padding: 36px 24px 32px;
-    gap: 28px;
-  }
-  .home-hero .editorial-headline h1 {
-    max-width: 640px;
-    font-size: clamp(42px, 8.5vw, 64px);
-  }
-  .home-hero .editorial-headline > p:not(.eyebrow) {
-    max-width: 600px;
-  }
-  .home-hero .editorial-search {
-    padding: 20px;
-    background: #ece8de;
-    border: 0;
-  }
-  .home-hero .editorial-search input {
-    font-size: 16px;
-  }
-}
-@media (max-width: 360px) {
-  .home-hero.editorial-hero {
-    padding-inline: 16px;
-  }
-  .home-hero .editorial-headline h1 {
-    font-size: 40px;
   }
 }
 </style>

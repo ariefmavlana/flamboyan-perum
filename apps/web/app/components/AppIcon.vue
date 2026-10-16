@@ -19,8 +19,10 @@ const props = defineProps<{
     | 'logout'
     | 'book'
     | 'external'
+    | 'chat'
 }>()
 const paths = {
+  chat: 'M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l1.9-5.4A8.5 8.5 0 1 1 21 11.5 M8 11h.01 M12 11h.01 M16 11h.01',
   book: 'M12 5v16 M12 5C9 3 5 3 2 4v15c3-1 7-1 10 2 3-3 7-3 10-2V4c-3-1-7-1-10 1',
   external: 'M14 3h7v7 M21 3 10 14 M10 3H3v18h18v-7',
   home: 'm3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z',

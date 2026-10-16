@@ -11,6 +11,7 @@ use App\Services\MalwareScanner;
 use App\Services\MediaProcessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -336,6 +337,36 @@ class MediaTest extends TestCase
         $this->assertSame([], Storage::disk('media')->allFiles());
         $this->postJson('/api/v1/internal/properties/'.$property->id.'/media', ['version' => 1, 'kind' => 'PHOTO', 'alt' => 'Next attempt', 'file' => UploadedFile::fake()->image('photo.jpg')])->assertCreated();
         $this->assertDatabaseCount('jobs', 1);
+    }
+
+    public function test_listing_previews_are_bounded_per_property_and_never_include_private_media(): void
+    {
+        $first = $this->property();
+        $second = $first->replicate();
+        $second->slug = 'media-test-two';
+        $second->save();
+        foreach ([$first, $second] as $property) {
+            for ($position = 0; $position < 7; $position++) {
+                $property->media()->create(['kind' => 'PHOTO', 'alt' => 'Public photo '.$position, 'position' => $position, 'state' => 'READY', 'published' => true]);
+            }
+            $property->media()->create(['kind' => 'PHOTO', 'alt' => 'Private photo', 'position' => -1, 'state' => 'READY', 'published' => false]);
+            $property->media()->create(['kind' => 'PHOTO', 'alt' => 'Failed photo', 'position' => -2, 'state' => 'FAILED', 'published' => true]);
+            $property->media()->create(['kind' => 'FLOOR_PLAN', 'alt' => 'Floor plan', 'position' => -3, 'state' => 'READY', 'published' => true]);
+        }
+        DB::enableQueryLog();
+        $response = $this->getJson('/api/v1/properties')->assertOk()->assertJsonCount(2, 'data');
+        $mediaQueries = collect(DB::getQueryLog())->filter(fn ($query) => str_contains($query['query'], 'property_media'));
+        DB::disableQueryLog();
+        $this->assertCount(2, $mediaQueries);
+        foreach ($response->json('data') as $item) {
+            $this->assertCount(1, $item['media']);
+            $this->assertCount(5, $item['preview_media']);
+            $this->assertSame([0, 1, 2, 3, 4], array_column($item['preview_media'], 'position'));
+            $this->assertSame($item['media'][0]['id'], $item['preview_media'][0]['id']);
+            $this->assertArrayNotHasKey('owner_id', $item);
+            $this->assertArrayNotHasKey('variants', $item['preview_media'][0]);
+            $this->assertArrayNotHasKey('staging_path', $item['preview_media'][0]);
+        }
     }
 
     public function test_listing_only_loads_a_stable_ready_photo_cover_while_detail_has_full_media(): void

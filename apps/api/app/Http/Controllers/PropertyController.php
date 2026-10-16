@@ -27,7 +27,7 @@ class PropertyController extends Controller
             'condition' => ['sometimes', Rule::in(['NEW', 'RESALE'])], 'certificate' => 'sometimes|string|max:80',
             'location' => 'sometimes|string|max:160', 'availability' => ['sometimes', Rule::in(['AVAILABLE', 'BOOKED', 'SOLD_OUT', 'CHECK_REQUIRED'])], 'featured' => 'sometimes|boolean',
         ]);
-        $query = Property::query()->select('properties.*')->selectRaw(Property::PRICE_SQL.' AS current_price_idr', Property::priceDates())->with('coverMedia')->where('publication', 'PUBLISHED');
+        $query = Property::query()->select('properties.*')->selectRaw(Property::PRICE_SQL.' AS current_price_idr', Property::priceDates())->with(['coverMedia', 'previewMedia' => fn ($query) => $query->limit(5)])->where('publication', 'PUBLISHED');
         if (! empty($data['q'])) {
             $pattern = '%'.str_replace(['!', '%', '_'], ['!!', '!%', '!_'], mb_strtolower($data['q'])).'%';
             $query->where(fn ($q) => $q->whereRaw("LOWER(title) LIKE ? ESCAPE '!'", [$pattern])->orWhereRaw("LOWER(location) LIKE ? ESCAPE '!'", [$pattern])->orWhereRaw("LOWER(address) LIKE ? ESCAPE '!'", [$pattern]));

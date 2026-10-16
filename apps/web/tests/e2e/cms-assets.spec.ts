@@ -143,7 +143,7 @@ test('CMS photo selection updates SSR hero and video stays consent gated', async
     const html = await (await request.get('/')).text()
     expect(html).toContain(changed.hero!.media!.sources.at(-1)!.url)
     await page.goto('/')
-    await expect(page.locator('.hero-media-stage > img')).toHaveAttribute(
+    await expect(page.locator('.photo-banner-image')).toHaveAttribute(
       'alt',
       photo.alt,
     )

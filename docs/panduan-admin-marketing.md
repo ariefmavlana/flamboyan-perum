@@ -47,7 +47,7 @@ Admin mengatur **Harga & pembayaran**: harga dasar, program bertanggal, biaya da
 1. Buka **Konten publik → Sorotan beranda** dan edit record yang digunakan, bukan membuat duplikasi.
 2. Perbarui judul/pengantar dan tautan YouTube beserta judul video. Waktu mulai pada tautan didukung.
 3. Pilih **Otomatis tanpa suara · putar berulang** atau **Putar setelah dipilih pengunjung**. Browser tetap dapat membatasi autoplay.
-4. Pilih properti dan gambar pendamping. Bila mengunggah melalui **Tambahkan foto & media beranda**, tunggu siap, pilih **Perbarui pilihan gambar**, lalu pilih gambar tersebut.
+4. Pilih properti dan foto banner. Foto tampil di bagian pembuka, sedangkan video tetap ada pada bagian video kawasan di bawahnya. Bila mengunggah melalui **Tambahkan foto & media beranda**, tunggu siap, pilih **Perbarui pilihan gambar**, lalu pilih gambar tersebut. Tanpa foto pilihan, ilustrasi gerbang existing tampil dengan keterangan ilustrasi.
 5. Periksa isi/izin, centang verifikasi, pilih publikasi, lalu **Simpan konten**. Periksa hasil publik. Kosongkan tautan video untuk memakai gambar saja.
 
 **Kawasan & kontak** mengelola alamat, WhatsApp, fasilitas dan sumber. Bedakan fasilitas terbangun dari rencana. Testimoni dan logo bank hanya dipublikasikan setelah izin/sumbernya benar.

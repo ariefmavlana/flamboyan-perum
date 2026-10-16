@@ -1,5 +1,11 @@
 # Status implementasi
 
+## Banner foto, video dan bantuan pembeli — 16 Oktober 2026
+
+Banner foto dan video YouTube kini tampil bersamaan pada bagian terpisah; Admin tetap mengaturnya melalui HERO existing. Scroll native halus/reveal ringan, CTA WhatsApp Admin, petunjuk KPR per bank dan ringkasan isian tersedia. Kartu memutar maksimal lima preview PHOTO publik; galeri memutar semua foto, dengan jeda/manual, decode sebelum transisi, serta penghormatan reduced-motion/visibility/fokus. Denah dan lightbox manual. Tidak ada tarif, data bisnis, migrasi atau dependency baru. Kontrak `preview_media` ada di API_DOCS; panduan Admin diperbarui.
+
+Validasi lokal: Pint, Composer strict/audit 0, SQLite dan PostgreSQL terisolasi masing-masing **125 tes/1013 assertion**, serta 19 tes importer lulus. Hasil frontend final, browser, audit dan deployment dicatat pada PR rilis; jangan menganggap suite E2E lintas browser telah dijalankan dari pemeriksaan browser interaktif.
+
 ## Navigasi workspace dan panduan peran — 16 Oktober 2026
 
 Workspace memakai sidebar khusus desktop dan drawer modal mobile dengan menu sesuai peran, penanda halaman aktif, akses profil/keluar, serta bantuan kontekstual. `/backoffice/panduan` menyediakan langkah Admin/Marketing dan tampilan cetak setelah pemeriksaan sesi; panduan tidak menyatakan fitur yang belum tersedia sebagai otomatis. Kontrak REST, otorisasi backend dan data bisnis tidak berubah. Panduan pengguna: [panduan-admin-marketing.md](panduan-admin-marketing.md).
