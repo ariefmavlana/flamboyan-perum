@@ -54,6 +54,23 @@ class OperationsTest extends TestCase
         $this->postJson('/api/v1/internal/users', ['name' => 'Tim Marketing', 'email' => 'tim-marketing@example.test', 'role' => 'MARKETING', 'password' => 'Sandi-pengujian-2026', 'password_confirmation' => 'Sandi-pengujian-2026'])->assertCreated()->assertJsonPath('data.role', 'MARKETING');
     }
 
+    public function test_cli_refuses_admin_bootstrap_when_an_inactive_admin_exists(): void
+    {
+        User::factory()->create(['role' => 'ADMIN', 'is_active' => false]);
+
+        $this->artisan('flamboyan:create-user')
+            ->expectsQuestion('Nama', 'Admin pengganti')
+            ->expectsQuestion('Email', 'admin-pengganti@example.test')
+            ->expectsChoice('Role', 'ADMIN', ['ADMIN', 'MARKETING'])
+            ->expectsQuestion('Kata sandi (minimal 12 karakter)', 'Sandi-pengujian-2026')
+            ->expectsQuestion('Ulangi kata sandi', 'Sandi-pengujian-2026')
+            ->expectsConfirmation('Identitas pemilik email sudah diverifikasi melalui prosedur tim?', 'no')
+            ->expectsOutput('Hanya satu akun Administrator yang diizinkan.')
+            ->assertFailed();
+
+        $this->assertDatabaseCount('users', 1);
+    }
+
     public function test_workload_must_be_transferred_before_deactivation_and_old_owner_loses_access(): void
     {
         $admin = $this->user();

@@ -13,21 +13,26 @@ use Illuminate\Support\Str;
 
 class AccountOperations
 {
+    public function __construct(private readonly AdministratorProvisioning $administratorProvisioning) {}
+
     public function create(User $actor, array $data): User
     {
         $this->admin($actor);
         try {
-            return DB::transaction(function () use ($actor, $data) {
+            $operation = function () use ($actor, $data) {
                 $current = User::query()->whereKey($actor->id)->lockForUpdate()->first();
                 abort_unless($current?->is_active && $current->role === 'ADMIN', 403);
-                $admins = User::query()->where('role', 'ADMIN')->lockForUpdate()->get();
-                abort_if(($data['role'] ?? null) === 'ADMIN' && $admins->isNotEmpty(), 409, 'Hanya satu akun Administrator yang diizinkan.');
+                abort_if(($data['role'] ?? null) === 'ADMIN' && User::query()->where('role', 'ADMIN')->exists(), 409, 'Hanya satu akun Administrator yang diizinkan.');
                 $user = new User;
                 $user->forceFill(['name' => $data['name'], 'email' => mb_strtolower($data['email']), 'password' => $data['password'], 'role' => $data['role'], 'is_active' => true, 'email_verified_at' => ($data['identity_verified'] ?? false) ? now() : null])->save();
                 $this->audit($actor, $user, 'CREATED', ['role' => $user->role, 'identity_verified' => (bool) $user->email_verified_at]);
 
                 return $user->refresh();
-            });
+            };
+
+            return ($data['role'] ?? null) === 'ADMIN'
+                ? $this->administratorProvisioning->transaction($operation)
+                : DB::transaction($operation, 3);
         } catch (UniqueConstraintViolationException $exception) {
             abort(409, 'Email sudah digunakan.');
         }
@@ -39,7 +44,7 @@ class AccountOperations
             $this->admin($actor);
         }
         try {
-            return DB::transaction(function () use ($actor, $id, $data, $profile) {
+            $operation = function () use ($actor, $id, $data, $profile) {
                 $admins = User::query()->where('role', 'ADMIN')->where('is_active', true)->orderBy('id')->lockForUpdate()->get();
                 $user = User::query()->whereKey($id)->lockForUpdate()->firstOrFail();
                 $currentActor = $actor->fresh();
@@ -49,7 +54,7 @@ class AccountOperations
                 $role = $data['role'] ?? $user->role;
                 $active = $data['is_active'] ?? $user->is_active;
                 if ($user->role !== 'ADMIN' && $role === 'ADMIN') {
-                    abort_if(User::query()->where('role', 'ADMIN')->lockForUpdate()->get()->isNotEmpty(), 409, 'Hanya satu akun Administrator yang diizinkan.');
+                    abort_if(User::query()->where('role', 'ADMIN')->exists(), 409, 'Hanya satu akun Administrator yang diizinkan.');
                 }
                 if ($user->role === 'ADMIN' && $user->is_active && ($role !== 'ADMIN' || ! $active)) {
                     abort_if($admins->count() <= 1, 409, 'Admin aktif terakhir tidak dapat dinonaktifkan atau diubah perannya.');
@@ -90,7 +95,11 @@ class AccountOperations
                 $this->audit($actor, $user, $profile ? 'PROFILE_UPDATED' : 'UPDATED', $audit);
 
                 return $user->refresh();
-            }, 3);
+            };
+
+            return ($data['role'] ?? null) === 'ADMIN'
+                ? $this->administratorProvisioning->transaction($operation)
+                : DB::transaction($operation, 3);
         } catch (UniqueConstraintViolationException $exception) {
             abort(409, 'Email sudah digunakan.');
         }

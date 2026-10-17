@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use App\Services\AdministratorProvisioning;
 use Illuminate\Console\Command;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Validator;
@@ -13,6 +14,11 @@ class CreateUser extends Command
     protected $signature = 'flamboyan:create-user';
 
     protected $description = 'Provision an internal account using interactive prompts.';
+
+    public function __construct(private readonly AdministratorProvisioning $administratorProvisioning)
+    {
+        parent::__construct();
+    }
 
     public function handle(): int
     {
@@ -28,11 +34,6 @@ class CreateUser extends Command
 
             return self::FAILURE;
         }
-        if ($data['role'] === 'ADMIN' && User::query()->where('role', 'ADMIN')->exists()) {
-            $this->error('Hanya satu akun Administrator yang diizinkan.');
-
-            return self::FAILURE;
-        }
         if ($data['password'] !== $this->secret('Ulangi kata sandi')) {
             $this->error('Konfirmasi kata sandi berbeda.');
 
@@ -40,7 +41,25 @@ class CreateUser extends Command
         }
         $verified = $this->confirm('Identitas pemilik email sudah diverifikasi melalui prosedur tim?', false);
         try {
-            User::forceCreate(array_merge($validator->validated(), ['is_active' => true, 'email_verified_at' => $verified ? now() : null]));
+            $create = fn () => User::forceCreate(array_merge($validator->validated(), ['is_active' => true, 'email_verified_at' => $verified ? now() : null]));
+            if ($data['role'] === 'ADMIN') {
+                $created = $this->administratorProvisioning->transaction(function () use ($create) {
+                    if (User::query()->where('role', 'ADMIN')->exists()) {
+                        return false;
+                    }
+
+                    $create();
+
+                    return true;
+                });
+                if (! $created) {
+                    $this->error('Hanya satu akun Administrator yang diizinkan.');
+
+                    return self::FAILURE;
+                }
+            } else {
+                $create();
+            }
         } catch (UniqueConstraintViolationException $exception) {
             $this->error('Email sudah digunakan.');
 
