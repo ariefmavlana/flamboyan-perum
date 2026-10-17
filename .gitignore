@@ -1,5 +1,6 @@
 .tools/
 .vercel/
+.commandcode/
 .env
 .env.*
 !.env.example
