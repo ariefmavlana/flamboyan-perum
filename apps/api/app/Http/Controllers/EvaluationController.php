@@ -27,7 +27,10 @@ class EvaluationController extends Controller
     {
         $request->validate(['page' => 'sometimes|integer|between:1,10000']);
 
-        return Property::query()->where('publication', 'PUBLISHED')->select(['slug', 'updated_at'])->orderBy('id')->paginate(1000);
+        return Property::query()->where('publication', 'PUBLISHED')
+            ->select(['slug', 'updated_at', 'offer_price_idr', 'offer_start', 'offer_end', 'next_price_idr', 'next_price_start', 'commercial'])
+            ->orderBy('id')->paginate(1000)
+            ->through(fn ($property) => ['slug' => $property->slug, 'updated_at' => $property->publicLastModified()->toIso8601String()]);
     }
 
     public function location(Request $request, int $id)

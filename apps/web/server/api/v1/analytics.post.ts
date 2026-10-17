@@ -12,8 +12,9 @@ export default defineEventHandler(async (event) => {
     await $fetch(`${useRuntimeConfig().apiBase}/api/v1/analytics`, {
       method: 'POST',
       body,
-      headers: publicHeaders(event, 'POST', '/api/v1/analytics'),
+      headers: await publicHeaders(event, 'POST', '/api/v1/analytics'),
       timeout: 3000,
+      redirect: 'error',
     })
     event.node.res.statusCode = 202
     return { accepted: true }

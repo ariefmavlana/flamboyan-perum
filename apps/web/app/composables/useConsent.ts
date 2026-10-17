@@ -16,17 +16,17 @@ export function useConsent() {
   }))
   const open = useState<boolean>('consent-open', () => false)
   const required = computed(
-    () => Boolean(config.public.gtmId) || Boolean(config.public.metaPixelId),
+    () => Boolean(config.public.gtmId) || Boolean(config.public.metaPixelId) || String(config.public.attributionEnabled) === 'true',
   )
   const decided = computed(() => isDecided(state.value))
   const allowsOptional = computed(() => hasOptionalConsent(state.value))
 
   function load() {
     if (!import.meta.client || decided.value) return
-    const stored = parseConsent(
-      window.localStorage.getItem(CONSENT_STORAGE_KEY),
-    )
-    if (stored) state.value = stored
+    try {
+      const stored = parseConsent(window.localStorage.getItem(CONSENT_STORAGE_KEY))
+      if (stored) state.value = stored
+    } catch { /* Consent defaults remain denied when storage is unavailable. */ }
   }
 
   function decide(preferences: { analytics: boolean; marketing: boolean }) {

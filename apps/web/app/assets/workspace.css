@@ -884,3 +884,78 @@
     gap: 8px;
   }
 }
+
+/* Growth CRM intake and outcome workspace additions. */
+.inquiry-detail-grid,
+.attribution-card dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-block: 20px;
+}
+.inquiry-detail-grid > div,
+.attribution-card dl > div {
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.inquiry-detail-grid dt,
+.attribution-card dt {
+  margin-bottom: 5px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.inquiry-detail-grid dd,
+.attribution-card dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.outcome-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+  margin-block: 30px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: #f5f4ed;
+}
+.outcome-heading h2 {
+  margin-block: 8px 3px;
+}
+.outcome-heading p {
+  margin: 0;
+}
+.outcome-grid,
+.visit-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-block: 20px 34px;
+}
+.outcome-card {
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.outcome-card form {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+}
+.akad-card,
+.attribution-card {
+  margin-top: 24px;
+}
+@media (max-width: 800px) {
+  .inquiry-detail-grid,
+  .attribution-card dl,
+  .outcome-grid,
+  .visit-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .outcome-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+}

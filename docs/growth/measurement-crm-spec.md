@@ -1,6 +1,6 @@
 # Spesifikasi intake, CRM, atribusi dan pengukuran
 
-Status: DRAFT / PLANNED. Bentuk schema/route di sini adalah proposal untuk review implementasi; [API_DOCS existing](../API_DOCS.md) tetap kontrak yang saat ini berlaku. Tidak ada endpoint baru yang telah dibuat pada PR ini.
+Status: baseline spesifikasi disetujui untuk implementasi. Status kode/bukti dan gate eksternal mengikuti [validation.md](validation.md); ini bukan klaim aktivasi produksi. Bentuk schema/route di sini adalah proposal untuk review implementasi; [API_DOCS existing](../API_DOCS.md) tetap kontrak yang saat ini berlaku. Tidak ada endpoint baru yang telah dibuat pada PR ini.
 
 ## 1. Definisi hasil sampai akad
 

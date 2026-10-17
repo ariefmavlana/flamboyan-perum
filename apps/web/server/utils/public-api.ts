@@ -7,8 +7,9 @@ export async function publicApi(
   try {
     return await $fetch(`${useRuntimeConfig().apiBase}/api/v1/${path}`, {
       query: getQuery(event),
-      headers: publicHeaders(event, 'GET', `/api/v1/${path}`),
+      headers: await publicHeaders(event, 'GET', `/api/v1/${path}`),
       timeout: 5000,
+      redirect: 'error',
     })
   } catch (error: unknown) {
     const status = (error as { statusCode?: number }).statusCode

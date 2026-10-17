@@ -75,6 +75,21 @@ onMounted(load)
     </form>
     <p v-if="message" role="alert">{{ message }}</p>
     <template v-if="report">
+      <h2>Akuisisi sampai akad</h2>
+      <p>Periode cohort memakai tanggal lead dibuat, termasuk WhatsApp manual dan formulir. Outcome menunjukkan keadaan terakhir; satu lead dihitung sekali per metrik. Tahap DEAL dan bukti akad ditampilkan terpisah.</p>
+      <div v-if="report.growth" class="report-metrics">
+        <article><h3>Lead valid</h3><strong>{{ report.growth.valid_leads_unique }}</strong></article>
+        <article><h3>Qualified</h3><strong>{{ report.growth.qualified_unique }}</strong></article>
+        <article><h3>Survei terkonfirmasi</h3><strong>{{ report.growth.visits_confirmed_unique }}</strong></article>
+        <article><h3>Survei dihadiri</h3><strong>{{ report.growth.visits_completed_unique }}</strong></article>
+        <article><h3>DEAL</h3><strong>{{ report.growth.deals_unique }}</strong></article>
+        <article><h3>Akad terverifikasi Admin</h3><strong>{{ report.growth.akad_confirmed_unique }}</strong></article>
+      </div>
+      <template v-if="report.growth">
+        <p>{{ report.growth.unknown_source_unique }} lead tanpa sumber diketahui. CPL / biaya qualified: {{ report.growth.costs.available ? report.growth.costs.cpl_idr : 'Belum tersedia' }}. {{ report.growth.costs.reason }}</p>
+        <p>Formulir yang masuk dalam periode: {{ report.growth.inquiries.total }}; menunggu {{ report.growth.inquiries.pending }}, direkonsiliasi {{ report.growth.inquiries.resolved }}, spam {{ report.growth.inquiries.rejected_spam }}, kedaluwarsa {{ report.growth.inquiries.expired }}. Ini cohort tanggal inquiry, sehingga berbeda dari cohort lead.</p>
+        <div class="table-scroll" role="region" aria-label="Sumber akuisisi" tabindex="0"><table class="lead-table"><caption>Sumber terakhir yang diketahui per lead; klaim client / Admin belum diverifikasi platform</caption><thead><tr><th>Sumber / media</th><th>Kampanye</th><th>Metode</th><th>Lead</th><th>Qualified</th><th>Akad</th></tr></thead><tbody><tr v-for="item in report.growth.campaigns" :key="`${item.source}:${item.medium}:${item.campaign}:${item.method}`"><td>{{ item.source }} / {{ item.medium }}</td><td>{{ item.campaign }}</td><td>{{ item.method }}</td><td>{{ item.valid_leads_unique }}</td><td>{{ item.qualified_unique }}</td><td>{{ item.akad_confirmed_unique }}</td></tr></tbody></table></div>
+      </template>
       <div class="report-metrics">
         <article>
           <h2>Calon pembeli dalam periode</h2>

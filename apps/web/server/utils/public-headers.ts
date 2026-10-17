@@ -1,14 +1,18 @@
 import { createHmac } from 'node:crypto'
 import { isIP } from 'node:net'
 
-export function publicHeaders(
+export async function publicHeaders(
   event: Parameters<typeof getQuery>[0],
   method: 'GET' | 'POST',
   path: string,
-): Record<string, string> {
-  const secret = String(useRuntimeConfig().apiProxySecret)
+): Promise<Record<string, string>> {
+  const config = useRuntimeConfig()
+  const secret = String(config.apiProxySecret)
   const ip = String(event.context.publicClientIp ?? '')
-  const headers: Record<string, string> = { Accept: 'application/json' }
+  let preview: Record<string, string>
+  try { preview = await protectedPreviewHeaders(config) }
+  catch { throw createError({ statusCode: 503, statusMessage: 'Akses preview belum tersedia.' }) }
+  const headers: Record<string, string> = { Accept: 'application/json', ...preview }
   if (secret.length >= 32 && isIP(ip)) {
     const time = String(Math.floor(Date.now() / 1000))
     headers['X-Flamboyan-Client-IP'] = ip

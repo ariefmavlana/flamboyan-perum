@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,6 +10,46 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Property extends Model
 {
+    public function publicLastModified(): CarbonImmutable
+    {
+        $latest = CarbonImmutable::instance($this->updated_at)->utc();
+        $now = CarbonImmutable::now('Asia/Jakarta');
+        $dates = [];
+        if ($this->offer_price_idr !== null) {
+            $dates[] = [$this->offer_start, false];
+            $dates[] = [$this->offer_end, true];
+        }
+        if ($this->next_price_idr !== null) {
+            $dates[] = [$this->next_price_start, false];
+        }
+        foreach (['program_fee_start', 'program_fee_until', 'next_fee_start'] as $key) {
+            $dates[] = [$this->commercial[$key] ?? null, $key === 'program_fee_until'];
+        }
+        foreach ($this->commercial['payment_plans'] ?? [] as $plan) {
+            $dates[] = [$plan['valid_from'] ?? null, false];
+            $dates[] = [$plan['valid_until'] ?? null, true];
+        }
+        foreach ($dates as [$date, $after]) {
+            if (! is_string($date) || ! preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+                continue;
+            }
+            try {
+                $effective = CarbonImmutable::createFromFormat('!Y-m-d', $date, 'Asia/Jakarta');
+                if (! $effective || $effective->format('Y-m-d') !== $date) {
+                    continue;
+                }
+                $effective = $after ? $effective->addDay() : $effective;
+                if ($effective->lte($now) && $effective->gt($latest)) {
+                    $latest = $effective->utc();
+                }
+            } catch (\Throwable) {
+                continue;
+            }
+        }
+
+        return $latest;
+    }
+
     public const PRICE_SQL = 'CASE WHEN offer_price_idr IS NOT NULL AND offer_start <= ? AND offer_end >= ? THEN offer_price_idr WHEN next_price_idr IS NOT NULL AND next_price_start <= ? THEN next_price_idr ELSE price_idr END';
 
     public static function priceDates(): array

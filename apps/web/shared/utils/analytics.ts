@@ -5,6 +5,7 @@ export const ANALYTICS_EVENTS = [
   'calculate_mortgage',
   'click_whatsapp',
   'request_visit',
+  'inquiry_submitted',
 ] as const
 
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[number]

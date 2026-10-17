@@ -9,7 +9,12 @@ class LeadHistory extends Model
 {
     public const UPDATED_AT = null;
 
-    protected $fillable = ['lead_id', 'actor_id', 'type', 'from_status', 'to_status', 'from_assignee', 'to_assignee', 'note'];
+    protected $fillable = ['lead_id', 'actor_id', 'type', 'from_status', 'to_status', 'from_assignee', 'to_assignee', 'note', 'metadata'];
+
+    protected function casts(): array
+    {
+        return ['metadata' => 'array', 'redacted_at' => 'datetime'];
+    }
 
     public function actor(): BelongsTo
     {

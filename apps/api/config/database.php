@@ -1,12 +1,18 @@
 <?php
 
+use App\Support\DeploymentIsolation;
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 use Symfony\Component\Filesystem\Path;
 
 $sslRootCert = env('DB_SSLROOTCERT');
+$databaseSchema = DeploymentIsolation::databaseSchema(env('DB_SCHEMA', 'public'));
 if ($sslRootCert && ! Path::isAbsolute($sslRootCert)) {
     $sslRootCert = base_path($sslRootCert);
+}
+// libpq treats backslashes in a DSN as escapes, including Windows paths.
+if ($sslRootCert) {
+    $sslRootCert = str_replace('\\', '/', $sslRootCert);
 }
 
 return [
@@ -101,7 +107,7 @@ return [
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
-            'search_path' => 'public',
+            'search_path' => $databaseSchema,
             'sslmode' => env('DB_SSLMODE', env('APP_ENV') === 'production' ? 'verify-full' : 'prefer'),
             'sslrootcert' => $sslRootCert ?: null,
         ],

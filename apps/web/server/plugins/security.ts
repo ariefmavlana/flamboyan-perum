@@ -39,6 +39,7 @@ export default defineNitroPlugin((nitro) => {
         tourHosts: String(config.tourHosts),
         gtmId: String(config.public.gtmId ?? ''),
         metaPixelId: String(config.public.metaPixelId ?? ''),
+        metaViaGtm: String(config.public.metaViaGtm) === 'true',
         upgradeInsecureRequests: String(config.public.siteUrl).startsWith(
           'https://',
         ),

@@ -5,8 +5,9 @@ export default defineEventHandler(async (event) => {
   try {
     lastPage = (
       await $fetch<{ last_page: number }>(`${config.apiBase}/api/v1/sitemap`, {
-        headers: publicHeaders(event, 'GET', '/api/v1/sitemap'),
+        headers: await publicHeaders(event, 'GET', '/api/v1/sitemap'),
         timeout: 5000,
+        redirect: 'error',
       })
     ).last_page
   } catch {

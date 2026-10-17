@@ -17,12 +17,13 @@ class DatabaseTransportTest extends TestCase
             $paths = ['resources/certificates/supabase-ca-2021.crt' => base_path('resources/certificates/supabase-ca-2021.crt'), '/private/provider.pem' => '/private/provider.pem'];
             if (PHP_OS_FAMILY === 'Windows') {
                 $paths['C:/private/provider.pem'] = 'C:/private/provider.pem';
+                $paths['C:\\private\\provider.pem'] = 'C:/private/provider.pem';
             }
             foreach ($paths as $path => $expected) {
                 $_ENV['DB_SSLROOTCERT'] = $_SERVER['DB_SSLROOTCERT'] = $path;
                 putenv('DB_SSLROOTCERT='.$path);
                 $database = require config_path('database.php');
-                $this->assertSame($expected, $database['connections']['pgsql']['sslrootcert']);
+                $this->assertSame(str_replace('\\', '/', $expected), $database['connections']['pgsql']['sslrootcert']);
             }
         } finally {
             if ($originalEnv === null) {

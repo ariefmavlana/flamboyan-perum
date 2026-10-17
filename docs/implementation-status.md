@@ -318,3 +318,8 @@ Hasil akhir: source198acc1 deployed otomatis lewat Git ke kedua alias; native PH
 ## Koreksi integrasi aset — 2026-10-15
 
 Importer membandingkan dimensi READY hasil resize, menolak replacement MASTERPLAN sebelum penulisan, dan mensyaratkan acknowledgement worker untuk upload asynchronous. Marker impor hanya tersedia internal; disclosure AI tetap publik. Gambar OG default menggunakan foto gerbang pengguna. 55 galeri terdiri dari35 dokumentasi dan20 AI; empat tipe belum mempunyai foto. Form VIDEO Admin siap untuk tautan YouTube yang diisi kemudian; tidak ada video placeholder. Validasi gabungan dan review final tetap gate sebelum merge/impor lokal.
+
+
+## Growth, SEO, CRM dan kesiapan hosting — 17 Oktober 2026
+
+Implementasi branch codex/growth-acquisition-implementation menambahkan intake default-off, rekonsiliasi Admin, qualification/visit/akad/manual source, report dua cohort, consent/attribution/event, BFF portable dan koreksi SEO canonical/sitemap/noindex. Ini belum klaim fitur produksi aktif. [Bukti terbaru](growth/validation.md) adalah sumber status pemeriksaan, PR, review dan Vercel; [kontrak final](growth/backend-api-contract.md) memperinci model wire. Akun/billing/legal/domain/Hostinger/field SEO tetap gate eksternal. Tidak membeli shared hosting sebelum bukti Vercel dan kualifikasi SKU; database dan R2 tetap pada provider existing.

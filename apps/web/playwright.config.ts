@@ -7,14 +7,19 @@ export default defineConfig({
   retries: 0,
   use: {
     ...devices['Desktop Chrome'],
-    baseURL: 'http://127.0.0.1:3000',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:3000',
+    // Protected preview runners may pass short-lived, host-scoped cookies in
+    // process memory; never persist an authenticated storageState to the repo.
+    storageState: process.env.PLAYWRIGHT_STORAGE_STATE
+      ? JSON.parse(process.env.PLAYWRIGHT_STORAGE_STATE)
+      : undefined,
     launchOptions: process.env.PLAYWRIGHT_EXECUTABLE
       ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE }
       : {},
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
   },
-  webServer: {
+  webServer: process.env.PLAYWRIGHT_SKIP_WEBSERVER ? undefined : {
     command: 'npm run dev',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,

@@ -1,6 +1,6 @@
 # Flamboyan: spesifikasi produksi, SEO, dan akuisisi
 
-Versi 0.1 · 16 Oktober 2026 · **DRAFT UNTUK REVIEW — belum otorisasi implementasi, pembelian, atau penayangan iklan.**
+Versi 1.1 · 17 Oktober 2026 · **Implementasi diotorisasi pengguna; pembelian, penayangan iklan dan merge belum diotorisasi.** Bukti aktual: [validation.md](validation.md). Kontrak final: [backend-api-contract.md](backend-api-contract.md).
 
 ## 1. Keputusan pengguna
 
@@ -15,7 +15,7 @@ Versi 0.1 · 16 Oktober 2026 · **DRAFT UNTUK REVIEW — belum otorisasi impleme
 | D-07 | Belum menyiapkan akun ads                                                | Inventaris akun, kepemilikan, pengukuran dan pemeriksaan akun menjadi pekerjaan sebelum launch  |
 | D-08 | Tujuan bisnis sampai akad                                                | Pisahkan kontak, lead valid, qualified, jadwal, kunjungan aktual, DEAL dan akad terbukti        |
 
-Pengguna menyetujui arah tersebut melalui diskusi. Detail model, endpoint, kebijakan retensi, SLA, bidding, paket hosting dan perubahan proses pada dokumen turunan masih **usulan desain**, bukan persetujuan implementasi. Rp500.000 tidak merupakan jaminan jumlah lead, peringkat, penjualan atau akad dalam satu bulan.
+Pengguna kemudian mengotorisasi implementasi, commit/push/PR, review dan pemeriksaan Vercel sebelum pembelian Hostinger. Detail wire mengikuti kontrak implementasi; policy produksi, SLA paket, billing/bidding, akun dan fakta legal tetap gate eksternal. Rp500.000 bukan jaminan jumlah lead, peringkat, penjualan atau akad dalam satu bulan.
 
 ## 2. Paket spesifikasi
 

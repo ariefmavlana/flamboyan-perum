@@ -63,7 +63,10 @@ class PropertyController extends Controller
             default => ['created_at', 'desc'],
         };
 
-        return PublicPropertyResource::collection($query->orderBy($column, $direction)->orderBy('id', $direction)->paginate($data['per_page'] ?? 12)->withQueryString());
+        $page = $query->orderBy($column, $direction)->orderBy('id', $direction)->paginate($data['per_page'] ?? 12)->withQueryString();
+        abort_if($page->currentPage() > $page->lastPage(), 404);
+
+        return PublicPropertyResource::collection($page);
     }
 
     public function show(string $slug): PublicPropertyResource

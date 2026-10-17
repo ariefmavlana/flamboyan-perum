@@ -4,7 +4,11 @@ namespace App\Services;
 
 use App\Models\ActivityLog;
 use App\Models\Lead;
+use App\Models\LeadAttribution;
 use App\Models\LeadHistory;
+use App\Models\LeadInquiry;
+use App\Models\LeadOutcome;
+use App\Models\LeadVisit;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -23,7 +27,14 @@ class LeadPrivacy
             abort_if($retention && $lead->updated_at->gt(now()->subMonthsNoOverflow(max(1, (int) config('privacy.months')))), 409, 'Retensi belum jatuh tempo.');
             $updated = Lead::query()->whereKey($id)->where('version', $version)->update(['name' => 'Lead dianonimkan #'.$id, 'whatsapp_number' => null, 'anonymized_at' => now(), 'version' => DB::raw('version + 1'), 'updated_at' => now()]);
             abort_unless($updated === 1, 409);
-            LeadHistory::query()->where('lead_id', $id)->update(['note' => null, 'redacted_at' => now()]);
+            LeadHistory::query()->where('lead_id', $id)->update(['note' => null, 'metadata' => null, 'redacted_at' => now()]);
+            LeadInquiry::query()->where('lead_id', $id)->update([
+                'name' => null, 'whatsapp_number' => null, 'message' => null, 'preferred_visit_at' => null,
+                'resolution_reason' => null, 'anonymized_at' => now(), 'version' => DB::raw('version + 1'),
+            ]);
+            LeadAttribution::query()->where('lead_id', $id)->update(['first_term' => null, 'last_term' => null, 'first_content' => null, 'last_content' => null]);
+            LeadOutcome::query()->where('lead_id', $id)->update(['qualification_reason' => null, 'akad_reason' => null, 'akad_reference' => null]);
+            LeadVisit::query()->where('lead_id', $id)->update(['reason' => null]);
             ActivityLog::query()->where('subject_type', 'LEAD')->where('subject_id', $id)->update(['changes' => null, 'reason' => null]);
             LeadHistory::create(['lead_id' => $id, 'actor_id' => $current->id, 'type' => 'ANONYMIZED']);
             ActivityLog::create(['actor_id' => $current->id, 'subject_type' => 'LEAD', 'subject_id' => $id, 'action' => 'ANONYMIZED', 'changes' => ['contact_removed' => true, 'notes_redacted' => true, 'policy_reference' => config('privacy.policy_reference'), 'retention' => $retention], 'reason' => $requestReference]);

@@ -10,8 +10,9 @@ export async function catalogApi(
       `${config.apiBase}/api/v1/properties${path}`,
       {
         query: getQuery(event),
-        headers: publicHeaders(event, 'GET', `/api/v1/properties${path}`),
+        headers: await publicHeaders(event, 'GET', `/api/v1/properties${path}`),
         timeout: 5000,
+        redirect: 'error',
       },
     )
   } catch (error: unknown) {

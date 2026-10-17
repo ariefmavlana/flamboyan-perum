@@ -19,6 +19,7 @@
     "audit:runtime": "npm audit --prefix .output/server --omit=dev"
   },
   "dependencies": {
+    "@vercel/oidc": "4.0.1",
     "laravel-echo": "^2.5.0",
     "nuxt": "^4.5.2",
     "pusher-js": "^8.6.0",

@@ -1,15 +1,16 @@
 import {
   analyticsDedupeKey,
   buildAnalyticsEvent,
-  campaignContext,
   type AnalyticsContext,
   type AnalyticsEvent,
 } from '#shared/utils/analytics'
+import { isPublicAcquisitionPath } from '#shared/utils/acquisition'
 
 export function useAnalytics() {
   const config = useRuntimeConfig()
   const route = useRoute()
   const consent = useConsent()
+  const acquisition = useAcquisitionContext()
   const fired = useState<Record<string, true>>('analytics-fired', () => ({}))
 
   const configured = computed(
@@ -25,9 +26,12 @@ export function useAnalytics() {
     options: { once?: boolean } = {},
   ) {
     if (!import.meta.client) return
-    if (!configured.value || !consent.allowsOptional.value) return
+    if (!configured.value || !consent.allowsOptional.value || !isPublicAcquisitionPath(route.path)) return
+    if (pixelsOnly.value && !consent.state.value.marketing) return
+    acquisition.capture()
+    const touch = acquisition.context.value?.last_touch
     const enriched = {
-      ...campaignContext(route.query as Record<string, unknown>),
+      ...(touch ? { traffic_source: touch.source, traffic_medium: touch.medium, campaign_id: touch.campaign } : {}),
       ...context,
     }
     const key = analyticsDedupeKey(event, enriched)
@@ -38,7 +42,7 @@ export function useAnalytics() {
       fbq?: (...args: unknown[]) => void
     }
     ;(target.dataLayer ??= []).push(payload)
-    if (pixelsOnly.value && typeof target.fbq === 'function') {
+    if (pixelsOnly.value && consent.state.value.marketing && typeof target.fbq === 'function') {
       if (event === 'view_property') target.fbq('track', 'ViewContent', payload)
       else target.fbq('trackCustom', event, payload)
     }
