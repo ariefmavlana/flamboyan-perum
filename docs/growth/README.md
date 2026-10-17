@@ -1,6 +1,6 @@
 # Flamboyan: spesifikasi produksi, SEO, dan akuisisi
 
-Versi 1.1 · 17 Oktober 2026 · **Implementasi diotorisasi pengguna; pembelian, penayangan iklan dan merge belum diotorisasi.** Bukti aktual: [validation.md](validation.md). Kontrak final: [backend-api-contract.md](backend-api-contract.md).
+Versi 1.2 · 17 Oktober 2026 · **PR #44 dan #45 telah di-merge atas instruksi pemilik; produksi Vercel tervalidasi. Pembelian, iklan dan kebijakan retensi masih menunggu gate masing-masing.** Keputusan peluncuran terbaru: [launch-readiness.md](launch-readiness.md). Bukti aktual: [validation.md](validation.md) dan PR #45. Kontrak final: [backend-api-contract.md](backend-api-contract.md).
 
 ## 1. Keputusan pengguna
 
