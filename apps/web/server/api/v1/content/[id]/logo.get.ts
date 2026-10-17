@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
     const response = await $fetch.raw<ArrayBuffer>(
       `${useRuntimeConfig().apiBase}${path}`,
       {
-        headers: publicHeaders(event, 'GET', path),
+        headers: await publicHeaders(event, 'GET', path),
         responseType: 'arrayBuffer',
         timeout: 5000,
         redirect: 'error',

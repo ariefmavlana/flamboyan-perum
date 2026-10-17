@@ -13,7 +13,7 @@ export async function apiBridge(event: Parameters<typeof getQuery>[0]) {
   catch { throw createError({ statusCode: 503, statusMessage: 'Konfigurasi layanan belum tersedia.' }) }
   const config = useRuntimeConfig()
   let preview: Record<string, string>
-  try { preview = previewHeaders(String(config.apiPreviewBypass), process.env.VERCEL_ENV ?? '', origin, String(config.apiPreviewHost)) }
+  try { preview = await protectedPreviewHeaders(config) }
   catch { throw createError({ statusCode: 503, statusMessage: 'Akses preview belum tersedia.' }) }
   const headers: Record<string, string> = { accept: 'application/json', ...preview }
   if (route.kind === 'private') {

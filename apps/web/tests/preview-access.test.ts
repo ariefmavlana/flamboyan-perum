@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest'
 import { previewHeaders } from '../server/utils/preview-headers'
 
 describe('server-only protected preview access', () => {
-  const token = 'a'.repeat(32)
+  const token = 'a'.repeat(32)+'.'+'b'.repeat(32)+'.'+'c'.repeat(32)
   const host = 'flamboyan-immutable-fixture.vercel.app'
   it('does not add credentials without an explicitly configured token', () => {
     expect(previewHeaders('', 'production', 'https://example.test', '')).toEqual({})
   })
   it('only sends the configured token to the exact immutable preview origin', () => {
-    expect(previewHeaders(token, 'preview', `https://${host}`, host)).toEqual({ 'x-vercel-protection-bypass': token })
+    expect(previewHeaders(token, 'preview', `https://${host}`, host)).toEqual({ 'x-vercel-trusted-oidc-idp-token': token })
   })
   it.each([
     [token, 'production', `https://${host}`, host],

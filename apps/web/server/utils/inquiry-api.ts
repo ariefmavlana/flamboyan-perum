@@ -5,7 +5,7 @@ export async function inquiryApi(event: Parameters<typeof getQuery>[0], operatio
   const method = operation === 'options' ? 'GET' : 'POST'
   const path = operation === 'submit' ? '/api/v1/inquiries' : `/api/v1/inquiries/${operation}`
   setHeader(event, 'Cache-Control', 'no-store')
-  const headers = publicHeaders(event, method, path)
+  const headers = await publicHeaders(event, method, path)
   let body: Record<string, unknown> | undefined
   if (method === 'POST') {
     const origin = getRequestHeader(event, 'origin')

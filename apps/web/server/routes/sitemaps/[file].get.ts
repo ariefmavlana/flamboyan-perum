@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
         string
       >(`${useRuntimeConfig().apiBase}/api/v1/sitemap`, {
         query: { page },
-        headers: publicHeaders(event, 'GET', '/api/v1/sitemap'),
+        headers: await publicHeaders(event, 'GET', '/api/v1/sitemap'),
         timeout: 5000,
         redirect: 'error',
       })
