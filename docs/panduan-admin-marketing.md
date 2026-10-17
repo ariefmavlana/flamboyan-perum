@@ -65,7 +65,7 @@ BNI dan BSI tersedia untuk kelima tipe. **BSI Flat hanya 36/60**. Jangan memasuk
 
 ## Akun, privasi dan layanan — Admin
 
-**Akun tim**: periksa peran/status dan pekerjaan anggota sebelum mengubah akses. Alihkan calon pembeli/properti melalui tindakan yang tersedia sebelum menonaktifkan. Aplikasi melindungi Admin aktif terakhir dan pekerjaan yang belum dialihkan. Penonaktifan tidak menghapus riwayat.
+**Akun tim**: sistem hanya memiliki **satu akun Administrator**; form Tambah akun karena itu hanya membuat akun Marketing dan peran tidak dapat diubah dari halaman ini (permintaan menambah/mempromosikan Administrator kedua ditolak dengan pesan jelas). Periksa peran/status dan pekerjaan anggota sebelum mengubah akses. Alihkan calon pembeli/properti melalui tindakan yang tersedia sebelum menonaktifkan. Aplikasi melindungi Admin aktif terakhir dan pekerjaan yang belum dialihkan. Penonaktifan tidak menghapus riwayat.
 
 **Kandidat retensi**: tinjau kandidat berdasarkan kebijakan yang disahkan. Ini bukan tombol hapus massal. Anonimisasi memerlukan prosedur operator, dasar kasus dan konfirmasi tersendiri. Jangan menyalin informasi kontak ke kanal publik.
 

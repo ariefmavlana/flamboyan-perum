@@ -1,5 +1,11 @@
 # Product Requirements Document — Flamboyan Perum
 
+## Ikon nyata, toggle kata sandi, mobile workspace dan satu Admin — 17 Oktober 2026
+
+Penyesuaian atas permintaan pemilik: seluruh ikon teks yang sebelumnya dipakai sebagai pengganti ikon (`→ ← ↗ ↓ ↑ ↻ ▷ Ⅱ`) diganti svg inline, termasuk logo WhatsApp pada semua CTA, logo Instagram di footer, kontrol putar/jeda serta panah carousel dan galeri, tautan eksternal, muat ulang, unduh brosur dan urutan foto banner. Field kata sandi di halaman login, reset, Tambah akun, dan Profil saya memiliki tombol lihat/sembunyikan kata sandi yang dapat dijangkau keyboard dengan target 44px. Tampilan workspace mobile dirapikan: tabel Laporan dan Kandidat retensi tampil sebagai kartu pada layar kecil tanpa scroll horizontal, dialog editor Konten publik dibatasi tinggi dan dapat di-scroll, serta grid antrean tidak lagi terjepit pada 320px.
+
+Aturan akun dipertegas: hanya **satu akun Administrator**. Halaman Akun tim hanya membuat akun Marketing dan peran tidak diubah dari halaman itu; API menolak pembuatan/promosi Administrator kedua dengan 409, dan CLI operator menerima role `ADMIN` hanya ketika belum ada Administrator aktif. Transfer kepemilikan Administrator karena itu merupakan prosedur operator, bukan alur UI. Alur pembuatan akun Marketing tidak berubah: Admin mengisi kata sandi awal minimal 12 karakter dan menyerahkannya melalui saluran privat karena pengiriman email masih gate produksi. Tidak ada migrasi, dependensi, atau perubahan kontrak data lain; rincian kontrak ada di [API_DOCS.md](API_DOCS.md) dan bukti di [implementation-status.md](implementation-status.md).
+
 ## Input Indonesia dan banner multi-foto — 16 Oktober 2026
 
 Seluruh form kuantitas/harga publik dan workspace memakai titik ribuan otomatis, desimal koma, serta nilai kosong yang tetap berbeda dari nol. Input mendukung pengetikan, tempel dan edit di tengah; nomor kontak, tanggal dan kode tidak diubah. Admin dapat memilih dan mengurutkan hingga lima foto banner. Banner dan galeri memakai transisi, loop serta kontrol jeda yang sama; video tetap tersedia terpisah.

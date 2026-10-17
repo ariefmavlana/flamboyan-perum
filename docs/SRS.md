@@ -72,6 +72,8 @@ Nuxt 4/Vue 3/TypeScript strict dengan SSR aktif; Laravel 13/PHP ≥8.3, Eloquent
 
 Role lain tidak ada. Pengguna inactive ditolak pada setiap protected request, bukan hanya login. Object di luar scope Marketing menghasilkan 404 agar identitas object tidak bocor. Aksi di luar role menghasilkan 403. User ID tidak dipercaya dari frontend; authorization dicek kembali dalam transaksi mutation, setelah lock/version guard.
 
+Sistem hanya mengizinkan satu akun Administrator. Pembuatan akun `ADMIN` baru dan promosi akun Marketing menjadi `ADMIN` ditolak409 bila Administrator sudah ada; form Akun tim karena itu tidak menawarkan pilihan peran dan hanya membuat akun Marketing. Guard Admin aktif terakhir tetap berlaku sebagai perlindungan kedua. Transfer kepemilikan Administrator dilakukan operator ketika tidak ada Administrator aktif, bukan melalui API.
+
 ## 3. Catalog dan publication
 
 | Kelompok | Fields dan validasi |
@@ -130,7 +132,7 @@ Auth: Sanctum first-party session cookie melalui endpoint web POST `/auth/login`
 
 Limits baseline: login5/min per normalized email+IP; public120/min perIP; internal120/min peruser; setup counter store durable/shared sesuai hosting. Form max body, query/field allowlist, plain-text render escaping, no v-html, parameterized queries, mass-assignment allowlist, no public registration/demo production account. Foundation rate limits konservatif dapat disetel berdasarkan load; tidak dipercaya sebagai perlindungan DDoS platform.
 
-Account provisioning/recovery: Admin CLI/operasi authenticated dengan password prompt; jangan password di argument/log; reset verified identity + expiring single-use token/link via verified mail/operasi owner terkontrol; revocation existing sessions; last active Admin tidak dapat dinonaktifkan. Production launch blocked jika delivery recovery belum diverifikasi. TLS, nonce CSP sesuai embed allowlist, frame-ancestors, nosniff, Referrer-Policy, host/proxy trust spesifik diuji lokal dan pada hosting. Login/backoffice memakai same-origin agar Sanctum dapat mengenali GET sesi; reset/forgot-password no-referrer; tidak mengirim referrer internal ke origin eksternal.
+Account provisioning/recovery: Admin CLI/operasi authenticated dengan password prompt; jangan password di argument/log; reset verified identity + expiring single-use token/link via verified mail/operasi owner terkontrol; revocation existing sessions; hanya satu akun Administrator di seluruh jalur (API, CLI), dan Admin aktif terakhir tidak dapat dinonaktifkan. Production launch blocked jika delivery recovery belum diverifikasi. TLS, nonce CSP sesuai embed allowlist, frame-ancestors, nosniff, Referrer-Policy, host/proxy trust spesifik diuji lokal dan pada hosting. Login/backoffice memakai same-origin agar Sanctum dapat mengenali GET sesi; reset/forgot-password no-referrer; tidak mengirim referrer internal ke origin eksternal.
 
 ## 8. KPR/compare (F2)
 
