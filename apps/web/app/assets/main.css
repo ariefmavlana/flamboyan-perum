@@ -894,6 +894,9 @@ details > summary:hover {
   gap: 12px;
   margin-block: 16px;
 }
+.editor-actions label {
+  margin: 0;
+}
 .mortgage-panel > .muted {
   max-width: 800px;
 }
