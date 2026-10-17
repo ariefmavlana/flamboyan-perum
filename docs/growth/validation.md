@@ -1,6 +1,6 @@
 # Bukti implementasi growth
 
-Status 17 Oktober 2026: implementasi dan verifikasi berlangsung pada branch `codex/growth-acquisition-implementation`; belum dinyatakan selesai atau siap produksi. [Traceability](implementation-traceability.md) mencakup 146 requirement unik. IMPLEMENT_NOW adalah lingkup delivery, bukan tanda semua gate sudah lulus.
+Status 17 Oktober 2026: kode growth tersedia pada branch `codex/growth-acquisition-implementation`. Hasil lokal ada di bawah; keputusan review dan bukti Vercel untuk SHA release final dicatat di [PR #45](https://github.com/ariefmavlana/flamboyan-perum/pull/45). Ini bukan deklarasi produksi aktif. [Traceability](implementation-traceability.md) mencakup 146 requirement unik. IMPLEMENT_NOW adalah lingkup delivery, bukan tanda seluruh gate eksternal lulus.
 
 ## Hasil yang telah dibuktikan
 
@@ -15,17 +15,19 @@ Windows, PHP 8.5.11, PostgreSQL 17 lokal terisolasi port 15533, Node 24.21.0; br
 
 | Pemeriksaan | Bukti saat ini |
 | --- | --- |
-| PHPUnit SQLite | Suite 148 tes / 1.194 assertion lulus sebelum tambahan regresi SEO/pagination/isolation terakhir; final suite harus diperbarui |
-| PHPUnit PostgreSQL | Suite 148 tes / 1.194 assertion lulus pada cluster test lokal, kemudian dihentikan; final suite harus diperbarui |
-| Unit frontend | 18 file, 74 tes lulus; final sesudah lint/format harus diperbarui |
-| Browser SSR fixture | Enam tes consent/intake/role/routing lulus; dua live tests alur CRM dan event 503→202 lulus |
-| Nuxt build | node-server SSR berhasil; final build sesudah SEO/routing terakhir masih wajib |
-| Pint, lint, typecheck | Telah dijalankan pada WIP; final full checks sebelum freeze wajib |
+| PHPUnit SQLite | 157 tes / 1.250 assertion lulus, 23,780 detik; termasuk regresi fail-closed preview dan retensi resolved/lead anonim |
+| PHPUnit PostgreSQL | 157 tes / 1.250 assertion lulus, 26,598 detik; cluster test lokal kemudian dihentikan |
+| Unit frontend | 20 file, 89 tes lulus, 1,87 detik; termasuk kunci idempotency 128 bit dan identitas OIDC server-only |
+| Browser SSR fixture | Sembilan tes consent/intake/mobile/role/routing/CRM→akad/event 503→202 lulus dalam satu run final, 21,6 detik |
+| Nuxt build | `build:checked` lulus: lint, typecheck, unit, node-server SSR (3,73 MB / 978 kB gzip) |
+| Pint, lint, typecheck | Pint full lulus; lint dan typecheck lulus dalam `build:checked` |
 | Composer validate/audit | Strict validate lulus; advisories/abandoned kosong |
-| npm audit source | 11 high pada toolchain existing; tidak ada perubahan dependency/lockfile pada paket ini |
+| npm audit source | 11 high pada toolchain existing; SDK resmi `@vercel/oidc` 4.0.1 ditambahkan untuk identitas preview dan tidak menambah advisori |
 | npm audit runtime | 0 setelah lock audit dibuat hanya di `.output/server` yang diabaikan Git |
 
 Perintah standar: `php vendor/bin/pint --test`, `php vendor/bin/phpunit`, `composer validate --strict`, `composer audit`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, `npm run test:e2e`, `npm audit`, dan audit `.output/server --omit=dev`. Build produksi memerlukan NUXT_API_BASE eksplisit. PostgreSQL memakai DB_URL kosong, database lokal test dan kredensial runtime; tidak pernah memakai DB produksi untuk PHPUnit. Browser fixture GTM di-stub, tidak mengirim event provider nyata. Sandbox Windows sempat membuat is_readable PHP false dan rename cache Vitest EPERM; pengujian diulang dengan izin eksekusi lokal dan lulus, bukan dianggap tes aplikasi gagal.
+
+Pemeriksaan visual formulir desktop 1440px dan seluler 390px juga dijalankan pada browser nyata: tidak ada overflow horizontal atau JavaScript page error; form dan kontrol tampil. Satu pengulangan route-auth sempat menerima 502 karena proses API fixture lokal sudah berhenti, kemudian lulus setelah API dihidupkan ulang; run gabungan sembilan tes di atas memakai kedua proses aktif.
 
 ## Risiko dependensi yang tetap terbuka
 
@@ -35,10 +37,14 @@ Perintah standar: `php vendor/bin/pint --test`, `php vendor/bin/phpunit`, `compo
 
 Preview Vercel harus membuktikan project/branch/SHA sama, schema Supabase dan prefix R2 terpisah, serta browser/auth/form/media/CRM. Prosedur dan persetujuan akses minimum ada di [runbook preview](preview-isolation-runbook.md). Kelulusan lokal tidak menggantikan bukti Vercel.
 
+Trust provider yang dipakai hanya proyek `flamboyan-web` preview → `flamboyan-api` preview, menggunakan OIDC resmi dan pin hostname API immutable. Aturan existing dipertahankan, tidak ada public protection override, tidak ada grant ke environment produksi, dan tidak ada token API statis di konfigurasi aplikasi. Sesi uji browser memakai cookie terbatas host di memori dan tokennya wajib dicabut setelah tes. Deployment ID/SHA, hasil uji Supabase/R2, serta bukti pencabutan token browser dicatat pada PR untuk versi yang benar-benar diuji.
+
 Belum ada akun/tag resmi, Keyword Planner/CPC aktual, billing/tax/net budget, pengesahan privacy/controller/retention/jam layanan, domain resmi/GSC/GBP, atau trafik untuk field CWV/ranking/lead/akad. Kesiapan kode tidak menandai gate tersebut selesai. Hostinger belum dibeli/dikonfigurasi; Node SSR+PHP runtime, TLS pooler, scanner, scheduler/worker, SLA dan resource SKU harus dibuktikan sebelum membeli. Konflik target notifikasi ≤5 detik vs cron shared ≤120 detik tetap keputusan arsitektur eksternal, bukan silently waived.
 
 ## Review dan rollback
 
-Review independen WIP menemukan dan memperbaiki unsigned POST, nullable DTO, idempotency crypto fallback, hilangnya form event, aturan waktu/terminal kunjungan, privacy preference dan query lintas database. Final read-only review serta thermo-nuclear full-diff dengan hash stabil masih wajib sebelum status selesai.
+Review independen menemukan dan memperbaiki unsigned POST, nullable DTO, idempotency crypto fallback/entropi, hilangnya form event, aturan waktu/terminal kunjungan, privacy preference, urutan redaksi attribution resolved, guard boot preview dan query lintas database. Kelulusan final memerlukan read-only review serta thermo-nuclear full-diff dengan hash stabil; verdict lengkap dan hash final disimpan di PR sehingga menunjuk change set yang tepat tanpa siklus hash dokumen sendiri.
 
 Rollback aplikasi: matikan growth flags dan deploy commit sebelumnya; tabel migrasi aditif dipertahankan. Jangan drop tabel berisi inquiry/histori. Isolasi preview dapat dihentikan dengan menonaktifkan gate/alias; penghapusan schema/prefix tidak otomatis dilakukan. Semua perubahan pengguna di `.commandcode` dikecualikan dari commit.
+
+Rollback akses Vercel: cabut hanya rule Trusted Sources web-preview→API-preview yang ditambahkan untuk rehearsal, menggunakan salinan non-rahasia keadaan sebelumnya dan pemeriksaan perubahan serentak. Jangan mereset seluruh aturan proyek. Nonaktifkan `NUXT_API_PREVIEW_OIDC` dan hapus pin host sebelum cutover ke Hostinger; kebutuhan HTTPS dan same-origin BFF tetap berlaku.

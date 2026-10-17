@@ -23,4 +23,4 @@ Jika host, schema, prefix, TLS, SHA atau target environment tidak cocok, hentika
 
 ## Status
 
-Prosedur sudah disiapkan; isolasi cloud dan browser rehearsal belum dibuktikan. Review persetujuan otomatis menolak pembacaan seluruh environment produksi karena cakupannya terlalu luas. Pengguna kemudian menyetujui akses minimum satu DB_URL preview, schema baru dan konfigurasi branch/prefix terpisah. Pengujian lokal tidak ditandai sebagai pengujian Vercel.
+Pengguna menyetujui akses minimum satu DB_URL preview, schema baru dan konfigurasi branch/prefix terpisah setelah permintaan awal membaca seluruh environment produksi ditolak review persetujuan otomatis. Schema khusus dengan lima properti sintetis dan dua akun fixture telah dibuat; tabel produksi tetap utuh. Bukti project/branch/SHA, browser rehearsal, media R2 dan security verdict untuk release final harus tercatat di [PR #45](https://github.com/ariefmavlana/flamboyan-perum/pull/45). Pengujian lokal tidak ditandai sebagai pengujian Vercel.
