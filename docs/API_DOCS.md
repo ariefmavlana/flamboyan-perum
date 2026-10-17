@@ -1,5 +1,9 @@
 # REST API — katalog, workspace dan operasi
 
+## Identitas halaman privasi — 17 Oktober 2026
+
+Halaman privasi memakai `data.development.name` dan `whatsapp` dari `GET /api/v1/content` existing. Hanya DEVELOPMENT published+verified yang tersedia melalui allowlist DTO; Admin mengubahnya pada editor Kawasan & kontak dengan verifikasi/version/audit existing. Fallback nama publik adalah Bukit Flamboyan Indah 2. Tidak ada field/endpoint/migrasi baru, identitas staf tidak ditambahkan ke API publik, dan perubahan ini tidak mengesahkan notice atau mengaktifkan intake/tracker.
+
 ## Banner multi-foto dan format angka — 16 Oktober 2026
 
 HERO menerima `payload.banner_media_ids` opsional: list maksimal lima ID integer positif unik, berurutan sesuai pilihan Admin. Semua ID harus PHOTO READY+published dari `property_id` yang PUBLISHED; pemeriksaan di transaksi, role Admin aktif, attestation, version guard dan audit existing tetap berlaku. List kosong memilih perilaku foto tunggal existing. GET content menambah `hero.banner_media` berupa DTO media publik dalam urutan pilihan, tanpa ID konfigurasi/storage/aktor; media yang dicabut publikasinya/tidak siap dan properti draf tidak diteruskan. Endpoint/migrasi baru tidak diperlukan.

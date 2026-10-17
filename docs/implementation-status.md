@@ -1,5 +1,11 @@
 # Status implementasi
 
+## Peluncuran BFI2 dan identitas publik — 17 Oktober 2026
+
+PR #44 dan #45 telah di-merge atas instruksi pemilik; main `ddd8f9d` terpasang pada Vercel API/web dengan katalog asli, 60 media terpublikasi dan pemeriksaan 99 URL gambar berhasil. Bukti tes, review, migrasi dan alias produksi ada di PR #45. Bagian draft 16 Oktober di bawah adalah riwayat perencanaan, bukan status kode terkini.
+
+Keputusan berikutnya dicatat pada [kesiapan peluncuran](growth/launch-readiness.md): domain rencana `bukitflamboyanindah2.com` belum dibeli; nama publik Bukit Flamboyan Indah 2 dan WhatsApp sudah dikonfirmasi; retensi tetap [draft untuk ditinjau](growth/privacy-notice-draft.md). Perubahan halaman privasi menggunakan nama/kontak CMS existing, dengan editor Admin yang menjelaskan penggunaannya. Hasil validasi dan status deployment perubahan ini dicatat pada PR-nya. Tidak ada aktivasi form/tag/iklan, pembelian atau perubahan DNS hanya karena draft disiapkan.
+
 ## Draft spesifikasi Hostinger, SEO dan akuisisi — 16 Oktober 2026
 
 [Paket spesifikasi growth](growth/README.md) merangkum arah pengguna: shared Hostinger yang lolos kualifikasi, Supabase/R2 tetap, BFI2 untuk calon pembeli Kota Bandung, Google Search lebih dulu dengan total Rp500.000 satu bulan, WhatsApp Admin ditambah formulir konsultasi/survei, serta pelaporan sampai akad terverifikasi. Meta paid awal Rp0. Ini **DRAFT/PLANNED**, bukan fitur selesai, persetujuan implementasi, perubahan deployment, pembuatan akun, atau otorisasi belanja. Runtime/routing, intake/atribusi/outcome, privasi, domain, paket dan queue SLO masih memerlukan review/bukti sesuai dokumen. Kontrak API existing belum berubah.

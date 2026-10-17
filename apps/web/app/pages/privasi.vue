@@ -3,25 +3,30 @@ import { whatsappLink } from '#shared/utils/catalog'
 import { canonicalUrl } from '#shared/utils/seo'
 const config = useRuntimeConfig()
 const consent = useConsent()
-const { whatsappNumber } = await useDevelopment()
+const { development, whatsappNumber } = await useDevelopment()
+const operatorName = computed(
+  () => development.value?.name?.trim() || 'Bukit Flamboyan Indah 2',
+)
 const canonical = canonicalUrl(String(config.public.siteUrl), '/privasi')
 useSeoMeta({
   title: 'Informasi privasi',
-  description:
-    'Informasi penggunaan data kontak, interaksi katalog, dan teknologi opsional Flamboyan Perum.',
+  description: () =>
+    `Informasi penggunaan data kontak, interaksi katalog, dan teknologi opsional ${operatorName.value}.`,
 })
 useHead({ link: [{ rel: 'canonical', href: canonical }] })
-const contact = whatsappLink(
-  whatsappNumber.value,
-  'permintaan informasi privasi',
-  canonical,
+const contact = computed(() =>
+  whatsappLink(
+    whatsappNumber.value,
+    'permintaan informasi privasi',
+    canonical,
+  ),
 )
 </script>
 <template>
   <section class="container section narrow">
     <h1>Informasi privasi</h1>
     <p>
-      Tim Flamboyan Perum menggunakan informasi kontak yang Anda berikan kepada
+      Tim {{ operatorName }} menggunakan informasi kontak yang Anda berikan kepada
       Admin untuk menanggapi pertanyaan dan menindaklanjuti minat properti.
       Akses catatan internal dibatasi kepada Admin dan Marketing yang
       ditugaskan.

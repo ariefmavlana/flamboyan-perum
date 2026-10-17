@@ -228,7 +228,12 @@ const schemas = {
     { key: 'website', label: 'Situs resmi bank HTTPS', type: 'url', max: 2048 },
   ],
   DEVELOPMENT: [
-    { key: 'name', label: 'Nama kawasan', type: 'text', max: 160 },
+    {
+      key: 'name',
+      label: 'Nama kawasan / pengelola publik (termasuk halaman privasi)',
+      type: 'text',
+      max: 160,
+    },
     { key: 'developer', label: 'Pengembang', type: 'text', max: 160 },
     { key: 'address', label: 'Alamat kawasan', type: 'text', max: 500 },
     {
