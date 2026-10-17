@@ -1,3 +1,11 @@
+## Atribusi AI dan perangkat
+
+- AI (nama agen dan versi, atau "tidak ada"):
+- Model:
+- Perangkat (sistem operasi, arsitektur, versi tool atau runtime):
+- Operator (@login GitHub penanggung jawab):
+- Peran AI (implementasi / review / dokumentasi / tidak ada):
+
 ## Masalah dan hasil
 
 Jelaskan trigger, perilaku sebelumnya, dan hasil perubahan.
