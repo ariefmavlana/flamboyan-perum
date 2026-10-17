@@ -6,6 +6,7 @@ $propertyIds = array_values(array_unique(array_filter(array_map(
 ))));
 
 return [
+    'vercel_environment' => (string) env('VERCEL_ENV', ''),
     'preview_isolated' => (bool) env('GROWTH_PREVIEW_ISOLATED', false),
     'inquiries_enabled' => (bool) env('GROWTH_INQUIRIES_ENABLED', false),
     'attribution_enabled' => (bool) env('GROWTH_ATTRIBUTION_ENABLED', false),

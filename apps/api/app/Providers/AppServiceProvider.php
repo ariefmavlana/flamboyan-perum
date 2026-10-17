@@ -26,7 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (config('growth.preview_isolated')) {
+        if (DeploymentIsolation::previewRequired(
+            (string) config('growth.vercel_environment'),
+            (string) config('app.env'),
+            (bool) config('growth.preview_isolated'),
+        )) {
             DeploymentIsolation::assertPreview(
                 config('database.default'),
                 (string) config('database.connections.pgsql.search_path'),

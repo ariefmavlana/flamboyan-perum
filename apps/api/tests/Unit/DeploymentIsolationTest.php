@@ -9,6 +9,27 @@ use PHPUnit\Framework\TestCase;
 
 class DeploymentIsolationTest extends TestCase
 {
+    #[DataProvider('unisolatedRuntimeEnvironments')]
+    public function test_vercel_preview_runtime_requires_explicit_isolation(string $environment): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        DeploymentIsolation::previewRequired('preview', $environment, false);
+    }
+
+    public static function unisolatedRuntimeEnvironments(): array
+    {
+        return [['production'], ['staging'], ['local']];
+    }
+
+    public function test_isolated_preview_is_asserted_but_build_tests_can_use_sqlite(): void
+    {
+        $this->assertTrue(DeploymentIsolation::previewRequired('preview', 'staging', true));
+        $this->assertTrue(DeploymentIsolation::previewRequired('preview', 'testing', true));
+        $this->assertFalse(DeploymentIsolation::previewRequired('preview', 'testing', false));
+        $this->assertFalse(DeploymentIsolation::previewRequired('production', 'production', false));
+        $this->assertFalse(DeploymentIsolation::previewRequired('', 'local', false));
+    }
+
     public function test_single_custom_schema_is_preserved_without_public_fallback(): void
     {
         $this->assertSame('growth_preview_pr44', DeploymentIsolation::databaseSchema('growth_preview_pr44'));

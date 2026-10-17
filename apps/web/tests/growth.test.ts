@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   jakartaPreferenceToIso,
+  freshIdempotencyKey,
   normalizeWhatsappInput,
   submissionFingerprint,
   type InquirySubmission,
@@ -9,6 +10,11 @@ import { workspaceNavigation } from '../shared/utils/workspace'
 import { staffGuide } from '../shared/content/staff-guide'
 
 describe('public inquiry helpers', () => {
+  it('uses sixteen fully random bytes for a 128-bit retry key', () => {
+    const first = freshIdempotencyKey()
+    expect(first).toMatch(/^[a-f0-9]{32}$/)
+    expect(freshIdempotencyKey()).not.toBe(first)
+  })
   it('normalizes contact input without storing or deriving identity', () => {
     expect(normalizeWhatsappInput('+62 812-3456-7890')).toBe('6281234567890')
     expect(normalizeWhatsappInput('0812 34 56')).toBe('08123456')

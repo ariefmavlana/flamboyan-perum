@@ -89,7 +89,7 @@ test('public form keeps the same idempotency key for a safe retry', async ({
   await page.getByRole('button', { name: 'Kirim permintaan' }).click()
   await expect(page.getByText('PERMINTAAN DITERIMA')).toBeVisible()
   expect(attempts).toHaveLength(2)
-  expect(attempts[0]!.key).toMatch(/^[a-f0-9-]{32,36}$/)
+  expect(attempts[0]!.key).toMatch(/^[a-f0-9]{32}$/)
   expect(attempts[1]!.key).toBe(attempts[0]!.key)
   expect(attempts[1]!.body).toEqual(attempts[0]!.body)
 })

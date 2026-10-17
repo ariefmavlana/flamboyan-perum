@@ -36,7 +36,6 @@ export function submissionFingerprint(body: InquirySubmission) {
 }
 
 export function freshIdempotencyKey() {
-  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID()
   if (!globalThis.crypto?.getRandomValues) throw new Error('Pembuatan referensi aman tidak tersedia. Gunakan HTTPS dan coba kembali.')
   const bytes = new Uint8Array(16)
   globalThis.crypto.getRandomValues(bytes)

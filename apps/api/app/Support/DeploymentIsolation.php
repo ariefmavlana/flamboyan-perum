@@ -6,6 +6,15 @@ use InvalidArgumentException;
 
 class DeploymentIsolation
 {
+    public static function previewRequired(string $platformEnvironment, string $appEnvironment, bool $isolated): bool
+    {
+        if ($platformEnvironment === 'preview' && $appEnvironment !== 'testing' && ! $isolated) {
+            throw new InvalidArgumentException('Vercel preview requires explicit data isolation.');
+        }
+
+        return $isolated;
+    }
+
     public static function assertPreview(string $driver, string $schema, string $mediaDriver, string $prefix): void
     {
         if ($driver !== 'pgsql' || ! preg_match('/^growth_preview_[a-z0-9_]+$/', $schema)
