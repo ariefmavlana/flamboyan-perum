@@ -113,6 +113,7 @@ test('isolated form to Admin CRM, qualification, visit, DEAL and verified akad',
       return (await response.json()).property_version as number
     }, { asset, version, published })
     let primaryError: unknown
+    const cleanupErrors: unknown[] = []
     try {
       expect((await anonymous.get(`/media/${asset.id}/640`, { maxRedirects: 0 })).status()).toBe(404)
       await publish(asset.version, true)
@@ -139,11 +140,14 @@ test('isolated form to Admin CRM, qualification, visit, DEAL and verified akad',
         if (current.published) await publish(current.version, false)
         expect((await anonymous.get(`/media/${asset.id}/640`, { maxRedirects: 0 })).status()).toBe(404)
       } catch (cleanupError) {
-        if (primaryError) throw new AggregateError([primaryError, cleanupError], 'Fixture check and cleanup failed')
-        throw cleanupError
-      } finally { await anonymous.dispose() }
+        cleanupErrors.push(cleanupError)
+      }
+      try { await anonymous.dispose() }
+      catch (disposeError) { cleanupErrors.push(disposeError) }
     }
-    if (primaryError) throw primaryError
+    const errors = primaryError ? [primaryError, ...cleanupErrors] : cleanupErrors
+    if (errors.length > 1) throw new AggregateError(errors, 'Fixture check and cleanup failed', { cause: errors[0] })
+    if (errors.length) throw errors[0]
   }
   await page.goto(`/backoffice/hasil?lead=${leadId}`)
   await expect(page.getByRole('heading', { name: 'Akad terkonfirmasi', exact: true })).toBeVisible()
