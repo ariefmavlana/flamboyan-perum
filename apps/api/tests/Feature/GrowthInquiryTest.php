@@ -3,11 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\Lead;
+use App\Models\LeadAttribution;
 use App\Models\LeadInquiry;
 use App\Models\Property;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class GrowthInquiryTest extends TestCase
@@ -138,6 +140,46 @@ class GrowthInquiryTest extends TestCase
         $this->assertNull($clean->whatsapp_number);
         $this->assertNull($clean->preferred_visit_at);
         $this->assertNotNull($clean->anonymized_at);
+    }
+
+    #[DataProvider('resolvedRetentionCandidates')]
+    public function test_resolved_retention_clears_attribution_in_the_same_execution(bool $anonymizedLead): void
+    {
+        [$properties, $admin] = $this->growthFixture();
+        $context = $this->contextPayload();
+        foreach (['first_touch', 'last_touch'] as $touch) {
+            $context[$touch]['term'] = 'rumah bandung';
+            $context[$touch]['content'] = 'fixture_ad';
+        }
+        $token = $this->relayPost('/api/v1/inquiries/context', $context)->assertCreated()->json('data.token');
+        $this->withHeader('Idempotency-Key', 'retentionresolvedxxxxxxxxxxxxxxxx')->relayPost('/api/v1/inquiries', $this->inquiryPayload($properties[0]->id, $token))->assertStatus(202);
+        $inquiry = LeadInquiry::firstOrFail();
+        $leadId = $this->actingAs($admin)->postJson('/api/v1/internal/inquiries/'.$inquiry->id.'/resolve', ['version' => 1, 'action' => 'ACCEPT_NEW'])->assertOk()->json('lead.id');
+        if ($anonymizedLead) {
+            Lead::findOrFail($leadId)->forceFill(['anonymized_at' => now()])->save();
+        } else {
+            $inquiry->forceFill(['resolved_at' => now()->subDays(91)])->save();
+        }
+        $attribution = LeadAttribution::where('inquiry_id', $inquiry->id)->firstOrFail();
+        $this->assertSame('rumah bandung', $attribution->first_term);
+        $this->artisan('flamboyan:growth-cleanup', ['--execute' => true])->assertSuccessful();
+        $clean = $inquiry->fresh();
+        $this->assertNotNull($clean->anonymized_at);
+        $this->assertNull($clean->whatsapp_number);
+        $this->assertSame($inquiry->receipt, $clean->receipt);
+        $attribution->refresh();
+        foreach (['first_term', 'last_term', 'first_content', 'last_content'] as $field) {
+            $this->assertNull($attribution->$field);
+        }
+        $this->assertSame('google', $attribution->first_source);
+        $version = $clean->version;
+        $this->artisan('flamboyan:growth-cleanup', ['--execute' => true])->assertSuccessful();
+        $this->assertSame($version, $inquiry->fresh()->version);
+    }
+
+    public static function resolvedRetentionCandidates(): array
+    {
+        return ['expired resolved inquiry' => [false], 'recent inquiry with anonymized lead' => [true]];
     }
 
     public function test_direct_and_expired_relay_requests_are_rejected_without_writes(): void

@@ -39,10 +39,10 @@ class CleanupGrowthInquiries extends Command
                 ->update(array_merge($clear, ['state' => 'EXPIRED', 'version' => DB::raw('version + 1')]));
             LeadInquiry::query()->where('state', 'REJECTED_SPAM')->whereNull('anonymized_at')->where('resolved_at', '<=', $spamBefore)
                 ->update(array_merge($clear, ['resolution_reason' => null, 'version' => DB::raw('version + 1')]));
-            LeadAttribution::query()->whereIn('inquiry_id', LeadInquiry::query()->whereNotNull('anonymized_at')->select('id'))
-                ->update(['first_term' => null, 'last_term' => null, 'first_content' => null, 'last_content' => null]);
             LeadInquiry::query()->where('state', 'RESOLVED')->whereNull('anonymized_at')->where(fn ($query) => $query->where('resolved_at', '<=', $resolvedBefore)->orWhereHas('lead', fn ($lead) => $lead->whereNotNull('anonymized_at')))
                 ->update(array_merge($clear, ['resolution_reason' => null, 'version' => DB::raw('version + 1')]));
+            LeadAttribution::query()->whereIn('inquiry_id', LeadInquiry::query()->whereNotNull('anonymized_at')->select('id'))
+                ->update(['first_term' => null, 'last_term' => null, 'first_content' => null, 'last_content' => null]);
         }, 3);
         $this->info('Approved inquiry retention cleanup completed; idempotency tombstones and audit-safe metadata were retained.');
 
