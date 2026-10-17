@@ -344,7 +344,7 @@ onMounted(() => load())
               query: { lead: selected.lead_id },
             }"
             class="text-link"
-            >Buka hasil calon pembeli #{{ selected.lead_id }} →</NuxtLink
+            >Buka hasil calon pembeli #{{ selected.lead_id }}<AppIcon name="arrow" /></NuxtLink
           >
         </div>
       </template>

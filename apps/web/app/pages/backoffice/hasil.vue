@@ -265,7 +265,7 @@ onMounted(() => {
         <NuxtLink
           :to="{ path: '/backoffice', query: { lead: lead.id } }"
           class="text-link"
-          >Buka riwayat calon pembeli →</NuxtLink
+          >Buka riwayat calon pembeli<AppIcon name="arrow" /></NuxtLink
         >
       </div>
 

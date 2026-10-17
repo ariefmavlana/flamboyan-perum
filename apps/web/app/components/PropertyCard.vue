@@ -115,7 +115,7 @@ const wa = computed(() =>
           :disabled="loading"
           @click="move(-1)"
         >
-          ←
+          <AppIcon name="chevron-left" />
         </button>
         <button
           v-if="motionAllowed"
@@ -124,7 +124,7 @@ const wa = computed(() =>
           :aria-pressed="paused"
           @click="toggle"
         >
-          {{ paused ? '▷' : 'Ⅱ' }}
+          <AppIcon :name="paused ? 'play' : 'pause'" />
         </button>
         <button
           type="button"
@@ -132,7 +132,7 @@ const wa = computed(() =>
           :disabled="loading"
           @click="move(1)"
         >
-          →
+          <AppIcon name="chevron-right" />
         </button>
       </div>
       <p v-if="message" class="photo-load-message" role="status">
@@ -194,9 +194,9 @@ const wa = computed(() =>
           target="_blank"
           rel="noopener noreferrer"
           @click="trackWhatsapp"
-          ><AppIcon name="chat" />WhatsApp Admin ↗</a
+          ><AppIcon name="whatsapp" />WhatsApp Admin<AppIcon name="external" /></a
         ><NuxtLink v-else :to="`/properti/${property.slug}`" class="text-link"
-          >Lihat detail →</NuxtLink
+          >Lihat detail<AppIcon name="arrow" /></NuxtLink
         >
       </div>
     </div>

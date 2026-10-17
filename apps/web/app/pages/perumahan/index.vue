@@ -27,7 +27,7 @@ useHead({
             cara Anda menjalani hidup, dalam satu naungan Flamboyan.
           </p>
           <a href="#pilihan-kawasan" class="text-link"
-            >Temukan kawasan Anda <span aria-hidden="true">↓</span></a
+            >Temukan kawasan Anda <AppIcon name="chevron-down" /></a
           >
         </div>
       </div>

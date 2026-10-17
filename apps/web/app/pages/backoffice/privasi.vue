@@ -65,9 +65,9 @@ onMounted(() => load())
         }}. Tidak ada penghapusan otomatis.
       </p>
       <div
-        class="table-scroll"
+        class="table-scroll responsive-records"
         role="region"
-        aria-label="Tabel data, geser untuk melihat kolom lainnya"
+        aria-label="Kandidat tanpa data kontak"
         tabindex="0"
       >
         <table class="lead-table">
@@ -84,10 +84,10 @@ onMounted(() => load())
           </thead>
           <tbody>
             <tr v-for="lead in result.data" :key="lead.id">
-              <td>#{{ lead.id }}</td>
-              <td>#{{ lead.property_id }}</td>
-              <td>{{ leadLabels[lead.status] }}</td>
-              <td>
+              <td data-label="Calon pembeli">#{{ lead.id }}</td>
+              <td data-label="Properti">#{{ lead.property_id }}</td>
+              <td data-label="Status">{{ leadLabels[lead.status] }}</td>
+              <td data-label="Aktivitas terakhir">
                 {{
                   new Date(lead.updated_at).toLocaleString('id-ID', {
                     timeZone: 'Asia/Jakarta',

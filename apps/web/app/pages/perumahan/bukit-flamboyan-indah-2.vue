@@ -68,7 +68,7 @@ useHead({
 <template>
   <div class="flamboyan-project">
     <section class="container residence-intro">
-      <NuxtLink class="text-link" to="/perumahan">← Seluruh perumahan</NuxtLink>
+      <NuxtLink class="text-link" to="/perumahan"><AppIcon name="chevron-left" />Seluruh perumahan</NuxtLink>
       <div class="residence-intro-grid">
         <div class="project-identity">
           <img
@@ -90,7 +90,7 @@ useHead({
             {{ development.address }}
           </p>
           <a class="text-link" href="#pilihan-rumah"
-            >Jelajahi pilihan tipe <span aria-hidden="true">↓</span></a
+            >Jelajahi pilihan tipe <AppIcon name="chevron-down" /></a
           >
         </div>
       </div>
@@ -134,7 +134,7 @@ useHead({
         <NuxtLink
           to="/properti?q=Bukit%20Flamboyan%20Indah%202"
           class="text-link"
-          >Telusuri katalog →</NuxtLink
+          >Telusuri katalog<AppIcon name="arrow" /></NuxtLink
         >
       </div>
       <div v-if="error" role="alert" class="notice">
@@ -176,7 +176,7 @@ useHead({
         <NuxtLink
           class="text-link"
           to="/konsultasi?kawasan=bukit-flamboyan-indah-2&tujuan=kunjungan"
-          >Rencanakan kunjungan →</NuxtLink
+          >Rencanakan kunjungan<AppIcon name="arrow" /></NuxtLink
         >
       </div>
       <DevelopmentGallery

@@ -51,7 +51,7 @@ const {
     <div class="banner-bottom">
       <div class="banner-footer">
         <a v-if="hasVideo" class="banner-scroll" href="#film-kawasan"
-          >Lihat video kawasan <span aria-hidden="true">↓</span></a
+          >Lihat video kawasan <AppIcon name="chevron-down" /></a
         >
         <div
           v-if="photos.length > 1"
@@ -66,7 +66,7 @@ const {
             :disabled="loading"
             @click="move(-1)"
           >
-            ←
+            <AppIcon name="chevron-left" />
           </button>
           <button
             v-if="motionAllowed"
@@ -75,7 +75,7 @@ const {
             :aria-pressed="paused"
             @click="toggle"
           >
-            {{ paused ? '▷' : 'Ⅱ' }}
+            <AppIcon :name="paused ? 'play' : 'pause'" />
           </button>
           <button
             type="button"
@@ -83,7 +83,7 @@ const {
             :disabled="loading"
             @click="move(1)"
           >
-            →
+            <AppIcon name="chevron-right" />
           </button>
         </div>
         <p v-if="message" role="status">{{ message }}</p>

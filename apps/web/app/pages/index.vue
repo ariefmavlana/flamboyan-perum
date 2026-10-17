@@ -114,7 +114,7 @@ useHead({
             target="_blank"
             rel="noopener noreferrer"
             @click="trackWhatsapp"
-            ><AppIcon name="chat" />WhatsApp Admin <AppIcon name="external"
+            ><AppIcon name="whatsapp" />WhatsApp Admin <AppIcon name="external"
           /></a>
           <NuxtLink class="banner-secondary" to="/properti"
             >Jelajahi pilihan rumah <AppIcon name="arrow"
@@ -173,7 +173,7 @@ useHead({
         <NuxtLink
           class="text-link"
           to="/perumahan/bukit-flamboyan-indah-2#dokumentasi"
-          >Dokumentasi & siteplan kawasan →</NuxtLink
+          >Dokumentasi & siteplan kawasan<AppIcon name="arrow" /></NuxtLink
         >
       </div>
       <EditorialHeroMedia
@@ -214,7 +214,7 @@ useHead({
           </p>
         </div>
         <NuxtLink class="text-link" to="/perumahan"
-          >Seluruh perumahan →</NuxtLink
+          >Seluruh perumahan<AppIcon name="arrow" /></NuxtLink
         >
       </div>
       <ResidenceCollection />
@@ -226,7 +226,7 @@ useHead({
           <h2>Temukan ruang yang paling sesuai.</h2>
           <p class="muted">Kenali lokasi, harga, dan ruang yang ditawarkan.</p>
         </div>
-        <NuxtLink class="text-link" to="/properti">Seluruh properti →</NuxtLink>
+        <NuxtLink class="text-link" to="/properti">Seluruh properti<AppIcon name="arrow" /></NuxtLink>
       </div>
       <div v-if="error" class="notice" role="alert">
         <p>Katalog belum dapat dimuat.</p>
@@ -308,7 +308,7 @@ useHead({
           class="text-link"
           to="/konsultasi?tujuan=kunjungan"
           @click="trackVisit"
-          >Rencanakan kunjungan →</NuxtLink
+          >Rencanakan kunjungan<AppIcon name="arrow" /></NuxtLink
         >
       </div>
       <div class="neighbourhood-grid">
@@ -344,7 +344,7 @@ useHead({
           <NuxtLink
             class="text-link"
             to="/perumahan/bukit-flamboyan-indah-2#dokumentasi"
-            >Lihat dokumentasi kawasan →</NuxtLink
+            >Lihat dokumentasi kawasan<AppIcon name="arrow" /></NuxtLink
           >
         </div>
       </div>
@@ -402,7 +402,7 @@ useHead({
             Telusuri lokasi, anggaran, dan spesifikasi yang sesuai kebutuhan.
           </p>
           <NuxtLink class="text-link" to="/properti"
-            >Jelajahi katalog →</NuxtLink
+            >Jelajahi katalog<AppIcon name="arrow" /></NuxtLink
           >
         </div>
         <div>
@@ -412,7 +412,7 @@ useHead({
             Bandingkan hingga tiga rumah dan pelajari estimasi pembiayaannya.
           </p>
           <NuxtLink class="text-link" to="/bandingkan"
-            >Bandingkan pilihan →</NuxtLink
+            >Bandingkan pilihan<AppIcon name="arrow" /></NuxtLink
           >
         </div>
         <div>
@@ -426,7 +426,7 @@ useHead({
             target="_blank"
             rel="noopener noreferrer"
             @click="trackWhatsapp"
-            >Hubungi Admin ↗</a
+            >Hubungi Admin<AppIcon name="external" /></a
           >
         </div>
       </div>
@@ -480,7 +480,7 @@ useHead({
             :href="rate.source_url"
             target="_blank"
             rel="noopener noreferrer"
-            >Sumber bank ↗</a
+            >Sumber bank<AppIcon name="external" /></a
           >
         </li>
       </ul>

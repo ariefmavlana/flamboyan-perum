@@ -152,7 +152,9 @@ const srcset = (item: PublicMedia) =>
             {{ group.label }} ({{ group.count }})
           </button>
         </div>
-        <span class="gallery-hint">Pilih gambar untuk memperbesar ↗</span>
+        <span class="gallery-hint"
+          >Pilih gambar untuk memperbesar<AppIcon name="search" /></span
+        >
       </div>
       <button
         ref="opener"
@@ -195,7 +197,7 @@ const srcset = (item: PublicMedia) =>
           aria-label="Gambar sebelumnya di galeri"
           @click="moveImage(-1)"
         >
-          ← Sebelumnya
+          <AppIcon name="chevron-left" />Sebelumnya
         </button>
         <button
           v-if="activeKind === 'PHOTO' && motionAllowed"
@@ -206,7 +208,9 @@ const srcset = (item: PublicMedia) =>
           "
           @click="toggle"
         >
-          {{ paused ? '▷ Putar foto' : 'Ⅱ Jeda foto' }}
+          <AppIcon :name="paused ? 'play' : 'pause'" />{{
+            paused ? 'Putar foto' : 'Jeda foto'
+          }}
         </button>
         <button
           type="button"
@@ -214,7 +218,7 @@ const srcset = (item: PublicMedia) =>
           aria-label="Gambar berikutnya di galeri"
           @click="moveImage(1)"
         >
-          Berikutnya →
+          Berikutnya<AppIcon name="chevron-right" />
         </button>
       </div>
       <p v-if="message" class="photo-load-message" role="status">
@@ -276,7 +280,7 @@ const srcset = (item: PublicMedia) =>
               :disabled="activeImages.length < 2"
               @click="moveImage(-1)"
             >
-              ←
+              <AppIcon name="chevron-left" />
             </button>
             <span>{{ activeIndex + 1 }} / {{ activeImages.length }}</span>
             <button
@@ -285,7 +289,7 @@ const srcset = (item: PublicMedia) =>
               :disabled="activeImages.length < 2"
               @click="moveImage(1)"
             >
-              →
+              <AppIcon name="chevron-right" />
             </button>
           </div>
         </div>
@@ -306,9 +310,11 @@ const srcset = (item: PublicMedia) =>
     <div v-for="item in group.items" :key="item.id" class="media-embed">
       <p>{{ item.alt }}</p>
       <div v-if="!loadedEmbeds.includes(embedKey(item))" class="embed-preview">
-        <span class="embed-symbol" aria-hidden="true">{{
-          item.kind === 'VIDEO' ? '▷' : '360°'
-        }}</span>
+        <span class="embed-symbol" aria-hidden="true"
+          ><AppIcon v-if="item.kind === 'VIDEO'" name="play" /><span v-else
+            >360°</span
+          ></span
+        >
         <p>
           {{
             item.kind === 'VIDEO'
@@ -357,7 +363,7 @@ const srcset = (item: PublicMedia) =>
       :key="item.id"
       :href="item.sources[0]?.url"
       class="button secondary"
-      >Unduh brosur (PDF) ↓</a
+      >Unduh brosur (PDF)<AppIcon name="download" /></a
     >
   </section>
 </template>

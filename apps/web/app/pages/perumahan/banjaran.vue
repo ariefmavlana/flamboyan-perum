@@ -37,7 +37,7 @@ useHead({
         alt="Foto inspirasi hunian tropis di tengah taman; bukan foto lokasi atau desain final Banjaran."
       />
       <div class="banjaran-hero-top">
-        <NuxtLink to="/perumahan">← Seluruh perumahan</NuxtLink>
+        <NuxtLink to="/perumahan"><AppIcon name="chevron-left" />Seluruh perumahan</NuxtLink>
         <span>FLAMBOYAN / 02</span>
       </div>
       <div class="banjaran-hero-copy">
@@ -50,7 +50,7 @@ useHead({
           yang memberi tempat untuk jeda.
         </p>
         <a class="editorial-link" href="#cerita-banjaran"
-          >Kenali ceritanya <span aria-hidden="true">↓</span></a
+          >Kenali ceritanya <AppIcon name="chevron-down" /></a
         >
       </div>
       <p class="banjaran-credit">
@@ -59,7 +59,7 @@ useHead({
           href="https://unsplash.com/photos/Pfp0MP8QB7M"
           target="_blank"
           rel="noopener noreferrer"
-          >Sergei Bezzubov / Unsplash ↗</a
+          >Sergei Bezzubov / Unsplash<AppIcon name="external" /></a
         >
       </p>
     </section>
@@ -152,7 +152,7 @@ useHead({
               href="https://unsplash.com/photos/iq2CirhoVck"
               target="_blank"
               rel="noopener noreferrer"
-              >Polina Kuzovkova / Unsplash ↗</a
+              >Polina Kuzovkova / Unsplash<AppIcon name="external" /></a
             >.<br />Bukan spesifikasi, fasilitas, atau desain final yang
             ditawarkan.
           </figcaption>

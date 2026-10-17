@@ -44,7 +44,7 @@ useSeoMeta({
     <p class="eyebrow">PERTIMBANGKAN PILIHAN ANDA</p>
     <h1 class="page-title">Bandingkan rumah.</h1>
     <p>Pilih 2–3 properti dari katalog. Pilihan tersimpan di perangkat ini.</p>
-    <NuxtLink class="text-link" to="/properti">← Pilih dari katalog</NuxtLink>
+    <NuxtLink class="text-link" to="/properti"><AppIcon name="chevron-left" />Pilih dari katalog</NuxtLink>
     <p v-if="status === 'pending'" role="status">Memuat perbandingan…</p>
     <div v-else-if="error" class="notice" role="alert">
       <p>Perbandingan belum dapat dimuat.</p>

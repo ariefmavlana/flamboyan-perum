@@ -166,10 +166,10 @@ onMounted(() => load())
     </div>
     <div class="catalog-guide">
       <div>
-        <strong>Administrator</strong
+        <strong>Administrator (satu akun)</strong
         ><span
           >Mengelola katalog, konten website, akun, dan penugasan calon
-          pembeli.</span
+          pembeli. Pembuatan atau promosi Administrator kedua ditolak.</span
         >
       </div>
       <div>
@@ -299,41 +299,42 @@ onMounted(() => load())
             type="email"
             maxlength="254"
             autocomplete="off" /></label
-        ><label
-          >Peran<select v-model="form.role">
-            <option value="MARKETING">Marketing</option>
-            <option value="ADMIN">Administrator</option>
-          </select></label
-        ><label v-if="selected" class="checkbox-label"
+        ><p class="muted">
+          Peran:
+          <strong>{{
+            form.role === 'ADMIN' ? 'Administrator' : 'Marketing'
+          }}</strong>
+          — sistem hanya mengizinkan satu akun Administrator, sehingga akun
+          baru selalu Marketing dan peran tidak dapat diubah.
+        </p>
+        <label v-if="selected" class="checkbox-label"
           ><input v-model="form.is_active" type="checkbox" />Akun aktif</label
         ><label class="checkbox-label"
           ><input v-model="form.identity_verified" type="checkbox" />Saya telah
           memverifikasi identitas pemilik email ini melalui prosedur tim</label
         ><template v-if="!selected"
-          ><label
-            >Kata sandi awal<input
-              v-model="form.password"
-              type="password"
-              required
-              minlength="12"
-              maxlength="1024"
-              autocomplete="new-password" /></label
-          ><label
-            >Ulangi kata sandi<input
-              v-model="form.password_confirmation"
-              type="password"
-              required
-              autocomplete="new-password"
-          /></label>
+          ><PasswordField
+            v-model="form.password"
+            label="Kata sandi awal"
+            required
+            minlength="12"
+            maxlength="1024"
+            autocomplete="new-password"
+          /><PasswordField
+            v-model="form.password_confirmation"
+            label="Ulangi kata sandi"
+            required
+            autocomplete="new-password"
+          />
           <p class="muted">
             Sampaikan kata sandi awal melalui saluran privat yang disepakati
             tim.
           </p></template
         >
         <p v-else class="muted">
-          Perubahan email, peran, dan aktivasi mengakhiri sesi akun. Alihkan
-          katalog serta calon pembeli aktif sebelum menonaktifkan Marketing.
-          Administrator aktif terakhir dilindungi.
+          Perubahan email dan aktivasi mengakhiri sesi akun. Alihkan katalog
+          serta calon pembeli aktif sebelum menonaktifkan Marketing. Peran tidak
+          dapat diubah: hanya satu akun Administrator yang diizinkan.
         </p>
         <button class="button" :disabled="busy">Simpan akun</button>
       </form>

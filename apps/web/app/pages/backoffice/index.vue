@@ -455,7 +455,7 @@ watch(
         >
           <span>{{ queue.label }}</span
           ><strong>{{ summary?.work[queue.key] ?? '—' }}</strong>
-          <small>{{ queue.hint }} <span aria-hidden="true">↗</span></small>
+          <small>{{ queue.hint }} <AppIcon name="arrow" /></small>
         </button>
       </div>
     </div>
@@ -555,7 +555,7 @@ watch(
         · Halaman {{ leads.meta.current_page }} dari {{ leads.meta.last_page }}
       </p>
       <button class="text-button" @click="load(leads?.meta.current_page ?? 1)">
-        Muat ulang data ↻
+        Muat ulang data <AppIcon name="refresh" />
       </button>
     </div>
     <div class="crm-results" :aria-busy="loading">
@@ -654,6 +654,7 @@ watch(
         class="notifications notification-history"
       >
         <summary>
+          <AppIcon name="chevron-down" />
           Notifikasi & aktivitas
           <span class="badge"
             >{{ notices?.unread_count ?? 0 }} belum dibaca</span
@@ -772,7 +773,7 @@ watch(
             :href="'https://wa.me/' + selected.whatsapp_number"
             target="_blank"
             rel="noopener noreferrer"
-            >Buka WhatsApp ↗</a
+            >Buka WhatsApp<AppIcon name="external" /></a
           >
         </div>
         <p
@@ -875,7 +876,7 @@ watch(
             Tambah catatan
           </button>
         </div>
-        <NuxtLink :to="{ path: '/backoffice/hasil', query: { lead: String(selected.id) } }" class="button secondary">Kualifikasi, survei, dan akad →</NuxtLink>
+        <NuxtLink :to="{ path: '/backoffice/hasil', query: { lead: String(selected.id) } }" class="button secondary">Kualifikasi, survei, dan akad<AppIcon name="arrow" /></NuxtLink>
         <h3>Riwayat aktivitas</h3>
         <p v-if="historyLoading" role="status">Memuat riwayat…</p>
         <p v-if="historyError" role="alert">

@@ -306,14 +306,14 @@ useHead({
         <NuxtLink
           v-if="data.meta.current_page > 1"
           :to="pageLink(data.meta.current_page - 1)"
-          >← Sebelumnya</NuxtLink
+          ><AppIcon name="chevron-left" />Sebelumnya</NuxtLink
         ><span
           >Halaman {{ data.meta.current_page }} /
           {{ data.meta.last_page }}</span
         ><NuxtLink
           v-if="data.meta.current_page < data.meta.last_page"
           :to="pageLink(data.meta.current_page + 1)"
-          >Berikutnya →</NuxtLink
+          >Berikutnya<AppIcon name="arrow" /></NuxtLink
         >
       </nav></template
     >
