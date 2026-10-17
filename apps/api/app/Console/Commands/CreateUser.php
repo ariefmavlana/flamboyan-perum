@@ -28,6 +28,11 @@ class CreateUser extends Command
 
             return self::FAILURE;
         }
+        if ($data['role'] === 'ADMIN' && User::query()->where('role', 'ADMIN')->exists()) {
+            $this->error('Hanya satu akun Administrator yang diizinkan.');
+
+            return self::FAILURE;
+        }
         if ($data['password'] !== $this->secret('Ulangi kata sandi')) {
             $this->error('Konfirmasi kata sandi berbeda.');
 

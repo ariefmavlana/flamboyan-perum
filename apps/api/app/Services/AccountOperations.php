@@ -20,6 +20,8 @@ class AccountOperations
             return DB::transaction(function () use ($actor, $data) {
                 $current = User::query()->whereKey($actor->id)->lockForUpdate()->first();
                 abort_unless($current?->is_active && $current->role === 'ADMIN', 403);
+                $admins = User::query()->where('role', 'ADMIN')->lockForUpdate()->get();
+                abort_if(($data['role'] ?? null) === 'ADMIN' && $admins->isNotEmpty(), 409, 'Hanya satu akun Administrator yang diizinkan.');
                 $user = new User;
                 $user->forceFill(['name' => $data['name'], 'email' => mb_strtolower($data['email']), 'password' => $data['password'], 'role' => $data['role'], 'is_active' => true, 'email_verified_at' => ($data['identity_verified'] ?? false) ? now() : null])->save();
                 $this->audit($actor, $user, 'CREATED', ['role' => $user->role, 'identity_verified' => (bool) $user->email_verified_at]);
@@ -46,6 +48,9 @@ class AccountOperations
                 abort_if($profile && $id !== $actor->id, 403);
                 $role = $data['role'] ?? $user->role;
                 $active = $data['is_active'] ?? $user->is_active;
+                if ($user->role !== 'ADMIN' && $role === 'ADMIN') {
+                    abort_if(User::query()->where('role', 'ADMIN')->lockForUpdate()->get()->isNotEmpty(), 409, 'Hanya satu akun Administrator yang diizinkan.');
+                }
                 if ($user->role === 'ADMIN' && $user->is_active && ($role !== 'ADMIN' || ! $active)) {
                     abort_if($admins->count() <= 1, 409, 'Admin aktif terakhir tidak dapat dinonaktifkan atau diubah perannya.');
                 }
