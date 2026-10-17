@@ -12,13 +12,8 @@
 - Jangan commit `.env`, database, unggahan, kredensial, vendor, node_modules, atau runtime lokal. Seed demo harus opt-in dan dilarang di produksi.
 - Update status implementasi dan kontrak API pada PR yang mengubah fitur. Fitur planned tidak boleh ditampilkan sebagai fitur selesai.
 
-## Atribusi AI, perangkat, dan batas akses
+## Atribusi AI dan batas akses
 
-- AI, agen, bot, dan identitas otomatis apa pun dilarang mencantumkan dirinya sebagai collaborator, member, undangan, tim, atau pemberi akses tulis pada repository ini maupun repository pribadi pemilik. Kontribusi agen hanya lewat branch dan pull request.
-- Nama AI hanya boleh muncul pada blok "Atribusi AI dan perangkat" di summary PR. Jangan menaruh identitas AI pada daftar collaborator, deskripsi repository, topic, atau metadata akses lain.
-- Setiap PR wajib memuat blok tersebut, termasuk ketika tidak ada AI yang dipakai: tulis "tidak ada" dan jangan menghapus kolomnya.
-- Blok memuat nama agen dan versinya, model, perangkat, operator manusia yang bertanggung jawab (`@login`), dan peran AI pada PR tersebut.
-- Kolom perangkat hanya diisi fakta teknis non-pribadi: sistem operasi, arsitektur, dan versi tool atau runtime. Jangan mencantumkan alamat IP, nama host, nomor seri atau ID perangkat, lokasi, atau data pribadi lain; data itu juga tidak tersedia dari PR.
-- Deklarasi bersifat jujur dan tidak dapat dipaksakan oleh repository. Sinyal yang dapat diverifikasi terbatas pada penulis dan committer commit, author PR, serta prefix branch (mis. `codex/`, `cursor/`). Ketidaksesuaian deklarasi dengan sinyal tersebut dicatat sebagai temuan review.
-- Reviewer memeriksa blok atribusi sebelum menyetujui PR. PR tanpa blok atau dengan kolom perangkat kosong belum siap direview.
-- Trailer commit untuk atribusi AI diperbolehkan sebagai catatan asal-usul, dan tidak dianggap sebagai pencantuman nama pada akses repository.
+- AI, agen, dan bot dilarang mencantumkan dirinya sebagai collaborator, member, undangan, tim, atau pemberi akses tulis pada repository ini maupun repository pribadi pemilik. Kontribusi agen hanya lewat branch dan pull request.
+- Setiap PR memuat satu baris `Atribusi AI:` pada summary dengan bentuk nama AI dan versinya, model yang dipakai, lalu antarmukanya (`CLI`, `desktop`, atau `app`). Contoh: `Atribusi AI: Codex CLI 0.162.1, model gpt-5-codex, CLI`. Tulis `Atribusi AI: tidak ada` bila tidak memakai AI. Jangan cantumkan data pribadi seperti alamat IP atau nama host, dan nama AI hanya boleh muncul pada baris itu.
+- Sinyal yang dapat diverifikasi terbatas pada penulis dan committer commit, author PR, serta prefix branch (mis. `codex/`, `cursor/`). Ketidaksesuaian dengan baris atribusi dicatat sebagai temuan review.
