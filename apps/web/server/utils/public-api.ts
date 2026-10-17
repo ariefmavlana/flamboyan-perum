@@ -9,6 +9,7 @@ export async function publicApi(
       query: getQuery(event),
       headers: publicHeaders(event, 'GET', `/api/v1/${path}`),
       timeout: 5000,
+      redirect: 'error',
     })
   } catch (error: unknown) {
     const status = (error as { statusCode?: number }).statusCode

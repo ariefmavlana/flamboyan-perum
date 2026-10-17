@@ -12,6 +12,7 @@ export async function catalogApi(
         query: getQuery(event),
         headers: publicHeaders(event, 'GET', `/api/v1/properties${path}`),
         timeout: 5000,
+        redirect: 'error',
       },
     )
   } catch (error: unknown) {

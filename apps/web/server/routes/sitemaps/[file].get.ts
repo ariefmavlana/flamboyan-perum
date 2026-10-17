@@ -34,6 +34,7 @@ export default defineEventHandler(async (event) => {
         query: { page },
         headers: publicHeaders(event, 'GET', '/api/v1/sitemap'),
         timeout: 5000,
+        redirect: 'error',
       })
     } catch {
       throw createError({ statusCode: 503 })

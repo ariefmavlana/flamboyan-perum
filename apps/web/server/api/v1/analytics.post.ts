@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
       body,
       headers: publicHeaders(event, 'POST', '/api/v1/analytics'),
       timeout: 3000,
+      redirect: 'error',
     })
     event.node.res.statusCode = 202
     return { accepted: true }

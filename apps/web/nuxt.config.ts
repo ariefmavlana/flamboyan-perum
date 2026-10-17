@@ -33,6 +33,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     apiBase: 'http://127.0.0.1:8000',
     apiProxySecret: '',
+    apiPreviewBypass: '',
+    apiPreviewHost: '',
     trustedProxyIps: '',
     allowedHosts: 'localhost,127.0.0.1',
     tourHosts: 'my.matterport.com',

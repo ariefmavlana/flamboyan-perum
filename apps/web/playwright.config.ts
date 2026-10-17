@@ -8,6 +8,11 @@ export default defineConfig({
   use: {
     ...devices['Desktop Chrome'],
     baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:3000',
+    // Protected preview runners may pass short-lived, host-scoped cookies in
+    // process memory; never persist an authenticated storageState to the repo.
+    storageState: process.env.PLAYWRIGHT_STORAGE_STATE
+      ? JSON.parse(process.env.PLAYWRIGHT_STORAGE_STATE)
+      : undefined,
     launchOptions: process.env.PLAYWRIGHT_EXECUTABLE
       ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE }
       : {},

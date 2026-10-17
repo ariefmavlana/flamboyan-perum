@@ -6,9 +6,13 @@ export function publicHeaders(
   method: 'GET' | 'POST',
   path: string,
 ): Record<string, string> {
-  const secret = String(useRuntimeConfig().apiProxySecret)
+  const config = useRuntimeConfig()
+  const secret = String(config.apiProxySecret)
   const ip = String(event.context.publicClientIp ?? '')
-  const headers: Record<string, string> = { Accept: 'application/json' }
+  let preview: Record<string, string>
+  try { preview = previewHeaders(String(config.apiPreviewBypass), process.env.VERCEL_ENV ?? '', String(config.apiBase), String(config.apiPreviewHost)) }
+  catch { throw createError({ statusCode: 503, statusMessage: 'Akses preview belum tersedia.' }) }
+  const headers: Record<string, string> = { Accept: 'application/json', ...preview }
   if (secret.length >= 32 && isIP(ip)) {
     const time = String(Math.floor(Date.now() / 1000))
     headers['X-Flamboyan-Client-IP'] = ip
