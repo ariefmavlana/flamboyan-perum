@@ -77,7 +77,7 @@ test('real Echo/Pusher clients subscribe privately, refresh once per event and r
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(
     page.getByText('Real-time tersambung · sinkronisasi berkala aktif'),
   ).toBeVisible()

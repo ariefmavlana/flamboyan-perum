@@ -20,7 +20,7 @@ for (const target of adminPages) {
     await page
       .getByLabel('Kata sandi', { exact: true })
       .fill(process.env.DEMO_PASSWORD ?? '')
-    await page.getByRole('button', { name: 'Masuk →', exact: true }).click()
+    await page.getByRole('button', { name: 'Masuk', exact: true }).click()
     await expect(page).toHaveURL(/\/backoffice$/)
     const adminRequests: string[] = []
     page.on('request', (request) => {
@@ -64,7 +64,7 @@ for (const target of adminPages) {
     await page
       .getByLabel('Kata sandi', { exact: true })
       .fill(process.env.DEMO_PASSWORD ?? '')
-    await page.getByRole('button', { name: 'Masuk →', exact: true }).click()
+    await page.getByRole('button', { name: 'Masuk', exact: true }).click()
     await expect(page).toHaveURL(/\/backoffice$/)
     await page.route('**/api/v1/me', (route) =>
       route.fulfill({ status: 503, json: { message: 'Service unavailable' } }),

@@ -8,7 +8,7 @@ test('Admin reports cohort metrics and read-only retention; Marketing is denied'
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await page.getByRole('link', { name: 'Laporan', exact: true }).click()
   await expect(
     page.getByRole('heading', { name: 'Hasil penjualan' }),
@@ -33,7 +33,7 @@ test('Admin reports cohort metrics and read-only retention; Marketing is denied'
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(page).toHaveURL(/backoffice/)
   await page.goto('/backoffice/laporan')
   await expect(

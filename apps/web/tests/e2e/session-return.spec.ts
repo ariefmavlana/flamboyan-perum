@@ -6,7 +6,7 @@ async function login(page: Page, email: string) {
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →', exact: true }).click()
+  await page.getByRole('button', { name: 'Masuk', exact: true }).click()
   await expect(page).toHaveURL(/\/backoffice$/)
   await expect(page.locator('.staff-page-context')).toContainText(
     email.startsWith('admin') ? 'Administrator' : 'Marketing',
@@ -43,7 +43,7 @@ for (const role of ['admin', 'marketing']) {
     )
     expect(sessionStatus).toBe(200)
     await page
-      .getByRole('link', { name: 'Tim Flamboyan ↗', exact: true })
+      .getByRole('link', { name: 'Tim Flamboyan', exact: true })
       .click()
     await expect(page).toHaveURL(/\/backoffice$/)
     await expect(page.getByLabel('Kata sandi', { exact: true })).toHaveCount(0)
@@ -53,7 +53,7 @@ for (const role of ['admin', 'marketing']) {
     await expect(page).toHaveURL(/\/$/)
     await page.reload()
     await page
-      .getByRole('link', { name: 'Tim Flamboyan ↗', exact: true })
+      .getByRole('link', { name: 'Tim Flamboyan', exact: true })
       .click()
     await expect(page).toHaveURL(/\/backoffice$/)
     const other = await context.newPage()
@@ -73,7 +73,7 @@ for (const role of ['admin', 'marketing']) {
       .click()
     await expect(page).toHaveURL(/\/$/)
     await page
-      .getByRole('link', { name: 'Tim Flamboyan ↗', exact: true })
+      .getByRole('link', { name: 'Tim Flamboyan', exact: true })
       .click()
     await expect(page).toHaveURL(/\/backoffice$/)
     await expect(page.locator('.staff-page-context')).toContainText(
@@ -102,7 +102,7 @@ test('visitor and expired sessions reach login, while logout in another tab inva
 }) => {
   test.setTimeout(60000)
   await page.goto('/')
-  await page.getByRole('link', { name: 'Tim Flamboyan ↗', exact: true }).click()
+  await page.getByRole('link', { name: 'Tim Flamboyan', exact: true }).click()
   await expect(page).toHaveURL(/\/login$/)
   await expect(page.getByLabel('Email', { exact: true })).toBeEnabled()
   await login(page, 'admin@example.test')
@@ -116,7 +116,7 @@ test('visitor and expired sessions reach login, while logout in another tab inva
     .click()
   await other.getByRole('button', { name: 'Keluar', exact: true }).click()
   await expect(other).toHaveURL(/\/login$/)
-  await page.getByRole('link', { name: 'Tim Flamboyan ↗', exact: true }).click()
+  await page.getByRole('link', { name: 'Tim Flamboyan', exact: true }).click()
   await expect(page).toHaveURL(/\/login$/)
   await expect(page.getByLabel('Email', { exact: true })).toBeEnabled()
   await login(page, 'marketing@example.test')
@@ -124,7 +124,7 @@ test('visitor and expired sessions reach login, while logout in another tab inva
     .getByRole('link', { name: 'Lihat website publik', exact: true })
     .click()
   await context.clearCookies()
-  await page.getByRole('link', { name: 'Tim Flamboyan ↗', exact: true }).click()
+  await page.getByRole('link', { name: 'Tim Flamboyan', exact: true }).click()
   await expect(page).toHaveURL(/\/login$/)
   await expect(page.getByLabel('Email', { exact: true })).toBeEnabled()
 })

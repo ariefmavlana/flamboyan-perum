@@ -22,7 +22,7 @@ test('full filters, persistent comparison, floating KPR and factual SEO work on 
   await expect(
     page.getByText('Maksimum 3 properti. Hapus satu pilihan terlebih dahulu.'),
   ).toBeVisible()
-  await page.getByRole('link', { name: 'Bandingkan 3 properti →' }).click()
+  await page.getByRole('link', { name: 'Bandingkan 3 properti' }).click()
   for (const id of [999999991, 999999992, 999999993])
     await page.getByRole('button', { name: `Hapus pilihan #${id}` }).click()
   await page.goto('/properti')
@@ -46,7 +46,7 @@ test('full filters, persistent comparison, floating KPR and factual SEO work on 
     .getByRole('button', { name: 'Bandingkan properti', exact: true })
     .click()
   await page.reload()
-  await page.getByRole('link', { name: 'Bandingkan 1 properti →' }).click()
+  await page.getByRole('link', { name: 'Bandingkan 1 properti' }).click()
   await expect(
     page.getByText(
       'Tambahkan pilihan hingga minimal 2 properti untuk dibandingkan.',
@@ -115,7 +115,7 @@ test('Admin curates verified testimonial and location; map stays consent gated',
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(page).toHaveURL(/backoffice/)
   await page.getByRole('link', { name: 'Konten publik', exact: true }).click()
   await page.getByLabel('Jenis konten baru').selectOption('TESTIMONIAL')
