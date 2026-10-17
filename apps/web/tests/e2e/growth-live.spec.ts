@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 test.use({ trace: 'off' })
 
-test('isolated form to Admin CRM, qualification, visit, DEAL and verified akad', async ({ page }) => {
+test('isolated form to Admin CRM, qualification, visit, DEAL and verified akad', async ({ page, playwright, baseURL }) => {
   test.skip(!process.env.GROWTH_FIXTURE_PASSWORD, 'Requires explicitly isolated growth fixture credentials')
   test.setTimeout(90_000)
   await page.route('**://www.googletagmanager.com/**', (route) => route.fulfill({ contentType: 'application/javascript', body: '' }))
@@ -85,13 +85,8 @@ test('isolated form to Admin CRM, qualification, visit, DEAL and verified akad',
       if (uploaded.status !== 201) throw new Error(`Fixture upload failed ${uploaded.status}`)
       const asset = await uploaded.json()
       if (asset.data.state !== 'READY') throw new Error('Fixture media processing not READY')
-      const path = `/media/${asset.data.id}/640`
-      const before = (await fetch(path, { credentials: 'omit' })).status
       const privateStatus = (await fetch(`/api/v1/internal/media/${asset.data.id}/640`, { credentials: 'include' })).status
-      const published = await request(`/api/v1/internal/properties/${propertyId}/media/${asset.data.id}`, 'PATCH', { version: asset.property_version, published: true })
-      const image = await fetch(path, { credentials: 'omit' })
-      await request(`/api/v1/internal/properties/${propertyId}/media/${asset.data.id}`, 'PATCH', { version: published.property_version, published: false })
-      mediaProof = { before, privateStatus, publishedStatus: image.status, mime: image.headers.get('content-type'), revokedStatus: (await fetch(path, { credentials: 'omit' })).status }
+      mediaProof = { id: asset.data.id as number, propertyId, version: asset.property_version as number, privateStatus }
     }
     return { qualified: outcome.qualification.qualified, akad: outcome.akad.confirmed, beforeAkad: beforeAkad.akad, futureAttendance: futureAttendance.status, report, mediaProof }
   }, { id: leadId, media: process.env.GROWTH_MEDIA_TESTS === '1', propertyId: fixture.data[0].property_id as number })
@@ -101,7 +96,55 @@ test('isolated form to Admin CRM, qualification, visit, DEAL and verified akad',
   expect(results.akad).toBe(true)
   expect(results.report.akad_confirmed_unique).toBeGreaterThanOrEqual(1)
   expect(results.report.costs.cpl_idr).toBeNull()
-  if (process.env.GROWTH_MEDIA_TESTS === '1') expect(results.mediaProof).toEqual({ before: 404, privateStatus: 200, publishedStatus: 200, mime: 'image/webp', revokedStatus: 404 })
+  if (process.env.GROWTH_MEDIA_TESTS === '1') {
+    const asset = results.mediaProof!
+    expect(asset.privateStatus).toBe(200)
+    // Keep provider protection access, but exclude every application session
+    // cookie so publication/revocation is checked as an anonymous app visitor.
+    const state = process.env.PLAYWRIGHT_STORAGE_STATE ? JSON.parse(process.env.PLAYWRIGHT_STORAGE_STATE) : { cookies: [] }
+    const anonymous = await playwright.request.newContext({ baseURL, storageState: {
+      cookies: state.cookies.filter((cookie: { name: string; domain: string }) => cookie.name.startsWith('_vercel_') && cookie.domain.replace(/^\./, '') === new URL(baseURL!).hostname),
+      origins: [],
+    } })
+    const publish = async (version: number, published: boolean) => page.evaluate(async ({ asset, version, published }) => {
+      const csrf = decodeURIComponent(document.cookie.split('; ').find((cookie) => cookie.startsWith('XSRF-TOKEN='))?.slice('XSRF-TOKEN='.length) ?? '')
+      const response = await fetch(`/api/v1/internal/properties/${asset.propertyId}/media/${asset.id}`, { method: 'PATCH', credentials: 'include', headers: { Accept: 'application/json', 'Content-Type': 'application/json', 'X-XSRF-TOKEN': csrf }, body: JSON.stringify({ version, published }) })
+      if (!response.ok) throw new Error(`Fixture publication failed ${response.status}`)
+      return (await response.json()).property_version as number
+    }, { asset, version, published })
+    let primaryError: unknown
+    try {
+      expect((await anonymous.get(`/media/${asset.id}/640`, { maxRedirects: 0 })).status()).toBe(404)
+      await publish(asset.version, true)
+      const image = await anonymous.get(`/media/${asset.id}/640`, { maxRedirects: 0 })
+      expect(image.status()).toBe(200)
+      expect(image.headers()['content-type']).toBe('image/webp')
+    } catch (error) {
+      primaryError = error
+    } finally {
+      try {
+        // A lost PATCH response can still have committed. Read the current
+        // version/state rather than relying on the publish response arriving.
+        const current = await page.evaluate(async (asset) => {
+          for (let page = 1; page <= 100; page++) {
+            const response = await fetch(`/api/v1/internal/properties/${asset.propertyId}/media?per_page=50&include_archived=1&page=${page}`, { credentials: 'include', headers: { Accept: 'application/json' } })
+            if (!response.ok) throw new Error(`Fixture cleanup read failed ${response.status}`)
+            const listing = await response.json()
+            const match = listing.data.find((item: { id: number }) => item.id === asset.id)
+            if (match) return { published: Boolean(match.published), version: listing.property_version as number }
+            if (page >= listing.meta.last_page) break
+          }
+          throw new Error('Fixture cleanup media missing')
+        }, asset)
+        if (current.published) await publish(current.version, false)
+        expect((await anonymous.get(`/media/${asset.id}/640`, { maxRedirects: 0 })).status()).toBe(404)
+      } catch (cleanupError) {
+        if (primaryError) throw new AggregateError([primaryError, cleanupError], 'Fixture check and cleanup failed')
+        throw cleanupError
+      } finally { await anonymous.dispose() }
+    }
+    if (primaryError) throw primaryError
+  }
   await page.goto(`/backoffice/hasil?lead=${leadId}`)
   await expect(page.getByRole('heading', { name: 'Akad terkonfirmasi', exact: true })).toBeVisible()
 })
