@@ -7,7 +7,7 @@ const script = fileURLToPath(new URL("./ai-attribution-audit.mjs", import.meta.u
 // Only the external GitHub response is replaced; the actual CLI, parser,
 // pagination, output and exit status all run unchanged in the child process.
 const providerFixture = `
-const validBody = '## Atribusi AI dan perangkat\\n- AI: tidak ada\\n- Model: -\\n- Perangkat: Windows 11, x64, Runtime 1.2.3.4\\n- Operator: @operator\\n- Peran AI: tidak ada'.replaceAll('\\\\n', '\\n');
+const validBody = 'Atribusi AI: Command Code CLI 1.84.0, model deepseek-v4.1-flash, CLI';
 globalThis.fetch = async (input) => {
   const url = new URL(input);
   if (url.origin !== 'https://api.github.com' || url.pathname !== '/repos/fixture/repo/pulls') throw Error('Unexpected external request');
@@ -15,7 +15,7 @@ globalThis.fetch = async (input) => {
   if (page === '1') return Response.json(Array.from({length:100}, (_, i) => ({number:i+1, title:'Fixture', head:{ref:'fix/fixture'}, user:{login:'operator'}, body:validBody})));
   if (page === '2') {
     if (process.env.PR_AUDIT_FIXTURE_FAIL === '1') return new Response('', {status:503});
-    return Response.json([{number:101, title:'Fixture', head:{ref:'fix/fixture'}, user:{login:'operator'}, body:validBody.replace('Runtime 1.2.3.4', '2001:db8::1')}]);
+    return Response.json([{number:101, title:'Fixture', head:{ref:'fix/fixture'}, user:{login:'operator'}, body:validBody + ' (host 2001:db8::1)'}]);
   }
   throw Error('Unexpected page');
 };`;

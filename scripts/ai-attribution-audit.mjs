@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Audit lokal untuk blok "Atribusi AI dan perangkat" yang diwajibkan AGENTS.md.
+// Audit lokal untuk baris "Atribusi AI:" yang diwajibkan AGENTS.md.
 // GitHub Actions tidak dipakai: jalankan manual sebelum review atau sebagai gate lokal.
 //
 // Penggunaan:
@@ -7,17 +7,20 @@
 //   node scripts/ai-attribution-audit.mjs --pr 48         # satu PR
 //   node scripts/ai-attribution-audit.mjs --repo a/b      # repository lain
 //   node scripts/ai-attribution-audit.mjs --json          # keluaran mesin
-//   node scripts/ai-attribution-audit.mjs --self-test     # uji parser tanpa jaringan
+//   node scripts/ai-attribution-audit.mjs --self-test     # fixture parser, tanpa jaringan
+//   node --test scripts/ai-attribution-audit.test.mjs     # uji CLI lewat child process
 //
 // GITHUB_TOKEN opsional; tanpa token pemeriksaan PR publik dibatasi kuota anonim.
 import { execFileSync } from "node:child_process";
 import { isIP } from "node:net";
 import process from "node:process";
 
-const HEADING = "## Atribusi AI dan perangkat";
-const LABELS = ["AI", "Model", "Perangkat", "Operator", "Peran AI"];
+// Baris atribusi, boleh berupa butir daftar.
+const LINE = /^[ \t]*(?:[-*][ \t]*)?Atribusi AI[ \t]*:[ \t]*(.+?)[ \t]*$/im;
 const NO_AGENT = ["tidak ada", "none"];
 const PLACEHOLDER = /^(?:[-–—]+|n\/?a|tbd|todo|unknown|belum diisi)$/i;
+const MODEL = /\bmodel\b/i;
+const INTERFACE = /\b(?:cli|desktop|app|apps|ide|extension|extensi|ekstensi|plugin)\b/i;
 // Prefix branch yang lazim dibuat agen; hanya sinyal, bukan bukti.
 const AGENT_PREFIXES = [
   "codex",
@@ -35,25 +38,9 @@ const AGENT_PREFIXES = [
   "codegen",
 ];
 
-export function parseBlock(body) {
-  const lines = String(body ?? "").split(/\r?\n/);
-  const start = lines.findIndex((line) => line.trim() === HEADING);
-  if (start === -1) return null;
-  const section = [];
-  for (let index = start + 1; index < lines.length; index += 1) {
-    if (/^##\s/.test(lines[index])) break;
-    section.push(lines[index]);
-  }
-  const values = {};
-  for (const line of section) {
-    const match = /^-\s*([A-Za-z][A-Za-z ]*?)\s*(?:\([^)]*\))?\s*:\s*(.*)$/.exec(
-      line,
-    );
-    if (!match) continue;
-    const label = match[1].trim();
-    if (LABELS.includes(label)) values[label] = match[2].trim();
-  }
-  return values;
+export function parseAttribution(body) {
+  const match = LINE.exec(String(body ?? ""));
+  return match ? match[1].trim() : null;
 }
 
 export function inferredAgent(ref) {
@@ -61,15 +48,15 @@ export function inferredAgent(ref) {
   return AGENT_PREFIXES.includes(prefix) ? prefix : null;
 }
 
-function containsAddress(device) {
-  for (const match of device.matchAll(/[^\s,;()[\]<>="'/]+/g)) {
+function containsAddress(text) {
+  for (const match of text.matchAll(/[^\s,;()[\]<>="'/]+/g)) {
     let candidate = match[0].split("%")[0].replace(/\.$/, "");
     if (!isIP(candidate) && /^[\d.]+:\d+$/.test(candidate)) candidate = candidate.split(":")[0];
     const family = isIP(candidate);
     if (family === 6) return true;
     if (family === 4) {
       // An explicitly labelled runtime/build version is not an address.
-      const prefix = device.slice(0, match.index).trimEnd();
+      const prefix = text.slice(0, match.index).trimEnd();
       if (!/\b(?:v|version|versi|build|runtime)\s*$/i.test(prefix)) return true;
     }
   }
@@ -77,51 +64,50 @@ function containsAddress(device) {
 }
 
 export function auditPull(pull) {
-  const values = parseBlock(pull.body);
-  if (!values) {
+  const declared = parseAttribution(pull.body);
+  if (declared === null) {
     return [
       {
         level: "error",
-        code: "blok-hilang",
-        message: `Blok "${HEADING}" tidak ada pada summary PR.`,
+        code: "atribusi-hilang",
+        message: 'Baris "Atribusi AI:" tidak ada pada summary PR.',
+      },
+    ];
+  }
+  // Placeholder template memakai kurung sudut sehingga tidak lolos sebagai deklarasi.
+  if (!declared || PLACEHOLDER.test(declared) || /[<>]/.test(declared)) {
+    return [
+      {
+        level: "error",
+        code: "atribusi-kosong",
+        message: 'Baris "Atribusi AI:" kosong atau masih berisi placeholder.',
       },
     ];
   }
 
-  const declared = values["AI"] ?? "";
-  const declaredNone = NO_AGENT.includes(declared.toLowerCase());
   const findings = [];
-  for (const label of LABELS) {
-    const value = values[label] ?? "";
-    const modelNotApplicable = label === "Model" && declaredNone && value === "-";
-    if (!value.trim() || (PLACEHOLDER.test(value) && !modelNotApplicable) || (label === "Perangkat" && NO_AGENT.includes(value.toLowerCase()))) {
+  const declaredNone = NO_AGENT.includes(declared.toLowerCase().replace(/\.$/, "").trim());
+  if (!declaredNone) {
+    if (!MODEL.test(declared)) {
       findings.push({
         level: "error",
-        code: "kolom-kosong",
-        message: `Kolom "${label}" kosong atau hanya berisi placeholder.`,
+        code: "model-hilang",
+        message: 'Baris "Atribusi AI:" harus menyebut model yang dipakai.',
+      });
+    }
+    if (!INTERFACE.test(declared)) {
+      findings.push({
+        level: "error",
+        code: "antarmuka-hilang",
+        message: 'Baris "Atribusi AI:" harus menyebut antarmukanya: CLI, desktop, atau app.',
       });
     }
   }
-  if (declared && !declaredNone && (!/[a-z]/i.test(declared) || !/\d+(?:\.\d+)*/.test(declared))) {
-    findings.push({ level: "error", code: "versi-agen-hilang", message: 'Kolom "AI" harus mencantumkan nama dan versi agen.' });
-  }
-  if (declared && !declaredNone && NO_AGENT.includes((values["Model"] ?? "").toLowerCase())) {
-    findings.push({ level: "error", code: "model-hilang", message: 'Model diperlukan bila AI digunakan.' });
-  }
-  if (!/^@[a-z\d](?:[a-z\d-]{0,38})$/i.test(values["Operator"] ?? "")) {
-    findings.push({ level: "error", code: "operator-tidak-valid", message: 'Operator harus berupa @login GitHub penanggung jawab.' });
-  }
-  const role = (values["Peran AI"] ?? "").toLowerCase();
-  if (declaredNone ? !NO_AGENT.includes(role) : !/\b(?:implementasi|review|dokumentasi)\b/.test(role)) {
-    findings.push({ level: "error", code: "peran-tidak-valid", message: 'Peran AI harus sesuai penggunaan: implementasi, review, dokumentasi, atau tidak ada.' });
-  }
-
-  const device = values["Perangkat"] ?? "";
-  if (containsAddress(device)) {
+  if (containsAddress(declared)) {
     findings.push({
       level: "error",
       code: "perangkat-pribadi",
-      message: 'Kolom "Perangkat" memuat alamat IP yang disamarkan; hapus alamat dan gunakan hanya fakta teknis non-pribadi.',
+      message: 'Baris "Atribusi AI:" memuat alamat IP yang disamarkan; hapus alamat dan gunakan hanya fakta teknis non-pribadi.',
     });
   }
 
@@ -130,14 +116,14 @@ export function auditPull(pull) {
     findings.push({
       level: "warn",
       code: "deklarasi-tidak-cocok",
-      message: `"AI" diisi "tidak ada" sedangkan prefix branch "${agent}/" menandakan agen.`,
+      message: `"Atribusi AI" diisi "tidak ada" sedangkan prefix branch "${agent}/" menandakan agen.`,
     });
   }
   if (!declaredNone && agent && !declared.toLowerCase().includes(agent)) {
     findings.push({
       level: "warn",
       code: "deklarasi-tidak-cocok",
-      message: `Deklarasi "AI" berbeda dari sinyal prefix branch "${agent}/"; periksa secara manual.`,
+      message: `Deklarasi berbeda dari sinyal prefix branch "${agent}/"; periksa secara manual.`,
     });
   }
 
@@ -183,53 +169,64 @@ function option(name) {
   return index === -1 ? null : (process.argv[index + 1] ?? null);
 }
 
-function block(overrides = {}) {
-  return `${HEADING}
-
-- AI: ${overrides.ai ?? "tidak ada"}
-- Model: ${overrides.model ?? "-"}
-- Perangkat: ${overrides.device ?? "Windows 11, x64, Node v24.21.0"}
-- Operator: ${overrides.operator ?? "@ariefmavlana"}
-- Peran AI: ${overrides.role ?? "tidak ada"}
-`;
-}
+const line = (value) => `Atribusi AI: ${value}`;
+const VALID = "Command Code CLI 1.84.0, model deepseek-v4.1-flash, CLI";
 
 const FIXTURES = [
   {
-    name: "blok lengkap tanpa temuan",
-    pull: { user: { login: "ariefmavlana" }, head: { ref: "feat/bersih" }, body: block() },
+    name: "baris lengkap tanpa temuan",
+    pull: { user: { login: "ariefmavlana" }, head: { ref: "feat/bersih" }, body: line(VALID) },
     errors: 0,
     warns: 0,
   },
   {
-    name: "blok hilang",
+    name: "baris atribusi hilang",
     pull: { user: { login: "ajejulians" }, head: { ref: "fix/x" }, body: "## Masalah dan hasil\n" },
     errors: 1,
     warns: 0,
   },
   {
-    name: "kolom Model dan Perangkat kosong",
-    pull: {
-      user: { login: "ajejulians" },
-      head: { ref: "fix/x" },
-      body: block({ model: "", device: "" }),
-    },
-    errors: 2,
+    name: "tanpa AI ditulis tidak ada",
+    pull: { user: { login: "ajejulians" }, head: { ref: "fix/x" }, body: line("tidak ada") },
+    errors: 0,
     warns: 0,
   },
   {
-    name: "alamat IP pada kolom Perangkat",
+    name: "model tidak disebut",
+    pull: { user: { login: "ajejulians" }, head: { ref: "fix/x" }, body: line("Command Code CLI 1.84.0, CLI") },
+    errors: 1,
+    warns: 0,
+  },
+  {
+    name: "antarmuka tidak disebut",
+    pull: { user: { login: "ajejulians" }, head: { ref: "fix/x" }, body: line("Command Code 1.84.0, model deepseek-v4.1-flash") },
+    errors: 1,
+    warns: 0,
+  },
+  {
+    name: "placeholder template belum diisi",
     pull: {
-      user: { login: "ajejulians" },
       head: { ref: "fix/x" },
-      body: block({ device: "Windows 11, x64, 192.168.1.7" }),
+      body: line('<nama AI dan versi>, model <model>, <CLI/desktop/app> - tulis "tidak ada" bila tidak memakai AI'),
     },
     errors: 1,
     warns: 0,
   },
   {
+    name: "alamat IPv6 ditolak tanpa memantulkan alamat",
+    pull: { head: { ref: "fix/x" }, body: line(`${VALID} (host 2001:db8::1)`) },
+    errors: 1,
+    warns: 0,
+  },
+  {
+    name: "versi runtime empat komponen bukan alamat IP",
+    pull: { head: { ref: "fix/x" }, body: line("Command Code 1.84.0, model Runtime 1.2.3.4, desktop") },
+    errors: 0,
+    warns: 0,
+  },
+  {
     name: "deklarasi tidak cocok dengan prefix branch",
-    pull: { user: { login: "ajejulians" }, head: { ref: "codex/tiket" }, body: block() },
+    pull: { user: { login: "ajejulians" }, head: { ref: "codex/tiket" }, body: line("tidak ada") },
     errors: 0,
     warns: 1,
   },
@@ -238,28 +235,10 @@ const FIXTURES = [
     pull: {
       user: { login: "cursor[bot]" },
       head: { ref: "fix/x" },
-      body: block({ ai: "Cursor 2.0", model: "GPT-5.6", role: "implementasi" }),
+      body: line("Cursor 2.0, model gpt-5.6, desktop"),
     },
     errors: 0,
     warns: 1,
-  },
-  {
-    name: "placeholder tidak meloloskan atribusi AI",
-    pull: { head: { ref: "fix/x" }, body: block({ ai: "Codex", model: "-", device: "-", operator: "-", role: "-" }) },
-    errors: 7,
-    warns: 0,
-  },
-  {
-    name: "IPv6 pada perangkat ditolak tanpa memantulkan alamat",
-    pull: { head: { ref: "fix/x" }, body: block({ device: "Windows 11, x64, 2001:db8::1" }) },
-    errors: 1,
-    warns: 0,
-  },
-  {
-    name: "versi runtime empat komponen bukan alamat IP",
-    pull: { head: { ref: "fix/x" }, body: block({ device: "Windows 11, x64, Runtime 1.2.3.4, Tool v1.2.3.4" }) },
-    errors: 0,
-    warns: 0,
   },
 ];
 
