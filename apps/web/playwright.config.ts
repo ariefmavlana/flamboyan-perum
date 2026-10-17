@@ -7,14 +7,14 @@ export default defineConfig({
   retries: 0,
   use: {
     ...devices['Desktop Chrome'],
-    baseURL: 'http://127.0.0.1:3000',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:3000',
     launchOptions: process.env.PLAYWRIGHT_EXECUTABLE
       ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE }
       : {},
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
   },
-  webServer: {
+  webServer: process.env.PLAYWRIGHT_SKIP_WEBSERVER ? undefined : {
     command: 'npm run dev',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,

@@ -175,3 +175,8 @@ Perubahan konten lewat CMS tersimpan pada database dan terlihat tanpa deploy. Pe
 ## Addendum pengalaman — 2026-10-05
 
 Evaluasi pengguna meminta fokus input tanpa garis oranye, alur Admin/Marketing yang berorientasi tindakan, penghapusan Bandung Timur dari navbar, dan pemakaian aset situs katalog awal Rumah Rajasa. Arah editorial premium dipertahankan untuk pembeli kelas menengah atas Bandung Timur, dengan katalog lebih awal dan render yang jujur sebagai ilustrasi. Antrean kerja scoped, penugasan setelah pencatatan, editor properti per bagian, CMS menurut tujuan, dan laporan berbahasa operasional melengkapi kebutuhan internal. Halaman kawasan tetap bisa ditemukan lewat footer; P-09 tidak mewajibkan item navbar. Rincian persona, perubahan, dan sumber di [experience-clarity.md](experience-clarity.md); status pengujian di [experience-validation.md](experience-validation.md).
+
+
+## Ekstensi growth yang diotorisasi — 17 Oktober 2026
+
+Pengguna mengotorisasi implementasi spesifikasi Hostinger/SEO/akuisisi pada branch PR terpisah dan pengujian Vercel sebelum membeli hosting. Fokus BFI2, calon pembeli Kota Bandung, anggaran total Rp500.000 satu bulan Google Search terlebih dahulu; Meta paid Rp0. WhatsApp Admin tetap tersedia dan form konsultasi/permintaan kunjungan menjadi jalur tambahan ke CRM. Outcome sampai akad diukur dengan bukti terpisah dari pipeline DEAL. Tidak ada otorisasi belanja, merge atau aktivasi akun/tag resmi. Kontrak final, status bukti dan external gates: [growth/README.md](growth/README.md), [growth/backend-api-contract.md](growth/backend-api-contract.md), [growth/validation.md](growth/validation.md).

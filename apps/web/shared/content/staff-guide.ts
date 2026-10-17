@@ -55,6 +55,43 @@ export function staffGuide(role: StaffAccount['role']) {
       ],
       note: 'Notifikasi bukan konfirmasi bahwa pembeli sudah dihubungi. Catat hasil percakapan sendiri. Mode pembaruan berkala tetap dapat digunakan saat koneksi langsung tidak tersedia.',
     },
+    ...(admin
+      ? [
+          {
+            id: 'permintaan',
+            title: 'Meninjau permintaan formulir',
+            intro:
+              'Permintaan publik belum otomatis menjadi calon pembeli valid, jadwal kunjungan, atau bukti qualified.',
+            steps: [
+              'Buka Permintaan masuk dan mulai dari status Menunggu tinjauan. Periksa tipe, tujuan, pesan, waktu pilihan, serta konteks atribusi yang tersedia.',
+              'Pilih Terima sebagai calon pembeli baru bila kontak layak ditindaklanjuti. Deduplikasi nomor dan properti tetap dijalankan oleh sistem.',
+              'Pilih Tautkan bila calon pembeli sudah ada, atau Tolak sebagai spam bila memang tidak dapat ditindaklanjuti. Isi alasan yang dapat diaudit.',
+              'Jika data sudah berubah, muat ulang dan tinjau keputusan staf lain sebelum mencoba kembali.',
+            ],
+            note: 'Marketing tidak melihat inbox mentah. Kontak baru tersedia bagi Marketing setelah Admin menerima dan menugaskannya melalui alur CRM.',
+          },
+        ]
+      : []),
+    {
+      id: 'hasil',
+      title: 'Mencatat qualification, kunjungan, dan akad',
+      intro: admin
+        ? 'Outcome melengkapi pipeline dengan bukti yang lebih spesifik; perubahan status calon pembeli tetap dilakukan pada halaman Calon pembeli.'
+        : 'Anda hanya dapat membuka dan memperbarui outcome calon pembeli yang ditugaskan kepada Anda.',
+      steps: [
+        'Masukkan ID calon pembeli dari daftar atau tautan permintaan, lalu periksa nama, properti, dan status pipeline.',
+        'Catat qualified hanya setelah percakapan dua arah, kecocokan kebutuhan, dan kesiapan langkah lanjut benar-benar dibahas. Isi alasan ringkas tanpa data sensitif.',
+        'Bedakan kunjungan diminta, dikonfirmasi, hadir, batal, dan tidak hadir. Waktu pilihan dari form publik belum merupakan jadwal terkonfirmasi.',
+        ...(admin
+          ? [
+              'Konfirmasi akad hanya untuk calon pembeli berstatus Pembelian selesai (DEAL), dengan waktu aktual, referensi ringkas, dan alasan. Koreksi dicatat sebagai perubahan baru.',
+            ]
+          : []),
+      ],
+      note: admin
+        ? 'Atribusi yang tidak diketahui tetap sah. Jangan menyatakan suatu akad berasal dari iklan bila bukti campaign tidak tersedia.'
+        : 'Konfirmasi atau pencabutan akad hanya dilakukan Admin. Hubungi Admin jika hasil akhir perlu diverifikasi.',
+    },
     {
       id: 'katalog',
       title: 'Katalog, gambar, dan publikasi',

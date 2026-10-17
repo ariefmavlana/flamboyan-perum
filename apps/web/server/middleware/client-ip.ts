@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { isIP } from 'node:net'
 import { trustedClientIp } from '../../shared/utils/client-ip'
+import { apiBridge } from '../utils/api-bridge'
 
 export default defineEventHandler((event) => {
   event.node.res.setHeader('X-Content-Type-Options', 'nosniff')
@@ -11,6 +12,8 @@ export default defineEventHandler((event) => {
   )
   event.node.res.setHeader('Referrer-Policy', 'no-referrer')
   const config = useRuntimeConfig()
+  if (String(config.public.indexable) === 'false' || /^\/(?:api|auth|sanctum)(\/|$)/.test(event.path))
+    event.node.res.setHeader('X-Robots-Tag', 'noindex, nofollow')
   if (String(config.public.siteUrl).startsWith('https://'))
     event.node.res.setHeader(
       'Strict-Transport-Security',
@@ -68,9 +71,13 @@ export default defineEventHandler((event) => {
     .split(',')
     .map((name) => name.trim().toLowerCase())
     .filter(Boolean)
+  for (const deploymentHost of [process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL]) {
+    if (deploymentHost && /^[a-z0-9-]+\.vercel\.app$/.test(deploymentHost)) allowed.push(deploymentHost)
+  }
   if (!import.meta.dev && remote && (!host || !allowed.includes(host)))
     throw createError({
       statusCode: 400,
       statusMessage: 'Host tidak diizinkan',
     })
+  return apiBridge(event)
 })

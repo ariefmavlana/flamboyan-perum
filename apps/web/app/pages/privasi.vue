@@ -27,6 +27,13 @@ const contact = whatsappLink(
       ditugaskan.
     </p>
     <h2>Interaksi katalog</h2>
+    <p>
+      Bila formulir konsultasi tersedia, nama, nomor WhatsApp, tipe rumah,
+      tujuan konsultasi dan preferensi waktu yang Anda kirim digunakan untuk
+      menanggapi permintaan. Preferensi kunjungan memerlukan konfirmasi Admin.
+      Permintaan yang masuk diperiksa sebelum menjadi lead valid. Pilihan
+      menerima informasi promosi bersifat opsional dan terpisah dari konsultasi.
+    </p>
     <p v-if="String(config.public.analyticsEnabled) === 'true'">
       Kami menghitung tampilan detail dan klik WhatsApp sebagai jumlah harian
       per properti. Penghitung ini tidak menyimpan nama, nomor telepon, IP,
@@ -55,6 +62,13 @@ const contact = whatsappLink(
       Ubah pilihan privasi
     </button>
     <h2>Penyedia eksternal</h2>
+    <p>
+      Jika pengukuran sumber kunjungan diaktifkan dan Anda menyetujui kategori
+      yang sesuai, konteks kampanye dapat disimpan di browser paling lama
+      30 hari. Data ini membantu membedakan sumber permintaan; tidak membuktikan
+      bahwa percakapan WhatsApp, kunjungan, atau transaksi telah terjadi.
+      Data kontak formulir tidak dikirim sebagai parameter analitik browser.
+    </p>
     <p>
       WhatsApp dibuka ketika Anda memilih tautannya. Film YouTube pada beranda dapat dimuat otomatis tanpa suara jika pengelola mengaktifkannya; pemuatan ini mengirim informasi koneksi kepada YouTube. Anda dapat menjeda video melalui area pemutar atau kontrol Jeda. Peta, video galeri properti, dan virtual tour lainnya dimuat setelah Anda memilihnya. Penyedia eksternal memproses informasi menurut kebijakannya sendiri. Sesi masuk tim memakai cookie untuk keamanan akses.
     </p>

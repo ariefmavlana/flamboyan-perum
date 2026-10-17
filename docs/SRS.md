@@ -220,3 +220,8 @@ Endpoint /auth/* merupakan API JSON meskipun ditempatkan pada web middleware unt
 # Addendum kejelasan alur — 2026-10-05
 
 Summary CRM memakai agregasi database dalam scope visibleTo yang sama dengan daftar; jumlah bukan turunan pagination. `work` memfilter pekerjaan aktif tanpa record anonim/terminal. Kontrak di API_DOCS. Frontend menyimpan filter/pagination CRM di URL, memiliki retry/error terpisah untuk ringkasan/riwayat, dan menolak respons daftar yang sudah kedaluwarsa. Pembatasan peran, version guard, atomisitas mutasi dan histori append-only tetap berlaku. Hero tanpa media pilihan eksplisit memakai aset ilustrasi kawasan; pemilihan foto/video eksplisit dan pencabutan publication tetap mematuhi public allowlist. Fokus netral tetap terlihat, termasuk navigasi keyboard dan forced-colors.
+
+
+## Tambahan kontrak growth — 17 Oktober 2026
+
+Public options, signed context/intake, Admin-only inquiry reconciliation, scoped qualification/visit, Admin akad/manual attribution dan aggregate report mengikuti [kontrak API growth](growth/backend-api-contract.md). Guard versi lead, transaksi/histori dan public DTO allowlist tetap berlaku. API tidak mengekspos receipt lookup publik atau Marketing identity. Form default disabled sampai tepat lima ID PUBLISHED serta notice/retensi disahkan. Client consent v2 dan notice layanan adalah versi terpisah. Rehearsal wajib pada dataset terisolasi, bukan database CRM operasional. [Traceability 146 requirement](growth/implementation-traceability.md) dan [bukti](growth/validation.md) membedakan IMPLEMENT_NOW, EXTERNAL_GATE dan DEFERRED_BY_SPEC.

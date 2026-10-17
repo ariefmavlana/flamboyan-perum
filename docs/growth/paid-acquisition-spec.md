@@ -1,6 +1,6 @@
 # Spesifikasi Google Search dan Meta Ads
 
-Status: DRAFT / PLANNED. Arah pengguna: Google Search lebih dulu, total Rp500.000 satu bulan, calon pembeli Kota Bandung, BFI2, WhatsApp+form, tujuan akhir akad. Sumber resmi berada pada [register](README.md); proses lead mengikuti [CRM](measurement-crm-spec.md).
+Status: baseline spesifikasi disetujui untuk implementasi. Status kode/bukti dan gate eksternal mengikuti [validation.md](validation.md); ini bukan klaim aktivasi produksi. Arah pengguna: Google Search lebih dulu, total Rp500.000 satu bulan, calon pembeli Kota Bandung, BFI2, WhatsApp+form, tujuan akhir akad. Sumber resmi berada pada [register](README.md); proses lead mengikuti [CRM](measurement-crm-spec.md).
 
 ## 1. Anggaran dan batas keberhasilan
 

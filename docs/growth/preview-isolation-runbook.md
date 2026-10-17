@@ -1,0 +1,20 @@
+# Prosedur preview Vercel terisolasi
+
+Target: branch `codex/growth-acquisition-implementation`, proyek `flamboyan-api` dan `flamboyan-web`. Production branch kedua proyek telah diperiksa sebagai `main` pada 17 Oktober 2026. Tidak ada merge, perubahan domain produksi, pembelian, atau iklan pada prosedur ini.
+
+## Batas akses dan perubahan yang diajukan
+
+1. Baca metadata environment tanpa dekripsi. Untuk membuat schema baru, akses hanya satu nilai `DB_URL` yang telah dipakai target preview; jangan mengambil seluruh environment produksi. Nilai berada di memori proses, tidak dicetak atau dimasukkan ke Git.
+2. Validasi hostname Supabase pooler, TLS `verify-full` dengan CA repository, dan nama schema tetap `growth_preview_20261017`. Buat schema tersebut hanya jika belum ada; tolak schema tidak kosong yang bukan fixture sesi ini. Tidak menjalankan `migrate:fresh`, reset, truncate, drop atau SQL terhadap tabel `public`.
+3. Jalankan migrasi aditif hanya pada schema baru. Seed lima properti sintetis bertanda fixture dan dua akun uji dengan password acak. Jangan menyalin pelanggan, user produksi, histori CRM, dokumen atau kontak nyata. Data katalog untuk pembandingan publik dapat dibaca melalui endpoint publik tanpa autentikasi.
+4. Set environment **preview khusus branch**: schema tersebut, `GROWTH_PREVIEW_ISOLATED=true`, `MEDIA_STORAGE_PREFIX=growth-preview/20261017`, APP_KEY dan proxy secret acak yang berbeda, cookie/session/cache terpisah, email/broadcast eksternal dimatikan, dan noindex. Secret baru berada dalam proses provisioning dan encrypted branch variables; tidak ditulis ke file atau didekripsi ulang. Proses tetap hidup untuk retry setup dan child browser test. Kredensial bucket existing tetap server-side; tidak perlu dibaca untuk menambah prefix. Semua operasi objek dibatasi adapter ke prefix baru. Bootstrap URL memakai `https://preview-setup.invalid`, sehingga belum dapat melayani alur sampai metadata deployment tersedia.
+5. Gate form untuk fixture memakai notice `preview-fixture-1`, lima ID fixture, dan referensi kebijakan `SYNTHETIC_TEST_ONLY`. Pengesahan fixture ini hanya untuk data sintetis, bukan persetujuan pemberitahuan privasi produksi. Akun Google/Meta resmi tetap kosong; pengujian tag memakai stub browser tanpa mengirim trafik ke provider.
+6. Deploy kedua proyek dari commit PR yang sama. Validasi project ID, branch, SHA dan kepemilikan stable branch alias melalui API Vercel; baru hubungkan APP_URL/FRONTEND_URL/backend base dan host allowlist ke alias tersebut. Redeploy SHA yang sama untuk menerapkan URL; tidak menebak domain atau menunjuk produksi. Catat SHA, deployment ID, host, hasil build dan status. Browser mengakses API lewat host web yang sama. Uji formulir, retry, Admin reconciliation, assignment, qualification, kunjungan, DEAL, akad/revoke, report, role boundary, upload/publikasi media fixture, dan kebocoran private DTO.
+
+## Penghentian dan rollback
+
+Jika host, schema, prefix, TLS, SHA atau target environment tidak cocok, hentikan sebelum write. Hapus alias preview atau matikan gate form untuk menghentikan akses. Jangan menghapus schema/prefix secara otomatis; penghapusan fixture adalah tindakan terpisah setelah bukti dan kebutuhan retensi uji dipastikan. Rollback kode menggunakan deployment sebelumnya; migrasi aditif tetap disimpan. Tidak ada rollback destruktif terhadap tabel yang sudah menerima data.
+
+## Status
+
+Prosedur sudah disiapkan; isolasi cloud dan browser rehearsal belum dibuktikan. Review persetujuan otomatis menolak pembacaan seluruh environment produksi karena cakupannya terlalu luas. Pengguna kemudian menyetujui akses minimum satu DB_URL preview, schema baru dan konfigurasi branch/prefix terpisah. Pengujian lokal tidak ditandai sebagai pengujian Vercel.

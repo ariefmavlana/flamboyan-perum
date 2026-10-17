@@ -1,6 +1,6 @@
 # Spesifikasi SEO komprehensif yang mengikuti Flamboyan
 
-Status: DRAFT / PLANNED. Sumber G-* merujuk [register resmi](README.md). Tujuan: ditemukan untuk kebutuhan pembelian yang sesuai inventori, membantu evaluasi rumah, dan menghasilkan prospek yang dapat ditindaklanjuti. Peringkat, indexation dan akad bukan hasil yang dapat dijamin.
+Status: baseline spesifikasi disetujui untuk implementasi. Status kode/bukti dan gate eksternal mengikuti [validation.md](validation.md); ini bukan klaim aktivasi produksi. Sumber G-* merujuk [register resmi](README.md). Tujuan: ditemukan untuk kebutuhan pembelian yang sesuai inventori, membantu evaluasi rumah, dan menghasilkan prospek yang dapat ditindaklanjuti. Peringkat, indexation dan akad bukan hasil yang dapat dijamin.
 
 ## 1. Arsitektur informasi dan intent
 
@@ -13,7 +13,7 @@ Status: DRAFT / PLANNED. Sumber G-* merujuk [register resmi](README.md). Tujuan:
 | `/properti/{slug}`                   | Tipe tertentu + lokasi + harga/pembiayaan          | Harga/spec, foto, denah, ketersediaan, biaya/syarat, simulasi, konsultasi | Satu URL stabil per tipe/record aktif               |
 | `/bandung-timur`                     | Memahami kawasan untuk membeli rumah               | Akses dan fasilitas bersumber, perbedaan wilayah, rujukan proyek          | Tidak mengklaim semua lokasi berada di Kota Bandung |
 | `/panduan` dan detail                | Pertanyaan evaluasi pembeli                        | Kunjungan, pemilihan lokasi dan pembiayaan yang sudah tersedia            | Penambahan berdasarkan kebutuhan nyata              |
-| `/konsultasi`                        | Konsultasi/pengajuan minat survei                  | WhatsApp Admin + formulir, pilihan satu tipe, ekspektasi tindak lanjut    | Form belum diimplementasikan                        |
+| `/konsultasi`                        | Konsultasi/pengajuan minat survei                  | WhatsApp Admin + formulir, pilihan satu tipe, ekspektasi tindak lanjut    | Form diimplementasikan dengan gate default-off                        |
 | `/privasi`                           | Transparansi pengelolaan data                      | Controller, tujuan, consent, vendor, retensi, hak dan kontak              | Kelengkapan legal menjadi gate publikasi            |
 | `/perumahan/banjaran`                | Pengenalan rencana                                 | Informasi terbatas yang telah disetujui                                   | Tidak dijadikan landing paid penjualan BFI2         |
 

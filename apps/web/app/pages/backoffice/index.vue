@@ -875,6 +875,7 @@ watch(
             Tambah catatan
           </button>
         </div>
+        <NuxtLink :to="{ path: '/backoffice/hasil', query: { lead: String(selected.id) } }" class="button secondary">Kualifikasi, survei, dan akad →</NuxtLink>
         <h3>Riwayat aktivitas</h3>
         <p v-if="historyLoading" role="status">Memuat riwayat…</p>
         <p v-if="historyError" role="alert">

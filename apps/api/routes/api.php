@@ -4,7 +4,9 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\CommercialController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\LeadOutcomeController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OperationsController;
@@ -17,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 Route::prefix('v1')->group(function () {
+    Route::get('inquiries/options', [InquiryController::class, 'options'])->middleware('throttle:public-api')->withoutMiddleware(EnsureFrontendRequestsAreStateful::class);
+    Route::post('inquiries/context', [InquiryController::class, 'context'])->middleware('throttle:inquiry-context')->withoutMiddleware(EnsureFrontendRequestsAreStateful::class);
+    Route::post('inquiries', [InquiryController::class, 'store'])->middleware('throttle:inquiry-submit')->withoutMiddleware(EnsureFrontendRequestsAreStateful::class);
     Route::post('analytics', [AnalyticsController::class, 'store'])->middleware('throttle:analytics')->withoutMiddleware(EnsureFrontendRequestsAreStateful::class);
     Route::middleware('throttle:public-api')->group(function () {
         Route::get('content', [ContentController::class, 'publicIndex']);
@@ -36,6 +41,14 @@ Route::prefix('v1')->group(function () {
         Route::patch('internal/users/{id}', [UserController::class, 'update'])->whereNumber('id');
         Route::get('internal/audit', [UserController::class, 'audit']);
         Route::get('internal/reports', [ReportController::class, 'index']);
+        Route::get('internal/inquiries', [InquiryController::class, 'index']);
+        Route::post('internal/inquiries/{id}/resolve', [InquiryController::class, 'resolve'])->whereNumber('id');
+        Route::get('internal/leads/{id}/outcomes', [LeadOutcomeController::class, 'show'])->whereNumber('id');
+        Route::patch('internal/leads/{id}/qualification', [LeadOutcomeController::class, 'qualification'])->whereNumber('id');
+        Route::post('internal/leads/{id}/visits', [LeadOutcomeController::class, 'createVisit'])->whereNumber('id');
+        Route::patch('internal/leads/{id}/visits/{visitId}', [LeadOutcomeController::class, 'updateVisit'])->whereNumber(['id', 'visitId']);
+        Route::post('internal/leads/{id}/akad-confirmation', [LeadOutcomeController::class, 'akad'])->whereNumber('id');
+        Route::patch('internal/leads/{id}/attribution', [LeadOutcomeController::class, 'attribution'])->whereNumber('id');
         Route::get('internal/privacy', [ReportController::class, 'privacy']);
         Route::get('internal/operations', [OperationsController::class, 'metrics']);
         Route::get('internal/content', [ContentController::class, 'index']);

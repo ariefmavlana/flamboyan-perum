@@ -544,3 +544,74 @@ html:has(.public-shell) {
     transition: none !important;
   }
 }
+
+/* Public inquiry intake: additive to the existing editorial consultation page. */
+.inquiry-form {
+  display: grid;
+  gap: 18px;
+  padding-top: 10px;
+}
+.inquiry-form label > small {
+  display: block;
+  margin-top: 7px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.inquiry-purpose {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+}
+.inquiry-purpose legend {
+  padding-inline: 5px;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--muted);
+}
+.inquiry-purpose label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  min-height: 44px;
+  font-size: 13px;
+}
+.inquiry-purpose input,
+.inquiry-opt-in input {
+  width: auto;
+  min-width: 18px;
+}
+.consultation-panel .inquiry-opt-in {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.inquiry-receipt {
+  padding: 22px;
+  border: 1px solid #cad8c7;
+  background: #eef3e9;
+}
+.inquiry-receipt h3 {
+  margin-block: 8px 10px;
+}
+.consultation-wa-fallback {
+  display: grid;
+  gap: 14px;
+  margin-top: 26px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.consultation-wa-fallback .eyebrow {
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .inquiry-purpose {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

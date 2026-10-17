@@ -10,6 +10,7 @@ describe('workspace navigation and guidance', () => {
       marketing.flatMap((group) => group.links).map((link) => link.to),
     ).toEqual([
       '/backoffice',
+      '/backoffice/hasil',
       '/backoffice/properti',
       '/backoffice/panduan',
       '/backoffice/profil',

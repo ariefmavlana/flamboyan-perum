@@ -12,7 +12,6 @@ export default defineEventHandler(async (event) => {
       ...[
         '/perumahan',
         '/perumahan/bukit-flamboyan-indah-2',
-        '/perumahan/banjaran',
         '/bandung-timur',
         '/panduan',
         '/konsultasi',

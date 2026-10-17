@@ -2,6 +2,7 @@
 import { absoluteUrl, canonicalUrl } from '#shared/utils/seo'
 const config = useRuntimeConfig()
 useSeoMeta({
+  robots: 'noindex, follow',
   title: 'Banjaran — hunian mendatang',
   description:
     'Sebuah cerita baru di Banjaran. Jelajahi inspirasi hunian mendatang Flamboyan dan diskusikan rencananya bersama Admin. Visual merupakan ilustrasi.',

@@ -259,6 +259,7 @@ export interface LeadHistory {
 }
 
 export interface LeadReport {
+  growth: import('./growth-types').GrowthReport
   cohort_size: number
   conversion_percent: number
   statuses: Record<string, number>

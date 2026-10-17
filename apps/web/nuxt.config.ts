@@ -1,13 +1,8 @@
-// The demo deployment serves the web project and the API project on different
-// Vercel hosts. Staff auth uses Sanctum cookies, so the API paths must be
-// reachable same-origin; Nitro proxies them at runtime. Local development keeps
-// using devProxy below, and the guard turns a missing NUXT_API_BASE into a
-// build failure instead of a silently broken deployment.
-const apiOrigin = process.env.NUXT_API_BASE || 'http://127.0.0.1:8000'
-
-if (process.env.VERCEL === '1' && !process.env.NUXT_API_BASE)
+// The same bounded Nitro bridge serves local, Vercel and a future Node host.
+// Production builds require an explicit backend; credentials stay server-side.
+if (process.env.NODE_ENV === 'production' && !process.env.NUXT_API_BASE)
   throw new Error(
-    'NUXT_API_BASE wajib diset pada build Vercel agar proxy same-origin berfungsi.',
+    'NUXT_API_BASE wajib diset pada build produksi agar proxy same-origin berfungsi.',
   )
 
 const publicSiteUrl = (
@@ -22,15 +17,6 @@ if (
     '[flamboyan] NUXT_PUBLIC_SITE_URL masih memakai hostname Vercel. Canonical dan sitemap produksi menunggu domain resmi disetujui.',
   )
 
-const sameOriginProxy =
-  process.env.VERCEL === '1'
-    ? Object.fromEntries(
-        ['/api/v1/**', '/auth/**', '/sanctum/**', '/media/**', '/up'].map(
-          (path) => [path, { proxy: `${apiOrigin}${path}` }],
-        ),
-      )
-    : {}
-
 export default defineNuxtConfig({
   compatibilityDate: '2026-10-03',
   ssr: true,
@@ -44,36 +30,6 @@ export default defineNuxtConfig({
     '~/assets/public-experience.css',
   ],
   typescript: { strict: true },
-  nitro: {
-    devProxy: {
-      '/api/v1/realtime': {
-        target: `${apiOrigin}/api/v1/realtime`,
-        changeOrigin: true,
-      },
-      '/media/': { target: `${apiOrigin}/media/`, changeOrigin: true },
-      '/auth/': { target: `${apiOrigin}/auth/`, changeOrigin: true },
-      '/sanctum/': {
-        target: `${apiOrigin}/sanctum/`,
-        changeOrigin: true,
-      },
-      '/api/v1/me': {
-        target: `${apiOrigin}/api/v1/me`,
-        changeOrigin: true,
-      },
-      '/api/v1/leads': {
-        target: `${apiOrigin}/api/v1/leads`,
-        changeOrigin: true,
-      },
-      '/api/v1/notifications': {
-        target: `${apiOrigin}/api/v1/notifications`,
-        changeOrigin: true,
-      },
-      '/api/v1/internal/': {
-        target: `${apiOrigin}/api/v1/internal/`,
-        changeOrigin: true,
-      },
-    },
-  },
   runtimeConfig: {
     apiBase: 'http://127.0.0.1:8000',
     apiProxySecret: '',
@@ -86,11 +42,13 @@ export default defineNuxtConfig({
       analyticsEnabled: false,
       gtmId: '',
       metaPixelId: '',
+      metaViaGtm: false,
+      attributionEnabled: false,
+      indexable: process.env.VERCEL_ENV !== 'preview',
       instagramUrl: '',
     },
   },
   routeRules: {
-    ...sameOriginProxy,
     '/forgot-password': {
       ssr: false,
       headers: {

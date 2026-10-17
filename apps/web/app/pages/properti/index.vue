@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import type { Paginated, Property } from '#shared/types'
 import { availabilityLabels, formatIdr } from '#shared/utils/catalog'
-import { canonicalUrl } from '#shared/utils/seo'
+import { catalogSeo } from '#shared/utils/seo'
 import { formatArea } from '#shared/utils/format'
 const route = useRoute()
+const config = useRuntimeConfig()
+if (route.query.page !== undefined && (typeof route.query.page !== 'string' || !/^[1-9]\d{0,5}$/.test(route.query.page)))
+  throw createError({ statusCode: 404, statusMessage: 'Halaman katalog tidak ditemukan.' })
 const interactive = ref(false)
 onMounted(() => {
   interactive.value = true
@@ -121,6 +124,13 @@ const { data, error, status, refresh } = await useFetch<Paginated<Property>>(
   '/api/v1/properties',
   { query: requestQuery },
 )
+watchEffect(() => {
+  if (error.value?.statusCode === 404) showError({ statusCode: 404, statusMessage: 'Halaman katalog tidak ditemukan.' })
+})
+if (import.meta.server && error.value) {
+  const response = useRequestEvent()?.node?.res
+  if (response) response.statusCode = error.value.statusCode === 404 ? 404 : error.value.statusCode === 422 ? 422 : 503
+}
 const message = ref('')
 function filter() {
   message.value = ''
@@ -145,21 +155,18 @@ const pageLink = (page: number) => ({
   path: '/properti',
   query: { ...route.query, page },
 })
+const seo = computed(() => catalogSeo(String(config.public.siteUrl), route.query))
 useSeoMeta({
-  title: 'Jelajahi properti',
+  title: () => seo.value.page > 1 ? `Pilihan tipe rumah · Halaman ${seo.value.page}` : 'Pilihan tipe rumah Bukit Flamboyan Indah 2',
   description:
     'Cari rumah berdasarkan lokasi, harga, dan spesifikasi yang sesuai kebutuhan Anda.',
-  robots: () =>
-    Object.keys(route.query).length ? 'noindex, follow' : 'index, follow',
+  robots: () => seo.value.robots,
 })
 useHead({
   link: [
     {
       rel: 'canonical',
-      href: canonicalUrl(
-        String(useRuntimeConfig().public.siteUrl),
-        '/properti',
-      ),
+      href: () => seo.value.canonical,
     },
   ],
 })

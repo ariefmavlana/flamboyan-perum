@@ -1,6 +1,6 @@
 # Spesifikasi Hostinger shared + Supabase + R2
 
-Status: DRAFT / PLANNED. Lihat [keputusan dan sumber](README.md). Semua ID HOST-* adalah requirement usulan.
+Status: baseline spesifikasi disetujui untuk implementasi. Status kode/bukti dan gate eksternal mengikuti [validation.md](validation.md); ini bukan klaim aktivasi produksi. Lihat [keputusan dan sumber](README.md). Semua ID HOST-* adalah requirement usulan.
 
 ## 1. Pemilihan paket berbasis bukti
 

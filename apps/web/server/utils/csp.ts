@@ -26,6 +26,7 @@ export interface CspOptions {
   tourHosts: string
   gtmId?: string
   metaPixelId?: string
+  metaViaGtm?: boolean
   upgradeInsecureRequests?: boolean
 }
 
@@ -39,7 +40,7 @@ export function tourFrameSources(tourHosts: string): string[] {
 
 export function buildContentSecurityPolicy(options: CspOptions): string {
   const gtm = Boolean(options.gtmId)
-  const meta = Boolean(options.metaPixelId)
+  const meta = Boolean(options.metaPixelId) || (gtm && options.metaViaGtm === true)
   const dynamic = gtm || meta
   const script = [
     `'self'`,

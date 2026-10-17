@@ -118,3 +118,10 @@ Nonce CSP per response pada built SSR melindungi hidrasi/render script dan memba
 # Addendum workspace — 2026-10-05
 
 LeadController menambah query agregasi bounded menurut kombinasi status/assigned/anonymized dalam visibleTo, tanpa memuat seluruh kontak atau menambah tabel/cache/service baru. Filter work memakai kondisi yang sama dengan penghitung. Utility frontend `shared/utils/leads.ts` memusatkan label/transisi/tindakan tampilan; backend tetap menjadi sumber otorisasi dan transisi. CSS workspace terpisah dari identitas editorial publik. Tidak ada dependensi baru. Media hero null memakai aset kawasan lokal; selected media tetap melalui ContentController/publicMedia dan properti published.
+
+
+## Growth dan routing portable — 17 Oktober 2026
+
+Nuxt memakai satu bridge method/path allowlist untuk development dan Node SSR deployment, menggantikan wildcard route proxy Vercel/devProxy. Public relay tidak meneruskan cookies; POST inquiry/context memerlukan same-origin JSON bounded dan signature server. Private bridge meneruskan hanya header session/CSRF yang diperlukan dan tidak menerima upstream dari browser. Media tetap private dan semua otorisasi Laravel.
+
+Migrasi growth aditif menyediakan lead_inquiries, lead_attributions, lead_outcomes dan lead_visits, serta metadata histori. Inquiry belum menjadi lead valid sampai Admin reconcile; qualification/visit/akad tidak otomatis mengubah pipeline/availability. Report memakai lead-created cohort dan inquiry-created cohort yang diberi label terpisah. Preview memakai satu DB_SCHEMA PostgreSQL tanpa public fallback dan MEDIA_STORAGE_PREFIX R2 tersendiri, startup guard dan key/session/cache terpisah. Deployment dan rollback: [spec Hostinger](growth/hostinger-production-spec.md) dan [runbook preview](growth/preview-isolation-runbook.md).

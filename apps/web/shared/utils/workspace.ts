@@ -14,6 +14,24 @@ const sections = [
         admin: false,
       },
       {
+        to: '/backoffice/permintaan',
+        label: 'Permintaan masuk',
+        icon: 'bell',
+        guide: 'permintaan',
+        description:
+          'Tinjau formulir publik sebelum membuat atau menautkan calon pembeli.',
+        admin: true,
+      },
+      {
+        to: '/backoffice/hasil',
+        label: 'Hasil prospek',
+        icon: 'chart',
+        guide: 'hasil',
+        description:
+          'Catat qualification, kunjungan aktual, dan hasil sampai akad.',
+        admin: false,
+      },
+      {
         to: '/backoffice/laporan',
         label: 'Hasil penjualan',
         icon: 'chart',
@@ -110,9 +128,11 @@ export function workspaceNavigation(role?: StaffAccount['role'] | null) {
           description:
             role === 'MARKETING' && link.to === '/backoffice'
               ? 'Tindak lanjuti calon pembeli yang ditugaskan kepada Anda.'
-              : role === 'MARKETING' && link.to === '/backoffice/properti'
-                ? 'Kelola informasi dan media properti milik Anda.'
-                : link.description,
+              : role === 'MARKETING' && link.to === '/backoffice/hasil'
+                ? 'Catat qualification dan kunjungan calon pembeli yang ditugaskan kepada Anda.'
+                : role === 'MARKETING' && link.to === '/backoffice/properti'
+                  ? 'Kelola informasi dan media properti milik Anda.'
+                  : link.description,
         })),
     }))
     .filter((section) => section.links.length)

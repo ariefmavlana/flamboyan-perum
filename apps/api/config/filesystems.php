@@ -1,5 +1,9 @@
 <?php
 
+use App\Support\DeploymentIsolation;
+
+$mediaStoragePrefix = DeploymentIsolation::mediaPrefix(env('MEDIA_STORAGE_PREFIX', ''));
+
 return [
 
     /*
@@ -41,6 +45,7 @@ return [
             'bucket' => env('AWS_BUCKET'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'root' => $mediaStoragePrefix,
             'visibility' => 'private',
             'throw' => true,
             'serve' => false,
