@@ -65,6 +65,23 @@ class DemoDatasetTest extends TestCase
         $this->assertDatabaseCount('leads', 12);
     }
 
+    public function test_existing_administrator_is_never_replaced_when_domain_tables_are_empty(): void
+    {
+        $existing = User::factory()->create(['role' => 'ADMIN', 'is_active' => false]);
+
+        try {
+            (new DemoSeeder)->run();
+            $this->fail('Existing Administrator must block demo bootstrap');
+        } catch (\RuntimeException $error) {
+            $this->assertStringContainsString('populasi Administrator kosong', $error->getMessage());
+        }
+
+        $this->assertDatabaseCount('users', 1);
+        $this->assertSame($existing->id, User::sole()->id);
+        $this->assertDatabaseCount('properties', 0);
+        $this->assertDatabaseCount('leads', 0);
+    }
+
     public function test_media_is_generated_and_processed_by_native_pipeline(): void
     {
         config(['demo.media' => true]);

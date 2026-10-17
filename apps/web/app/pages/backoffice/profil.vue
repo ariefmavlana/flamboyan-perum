@@ -70,26 +70,23 @@ onMounted(load)
           required
           maxlength="160"
           autocomplete="name" /></label
-      ><label
-        >Kata sandi saat ini<input
-          v-model="currentPassword"
-          type="password"
-          autocomplete="current-password"
-          :required="!!password" /></label
-      ><label
-        >Kata sandi baru (opsional)<input
-          v-model="password"
-          type="password"
-          minlength="12"
-          maxlength="1024"
-          autocomplete="new-password" /></label
-      ><label
-        >Ulangi kata sandi baru<input
-          v-model="confirmation"
-          type="password"
-          :required="!!password"
-          autocomplete="new-password"
-      /></label>
+      ><PasswordField
+        v-model="currentPassword"
+        label="Kata sandi saat ini"
+        autocomplete="current-password"
+        :required="!!password"
+      /><PasswordField
+        v-model="password"
+        label="Kata sandi baru (opsional)"
+        minlength="12"
+        maxlength="1024"
+        autocomplete="new-password"
+      /><PasswordField
+        v-model="confirmation"
+        label="Ulangi kata sandi baru"
+        :required="!!password"
+        autocomplete="new-password"
+      />
       <p
         v-if="message"
         :role="success ? 'status' : 'alert'"

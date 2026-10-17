@@ -41,7 +41,7 @@ useHead({
           depan.
         </p>
         <NuxtLink to="/properti" class="button"
-          >Jelajahi pilihan hunian →</NuxtLink
+          >Jelajahi pilihan hunian<AppIcon name="arrow" /></NuxtLink
         >
       </div>
       <figure>
@@ -74,7 +74,7 @@ useHead({
           <h2 id="facilities-title">{{ development.name }}</h2>
           <p class="muted">{{ development.address }}</p>
           <NuxtLink class="text-link" to="/perumahan/bukit-flamboyan-indah-2"
-            >Dokumentasi & rencana kawasan →</NuxtLink
+            >Dokumentasi & rencana kawasan<AppIcon name="arrow" /></NuxtLink
           >
           <p class="muted">
             {{ development.house_types }} tipe ·
@@ -129,7 +129,7 @@ useHead({
             bagaimana Anda menggunakannya setiap hari.
           </p>
           <NuxtLink class="text-link" to="/bandingkan"
-            >Bandingkan rumah →</NuxtLink
+            >Bandingkan rumah<AppIcon name="arrow" /></NuxtLink
           >
         </div>
         <div>
@@ -140,7 +140,7 @@ useHead({
             pada jam perjalanan Anda saat berkunjung.
           </p>
           <NuxtLink class="text-link" to="/panduan/memilih-lokasi"
-            >Catatan menilai lokasi →</NuxtLink
+            >Catatan menilai lokasi<AppIcon name="arrow" /></NuxtLink
           >
         </div>
         <div>
@@ -151,7 +151,7 @@ useHead({
             spesifikasi, dan langkah berikutnya bersama Admin.
           </p>
           <NuxtLink class="text-link" to="/panduan/merencanakan-pembiayaan"
-            >Kenali pembiayaan →</NuxtLink
+            >Kenali pembiayaan<AppIcon name="arrow" /></NuxtLink
           >
         </div>
       </div>
@@ -168,7 +168,7 @@ useHead({
       <NuxtLink
         class="button"
         :to="{ path: '/konsultasi', query: { tujuan: 'kunjungan' } }"
-        >Rencanakan kunjungan →</NuxtLink
+        >Rencanakan kunjungan<AppIcon name="arrow" /></NuxtLink
       >
     </section>
   </div>

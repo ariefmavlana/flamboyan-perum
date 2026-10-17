@@ -7,7 +7,7 @@ async function login(page: Page, role = 'admin') {
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(
     page.getByRole('heading', { name: 'Mulai dari sini' }),
   ).toBeVisible()
@@ -139,7 +139,7 @@ test('Marketing workspace has scoped actions, readable mobile records and guarde
     'false',
   )
   await expect(
-    page.getByRole('button', { name: 'Buka detail →' }).first(),
+    page.getByRole('button', { name: 'Buka detail' }).first(),
   ).toBeEnabled()
   let releaseContact = () => {}
   const contactGate = new Promise<void>((resolve) => {
@@ -160,7 +160,7 @@ test('Marketing workspace has scoped actions, readable mobile records and guarde
       'true',
     )
     await expect(
-      page.getByRole('button', { name: 'Buka detail →' }).first(),
+      page.getByRole('button', { name: 'Buka detail' }).first(),
     ).toBeDisabled()
   } finally {
     releaseContact()
@@ -178,7 +178,7 @@ test('Marketing workspace has scoped actions, readable mobile records and guarde
     'aria-busy',
     'false',
   )
-  await page.getByRole('button', { name: 'Buka detail →' }).first().click()
+  await page.getByRole('button', { name: 'Buka detail' }).first().click()
   const drawer = page.getByRole('dialog')
   await expect(
     drawer.getByRole('heading', { name: 'Hubungi calon pembeli' }),
@@ -266,7 +266,7 @@ test('failed summary is not shown as zero work and can be retried', async ({
   ).toBeVisible()
   await expect(page.locator('.work-queue strong').first()).toHaveText('—')
   await expect(
-    page.getByRole('button', { name: 'Buka detail →' }).first(),
+    page.getByRole('button', { name: 'Buka detail' }).first(),
   ).toBeVisible()
   await page.unroute('**/api/v1/leads/summary')
   await page.getByRole('button', { name: 'Coba lagi', exact: true }).click()

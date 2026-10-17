@@ -13,7 +13,7 @@ async function login(page: Page) {
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(page).toHaveURL(/backoffice/)
 }
 async function staff<T>(

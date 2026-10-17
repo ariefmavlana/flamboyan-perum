@@ -50,7 +50,7 @@ async function share() {
       :disabled="!ready || busy"
       @click="share"
     >
-      Bagikan rumah ↗
+      Bagikan rumah<AppIcon name="external" />
     </button>
     <p v-if="message" role="status" class="muted">{{ message }}</p>
     <label v-if="manual"

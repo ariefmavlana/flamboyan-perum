@@ -130,7 +130,7 @@ useHead(() => ({
 
 <template>
   <section class="container section">
-    <NuxtLink class="text-link" to="/properti">← Kembali ke katalog</NuxtLink>
+    <NuxtLink class="text-link" to="/properti"><AppIcon name="chevron-left" />Kembali ke katalog</NuxtLink>
     <div class="detail-heading">
       <div>
         <p class="eyebrow">{{ property.location }}</p>
@@ -174,7 +174,7 @@ useHead(() => ({
           target="_blank"
           rel="noopener noreferrer"
           @click="trackWhatsapp"
-          ><AppIcon name="chat" />WhatsApp Admin <AppIcon name="external"
+          ><AppIcon name="whatsapp" />WhatsApp Admin <AppIcon name="external"
         /></a>
         <p class="muted">
           Tanyakan ketersediaan tipe ini, rincian harga, atau jadwal kunjungan.
@@ -224,10 +224,10 @@ useHead(() => ({
             query: { properti: property.slug, tujuan: 'kunjungan' },
           }"
           @click="trackVisit"
-          >Rencanakan kunjungan →</NuxtLink
+          >Rencanakan kunjungan<AppIcon name="arrow" /></NuxtLink
         >
         <NuxtLink class="text-link" to="/panduan/kunjungan-rumah"
-          >Yang perlu diperiksa saat kunjungan →</NuxtLink
+          >Yang perlu diperiksa saat kunjungan<AppIcon name="arrow" /></NuxtLink
         >
       </aside>
       <div class="detail-content">
@@ -241,7 +241,7 @@ useHead(() => ({
           <NuxtLink
             class="text-link"
             to="/perumahan/bukit-flamboyan-indah-2#dokumentasi"
-            >Lihat dokumentasi aktual & rencana kawasan →</NuxtLink
+            >Lihat dokumentasi aktual & rencana kawasan<AppIcon name="arrow" /></NuxtLink
           >
           <br />Foto kawasan dan rumah contoh ditampilkan terpisah dari
           ilustrasi tipe ini. Furnitur pada ilustrasi tidak menyatakan

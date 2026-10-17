@@ -80,7 +80,9 @@ const srcset = (image: DevelopmentImage) =>
           :alt="image.alt"
           loading="lazy"
         />
-        <span class="development-zoom" aria-hidden="true">↗</span>
+        <span class="development-zoom" aria-hidden="true"
+          ><AppIcon name="search" /></span
+        >
       </button>
       <figcaption>{{ image.caption }}</figcaption>
     </figure>
@@ -119,7 +121,7 @@ const srcset = (image: DevelopmentImage) =>
           target="_blank"
           rel="noopener noreferrer"
           class="text-link"
-          >Buka siteplan ukuran penuh ↗</a
+          >Buka siteplan ukuran penuh<AppIcon name="external" /></a
         >
         <div class="development-preview-controls">
           <button
@@ -128,7 +130,7 @@ const srcset = (image: DevelopmentImage) =>
             :disabled="images.length < 2"
             @click="moveImage(-1)"
           >
-            ←
+            <AppIcon name="chevron-left" />
           </button>
           <span>{{ (selectedIndex ?? 0) + 1 }} / {{ images.length }}</span>
           <button
@@ -137,7 +139,7 @@ const srcset = (image: DevelopmentImage) =>
             :disabled="images.length < 2"
             @click="moveImage(1)"
           >
-            →
+            <AppIcon name="chevron-right" />
           </button>
         </div>
       </div>

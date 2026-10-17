@@ -23,7 +23,7 @@ defineProps<{ partners: NonNullable<PublicContent['bank_partners']> }>()
             loading="lazy"
             width="180"
             height="72"
-          /><span>{{ partner.name }} ↗</span></a
+          /><span>{{ partner.name }}<AppIcon name="external" /></span></a
         >
       </li>
     </ul>

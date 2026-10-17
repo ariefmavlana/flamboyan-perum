@@ -208,6 +208,9 @@ figure {
   border: 0;
   padding: 10px 4px;
   min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 .text-link:hover,
 .text-button:hover {
@@ -591,6 +594,7 @@ dd {
   min-height: 44px;
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 .site-footer {
   display: flex;
@@ -629,6 +633,35 @@ textarea::placeholder {
 }
 textarea {
   resize: vertical;
+}
+.password-label {
+  margin-bottom: 0;
+}
+.password-field {
+  position: relative;
+  display: block;
+  margin-top: 7px;
+}
+.password-field input {
+  margin-top: 0;
+  padding-right: 50px;
+}
+.password-toggle {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  color: var(--muted);
+}
+.password-toggle:hover {
+  color: var(--ink);
 }
 input[type='checkbox'],
 input[type='radio'] {
@@ -973,6 +1006,7 @@ details > summary:hover {
   min-height: 44px;
   display: flex;
   align-items: center;
+  gap: 8px;
   font-weight: 600;
 }
 .comparison-tray p {
@@ -1243,6 +1277,12 @@ td .text-button {
 .history-drawer::backdrop,
 .image-dialog::backdrop {
   background: #142b23a6;
+}
+.editor-dialog {
+  width: min(720px, calc(100vw - 24px));
+  max-height: 90dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .history-drawer h2 {
   font-size: 24px;

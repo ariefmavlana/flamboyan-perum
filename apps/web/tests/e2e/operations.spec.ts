@@ -13,7 +13,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(page).toHaveURL(/backoffice/)
   const owner = await marketingUser(page)
   await page
@@ -114,7 +114,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
     await marketing
       .getByLabel('Kata sandi', { exact: true })
       .fill(process.env.DEMO_PASSWORD ?? '')
-    await marketing.getByRole('button', { name: 'Masuk →' }).click()
+    await marketing.getByRole('button', { name: 'Masuk' }).click()
     await expect(
       marketing.getByText(`Prospek Operasi ${suffix}`, { exact: true }),
     ).toBeVisible()
@@ -124,7 +124,7 @@ test('Admin creates catalog, records and assigns lead; Marketing processes assig
     await marketing
       .getByRole('row')
       .filter({ hasText: `Prospek Operasi ${suffix}` })
-      .getByRole('button', { name: 'Buka detail →' })
+      .getByRole('button', { name: 'Buka detail' })
       .click()
     const panel = marketing.getByRole('dialog').filter({
       has: marketing.getByRole('heading', {

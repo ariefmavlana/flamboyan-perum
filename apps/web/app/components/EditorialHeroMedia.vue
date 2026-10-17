@@ -279,8 +279,7 @@ onBeforeUnmount(() => {
         :aria-label="failed ? 'Coba muat ulang video' : 'Putar video kawasan'"
         @click="toggle"
       >
-        <span aria-hidden="true">▷</span
-        >{{
+        <AppIcon name="play" />{{
           loading
             ? 'Menyiapkan video…'
             : failed
@@ -303,8 +302,9 @@ onBeforeUnmount(() => {
           :aria-label="playing ? 'Jeda video kawasan' : 'Putar video kawasan'"
           @click="toggle"
         >
-          <span aria-hidden="true">{{ playing ? 'Ⅱ' : '▷' }}</span
-          >{{ playing ? 'Jeda' : 'Putar' }}
+          <AppIcon :name="playing ? 'pause' : 'play'" />{{
+            playing ? 'Jeda' : 'Putar'
+          }}
         </button>
         <button
           type="button"
@@ -326,7 +326,7 @@ onBeforeUnmount(() => {
           :href="`https://www.youtube.com/watch?v=${video.id}&t=${video.start}s`"
           target="_blank"
           rel="noopener noreferrer"
-          >Buka di YouTube ↗</a
+          >Buka di YouTube<AppIcon name="external" /></a
         ></template
       >
     </p>

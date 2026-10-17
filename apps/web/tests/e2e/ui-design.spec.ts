@@ -73,17 +73,20 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(page).toHaveURL(/backoffice/)
   await expect(page.getByText(/calon pembeli.*Halaman/)).toBeVisible()
   const primaryRequest: Record<string, string> = {
     '/backoffice': '/api/v1/leads',
+    '/backoffice/permintaan': '/api/v1/internal/inquiries',
+    '/backoffice/hasil': '/api/v1/me',
     '/backoffice/properti': '/api/v1/internal/properties',
     '/backoffice/konten': '/api/v1/internal/content',
     '/backoffice/akun': '/api/v1/internal/users',
     '/backoffice/laporan': '/api/v1/internal/reports',
     '/backoffice/privasi': '/api/v1/internal/privacy',
     '/backoffice/operasi': '/api/v1/internal/operations',
+    '/backoffice/panduan': '/api/v1/me',
     '/backoffice/profil': '/api/v1/me',
   }
   const apiFailures: number[] = []
@@ -95,12 +98,15 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
     await page.setViewportSize({ width, height: 900 })
     for (const path of [
       '/backoffice',
+      '/backoffice/permintaan',
+      '/backoffice/hasil',
       '/backoffice/properti',
       '/backoffice/konten',
       '/backoffice/akun',
       '/backoffice/laporan',
       '/backoffice/privasi',
       '/backoffice/operasi',
+      '/backoffice/panduan',
       '/backoffice/profil',
     ]) {
       if (new URL(page.url()).pathname !== path) {
@@ -133,15 +139,33 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
           '/backoffice/properti',
           '/backoffice/konten',
           '/backoffice/akun',
+          '/backoffice/permintaan',
         ].includes(path)
       ) {
         await expect(page.locator('main tbody tr').first()).toBeVisible()
-      } else if (path === '/backoffice/laporan') {
-        await expect(page.locator('.report-metrics')).toBeVisible()
-      } else if (path === '/backoffice/privasi') {
+      } else if (
+        path === '/backoffice/laporan' ||
+        path === '/backoffice/privasi'
+      ) {
+        if (path === '/backoffice/laporan')
+          await expect(page.locator('.report-metrics')).toBeVisible()
+        else
+          await expect(
+            page.getByText('Kandidat tanpa data kontak', { exact: true }),
+          ).toBeVisible()
+        expect(
+          await page
+            .locator('.responsive-records')
+            .first()
+            .evaluate((el) => el.scrollWidth <= el.clientWidth),
+          `${path} record cards overflow at ${width}`,
+        ).toBe(true)
+      } else if (path === '/backoffice/hasil') {
         await expect(
-          page.getByText('Kandidat tanpa data kontak', { exact: true }),
+          page.getByRole('heading', { name: 'Hasil prospek' }),
         ).toBeVisible()
+      } else if (path === '/backoffice/panduan') {
+        await expect(page.getByText('Panduan kerja tim')).toBeVisible()
       } else if (path === '/backoffice/operasi') {
         await expect(page.locator('main .spec-grid').first()).toBeVisible()
       } else {

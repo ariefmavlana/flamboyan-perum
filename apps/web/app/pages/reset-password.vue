@@ -39,21 +39,19 @@ async function submit() {
   <section class="container section">
     <form v-if="valid" class="login-panel" @submit.prevent="submit">
       <h1>Atur kata sandi baru</h1>
-      <label
-        >Kata sandi baru<input
-          v-model="password"
-          required
-          type="password"
-          minlength="12"
-          maxlength="1024"
-          autocomplete="new-password" /></label
-      ><label
-        >Ulangi kata sandi<input
-          v-model="confirmation"
-          required
-          type="password"
-          autocomplete="new-password"
-      /></label>
+      <PasswordField
+        v-model="password"
+        label="Kata sandi baru"
+        required
+        minlength="12"
+        maxlength="1024"
+        autocomplete="new-password"
+      /><PasswordField
+        v-model="confirmation"
+        label="Ulangi kata sandi"
+        required
+        autocomplete="new-password"
+      />
       <p v-if="message" role="alert">{{ message }}</p>
       <button class="button" :disabled="busy">Perbarui kata sandi</button>
     </form>

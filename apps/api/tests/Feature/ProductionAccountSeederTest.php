@@ -49,6 +49,20 @@ class ProductionAccountSeederTest extends TestCase
         }
     }
 
+    public function test_existing_administrator_blocks_bootstrap_without_partial_accounts(): void
+    {
+        config(['provisioning.admin_password' => 'Test-admin-secret-123', 'provisioning.marketing_password' => 'Test-marketing-secret-123']);
+        User::factory()->create(['email' => 'existing-admin@example.test', 'role' => 'ADMIN', 'is_active' => false]);
+        try {
+            $this->seed(ProductionAccountSeeder::class);
+            $this->fail('Existing Administrator must block replacement bootstrap');
+        } catch (ValidationException) {
+            $this->assertDatabaseCount('users', 1);
+            $this->assertDatabaseMissing('users', ['email' => 'andre@admin.com']);
+            $this->assertDatabaseMissing('users', ['email' => 'marketing1@arief.com']);
+        }
+    }
+
     public function test_conflicting_role_rolls_back_all_accounts(): void
     {
         config(['provisioning.admin_password' => 'Test-admin-secret-123', 'provisioning.marketing_password' => 'Test-marketing-secret-123']);

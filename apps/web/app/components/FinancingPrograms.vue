@@ -106,7 +106,7 @@ const visiblePrograms = computed(() =>
             :href="program.source_url"
             target="_blank"
             rel="noopener noreferrer"
-            >Informasi resmi bank ↗</a
+            >Informasi resmi bank<AppIcon name="external" /></a
           >
         </p>
       </details>

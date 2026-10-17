@@ -109,7 +109,7 @@ onMounted(load)
           <p class="staff-guide-note">{{ topic.note }}</p>
         </section>
         <NuxtLink class="text-link" to="#mulai"
-          >Kembali ke awal panduan ↑</NuxtLink
+          ><AppIcon name="chevron-up" />Kembali ke awal panduan</NuxtLink
         >
       </div>
     </div>

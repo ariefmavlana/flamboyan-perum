@@ -64,7 +64,17 @@ test('session CSRF login, scoped lead drawer, notes, and logout', async ({
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Tampilkan kata sandi' }).click()
+  await expect(page.getByLabel('Kata sandi', { exact: true })).toHaveAttribute(
+    'type',
+    'text',
+  )
+  await page.getByRole('button', { name: 'Sembunyikan kata sandi' }).click()
+  await expect(page.getByLabel('Kata sandi', { exact: true })).toHaveAttribute(
+    'type',
+    'password',
+  )
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(page).toHaveURL(/backoffice/)
   const lead = await page.evaluate(
     async () =>
@@ -78,7 +88,7 @@ test('session CSRF login, scoped lead drawer, notes, and logout', async ({
   await page
     .getByRole('row')
     .filter({ hasText: lead.name })
-    .getByRole('button', { name: 'Buka detail →' })
+    .getByRole('button', { name: 'Buka detail' })
     .click()
   const dialog = page.getByRole('dialog')
   await expect(dialog.getByRole('heading', { name: lead.name })).toBeVisible()

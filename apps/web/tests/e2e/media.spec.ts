@@ -13,7 +13,7 @@ test('private upload is processed by the real worker, SSR gallery serves sanitiz
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(page).toHaveURL(/backoffice/)
   await page
     .getByRole('link', { name: 'Katalog properti', exact: true })

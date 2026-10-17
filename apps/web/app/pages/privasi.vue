@@ -90,7 +90,7 @@ const contact = computed(() =>
       class="button"
       target="_blank"
       rel="noopener noreferrer"
-      >Hubungi Admin tentang privasi ↗</a
+      >Hubungi Admin tentang privasi<AppIcon name="external" /></a
     >
   </section>
 </template>

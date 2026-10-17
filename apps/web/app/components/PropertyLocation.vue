@@ -67,7 +67,7 @@ const categories = {
         :href="`https://www.openstreetmap.org/?mlat=${property.latitude}&mlon=${property.longitude}#map=15/${property.latitude}/${property.longitude}`"
         target="_blank"
         rel="noopener noreferrer"
-        >Buka peta di tab baru ↗</a
+        >Buka peta di tab baru<AppIcon name="external" /></a
       ></template
     >
     <p v-else class="muted">
@@ -81,7 +81,7 @@ const categories = {
           Jarak editorial, bukan waktu tempuh. Sumber
           {{ formatDate(poi.source_date) }}:
           <a :href="poi.source_url" target="_blank" rel="noopener noreferrer"
-            >referensi ↗</a
+            >referensi<AppIcon name="external" /></a
           >
         </p>
       </li>
