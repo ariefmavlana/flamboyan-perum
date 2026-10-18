@@ -79,6 +79,9 @@ export default defineNuxtPlugin((nuxt) => {
     const referrer = previousLocation
     previousLocation = location
     if (gtmId && gtmLoaded) {
+      // Event tags inherit Google's page context independently of dataLayer
+      // page_view fields. Refresh it on every public SPA navigation as well.
+      google('set', { page_location: location, page_referrer: referrer, send_page_view: false })
       ;(target.dataLayer ??= []).push({
         event: 'page_view',
         page_location: location,
@@ -123,6 +126,7 @@ export default defineNuxtPlugin((nuxt) => {
     if (!publicPage || !consent.allowsOptional.value) {
       target.fbq?.('consent', 'revoke')
       lastPage = null
+      previousLocation = ''
       return
     }
     if (gtmId) loadGtm()

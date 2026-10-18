@@ -1,4 +1,8 @@
-const GTM_SCRIPT_SOURCES = ['https://www.googletagmanager.com']
+const GTM_SCRIPT_SOURCES = [
+  'https://www.googletagmanager.com',
+  'https://www.googleadservices.com',
+  'https://www.google.com',
+]
 const GTM_CONNECT_SOURCES = [
   'https://www.googletagmanager.com',
   'https://www.google-analytics.com',
@@ -6,14 +10,25 @@ const GTM_CONNECT_SOURCES = [
   'https://googleads.g.doubleclick.net',
   'https://www.googleadservices.com',
   'https://td.doubleclick.net',
+  'https://pagead2.googlesyndication.com',
+  'https://www.google.com',
+  'https://ad.doubleclick.net',
+  'https://www.google.co.id',
 ]
 const GTM_IMAGE_SOURCES = [
   'https://www.googletagmanager.com',
   'https://www.google-analytics.com',
   'https://googleads.g.doubleclick.net',
   'https://www.googleadservices.com',
+  'https://pagead2.googlesyndication.com',
+  'https://www.google.com',
+  'https://ad.doubleclick.net',
+  'https://www.google.co.id',
 ]
-const GTM_FRAME_SOURCES = ['https://td.doubleclick.net']
+const GTM_FRAME_SOURCES = [
+  'https://td.doubleclick.net',
+  'https://www.googletagmanager.com',
+]
 const META_SCRIPT_SOURCES = ['https://connect.facebook.net']
 const META_CONNECT_SOURCES = [
   'https://connect.facebook.net',

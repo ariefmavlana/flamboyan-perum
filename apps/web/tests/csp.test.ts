@@ -28,9 +28,31 @@ describe('Content Security Policy builder', () => {
     expect(policy).toContain('https://www.google-analytics.com')
     expect(policy).toContain('https://*.analytics.google.com')
     expect(policy).toContain('https://td.doubleclick.net')
+    const directives = Object.fromEntries(policy.split('; ').map((directive) => {
+      const [name, ...sources] = directive.split(' ')
+      return [name, sources]
+    }))
+    expect(directives['connect-src']).toEqual(expect.arrayContaining([
+      'https://www.google.com',
+      'https://ad.doubleclick.net',
+      'https://pagead2.googlesyndication.com',
+      'https://googleads.g.doubleclick.net',
+      'https://www.google.co.id',
+    ]))
+    expect(directives['img-src']).toEqual(expect.arrayContaining([
+      'https://www.google.com',
+      'https://ad.doubleclick.net',
+      'https://pagead2.googlesyndication.com',
+      'https://www.google.co.id',
+    ]))
+    expect(directives['script-src']).toEqual(expect.arrayContaining([
+      'https://www.googleadservices.com',
+      'https://www.google.com',
+    ]))
+    expect(directives['frame-src']).toContain('https://www.googletagmanager.com')
     expect(policy).not.toContain('connect.facebook.net')
     expect(policy).toContain(
-      'frame-src https://www.youtube-nocookie.com https://www.openstreetmap.org https://my.matterport.com https://td.doubleclick.net',
+      'frame-src https://www.youtube-nocookie.com https://www.openstreetmap.org https://my.matterport.com https://td.doubleclick.net https://www.googletagmanager.com',
     )
   })
   it('allows Meta hosts only for a directly configured pixel', () => {

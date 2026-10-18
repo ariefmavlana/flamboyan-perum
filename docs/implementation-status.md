@@ -1,5 +1,23 @@
 # Status implementasi
 
+## Koreksi konteks halaman untuk tag iklan — 18 Oktober 2026
+
+Branch `codex/ads-consent-tracking` dari `origin/main` `cb9bf4b1`. Plugin
+memperbarui konteks Google dengan lokasi/referrer publik tersanitasi pada setiap
+pageview SPA, bukan hanya saat consent berubah; rantai referrer dikosongkan
+ketika consent opsional dicabut atau pengguna keluar dari route publik.
+Regresi melalui antarmuka command Google ditambahkan pada spec browser existing.
+Koreksi lanjutan melengkapi CSP dengan host Google Ads eksplisit (termasuk
+redirect Indonesia) pada directive yang diperlukan, tanpa wildcard baru atau
+unsafe-eval. Lima regresi CSP dan uji network kandidat membuktikan respons
+konversi200, URL/query/hash bersih, serta nol request Ads pada no-choice,
+deny, revoke, analitik saja dan perpindahan ke workspace. Badge Tag Assistant
+belum terhubung; ini uji preview terkendali, bukan bukti atribusi produksi.
+Tidak ada kontrak REST, migration, provider, budget, CRM atau secret berubah.
+Validasi dan batas aktivasi vendor dicatat di
+[koreksi tracking](growth/ads-tracking-correction.md). Source ini belum
+di-merge/deploy dan GTM tetap draft sampai pengujian vendor lulus.
+
 ## Pemasangan produksi Hostinger — 18 Oktober 2026
 
 PR52 sudah di-merge ke main `a81df8b` setelah review keamanan independen, backend SQLite163/1277 (1skip PostgreSQL) dan PostgreSQL163/1282, Pint, frontend89unit/lint/typecheck/build serta browser62lulus/0gagal/5gatedskip pada24spec terisolasi. Nuxt dan API rilis tersebut terpasang pada domain resmi dengan Supabase verify-full dan R2 existing; query dari PHP8.4 Hostinger serta240/240objek berhasil. Admin existing dipertahankan; properti33 dan lead76 dialihkan melalui API Admin normal ke Marketing1, lalu Ujang dinonaktifkan. Satu Admin dan satu Marketing aktif;5properti,80media dan1link video dipertahankan.
