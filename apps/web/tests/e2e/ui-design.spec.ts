@@ -121,7 +121,7 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
           .getByRole('navigation', { name: 'Ruang kerja tim' })
           .locator('a[href="' + path + '"]')
           .click()
-        await expect(page).toHaveURL('http://127.0.0.1:3000' + path)
+        await expect(page).toHaveURL(new URL(path, page.url()).href)
         const response = await ready
         expect(response.ok()).toBe(true)
         await response.finished()
@@ -134,12 +134,18 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
         await expect(
           page.getByText('Memuat ruang kerja…', { exact: true }),
         ).not.toBeVisible()
+      } else if (path === '/backoffice/permintaan') {
+        await expect(page.getByRole('region', { name: 'Daftar permintaan konsultasi' })).toBeVisible()
+        await expect(page.getByRole('table', {
+          name: 'Permintaan formulir publik yang dapat ditinjau Admin',
+        })).toHaveCount(1)
+        await expect(page.getByText('Tidak ada permintaan pada filter ini.')).toBeVisible()
+        await expect(page.locator('main tbody tr')).toHaveCount(0)
       } else if (
         [
           '/backoffice/properti',
           '/backoffice/konten',
           '/backoffice/akun',
-          '/backoffice/permintaan',
         ].includes(path)
       ) {
         await expect(page.locator('main tbody tr').first()).toBeVisible()
@@ -147,9 +153,11 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
         path === '/backoffice/laporan' ||
         path === '/backoffice/privasi'
       ) {
-        if (path === '/backoffice/laporan')
-          await expect(page.locator('.report-metrics')).toBeVisible()
-        else
+        if (path === '/backoffice/laporan') {
+          await expect(page.locator('.report-metrics')).toHaveCount(2)
+          for (const metrics of await page.locator('.report-metrics').all())
+            await expect(metrics).toBeVisible()
+        } else
           await expect(
             page.getByText('Kandidat tanpa data kontak', { exact: true }),
           ).toBeVisible()
@@ -165,7 +173,7 @@ test('staff menu, all workspace pages and modal remain accessible on small scree
           page.getByRole('heading', { name: 'Hasil prospek' }),
         ).toBeVisible()
       } else if (path === '/backoffice/panduan') {
-        await expect(page.getByText('Panduan kerja tim')).toBeVisible()
+        await expect(page.getByRole('heading', { name: 'Panduan kerja tim', exact: true })).toBeVisible()
       } else if (path === '/backoffice/operasi') {
         await expect(page.locator('main .spec-grid').first()).toBeVisible()
       } else {
@@ -231,7 +239,7 @@ test('missing property shows a branded 404 and a working recovery action', async
     ),
   ).toBe(true)
   await page.getByRole('button', { name: 'Kembali ke beranda' }).click()
-  await expect(page).toHaveURL('http://127.0.0.1:3000/')
+  await expect(page).toHaveURL(new URL('/', page.url()).href)
   await expect(page.getByLabel('Cari lokasi atau nama properti')).toBeEnabled()
 })
 
@@ -245,10 +253,11 @@ test('applied filters can be removed independently and restored with browser bac
     bedrooms: String(fixture.bedrooms),
     condition: fixture.condition,
     sort: 'price_asc',
-    page: '2',
+    page: '1',
   })
   await page.setViewportSize({ width: 320, height: 800 })
   await page.goto(`/properti?${query}`)
+  expect(new URL(page.url()).searchParams.get('page')).toBe('1')
   await page
     .getByRole('link', {
       name: 'Hapus filter Minimum kamar tidur',
@@ -275,7 +284,7 @@ test('applied filters can be removed independently and restored with browser bac
     page.getByLabel('Minimum kamar tidur', { exact: true }),
   ).toHaveValue(String(fixture.bedrooms))
   await page.getByRole('link', { name: 'Reset filter', exact: true }).click()
-  await expect(page).toHaveURL('http://127.0.0.1:3000/properti')
+  await expect(page).toHaveURL(new URL('/properti', page.url()).href)
   await expect(page.locator('.filter-chip')).toHaveCount(0)
   await expect(page.getByLabel('Urutkan')).toHaveValue('newest')
 })

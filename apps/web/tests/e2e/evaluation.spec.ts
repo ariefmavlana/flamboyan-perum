@@ -63,6 +63,7 @@ test('full filters, persistent comparison, floating KPR and factual SEO work on 
   await page.getByRole('button', { name: 'Hapus pilihan #999999999' }).click()
   await expect(page).not.toHaveURL(/999999999/)
   await page.getByRole('link', { name: fixture.title, exact: true }).click()
+  await page.getByLabel('Bunga efektif tahunan awal (%)').fill('8')
   await page.getByLabel('Skenario fixed lalu floating').check()
   await page.getByLabel('Asumsi bunga floating (%)').fill('12')
   await expect(

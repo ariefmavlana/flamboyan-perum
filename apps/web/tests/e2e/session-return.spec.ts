@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { demoProperty } from './helpers'
 
 async function login(page: Page, email: string) {
   await page.goto('/login')
@@ -32,6 +33,13 @@ for (const role of ['admin', 'marketing']) {
       .getByRole('link', { name: 'Lihat website publik', exact: true })
       .click()
     await expect(page).toHaveURL(/\/$/)
+    const fixture = await demoProperty(page.request)
+    const mediaUrl = fixture.media.find((media) => media.kind === 'PHOTO')?.sources[0]?.url
+    expect(mediaUrl).toBeTruthy()
+    // This request shares the browser cookie jar without relying on lazy image loading.
+    const publicMediaResponse = await page.request.get(mediaUrl!)
+    expect(publicMediaResponse.status()).toBe(200)
+    expect(publicMediaResponse.headers()['set-cookie']).toBeUndefined()
     const sessionStatus = await page.evaluate(
       async () =>
         (
@@ -119,12 +127,21 @@ test('visitor and expired sessions reach login, while logout in another tab inva
   await page.getByRole('link', { name: 'Tim Flamboyan', exact: true }).click()
   await expect(page).toHaveURL(/\/login$/)
   await expect(page.getByLabel('Email', { exact: true })).toBeEnabled()
+  await other.close()
   await login(page, 'marketing@example.test')
   await page
     .getByRole('link', { name: 'Lihat website publik', exact: true })
     .click()
+  await expect(page).toHaveURL(/\/$/)
+  // Expire cookies after outstanding authenticated responses can no longer renew them.
+  await page.waitForLoadState('networkidle')
   await context.clearCookies()
+  expect(await context.cookies()).toEqual([])
+  const expiredIdentity = page.waitForResponse((response) =>
+    new URL(response.url()).pathname === '/api/v1/me',
+  )
   await page.getByRole('link', { name: 'Tim Flamboyan', exact: true }).click()
+  expect((await expiredIdentity).status()).toBe(401)
   await expect(page).toHaveURL(/\/login$/)
   await expect(page.getByLabel('Email', { exact: true })).toBeEnabled()
 })

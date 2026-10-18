@@ -15,7 +15,7 @@ test('Admin monitors sanitized readiness and Marketing cannot read operations', 
     page.getByRole('heading', { name: 'Kesehatan layanan' }),
   ).toBeVisible()
   await expect(
-    page.locator('dt').filter({ hasText: 'Job tertunda' }),
+    page.locator('dt').filter({ hasText: 'Tugas menunggu' }),
   ).toBeVisible()
   await page.getByRole('button', { name: 'Keluar', exact: true }).click()
   await page.getByLabel('Email', { exact: true }).fill('marketing@example.test')
@@ -29,7 +29,7 @@ test('Admin monitors sanitized readiness and Marketing cannot read operations', 
     page.getByRole('alert').filter({ hasText: '403' }),
   ).not.toBeVisible()
   await expect(
-    page.locator('dt').filter({ hasText: 'Job tertunda' }),
+    page.locator('dt').filter({ hasText: 'Tugas menunggu' }),
   ).not.toBeVisible()
   const denied = await page.evaluate(
     async () =>

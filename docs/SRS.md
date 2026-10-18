@@ -32,7 +32,7 @@ Manifest menyimpan SHA-256, bytes, dimensi dan urutan sumber/keluaran. Importer 
 
 ## Pengenalan kawasan Banjaran — 2026-10-08
 
-`/perumahan` dan `/perumahan/banjaran` adalah halaman editorial SSR dengan canonical, sitemap dan navigasi publik. Nama proyek sementara serta foto inspirasi bukan record Property, penawaran, atau fallback API. Konten kawasan mengikuti pola editorial terkurasi di source; kontrak DEVELOPMENT masih tunggal dan tidak diklaim sebagai CMS multi-proyek.
+`/perumahan` dan `/perumahan/banjaran` adalah halaman editorial SSR dengan canonical dan navigasi publik. Sesuai kontrak growth terbaru, halaman konsep `/perumahan/banjaran` tetap noindex dan tidak masuk sitemap. Nama proyek sementara serta foto inspirasi bukan record Property, penawaran, atau fallback API. Konten kawasan mengikuti pola editorial terkurasi di source; kontrak DEVELOPMENT masih tunggal dan tidak diklaim sebagai CMS multi-proyek.
 
 Query frontend `/konsultasi?kawasan=banjaran` memakai allowlist literal Banjaran untuk konteks pesan serta URL `/perumahan/banjaran`. Parameter `properti` valid tetap diprioritaskan; detail properti yang gagal/tidak published tetap memblokir handoff. Kawasan tidak dikenal diabaikan. Query konsultasi noindex; nomor Admin tetap dari konfigurasi existing. Tidak membuat lead, mengirim pesan, atau mengonfirmasi booking otomatis. CSS animation/hover menghormati `prefers-reduced-motion`; konten tidak bergantung pada animasi atau JavaScript agar terbaca.
 

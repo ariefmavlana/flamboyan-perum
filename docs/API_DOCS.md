@@ -1,5 +1,9 @@
 # REST API — katalog, workspace dan operasi
 
+## Foto publik tanpa sesi — 18 Oktober 2026
+
+`GET/HEAD /media/{mediaId}/{variant}` tetap memakai validasi ID/varian, throttle publik serta pemeriksaan publikasi, READY dan pencabutan akses existing. Rute ini kini diregistrasi di luar middleware sesi web; respons berhasil maupun 404 tidak membuat sesi tamu atau mengirim cookie sesi/XSRF. Bridge Nuxt membuang `Set-Cookie` dari respons media publik sebelum body dikirim, sehingga foto tidak menimpa sesi staf. Cookie autentikasi/CSRF pada rute privat tetap diteruskan; `/api/v1/internal/media/**` tetap memerlukan autentikasi dan policy existing. Tidak ada perubahan URL, DTO, skema atau izin.
+
 ## Satu akun Administrator dan ikon antarmuka — 17 Oktober 2026
 
 Kontrak REST tidak berubah selain pengetatan 409: `POST /internal/users` dengan `role=ADMIN` dan `PATCH /internal/users/{id}` yang mempromosikan akun menjadi `ADMIN` ditolak409 (`Hanya satu akun Administrator yang diizinkan.`) selama record Administrator sudah ada, termasuk nonaktif. Pemeriksaan dan write berada dalam satu transaksi dengan lock provisioning global yang diperoleh sebelum row lock existing; guard Admin aktif terakhir pada update tetap berlaku. `POST` dengan `role=MARKETING` tidak berubah (201). CLI `flamboyan:create-user`, production seeder opt-in, dan DemoSeeder lokal memakai transaksi serta lock yang sama; semua jalur menolak bootstrap pengganti ketika Administrator lain sudah ada. Akun Administrator existing dipulihkan melalui recovery terverifikasi/prosedur operator existing; kontrak ini tidak menyediakan transfer atau penghapusan otomatis. UI Akun tim tidak lagi menawarkan pilihan peran; akun baru selalu Marketing.

@@ -98,8 +98,9 @@ test('CMS photo selection updates SSR hero and video stays consent gated', async
   test.setTimeout(90000)
   page.setDefaultTimeout(10000)
   await login(page)
-  const content = (await (await request.get('/api/v1/content')).json())
-    .data as PublicContent
+  const contentResponse = await request.get('/api/v1/content')
+  expect(contentResponse.ok()).toBe(true)
+  const content = (await contentResponse.json()).data as PublicContent
   if (!content.hero?.property_id)
     throw new Error('Requires isolated seeded hero property')
   const original = await findContent(page, 'HERO', content.hero.id)
@@ -137,8 +138,9 @@ test('CMS photo selection updates SSR hero and video stays consent gated', async
       .getByRole('button', { name: 'Simpan konten', exact: true })
       .click()
     await expect(editor).not.toBeVisible()
-    const changed = (await (await request.get('/api/v1/content')).json())
-      .data as PublicContent
+    const changedResponse = await request.get('/api/v1/content')
+    expect(changedResponse.ok()).toBe(true)
+    const changed = (await changedResponse.json()).data as PublicContent
     expect(changed.hero?.media?.id).toBe(photo.id)
     const html = await (await request.get('/')).text()
     expect(html).toContain(changed.hero!.media!.sources.at(-1)!.url)
@@ -244,8 +246,9 @@ test('CMS photo selection updates SSR hero and video stays consent gated', async
     expect(externalRequests).toBe(1)
     const last = await findContent(page, 'HERO', original.id)
     await saveContent(page, last, { published: false })
-    const unpublished = (await (await request.get('/api/v1/content')).json())
-      .data as PublicContent
+    const unpublishedResponse = await request.get('/api/v1/content')
+    expect(unpublishedResponse.ok()).toBe(true)
+    const unpublished = (await unpublishedResponse.json()).data as PublicContent
     expect(unpublished.hero?.id).not.toBe(original.id)
   } finally {
     const current = await findContent(page, 'HERO', original.id)

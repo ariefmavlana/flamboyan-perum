@@ -33,6 +33,7 @@ export async function apiBridge(event: Parameters<typeof getQuery>[0]) {
   return sendProxy(event, `${origin}${url.pathname}${url.search}`, {
     fetchOptions: { method: event.method, headers, body: body ? new Uint8Array(body) : undefined, redirect: 'manual', signal: AbortSignal.timeout(15_000) },
     onResponse: (_event, response) => {
+      if (route.kind === 'media') removeResponseHeader(event, 'set-cookie')
       if (route.kind !== 'media') setHeader(event, 'Cache-Control', 'no-store')
       if (response.status >= 300 && response.status < 400)
         throw createError({ statusCode: 502, statusMessage: 'Pengalihan layanan tidak diizinkan.' })
