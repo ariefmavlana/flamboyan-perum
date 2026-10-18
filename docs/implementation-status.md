@@ -7,6 +7,12 @@ memperbarui konteks Google dengan lokasi/referrer publik tersanitasi pada setiap
 pageview SPA, bukan hanya saat consent berubah; rantai referrer dikosongkan
 ketika consent opsional dicabut atau pengguna keluar dari route publik.
 Regresi melalui antarmuka command Google ditambahkan pada spec browser existing.
+Koreksi lanjutan melengkapi CSP dengan host Google Ads eksplisit (termasuk
+redirect Indonesia) pada directive yang diperlukan, tanpa wildcard baru atau
+unsafe-eval. Lima regresi CSP dan uji network kandidat membuktikan respons
+konversi200, URL/query/hash bersih, serta nol request Ads pada no-choice,
+deny, revoke, analitik saja dan perpindahan ke workspace. Badge Tag Assistant
+belum terhubung; ini uji preview terkendali, bukan bukti atribusi produksi.
 Tidak ada kontrak REST, migration, provider, budget, CRM atau secret berubah.
 Validasi dan batas aktivasi vendor dicatat di
 [koreksi tracking](growth/ads-tracking-correction.md). Source ini belum

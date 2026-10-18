@@ -82,8 +82,7 @@ test('Google event context follows public SPA pages and clears a revoked referre
       typeof command[1] === 'object' && command[1] !== null &&
       'page_location' in command[1]).at(-1)?.[1]
   })
-  const canonical = await page.locator('link[rel="canonical"]').getAttribute('href')
-  const origin = new URL(canonical!).origin
+  const origin = new URL(process.env.NUXT_PUBLIC_SITE_URL || page.url()).origin
   await expect.poll(latestContext).toEqual({
     page_location: `${origin}/`, page_referrer: '', send_page_view: false,
   })
