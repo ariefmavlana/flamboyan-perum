@@ -1,5 +1,9 @@
 # Software Requirements Specification — Flamboyan Perum
 
+## Produksi Hostinger pilihan B — 18 Oktober 2026
+
+Pemilik menyetujui bounded cron dengan target **dequeue p95 <=120 detik** pada kapasitas hosting yang diuji. Push <=5 detik tidak dijanjikan pada shared hosting ini; inbox persisten dan polling60s tetap tersedia. Target worker persisten di bawah adalah baseline opsi hosting lain, bukan gate latency push untuk opsi B yang dipilih. Pengukuran inert job harus dibedakan dari pemrosesan media representatif dan delivery provider. Detail timeout/lock/retry, rilis main otomatis yang kompatibel, migrasi manual, verifikasi dan rollback ada di [hostinger-production.md](hostinger-production.md).
+
 ## Angka lokal dan pemilihan banner — 16 Oktober 2026
 
 NumberInput menampilkan `id-ID`, mengirim nilai kanonis tanpa grouping, mempertahankan model number/string, required/min/max/step dan status kosong. Notasi tidak valid/eksponen/nilai melebihi safe integer ditolak; titik desimal ambigu tidak diinterpretasikan sebagai rupiah. Caret dihitung berdasarkan digit/koma/minus, dengan penghapusan separator yang mengikuti digit. Rupiah tetap integer; luas, bunga dan koordinat memakai koma desimal. Banner maksimal lima PHOTO dipilih Admin, urutan persist, loop6,5detik/dissolve800ms/decode/jeda/visibility/reduced-motion memakai composable existing. Satu foto tidak menampilkan kontrol loop.

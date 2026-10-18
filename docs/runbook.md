@@ -93,6 +93,8 @@ Rollback: gunakan artefak commit sebelumnya hanya jika schema compatible; jangan
 
 ## Operasi dan evolusi
 
+Untuk produksi Hostinger pilihan B yang disetujui 18 Oktober 2026, gunakan [prosedur khusus Hostinger](hostinger-production.md): dequeue p95 <=120detik, tiga queue bounded terpisah, native Nuxt main dan cron API dengan rilis kompatibel bertahap. Tidak ada migrasi otomatis. Baseline push<=5detik berikut tetap berlaku hanya untuk opsi worker persisten.
+
 Cron schedule:run permenit; queued push/media F1 membutuhkan managed worker atau bounded cron queue:work dengan lock overlap. Push target≤5s membutuhkan worker persisten; cron-only interval60s tidak memenuhi itu. Monitor liveness `/up` dan readiness `/ready` DB/storage/queue/config, alert5xx>1%/5min, queue backlog>5min, missed backup>26h. Logs request_id/status/latency tanpa password/phone/body CRM. Retention dan alert channels disetujui owner sebelum go-live.
 
 Production database PostgreSQL lebih disukai; uji suite lokal+load nyata pada runtime deployment yang dipilih. SQLite hanya satu instalasi ringan; migrasikan saat kebutuhan multi-instance, lock-contention/latency atau kuota terlampaui. Media private/queue/gallery tersedia; push provider dan reports masih mengikuti status implementasi; recovery akun tersedia dan pengiriman SMTP produksi masih membutuhkan konfigurasi serta verifikasi; status file menjadi checklist release. Dependency advisory terpisah di `dependency-security.md` wajib ditangani/review sebelum production approval.
