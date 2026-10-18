@@ -1,8 +1,14 @@
 # Status implementasi
 
+## Pemasangan produksi Hostinger — 18 Oktober 2026
+
+PR52 sudah di-merge ke main `a81df8b` setelah review keamanan independen, backend SQLite163/1277 (1skip PostgreSQL) dan PostgreSQL163/1282, Pint, frontend89unit/lint/typecheck/build serta browser62lulus/0gagal/5gatedskip pada24spec terisolasi. Nuxt dan API rilis tersebut terpasang pada domain resmi dengan Supabase verify-full dan R2 existing; query dari PHP8.4 Hostinger serta240/240objek berhasil. Admin existing dipertahankan; properti33 dan lead76 dialihkan melalui API Admin normal ke Marketing1, lalu Ujang dinonaktifkan. Satu Admin dan satu Marketing aktif;5properti,80media dan1link video dipertahankan.
+
+Pilihan B queue dan pola native Nuxt + cron API kompatibel telah dipilih pemilik. Script ops pada PR ini masih memerlukan review, pemasangan dan pembuktian auto-promotion pada SHA PR setelah merge. Tiga cron queue awal aktif;36inert job (12/queue) selesai tanpa exception dengan p95dequeue32,877–35,802detik dan pending/failed0. Ini bukan bukti throughput gambar besar, forced-timeout recovery atau push delivery. SMTP masih log, PDF scanner fail-closed, source npm11high existing, indexability/tag/Ads masih ditahan. [Runbook Hostinger](hostinger-production.md) mencatat batas dan rollback; jangan mengklaim seluruh gate produksi telah selesai.
+
 ## Perbaikan sesi saat membuka foto publik — 18 Oktober 2026
 
-Diagnosis pada fixture terisolasi membuktikan respons foto publik membuat sesi tamu yang menimpa cookie login staf. Rute media publik dipisahkan dari middleware sesi web, dengan throttle serta pemeriksaan publikasi/READY/revocation tetap berlaku; bridge menghapus header `Set-Cookie` hanya untuk media publik sebelum respons dikirim. Autentikasi dan media privat tidak berubah. Regresi backend memeriksa respons gambar tanpa cookie dan penolakan media privat anonim; regresi browser memeriksa cookie respons aktual saat staf kembali ke website publik. Validasi akhir, review independen dan merge/deployment masih pending sampai bukti pada PR diperbarui. Tidak ada migrasi/dependency baru. Rollback: revert perbaikan dan deploy artefak sebelumnya; database tidak berubah.
+Diagnosis pada fixture terisolasi membuktikan respons foto publik membuat sesi tamu yang menimpa cookie login staf. Rute media publik dipisahkan dari middleware sesi web, dengan throttle serta pemeriksaan publikasi/READY/revocation tetap berlaku; bridge menghapus header `Set-Cookie` hanya untuk media publik sebelum respons dikirim. Autentikasi dan media privat tidak berubah. Regresi backend memeriksa respons gambar tanpa cookie dan penolakan media privat anonim; regresi browser memeriksa cookie respons aktual saat staf kembali ke website publik. Bagian ini merekam perbaikan PR52 yang sudah terpasang pada main a81df8b; status review script CD baru tetap pending sebagaimana bagian pemasangan produksi di atas. Tidak ada migrasi/dependency baru. Rollback: revert perbaikan dan deploy artefak sebelumnya; database tidak berubah.
 
 ## Ikon nyata, toggle kata sandi, mobile workspace dan satu Administrator — 17 Oktober 2026
 
