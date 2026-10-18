@@ -12,7 +12,7 @@ withDefaults(defineProps<{ showIndexLink?: boolean }>(), {
         <h2>Pilihan yang lebih dipahami.</h2>
       </div>
       <NuxtLink v-if="showIndexLink" to="/panduan" class="text-link"
-        >Baca seluruh panduan →</NuxtLink
+        >Baca seluruh panduan<AppIcon name="arrow" /></NuxtLink
       >
     </div>
     <div class="guide-card-grid">
@@ -42,7 +42,7 @@ withDefaults(defineProps<{ showIndexLink?: boolean }>(), {
           :to="'/panduan/' + guide.slug"
           class="text-link"
           :aria-label="'Baca: ' + guide.title"
-          >Baca catatan →</NuxtLink
+          >Baca catatan<AppIcon name="arrow" /></NuxtLink
         >
       </article>
     </div>

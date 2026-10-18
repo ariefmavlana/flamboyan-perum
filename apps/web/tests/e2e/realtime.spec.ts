@@ -77,7 +77,7 @@ test('real Echo/Pusher clients subscribe privately, refresh once per event and r
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(
     page.getByText('Real-time tersambung · sinkronisasi berkala aktif'),
   ).toBeVisible()
@@ -113,13 +113,14 @@ test('real Echo/Pusher clients subscribe privately, refresh once per event and r
   await expect(
     page.getByText('Real-time tersambung · sinkronisasi berkala aktif'),
   ).toBeVisible()
-  await page.getByRole('link', { name: 'Profil', exact: true }).click()
+  await page.getByRole('link', { name: 'Profil saya', exact: true }).click()
   await page.getByRole('button', { name: 'Keluar' }).click()
   await expect(page).toHaveURL(/login/)
+  const origin = new URL(page.url()).origin
   const csrfFailure = await page.request.post('/api/v1/realtime/auth', {
     headers: {
-      Origin: 'http://127.0.0.1:3000',
-      Referer: 'http://127.0.0.1:3000/',
+      Origin: origin,
+      Referer: `${origin}/`,
     },
     data: { socket_id: '123.456', channel_name: `private-users.${account.id}` },
   })

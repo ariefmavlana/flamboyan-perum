@@ -38,9 +38,9 @@ test('buyer can discuss a real public property and safely share its canonical UR
   await expect(
     page.getByRole('heading', { name: property.title }),
   ).toBeVisible()
-  await expect(page.getByLabel('Topik konsultasi')).toHaveValue('kunjungan')
+  await expect(page.getByLabel('Topik WhatsApp')).toHaveValue('kunjungan')
   await page
-    .getByLabel('Pertanyaan Anda')
+    .getByLabel('Pertanyaan WhatsApp (opsional)')
     .fill('Apakah denah & waktu kunjungan tersedia?')
   const link = page.getByRole('link', { name: 'Lanjutkan ke WhatsApp' })
   await expect(link).toBeVisible()
@@ -50,10 +50,10 @@ test('buyer can discuss a real public property and safely share its canonical UR
   expect(handoff.searchParams.get('text')).toContain(canonical!)
   expect(handoff.searchParams.get('text')).toContain('denah & waktu kunjungan')
   await expect(
-    page.getByText('Jadwal kunjungan belum terkonfirmasi.', { exact: false }),
+    page.getByText('Waktu kunjungan dan ketersediaan unit dikonfirmasi langsung oleh Admin.'),
   ).toBeVisible()
   await page.goto('/konsultasi?tujuan=pembiayaan')
-  await expect(page.getByLabel('Topik konsultasi')).toHaveValue('pembiayaan')
+  await expect(page.getByLabel('Topik WhatsApp')).toHaveValue('pembiayaan')
   await expect(
     page.getByRole('link', { name: 'Lanjutkan ke WhatsApp' }),
   ).toBeVisible()

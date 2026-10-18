@@ -47,7 +47,7 @@ useHead({
 </script>
 <template>
   <article v-if="guide" class="container section guide-article">
-    <NuxtLink class="text-link" to="/panduan">← Seluruh panduan</NuxtLink>
+    <NuxtLink class="text-link" to="/panduan"><AppIcon name="chevron-left" />Seluruh panduan</NuxtLink>
     <header class="editorial-page-heading">
       <p class="eyebrow">{{ guide.category }} · PANDUAN FLAMBOYAN</p>
       <h1>{{ guide.title }}</h1>
@@ -64,7 +64,7 @@ useHead({
       <figcaption>
         Foto ilustrasi ·
         <a :href="guide.source" target="_blank" rel="noopener noreferrer"
-          >{{ guide.credit }} ↗</a
+          >{{ guide.credit }}<AppIcon name="external" /></a
         >
       </figcaption>
     </figure>
@@ -80,15 +80,15 @@ useHead({
       <p v-if="guide.reference" class="guide-reference">
         Bacaan pendukung:
         <a :href="guide.reference.url" target="_blank" rel="noopener noreferrer"
-          >{{ guide.reference.title }} ↗</a
+          >{{ guide.reference.title }}<AppIcon name="external" /></a
         >. Rujukan informasi, bukan pernyataan kerja sama.
       </p>
       <div class="guide-help">
         <h2>Dari catatan ke pilihan.</h2>
         <div class="action-row">
-          <NuxtLink to="/properti" class="button">Jelajahi hunian →</NuxtLink
+          <NuxtLink to="/properti" class="button">Jelajahi hunian<AppIcon name="arrow" /></NuxtLink
           ><NuxtLink to="/konsultasi" class="text-link"
-            >Bicarakan kebutuhan Anda →</NuxtLink
+            >Bicarakan kebutuhan Anda<AppIcon name="arrow" /></NuxtLink
           >
         </div>
       </div>

@@ -158,13 +158,14 @@ export function staffGuide(role: StaffAccount['role']) {
             id: 'akun',
             title: 'Mengelola akun dan penanggung jawab',
             intro:
-              'Setiap anggota tim memakai akun sendiri dengan peran Admin atau Marketing sesuai tanggung jawabnya.',
+              'Setiap anggota tim memakai akun sendiri. Sistem hanya memiliki satu akun Administrator, sehingga akun baru dari halaman ini selalu Marketing.',
             steps: [
               'Buka Akun tim, cari anggota dan periksa peran serta status aktifnya sebelum mengubah akses.',
-              'Sebelum menonaktifkan atau mengubah peran, periksa calon pembeli dan properti yang masih menjadi tanggung jawabnya. Alihkan pekerjaan melalui tindakan yang tersedia.',
+              'Untuk menambah anggota Marketing, pilih Tambah akun, isi nama dan email, lalu buat kata sandi awal minimal 12 karakter. Peran tidak dipilih dan tidak dapat diubah dari halaman ini.',
+              'Sebelum menonaktifkan, periksa calon pembeli dan properti yang masih menjadi tanggung jawabnya. Alihkan pekerjaan melalui tindakan yang tersedia.',
               'Jangan membagikan kata sandi melalui catatan calon pembeli, screenshot atau panduan. Gunakan proses pemulihan akun bila diperlukan.',
             ],
-            note: 'Aplikasi melindungi Admin aktif terakhir dan pekerjaan yang belum dialihkan. Penonaktifan tidak menghapus riwayat. Jangan membuat akun bersama untuk seluruh tim.',
+            note: 'Menambah atau mempromosikan Administrator kedua akan ditolak. Aplikasi juga melindungi Admin aktif terakhir dan pekerjaan yang belum dialihkan. Penonaktifan tidak menghapus riwayat. Jangan membuat akun bersama untuk seluruh tim.',
           },
           {
             id: 'retensi',

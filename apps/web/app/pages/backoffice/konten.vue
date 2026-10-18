@@ -987,7 +987,7 @@ onMounted(() => load())
                     :aria-label="`Naikkan foto banner ${index + 1}`"
                     @click="moveBannerPhoto(index, -1)"
                   >
-                    ↑
+                    <AppIcon name="chevron-up" />
                   </button>
                   <button
                     type="button"
@@ -996,7 +996,7 @@ onMounted(() => load())
                     :aria-label="`Turunkan foto banner ${index + 1}`"
                     @click="moveBannerPhoto(index, 1)"
                   >
-                    ↓
+                    <AppIcon name="chevron-down" />
                   </button>
                   <button
                     type="button"

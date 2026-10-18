@@ -1,5 +1,15 @@
 # REST API — katalog, workspace dan operasi
 
+## Foto publik tanpa sesi — 18 Oktober 2026
+
+`GET/HEAD /media/{mediaId}/{variant}` tetap memakai validasi ID/varian, throttle publik serta pemeriksaan publikasi, READY dan pencabutan akses existing. Rute ini kini diregistrasi di luar middleware sesi web; respons berhasil maupun 404 tidak membuat sesi tamu atau mengirim cookie sesi/XSRF. Bridge Nuxt membuang `Set-Cookie` dari respons media publik sebelum body dikirim, sehingga foto tidak menimpa sesi staf. Cookie autentikasi/CSRF pada rute privat tetap diteruskan; `/api/v1/internal/media/**` tetap memerlukan autentikasi dan policy existing. Tidak ada perubahan URL, DTO, skema atau izin.
+
+## Satu akun Administrator dan ikon antarmuka — 17 Oktober 2026
+
+Kontrak REST tidak berubah selain pengetatan 409: `POST /internal/users` dengan `role=ADMIN` dan `PATCH /internal/users/{id}` yang mempromosikan akun menjadi `ADMIN` ditolak409 (`Hanya satu akun Administrator yang diizinkan.`) selama record Administrator sudah ada, termasuk nonaktif. Pemeriksaan dan write berada dalam satu transaksi dengan lock provisioning global yang diperoleh sebelum row lock existing; guard Admin aktif terakhir pada update tetap berlaku. `POST` dengan `role=MARKETING` tidak berubah (201). CLI `flamboyan:create-user`, production seeder opt-in, dan DemoSeeder lokal memakai transaksi serta lock yang sama; semua jalur menolak bootstrap pengganti ketika Administrator lain sudah ada. Akun Administrator existing dipulihkan melalui recovery terverifikasi/prosedur operator existing; kontrak ini tidak menyediakan transfer atau penghapusan otomatis. UI Akun tim tidak lagi menawarkan pilihan peran; akun baru selalu Marketing.
+
+Perubahan lain bersifat tampilan: guru glyph teks (`→ ← ↗ ↓ ↑ ↻ ▷ Ⅱ`) diganti svg inline di frontend, termasuk merek WhatsApp/Instagram dan kontrol carousel/galeri. Tidak ada endpoint, field, DTO, migrasi, atau izin baru; token/HTML/CSS/JS dan payload tetap sama.
+
 ## Identitas halaman privasi — 17 Oktober 2026
 
 Halaman privasi memakai `data.development.name` dan `whatsapp` dari `GET /api/v1/content` existing. Hanya DEVELOPMENT published+verified yang tersedia melalui allowlist DTO; Admin mengubahnya pada editor Kawasan & kontak dengan verifikasi/version/audit existing. Fallback nama publik adalah Bukit Flamboyan Indah 2. Tidak ada field/endpoint/migrasi baru, identitas staf tidak ditambahkan ke API publik, dan perubahan ini tidak mengesahkan notice atau mengaktifkan intake/tracker.
@@ -165,8 +175,8 @@ Admin kemudian assign `{marketing_id:2,version:1}`. Lead returned version2; Mark
 | POST `/internal/properties/{id}/owner` | Admin | owner_id Marketing aktif,version,reason required; audit atomik |
 | PATCH `/me` | Own | version,name; password≥12+confirmation+current_password optional; email/role/is_active prohibited |
 | GET `/internal/users` | Admin | q,role,is_active,page,per_page≤100; account paginator |
-| POST `/internal/users` | Admin | name,email,role,password≥12+confirmation,identity_verified optional;201 |
-| PATCH `/internal/users/{id}` | Admin | version,name/email/role/is_active/identity_verified; last-admin/workload guard |
+| POST `/internal/users` | Admin | name,email,role,password≥12+confirmation,identity_verified optional; role ADMIN ditolak409 bila Administrator sudah ada;201 |
+| PATCH `/internal/users/{id}` | Admin | version,name/email/role/is_active/identity_verified; promosi ke ADMIN ditolak409 bila Administrator sudah ada; last-admin/workload guard |
 | GET `/internal/audit` | Admin | subject_type,subject_id,page,per_page≤100; readonly audit+actor |
 | GET `/leads/{id}` | Scoped | Detail + property{id,title,slug},assignee{id,name} |
 | PATCH `/leads/{id}/contact` | Admin | name,whatsapp_number,version,reason; CONTACT_UPDATED; duplicate409 rollback |

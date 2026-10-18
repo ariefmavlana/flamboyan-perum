@@ -10,7 +10,11 @@ for (const role of ['admin', 'marketing']) {
     await page
       .getByLabel('Kata sandi', { exact: true })
       .fill(process.env.DEMO_PASSWORD ?? '')
-    await page.getByRole('button', { name: 'Masuk →', exact: true }).click()
+    await page.getByRole('button', { name: 'Masuk', exact: true }).click()
+    await expect(page).toHaveURL(/\/backoffice$/)
+    await expect(page.locator('.staff-page-context')).toContainText(
+      role === 'admin' ? 'Administrator' : 'Marketing',
+    )
     const menu = page.getByRole('button', { name: 'Menu', exact: true })
     await expect(menu).toBeEnabled()
     await menu.click()

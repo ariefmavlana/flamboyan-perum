@@ -85,18 +85,17 @@ async function login() {
           required
           autocomplete="username"
           maxlength="254" /></label
-      ><label
-        >Kata sandi<input
-          v-model="password"
-          :disabled="!hydrated"
-          type="password"
-          required
-          autocomplete="current-password"
-          maxlength="1024"
-      /></label>
+      ><PasswordField
+        v-model="password"
+        label="Kata sandi"
+        :disabled="!hydrated"
+        required
+        autocomplete="current-password"
+        maxlength="1024"
+      />
       <p v-if="message" role="alert" class="error-text">{{ message }}</p>
       <button class="button full" :disabled="busy || !hydrated" type="submit">
-        {{ busy ? 'Memproses…' : 'Masuk →' }}
+        {{ busy ? 'Memproses…' : 'Masuk' }}<AppIcon name="arrow" />
       </button>
       <NuxtLink to="/forgot-password">Lupa kata sandi?</NuxtLink>
       <p v-if="$route.query.updated" role="status">

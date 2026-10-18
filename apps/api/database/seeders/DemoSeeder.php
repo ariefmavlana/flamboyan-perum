@@ -7,6 +7,7 @@ use App\Models\ActivityLog;
 use App\Models\Property;
 use App\Models\SiteContent;
 use App\Models\User;
+use App\Services\AdministratorProvisioning;
 use App\Services\LeadWorkflow;
 use App\Services\MediaOperations;
 use Carbon\CarbonImmutable;
@@ -40,11 +41,14 @@ class DemoSeeder extends Seeder
         $paths = [];
         try {
             config(['realtime.enabled' => false]);
-            DB::transaction(function () use ($password, $properties, $leads, $marketing, &$paths) {
+            app(AdministratorProvisioning::class)->transaction(function () use ($password, $properties, $leads, $marketing, &$paths) {
                 foreach (['properties', 'leads', 'site_contents', 'property_media', 'activity_logs', 'user_notifications', 'jobs'] as $table) {
                     if (DB::table($table)->exists()) {
                         throw new \RuntimeException('Demo seed membutuhkan database domain kosong; data yang ada tidak diubah.');
                     }
+                }
+                if (User::query()->where('role', 'ADMIN')->exists()) {
+                    throw new \RuntimeException('Demo seed membutuhkan populasi Administrator kosong; akun yang ada tidak diubah.');
                 }
                 $faker = Factory::create('id_ID');
                 $now = CarbonImmutable::instance(now())->utc();

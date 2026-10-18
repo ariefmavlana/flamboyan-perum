@@ -3,13 +3,15 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Services\AdministratorProvisioning;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class ProductionAccountSeeder extends Seeder
 {
+    public function __construct(private readonly AdministratorProvisioning $administratorProvisioning) {}
+
     public function run(): void
     {
         $accounts = [
@@ -20,7 +22,12 @@ class ProductionAccountSeeder extends Seeder
             Validator::make($account, ['password' => 'required|string|min:12|max:1024'])->validate();
         }
 
-        DB::transaction(function () use ($accounts) {
+        $this->administratorProvisioning->transaction(function () use ($accounts) {
+            $configuredAdminEmail = mb_strtolower($accounts[0]['email']);
+            if (User::query()->where('role', 'ADMIN')->whereRaw('LOWER(email) <> ?', [$configuredAdminEmail])->exists()) {
+                throw ValidationException::withMessages(['email' => 'Administrator existing harus dipulihkan; bootstrap pengganti tidak diizinkan.']);
+            }
+
             foreach ($accounts as $account) {
                 $user = User::query()->where('email', $account['email'])->lockForUpdate()->first();
                 if ($user) {

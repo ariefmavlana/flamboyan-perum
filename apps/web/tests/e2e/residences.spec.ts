@@ -12,7 +12,7 @@ test('residences are discoverable and distinguish the Banjaran concept from the 
   expect(await response.text()).toContain('Hidup lebih pelan.')
   expect(await response.text()).toContain('belum merupakan')
   const sitemap = await request.get('/sitemaps/pages.xml')
-  expect(await sitemap.text()).toContain('/perumahan/banjaran</loc>')
+  expect(await sitemap.text()).not.toContain('/perumahan/banjaran</loc>')
   expect((await request.get('/perumahan/tidak-ada')).status()).toBe(404)
 
   await page.setViewportSize({ width: 390, height: 844 })
@@ -45,7 +45,7 @@ test('residences are discoverable and distinguish the Banjaran concept from the 
     page.getByRole('heading', { name: 'Banjaran · hunian mendatang' }),
   ).toBeVisible()
   await page
-    .getByLabel('Pertanyaan Anda')
+    .getByLabel('Pertanyaan WhatsApp (opsional)')
     .fill('Saya tertarik dengan rencana Banjaran.')
   const contact = page.getByRole('link', { name: 'Lanjutkan ke WhatsApp' })
   await expect(contact).toBeVisible()

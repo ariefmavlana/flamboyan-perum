@@ -20,6 +20,11 @@ class MediaTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_internal_media_requires_authenticated_staff(): void
+    {
+        $this->getJson('/api/v1/internal/media/1/640')->assertUnauthorized();
+    }
+
     private function property(): Property
     {
         $owner = User::factory()->create(['role' => 'MARKETING', 'is_active' => true]);
@@ -90,7 +95,7 @@ class MediaTest extends TestCase
         $this->get('/media/'.$media->id.'/640')->assertNotFound();
         (new ProcessPropertyMedia($media->id))->handle(app(MediaProcessor::class));
         $this->assertSame('READY', $media->fresh()->state);
-        $this->get('/media/'.$media->id.'/640')->assertOk()->assertHeader('Content-Type', 'image/webp')->assertHeader('X-Content-Type-Options', 'nosniff');
+        $this->get('/media/'.$media->id.'/640')->assertOk()->assertHeader('Content-Type', 'image/webp')->assertHeader('X-Content-Type-Options', 'nosniff')->assertHeaderMissing('Set-Cookie');
         $this->getJson('/api/v1/properties/media-test')->assertJsonPath('data.media.0.alt', 'Tampak depan')->assertJsonMissingPath('data.media.0.staging_path')->assertJsonMissingPath('data.media.0.owner_id');
         $this->patchJson('/api/v1/internal/properties/'.$property->id.'/media/'.$media->id, ['version' => 2, 'archived' => true])->assertOk()->assertJsonPath('property_version', 3);
         $this->get('/media/'.$media->id.'/640')->assertNotFound();

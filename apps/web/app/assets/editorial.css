@@ -1564,7 +1564,4 @@ textarea,
   .financing-card .spec-list dd {
     white-space: normal;
   }
-  .editor-dialog {
-    max-width: calc(100vw - 24px);
-  }
 }

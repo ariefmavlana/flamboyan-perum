@@ -88,7 +88,44 @@ onMounted(load)
       <template v-if="report.growth">
         <p>{{ report.growth.unknown_source_unique }} lead tanpa sumber diketahui. CPL / biaya qualified: {{ report.growth.costs.available ? report.growth.costs.cpl_idr : 'Belum tersedia' }}. {{ report.growth.costs.reason }}</p>
         <p>Formulir yang masuk dalam periode: {{ report.growth.inquiries.total }}; menunggu {{ report.growth.inquiries.pending }}, direkonsiliasi {{ report.growth.inquiries.resolved }}, spam {{ report.growth.inquiries.rejected_spam }}, kedaluwarsa {{ report.growth.inquiries.expired }}. Ini cohort tanggal inquiry, sehingga berbeda dari cohort lead.</p>
-        <div class="table-scroll" role="region" aria-label="Sumber akuisisi" tabindex="0"><table class="lead-table"><caption>Sumber terakhir yang diketahui per lead; klaim client / Admin belum diverifikasi platform</caption><thead><tr><th>Sumber / media</th><th>Kampanye</th><th>Metode</th><th>Lead</th><th>Qualified</th><th>Akad</th></tr></thead><tbody><tr v-for="item in report.growth.campaigns" :key="`${item.source}:${item.medium}:${item.campaign}:${item.method}`"><td>{{ item.source }} / {{ item.medium }}</td><td>{{ item.campaign }}</td><td>{{ item.method }}</td><td>{{ item.valid_leads_unique }}</td><td>{{ item.qualified_unique }}</td><td>{{ item.akad_confirmed_unique }}</td></tr></tbody></table></div>
+        <div
+          class="table-scroll responsive-records"
+          role="region"
+          aria-label="Sumber akuisisi"
+          tabindex="0"
+        >
+          <table class="lead-table">
+            <caption>
+              Sumber terakhir yang diketahui per lead; klaim client / Admin
+              belum diverifikasi platform
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Sumber / media</th>
+                <th scope="col">Kampanye</th>
+                <th scope="col">Metode</th>
+                <th scope="col">Lead</th>
+                <th scope="col">Qualified</th>
+                <th scope="col">Akad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="item in report.growth.campaigns"
+                :key="`${item.source}:${item.medium}:${item.campaign}:${item.method}`"
+              >
+                <td data-label="Sumber / media">
+                  {{ item.source }} / {{ item.medium }}
+                </td>
+                <td data-label="Kampanye">{{ item.campaign }}</td>
+                <td data-label="Metode">{{ item.method }}</td>
+                <td data-label="Lead">{{ item.valid_leads_unique }}</td>
+                <td data-label="Qualified">{{ item.qualified_unique }}</td>
+                <td data-label="Akad">{{ item.akad_confirmed_unique }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </template>
       <div class="report-metrics">
         <article>
@@ -151,9 +188,9 @@ onMounted(load)
         </li>
       </ul>
       <div
-        class="table-scroll"
+        class="table-scroll responsive-records"
         role="region"
-        aria-label="Tabel data, geser untuk melihat kolom lainnya"
+        aria-label="Rincian tahap calon pembeli"
         tabindex="0"
       >
         <table class="lead-table">
@@ -168,16 +205,18 @@ onMounted(load)
           </thead>
           <tbody>
             <tr v-for="(count, status) in report.statuses" :key="status">
-              <th scope="row">{{ statusLabels[status] ?? status }}</th>
-              <td>{{ count }}</td>
+              <th scope="row" data-label="Status saat ini">
+                {{ statusLabels[status] ?? status }}
+              </th>
+              <td data-label="Jumlah">{{ count }}</td>
             </tr>
           </tbody>
         </table>
       </div>
       <div
-        class="table-scroll"
+        class="table-scroll responsive-records"
         role="region"
-        aria-label="Tabel data, geser untuk melihat kolom lainnya"
+        aria-label="Penanggung jawab saat ini"
         tabindex="0"
       >
         <table class="lead-table">
@@ -197,18 +236,18 @@ onMounted(load)
               v-for="item in report.current_assignees"
               :key="item.user_id ?? 0"
             >
-              <th scope="row">{{ item.name }}</th>
-              <td>{{ item.lead_count }}</td>
-              <td>{{ item.deals }}</td>
-              <td>{{ item.conversion_percent }}%</td>
+              <th scope="row" data-label="Tim">{{ item.name }}</th>
+              <td data-label="Calon pembeli">{{ item.lead_count }}</td>
+              <td data-label="Pembelian selesai">{{ item.deals }}</td>
+              <td data-label="Konversi">{{ item.conversion_percent }}%</td>
             </tr>
           </tbody>
         </table>
       </div>
       <div
-        class="table-scroll"
+        class="table-scroll responsive-records"
         role="region"
-        aria-label="Tabel data, geser untuk melihat kolom lainnya"
+        aria-label="Marketing yang pertama kali menghubungi"
         tabindex="0"
       >
         <table class="lead-table">
@@ -226,8 +265,8 @@ onMounted(load)
               v-for="item in report.first_follow_up_actors"
               :key="item.user_id"
             >
-              <th scope="row">{{ item.name }}</th>
-              <td>{{ item.completed }}</td>
+              <th scope="row" data-label="Tim">{{ item.name }}</th>
+              <td data-label="Tindak lanjut">{{ item.completed }}</td>
             </tr>
           </tbody>
         </table>

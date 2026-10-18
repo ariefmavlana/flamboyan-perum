@@ -442,7 +442,7 @@ const yearlyChart = computed(() =>
           href="https://www.bankbsi.co.id/produk&amp;layanan/produk/bsi-griya"
           target="_blank"
           rel="noopener noreferrer"
-          >BSI Griya ↗</a
+          >BSI Griya<AppIcon name="external" /></a
         >
       </p>
     </template>
@@ -469,7 +469,7 @@ const yearlyChart = computed(() =>
         {{ formatDateRange(selected.effective_date, selected.valid_until) }},
         masa fixed {{ selected.fixed_months }} bulan.
         <a :href="selected.source_url" target="_blank" rel="noopener noreferrer"
-          >Lihat sumber bank ↗</a
+          >Lihat sumber bank<AppIcon name="external" /></a
         >. Floating setelah masa fixed merupakan skenario, bukan kepastian bunga
         masa depan.
         <span v-if="selected.checked_date"
@@ -502,7 +502,7 @@ const yearlyChart = computed(() =>
           href="https://www.bi.go.id/id/fungsi-utama/stabilitas-sistem-keuangan/instrumen-makroprudensial/default.aspx"
           target="_blank"
           rel="noopener noreferrer"
-          >Ketentuan LTV/FTV BI ↗</a
+          >Ketentuan LTV/FTV BI<AppIcon name="external" /></a
         >
       </p>
       <div class="form-grid">
@@ -726,7 +726,7 @@ const yearlyChart = computed(() =>
         target="_blank"
         rel="noopener noreferrer"
         @click="trackFinancingHelp"
-        ><AppIcon name="chat" />Minta rincian {{ bank }} ↗</a
+        ><AppIcon name="whatsapp" />Minta rincian {{ bank }}<AppIcon name="external" /></a
       >
     </div>
   </section>

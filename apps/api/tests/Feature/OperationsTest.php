@@ -42,6 +42,35 @@ class OperationsTest extends TestCase
         $this->actingAs($this->user('MARKETING'))->getJson('/api/v1/internal/users')->assertForbidden();
     }
 
+    public function test_second_administrator_cannot_be_created_or_promoted(): void
+    {
+        $admin = $this->user();
+        $marketing = $this->user('MARKETING');
+        $this->actingAs($admin)->postJson('/api/v1/internal/users', ['name' => 'Admin Kedua', 'email' => 'admin-kedua@example.test', 'role' => 'ADMIN', 'password' => 'Sandi-pengujian-2026', 'password_confirmation' => 'Sandi-pengujian-2026'])->assertConflict();
+        $this->patchJson('/api/v1/internal/users/'.$marketing->id, ['version' => 1, 'role' => 'ADMIN'])->assertConflict();
+        $this->assertDatabaseCount('users', 2);
+        $this->assertSame('MARKETING', $marketing->fresh()->role);
+        $this->assertDatabaseMissing('activity_logs', ['subject_type' => 'USER', 'action' => 'CREATED']);
+        $this->postJson('/api/v1/internal/users', ['name' => 'Tim Marketing', 'email' => 'tim-marketing@example.test', 'role' => 'MARKETING', 'password' => 'Sandi-pengujian-2026', 'password_confirmation' => 'Sandi-pengujian-2026'])->assertCreated()->assertJsonPath('data.role', 'MARKETING');
+    }
+
+    public function test_cli_refuses_admin_bootstrap_when_an_inactive_admin_exists(): void
+    {
+        User::factory()->create(['role' => 'ADMIN', 'is_active' => false]);
+
+        $this->artisan('flamboyan:create-user')
+            ->expectsQuestion('Nama', 'Admin pengganti')
+            ->expectsQuestion('Email', 'admin-pengganti@example.test')
+            ->expectsChoice('Role', 'ADMIN', ['ADMIN', 'MARKETING'])
+            ->expectsQuestion('Kata sandi (minimal 12 karakter)', 'Sandi-pengujian-2026')
+            ->expectsQuestion('Ulangi kata sandi', 'Sandi-pengujian-2026')
+            ->expectsConfirmation('Identitas pemilik email sudah diverifikasi melalui prosedur tim?', 'no')
+            ->expectsOutput('Hanya satu akun Administrator yang diizinkan.')
+            ->assertFailed();
+
+        $this->assertDatabaseCount('users', 1);
+    }
+
     public function test_workload_must_be_transferred_before_deactivation_and_old_owner_loses_access(): void
     {
         $admin = $this->user();

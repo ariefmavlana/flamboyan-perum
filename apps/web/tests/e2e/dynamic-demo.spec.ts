@@ -13,7 +13,7 @@ test('generated demo is live database data: Admin edit changes SSR and survives 
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(page).toHaveURL(/backoffice/)
   try {
     await page

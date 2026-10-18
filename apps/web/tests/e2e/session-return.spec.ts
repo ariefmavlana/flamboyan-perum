@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { demoProperty } from './helpers'
 
 async function login(page: Page, email: string) {
   await page.goto('/login')
@@ -6,7 +7,7 @@ async function login(page: Page, email: string) {
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →', exact: true }).click()
+  await page.getByRole('button', { name: 'Masuk', exact: true }).click()
   await expect(page).toHaveURL(/\/backoffice$/)
   await expect(page.locator('.staff-page-context')).toContainText(
     email.startsWith('admin') ? 'Administrator' : 'Marketing',
@@ -32,6 +33,13 @@ for (const role of ['admin', 'marketing']) {
       .getByRole('link', { name: 'Lihat website publik', exact: true })
       .click()
     await expect(page).toHaveURL(/\/$/)
+    const fixture = await demoProperty(page.request)
+    const mediaUrl = fixture.media.find((media) => media.kind === 'PHOTO')?.sources[0]?.url
+    expect(mediaUrl).toBeTruthy()
+    // This request shares the browser cookie jar without relying on lazy image loading.
+    const publicMediaResponse = await page.request.get(mediaUrl!)
+    expect(publicMediaResponse.status()).toBe(200)
+    expect(publicMediaResponse.headers()['set-cookie']).toBeUndefined()
     const sessionStatus = await page.evaluate(
       async () =>
         (
@@ -43,7 +51,7 @@ for (const role of ['admin', 'marketing']) {
     )
     expect(sessionStatus).toBe(200)
     await page
-      .getByRole('link', { name: 'Tim Flamboyan ↗', exact: true })
+      .getByRole('link', { name: 'Tim Flamboyan', exact: true })
       .click()
     await expect(page).toHaveURL(/\/backoffice$/)
     await expect(page.getByLabel('Kata sandi', { exact: true })).toHaveCount(0)
@@ -53,7 +61,7 @@ for (const role of ['admin', 'marketing']) {
     await expect(page).toHaveURL(/\/$/)
     await page.reload()
     await page
-      .getByRole('link', { name: 'Tim Flamboyan ↗', exact: true })
+      .getByRole('link', { name: 'Tim Flamboyan', exact: true })
       .click()
     await expect(page).toHaveURL(/\/backoffice$/)
     const other = await context.newPage()
@@ -73,7 +81,7 @@ for (const role of ['admin', 'marketing']) {
       .click()
     await expect(page).toHaveURL(/\/$/)
     await page
-      .getByRole('link', { name: 'Tim Flamboyan ↗', exact: true })
+      .getByRole('link', { name: 'Tim Flamboyan', exact: true })
       .click()
     await expect(page).toHaveURL(/\/backoffice$/)
     await expect(page.locator('.staff-page-context')).toContainText(
@@ -102,7 +110,7 @@ test('visitor and expired sessions reach login, while logout in another tab inva
 }) => {
   test.setTimeout(60000)
   await page.goto('/')
-  await page.getByRole('link', { name: 'Tim Flamboyan ↗', exact: true }).click()
+  await page.getByRole('link', { name: 'Tim Flamboyan', exact: true }).click()
   await expect(page).toHaveURL(/\/login$/)
   await expect(page.getByLabel('Email', { exact: true })).toBeEnabled()
   await login(page, 'admin@example.test')
@@ -116,15 +124,24 @@ test('visitor and expired sessions reach login, while logout in another tab inva
     .click()
   await other.getByRole('button', { name: 'Keluar', exact: true }).click()
   await expect(other).toHaveURL(/\/login$/)
-  await page.getByRole('link', { name: 'Tim Flamboyan ↗', exact: true }).click()
+  await page.getByRole('link', { name: 'Tim Flamboyan', exact: true }).click()
   await expect(page).toHaveURL(/\/login$/)
   await expect(page.getByLabel('Email', { exact: true })).toBeEnabled()
+  await other.close()
   await login(page, 'marketing@example.test')
   await page
     .getByRole('link', { name: 'Lihat website publik', exact: true })
     .click()
+  await expect(page).toHaveURL(/\/$/)
+  // Expire cookies after outstanding authenticated responses can no longer renew them.
+  await page.waitForLoadState('networkidle')
   await context.clearCookies()
-  await page.getByRole('link', { name: 'Tim Flamboyan ↗', exact: true }).click()
+  expect(await context.cookies()).toEqual([])
+  const expiredIdentity = page.waitForResponse((response) =>
+    new URL(response.url()).pathname === '/api/v1/me',
+  )
+  await page.getByRole('link', { name: 'Tim Flamboyan', exact: true }).click()
+  expect((await expiredIdentity).status()).toBe(401)
   await expect(page).toHaveURL(/\/login$/)
   await expect(page.getByLabel('Email', { exact: true })).toBeEnabled()
 })

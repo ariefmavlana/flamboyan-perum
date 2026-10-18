@@ -28,7 +28,7 @@ useHead({
     <BuyerGuidePreview :show-index-link="false" />
     <section class="container guide-help">
       <h2>Ada yang ingin dibicarakan?</h2>
-      <NuxtLink class="button" to="/konsultasi">Mulai konsultasi →</NuxtLink>
+      <NuxtLink class="button" to="/konsultasi">Mulai konsultasi<AppIcon name="arrow" /></NuxtLink>
     </section>
   </div>
 </template>

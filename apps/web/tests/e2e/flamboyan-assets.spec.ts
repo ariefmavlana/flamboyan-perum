@@ -149,7 +149,7 @@ test('project consultation carries the correct project name and canonical contex
   await page.goto(projectPath)
   await page.getByRole('link', { name: 'Diskusikan Bukit Flamboyan' }).click()
   await expect(
-    page.getByRole('heading', { name: 'Bukit Flamboyan Indah 2', exact: true }),
+    page.getByText('KONSULTASI BUKIT FLAMBOYAN INDAH 2', { exact: true }),
   ).toBeVisible()
   const handoff = page.getByRole('link', { name: 'Lanjutkan ke WhatsApp' })
   await expect(handoff).toBeVisible()

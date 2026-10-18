@@ -367,7 +367,7 @@ useHead({
         <h3>{{ property.title }}</h3>
         <p>{{ property.location }}</p>
         <NuxtLink class="text-link" :to="`/properti/${property.slug}`"
-          >Lihat kembali rumah →</NuxtLink
+          >Lihat kembali rumah<AppIcon name="arrow" /></NuxtLink
         >
       </div>
       <div v-else-if="banjaran" class="consultation-property">
@@ -559,7 +559,7 @@ useHead({
           target="_blank"
           rel="noopener noreferrer"
           @click="record"
-          >Lanjutkan ke WhatsApp ↗</a
+          >Lanjutkan ke WhatsApp<AppIcon name="whatsapp" /></a
         >
         <button
           v-else-if="handoff"
@@ -567,14 +567,14 @@ useHead({
           type="button"
           disabled
         >
-          Lanjutkan ke WhatsApp ↗
+          Lanjutkan ke WhatsApp<AppIcon name="whatsapp" />
         </button>
         <p v-else class="notice" role="status">
           Kontak konsultasi belum tersedia.
         </p>
       </div>
       <NuxtLink class="text-link consultation-back" to="/properti"
-        >Masih ingin melihat pilihan? Jelajahi hunian →</NuxtLink
+        >Masih ingin melihat pilihan? Jelajahi hunian<AppIcon name="arrow" /></NuxtLink
       >
     </div>
   </section>

@@ -51,7 +51,7 @@ function trackWhatsapp() {
             target="_blank"
             rel="noopener noreferrer"
             @click="trackWhatsapp"
-            ><AppIcon name="chat" />WhatsApp Admin <AppIcon name="external"
+            ><AppIcon name="whatsapp" />WhatsApp Admin <AppIcon name="external"
           /></a>
         </ResponsiveNav>
       </div>
@@ -68,8 +68,9 @@ function trackWhatsapp() {
           path: '/bandingkan',
           query: { ids: comparison.ids.value.join(',') },
         }"
-        >Bandingkan {{ comparison.ids.value.length }} properti →</NuxtLink
-      >
+        >Bandingkan {{ comparison.ids.value.length }} properti<AppIcon
+          name="arrow"
+      /></NuxtLink>
       <span class="tray-hint">Maksimal 3 pilihan</span>
       <p v-if="comparison.message.value" role="status">
         {{ comparison.message.value }}
@@ -86,7 +87,7 @@ function trackWhatsapp() {
           target="_blank"
           rel="noopener noreferrer"
           @click="trackWhatsapp"
-          ><AppIcon name="chat" />WhatsApp Admin <AppIcon name="external"
+          ><AppIcon name="whatsapp" />WhatsApp Admin <AppIcon name="external"
         /></a>
       </div>
       <div class="container footer-main">
@@ -114,7 +115,7 @@ function trackWhatsapp() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram resmi Flamboyan"
-            >Instagram ↗</a
+            ><AppIcon name="instagram" />Instagram</a
           ><button
             v-if="consent.required.value"
             class="text-link"
@@ -122,7 +123,8 @@ function trackWhatsapp() {
             @click="consent.requestChange()"
           >
             Pilihan privasi</button
-          ><NuxtLink to="/backoffice">Tim Flamboyan ↗</NuxtLink>
+          ><NuxtLink to="/backoffice"
+            >Tim Flamboyan<AppIcon name="external" /></NuxtLink>
         </nav>
       </div>
       <div class="container site-footer">

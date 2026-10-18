@@ -9,27 +9,27 @@ test('Admin monitors sanitized readiness and Marketing cannot read operations', 
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await page.getByRole('link', { name: 'Kesehatan layanan', exact: true }).click()
   await expect(
     page.getByRole('heading', { name: 'Kesehatan layanan' }),
   ).toBeVisible()
   await expect(
-    page.locator('dt').filter({ hasText: 'Job tertunda' }),
+    page.locator('dt').filter({ hasText: 'Tugas menunggu' }),
   ).toBeVisible()
   await page.getByRole('button', { name: 'Keluar', exact: true }).click()
   await page.getByLabel('Email', { exact: true }).fill('marketing@example.test')
   await page
     .getByLabel('Kata sandi', { exact: true })
     .fill(process.env.DEMO_PASSWORD ?? '')
-  await page.getByRole('button', { name: 'Masuk →' }).click()
+  await page.getByRole('button', { name: 'Masuk' }).click()
   await expect(page).toHaveURL(/backoffice/)
   await page.goto('/backoffice/operasi')
   await expect(
     page.getByRole('alert').filter({ hasText: '403' }),
   ).not.toBeVisible()
   await expect(
-    page.locator('dt').filter({ hasText: 'Job tertunda' }),
+    page.locator('dt').filter({ hasText: 'Tugas menunggu' }),
   ).not.toBeVisible()
   const denied = await page.evaluate(
     async () =>
@@ -73,7 +73,7 @@ test('production SSR nonce CSP permits hydration, calculator and comparison at 3
     .getByRole('button', { name: 'Bandingkan properti', exact: true })
     .click()
   await expect(
-    page.getByRole('link', { name: 'Bandingkan 1 properti →' }),
+    page.getByRole('link', { name: 'Bandingkan 1 properti' }),
   ).toBeVisible()
   expect(
     await page.evaluate(
