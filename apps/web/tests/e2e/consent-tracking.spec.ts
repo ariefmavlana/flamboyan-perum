@@ -60,3 +60,45 @@ test('consent banner gates GTM and remembers the choice', async ({ page }) => {
     page.getByRole('region', { name: 'Pilihan privasi' }),
   ).toBeHidden()
 })
+
+test('Google event context follows public SPA pages and clears a revoked referrer chain', async ({ page }) => {
+  test.skip(!/^GTM-[A-Z0-9]+$/.test(process.env.NUXT_PUBLIC_GTM_ID ?? ''), 'Run server and test with an explicit NUXT_PUBLIC_GTM_ID.')
+  // The vendor is external; this checks the application's real Google command
+  // interface, not whether a published third-party container honors it.
+  await page.route('**://www.googletagmanager.com/**', (route) => route.abort())
+  const gtmRequests: string[] = []
+  page.on('request', (request) => {
+    if (request.url().includes('googletagmanager.com/gtm.js')) gtmRequests.push(request.url())
+  })
+  await page.goto('/?privacy_probe=synthetic-test#ignored')
+  const banner = page.getByRole('region', { name: 'Pilihan privasi' })
+  await expect(banner).toBeVisible()
+  expect(gtmRequests).toEqual([])
+  await banner.getByRole('button', { name: 'Terima semua' }).click()
+  await expect.poll(() => gtmRequests.length).toBe(1)
+  const latestContext = () => page.evaluate(() => {
+    const commands = (window as unknown as { dataLayer?: ArrayLike<unknown>[] }).dataLayer ?? []
+    return commands.filter((command) => command[0] === 'set' &&
+      typeof command[1] === 'object' && command[1] !== null &&
+      'page_location' in command[1]).at(-1)?.[1]
+  })
+  const canonical = await page.locator('link[rel="canonical"]').getAttribute('href')
+  const origin = new URL(canonical!).origin
+  await expect.poll(latestContext).toEqual({
+    page_location: `${origin}/`, page_referrer: '', send_page_view: false,
+  })
+  await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Panduan', exact: true }).click()
+  await expect(page).toHaveURL(/\/panduan$/)
+  await expect.poll(latestContext).toEqual({
+    page_location: `${origin}/panduan`, page_referrer: `${origin}/`, send_page_view: false,
+  })
+  await page.getByRole('button', { name: 'Pilihan privasi', exact: true }).click()
+  await banner.getByRole('button', { name: 'Tolak opsional' }).click()
+  await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Bandingkan', exact: true }).click()
+  await expect(page).toHaveURL(/\/bandingkan$/)
+  await page.getByRole('button', { name: 'Pilihan privasi', exact: true }).click()
+  await banner.getByRole('button', { name: 'Terima semua' }).click()
+  await expect.poll(latestContext).toEqual({
+    page_location: `${origin}/bandingkan`, page_referrer: '', send_page_view: false,
+  })
+})
