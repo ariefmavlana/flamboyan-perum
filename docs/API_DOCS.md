@@ -1,5 +1,13 @@
 # REST API — katalog, workspace dan operasi
 
+## Pratinjau tautan WhatsApp — 19 Oktober 2026
+
+Kontrak REST tidak berubah. Frontend memakai `canonical_path` dari pilihan
+konsultasi dan metadata gambar katalog existing untuk menyelaraskan konteks
+tautan CTA; `/media/{mediaId}/{variant}` tetap melalui pemeriksaan publikasi
+existing. Tidak ada endpoint kirim WhatsApp atau upload lampiran baru.
+Rincian: [pratinjau tautan WhatsApp](whatsapp-link-previews.md).
+
 ## Foto publik tanpa sesi — 18 Oktober 2026
 
 `GET/HEAD /media/{mediaId}/{variant}` tetap memakai validasi ID/varian, throttle publik serta pemeriksaan publikasi, READY dan pencabutan akses existing. Rute ini kini diregistrasi di luar middleware sesi web; respons berhasil maupun 404 tidak membuat sesi tamu atau mengirim cookie sesi/XSRF. Bridge Nuxt membuang `Set-Cookie` dari respons media publik sebelum body dikirim, sehingga foto tidak menimpa sesi staf. Cookie autentikasi/CSRF pada rute privat tetap diteruskan; `/api/v1/internal/media/**` tetap memerlukan autentikasi dan policy existing. Tidak ada perubahan URL, DTO, skema atau izin.
