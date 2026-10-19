@@ -117,9 +117,11 @@ const selectedOption = computed<InquiryOption | undefined>(() =>
   options.value.find((item) => item.property_id === form.property_id),
 )
 const contextUrl = computed(() =>
-  property.value
-    ? propertyUrl(config.public.siteUrl, property.value.slug)
-    : canonicalUrl(
+  formEnabled.value && selectedOption.value
+    ? canonicalUrl(String(config.public.siteUrl), selectedOption.value.canonical_path)
+    : property.value
+      ? propertyUrl(config.public.siteUrl, property.value.slug)
+      : canonicalUrl(
         String(config.public.siteUrl),
         banjaran.value
           ? '/perumahan/banjaran'
@@ -137,8 +139,8 @@ const handoff = computed(() => {
   const link = consultationLink(
     whatsappNumber.value,
     purposes[purpose.value],
-    property.value?.title ??
-      (formEnabled.value ? selectedOption.value?.title : undefined) ??
+    (formEnabled.value ? selectedOption.value?.title : undefined) ??
+      property.value?.title ??
       (banjaran.value
         ? 'Rencana hunian Banjaran — Flamboyan'
         : flamboyan.value
@@ -249,10 +251,13 @@ function startAnother() {
 const analytics = usePropertyAnalytics()
 const tracking = useAnalytics()
 function record() {
-  if (property.value) analytics.record(property.value.id, 'whatsapp_click')
+  const propertyId = formEnabled.value
+    ? selectedOption.value?.property_id
+    : property.value?.id
+  if (propertyId) analytics.record(propertyId, 'whatsapp_click')
   tracking.track('click_whatsapp', {
-    property_id: property.value?.id,
-    property_type: property.value?.house_type,
+    property_id: propertyId,
+    property_type: propertyId === property.value?.id ? property.value?.house_type : undefined,
     page_type: 'consultation',
     lead_channel: 'whatsapp',
   })

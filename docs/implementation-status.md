@@ -1,5 +1,20 @@
 # Status implementasi
 
+## Konteks pratinjau CTA WhatsApp — 19 Oktober 2026
+
+Kandidat pada branch `codex/whatsapp-context-previews` dari main terbaru:
+header/footer WhatsApp mengikuti halaman publik, bukan selalu beranda.
+Referensi properti/kawasan konsultasi dipetakan ke URL bersih; query/hash dan
+route privat tidak dibagikan sebagai URL pratinjau. CTA utama konsultasi memakai
+judul dan URL pilihan form yang sama, termasuk ketika pilihan berubah.
+Kartu/detail/KPR serta gambar sampul SSR existing dipertahankan. Tidak ada
+lampiran atau pengiriman pesan otomatis, perubahan kontrak REST, migration,
+media, nomor Admin atau konfigurasi Ads. Gambar pratinjau tetap dikendalikan
+klien/cache/pengaturan privasi WhatsApp.
+
+Status **kandidat, belum merge/deploy**. Cakupan, penerimaan, bukti validasi dan
+rollback: [pratinjau tautan WhatsApp](whatsapp-link-previews.md).
+
 ## Koreksi konteks halaman untuk tag iklan — 18 Oktober 2026
 
 Branch `codex/ads-consent-tracking` dari `origin/main` `cb9bf4b1`. Plugin
