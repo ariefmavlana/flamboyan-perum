@@ -1,3 +1,30 @@
+import { cleanPageLocation } from './acquisition'
+
+export function whatsappContextUrl(
+  siteUrl: string,
+  path: string,
+  query: Record<string, unknown> = {},
+  verifiedPropertySlug?: string,
+): string {
+  let contextPath = (path.split(/[?#]/, 1)[0] || '/').replace(/\/+$/, '') || '/'
+  if (contextPath === '/konsultasi') {
+    const slug = query.properti
+    if (
+      typeof slug === 'string' &&
+      slug === verifiedPropertySlug &&
+      /^[a-z0-9-]{1,160}$/.test(slug)
+    )
+      contextPath = `/properti/${slug}`
+    else if (
+      query.kawasan === 'banjaran' ||
+      query.kawasan === 'bukit-flamboyan-indah-2'
+    )
+      contextPath = `/perumahan/${query.kawasan}`
+    else contextPath = '/properti'
+  }
+  return cleanPageLocation(siteUrl, contextPath) ?? new URL(siteUrl).origin
+}
+
 export function formatIdr(value: string | number): string {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',

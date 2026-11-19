@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { whatsappLink } from '#shared/utils/catalog'
-import { siteOrigin } from '#shared/utils/seo'
+import type { Property } from '#shared/types'
+import { whatsappContextUrl, whatsappLink } from '#shared/utils/catalog'
 const comparison = useComparison()
 const config = useRuntimeConfig()
+const route = useRoute()
+const { data: consultationProperty } = useNuxtData<{ data: Property }>(
+  'consultation-property',
+)
 const consent = useConsent()
 const analytics = useAnalytics()
 const { whatsappNumber } = await useDevelopment()
@@ -13,7 +17,12 @@ const wa = computed(() =>
   whatsappLink(
     whatsappNumber.value,
     'properti Flamboyan',
-    siteOrigin(String(config.public.siteUrl)),
+    whatsappContextUrl(
+      String(config.public.siteUrl),
+      route.path,
+      route.query,
+      consultationProperty.value?.data.slug,
+    ),
   ),
 )
 function trackWhatsapp() {
@@ -124,7 +133,8 @@ function trackWhatsapp() {
           >
             Pilihan privasi</button
           ><NuxtLink to="/backoffice"
-            >Tim Flamboyan<AppIcon name="external" /></NuxtLink>
+            >Tim Flamboyan<AppIcon name="external"
+          /></NuxtLink>
         </nav>
       </div>
       <div class="container site-footer">
