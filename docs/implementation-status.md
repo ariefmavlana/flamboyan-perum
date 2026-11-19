@@ -1,5 +1,21 @@
 # Status implementasi
 
+## Pembaruan keamanan dependensi web dan API — 19 November 2026
+
+PR Hostinger #56 menaikkan versi Nuxt pada manifest dengan lockfile yang masih
+mengunci Nuxt 4.6.1 dan Nitro 2.13.4. `npm ci` menolak kombinasi itu. Manifest
+dan lockfile kini menetapkan Nuxt 4.6.4, Nitro 2.13.6, dan `@vercel/oidc` 4.0.9
+untuk memperbarui rantai dependensi Zod. Minimum Node mengikuti Nuxt, dengan
+Node 24.15+ LTS sebagai acuan di runbook.
+
+Lockfile Composer pada `main` gagal audit untuk Laravel dan lima paket Symfony.
+Build API Vercel menjalankan audit tersebut sebagai syarat deployment. Keenam
+paket diperbarui dalam constraint yang ada. Rilis tidak memerlukan migrasi.
+Sebelum promosi, verifikasi Node pada kedua provider dan preview web/API.
+Jika terjadi regresi, pulihkan artefak stabil untuk memulihkan layanan lalu
+siapkan perbaikan lanjutan agar versi terdampak segera bisa ditinggalkan.
+
+
 ## Konteks pratinjau CTA WhatsApp — 19 Oktober 2026
 
 Kandidat pada branch `codex/whatsapp-context-previews` dari main terbaru:
