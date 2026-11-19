@@ -2,7 +2,7 @@
 
 ## Prasyarat
 
-PHP8.3+ (extensions ctype,curl,dom,fileinfo,filter,hash,mbstring,openssl,pcre,pdo,session,tokenizer,xml,gd dengan JPEG/PNG/WebP,sqlite atau pgsql), Composer2, Node24.11+ LTS dan npm. Fondasi menggunakan Nuxt4.5.2/Laravel13; versi transitive ditentukan lockfiles dan PHP platform8.3 pada composer.json. Runtime lokal `.tools` hanya alat pengujian di mesin pembuat, tidak bagian repository/installer otomatis.
+PHP8.3+ (extensions ctype,curl,dom,fileinfo,filter,hash,mbstring,openssl,pcre,pdo,session,tokenizer,xml,gd dengan JPEG/PNG/WebP,sqlite atau pgsql), Composer2, Node 24.15+ LTS dan npm. Lockfile menetapkan versi dependensi Nuxt 4 dan Laravel 13. Composer memakai platform PHP 8.3 sesuai `composer.json`. Runtime lokal `.tools` hanya alat pengujian di mesin pembuat, tidak bagian repository/installer otomatis.
 
 ## Setup lokal
 

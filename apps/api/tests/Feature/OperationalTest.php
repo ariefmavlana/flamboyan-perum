@@ -101,8 +101,18 @@ class OperationalTest extends TestCase
     public function test_database_outage_returns_generic_not_ready_instead_of_partial_success(): void
     {
         Storage::fake('media');
-        DB::shouldReceive('select')->with('select 1')->andThrow(new \RuntimeException('private database connection detail'));
-        $this->getJson('/ready')->assertServiceUnavailable()->assertExactJson(['status' => 'not_ready']);
+        config(['database.connections.readiness_outage' => [
+            'driver' => 'sqlite',
+            // A directory cannot be opened as a SQLite database file.
+            'database' => sys_get_temp_dir(),
+        ]]);
+
+        try {
+            $response = DB::usingConnection('readiness_outage', fn () => $this->getJson('/ready'));
+            $response->assertServiceUnavailable()->assertExactJson(['status' => 'not_ready']);
+        } finally {
+            DB::purge('readiness_outage');
+        }
     }
 
     public function test_backup_marker_is_missing_stale_fresh_or_invalid_without_exposing_paths(): void
