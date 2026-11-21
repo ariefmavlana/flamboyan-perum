@@ -1,5 +1,28 @@
 # Status implementasi
 
+## Identitas pencarian dan informasi pembeli — 21 November 2026
+
+Kandidat `codex/seo-recovery` dari main `8625407`: nama situs, title,
+WebSite dan heading beranda memakai Bukit Flamboyan Indah 2. Metadata beranda,
+kawasan dan katalog membedakan intent serta menyebut lokasi yang faktual;
+judul tiga panduan menjelaskan topiknya. Halaman kawasan menambahkan pertanyaan
+pembeli, tautan katalog/dokumentasi/konsultasi dan cara memeriksa penawaran.
+Pengambilan CMS memakai payload per-render SSR yang sama pada komponen;
+dua HTTPGET independen masing-masing menghasilkan satu request CMS, dari
+enam pada kandidat awal. Navigasi/refresh tetap mengambil konten baru.
+Harga, stok, media, identitas pengembang dan kontak tetap dari sumber existing.
+Tidak ada klaim afiliasi eksklusif, testimoni, rating, peringkat atau hasil indeks.
+
+Lint/typecheck/90unit lulus; build identitas/cache sempat lulus, tetapi build
+final setelah koreksi503 masih gagalEPERM di runtime Windows. Beranda/kawasan
+teruji503+Retry-After60 saat API lokal dihentikan;4flow browser source final
+lulus pada dev server. Backend SQLite/PostgreSQL masing-masing
+163tes masih memiliki tujuh kegagalan media pada runtime lokal, dan audit npm
+sumber menemukan18moderate. Status kandidat **belum merge/deploy**; validasi dan pekerjaan eksternal tercatat
+di [audit pemulihan SEO](audits/seo-recovery-2026-11.md). Kontrak REST dan database
+tidak berubah. Search Console, identitas bisnis formal dan performa lapangan
+belum diverifikasi pada sesi ini.
+
 ## Pembaruan keamanan dependensi web dan API — 19 November 2026
 
 PR Hostinger #56 menaikkan versi Nuxt pada manifest dengan lockfile yang masih

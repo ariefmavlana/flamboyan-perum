@@ -14,7 +14,7 @@ export const buyerGuides: BuyerGuide[] = [
   {
     slug: 'kunjungan-rumah',
     category: 'KUNJUNGAN',
-    title: 'Lihat rumah lebih dekat.',
+    title: 'Checklist survei rumah sebelum membeli',
     summary:
       'Bawa kebutuhan sehari-hari ke dalam kunjungan: cahaya, alur ruang, penyimpanan, dan lingkungan.',
     image: '/images/editorial-living-960.webp',
@@ -54,7 +54,7 @@ export const buyerGuides: BuyerGuide[] = [
   {
     slug: 'memilih-lokasi',
     category: 'LOKASI',
-    title: 'Temukan ritme hidup di Bandung Timur.',
+    title: 'Memilih lokasi rumah di Bandung Timur',
     summary:
       'Nilai lokasi dari perjalanan dan kebutuhan keluarga Anda, lalu periksa langsung rute yang paling sering dilalui.',
     image: '/images/editorial-garden-960.webp',
@@ -95,7 +95,7 @@ export const buyerGuides: BuyerGuide[] = [
   {
     slug: 'merencanakan-pembiayaan',
     category: 'PEMBIAYAAN',
-    title: 'Kenali angka di balik pilihan rumah.',
+    title: 'Merencanakan pembiayaan rumah dan simulasi KPR',
     summary:
       'Gunakan simulasi untuk membandingkan skenario, lalu minta rincian pembiayaan yang berlaku dari bank.',
     image: '/images/editorial-living-960.webp',

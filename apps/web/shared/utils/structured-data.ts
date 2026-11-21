@@ -1,11 +1,11 @@
 import type { Property } from '../types'
-import { siteOrigin } from './seo'
+import { siteName, siteOrigin } from './seo'
 
 export function jsonLdText(schema: Record<string, unknown>): string {
   return JSON.stringify(schema).replace(/</g, '\\u003c')
 }
 
-export function websiteSchema(siteUrl: string, name = 'Flamboyan Perum') {
+export function websiteSchema(siteUrl: string, name = siteName) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',

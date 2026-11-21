@@ -159,7 +159,7 @@ const seo = computed(() => catalogSeo(String(config.public.siteUrl), route.query
 useSeoMeta({
   title: () => seo.value.page > 1 ? `Pilihan tipe rumah · Halaman ${seo.value.page}` : 'Pilihan tipe rumah Bukit Flamboyan Indah 2',
   description:
-    'Cari rumah berdasarkan lokasi, harga, dan spesifikasi yang sesuai kebutuhan Anda.',
+    'Bandingkan tipe dan harga rumah Bukit Flamboyan Indah 2 di Cibiru Wetan, Kabupaten Bandung. Lihat luas tanah, bangunan, kamar, denah dan ketersediaan.',
   robots: () => seo.value.robots,
 })
 useHead({

@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { siteOrigin } from '#shared/utils/seo'
+import { pageTitle, siteOrigin } from '#shared/utils/seo'
 import { gateDay } from '#shared/content/flamboyan-assets'
 const config = useRuntimeConfig()
 const origin = computed(() => siteOrigin(String(config.public.siteUrl)))
 useHead({
-  titleTemplate: (title?: string) =>
-    !title || title === 'Flamboyan Perum'
-      ? 'Flamboyan Perum'
-      : `${title} · Flamboyan`,
+  titleTemplate: pageTitle,
   meta: computed(() => [
     {
       property: 'og:image',

@@ -2,6 +2,55 @@ import { expect, test } from '@playwright/test'
 import { formatArea } from '../../shared/utils/format'
 import { demoProperty } from './helpers'
 
+test('project identity and buyer information are available in server HTML', async ({
+  page,
+  request,
+}) => {
+  const response = await request.get('/')
+  expect(response.status()).toBe(200)
+  const html = await response.text()
+  expect(html).toContain(
+    '<title>Bukit Flamboyan Indah 2 | Rumah di Cibiru Wetan</title>',
+  )
+  expect(html.match(/<h1\b/g)).toHaveLength(1)
+  const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1]
+  expect(heading?.replace(/<br\b[^>]*>/g, ' ').replace(/<[^>]*>/g, '')).toBe(
+    'Bukit Flamboyan Indah 2.',
+  )
+  const schemas = [
+    ...html.matchAll(
+      /<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g,
+    ),
+  ].map((match) => JSON.parse(match[1]!))
+  expect(schemas.find((schema) => schema['@type'] === 'WebSite')?.name).toBe(
+    'Bukit Flamboyan Indah 2',
+  )
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await expect(page.locator('h1')).toContainText('Bukit Flamboyan')
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute(
+    'content',
+    'Bukit Flamboyan Indah 2',
+  )
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true)
+  await page.goto('/perumahan/bukit-flamboyan-indah-2')
+  await expect(
+    page.getByRole('heading', {
+      name: 'Pertanyaan tentang Bukit Flamboyan Indah 2',
+    }),
+  ).toBeVisible()
+  await expect(page.locator('#pertanyaan-pembeli')).toContainText(
+    'Minta rincian tertulis',
+  )
+  await expect(
+    page.locator('#pertanyaan-pembeli a[href="/properti"]'),
+  ).toBeVisible()
+})
+
 test('WhatsApp CTAs preserve the property preview across SSR, SPA and consultation', async ({
   page,
   request,
