@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { formatArea } from '../../shared/utils/format'
+import { availabilityLabels, formatIdr } from '../../shared/utils/catalog'
 import { demoProperty } from './helpers'
 
 test('project identity and buyer information are available in server HTML', async ({
@@ -9,6 +10,9 @@ test('project identity and buyer information are available in server HTML', asyn
   const response = await request.get('/')
   expect(response.status()).toBe(200)
   const html = await response.text()
+  expect(html).toContain(
+    'Layanan informasi dan pemasaran Bukit Flamboyan Indah 2.',
+  )
   expect(html).toContain(
     '<title>Bukit Flamboyan Indah 2 | Rumah di Cibiru Wetan</title>',
   )
@@ -28,6 +32,15 @@ test('project identity and buyer information are available in server HTML', asyn
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
   await expect(page.locator('h1')).toContainText('Bukit Flamboyan')
+  await expect(page.locator('footer')).toContainText(
+    'Layanan informasi dan pemasaran Bukit Flamboyan Indah 2.',
+  )
+  const development = (await (await request.get('/api/v1/content')).json()).data
+    .development
+  if (development?.address) {
+    expect(html).toContain(development.address)
+    await expect(page.locator('footer')).toContainText(development.address)
+  }
   await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute(
     'content',
     'Bukit Flamboyan Indah 2',
@@ -171,8 +184,28 @@ test('property specifications and canonical are present in SSR HTML', async ({
   expect(html).toContain(fixture.title)
   expect(html).toContain(formatArea(fixture.land_area))
   expect(html).toContain('rel="canonical"')
+  const description = html.match(
+    /<meta\b(?=[^>]*name="description")[^>]*content="([^"]*)"/,
+  )?.[1]
+  expect(description).toContain(fixture.title)
+  expect(description).toContain(fixture.location)
+  expect(description).toContain(`LT ${formatArea(fixture.land_area)}`)
+  expect(description).toContain(`LB ${formatArea(fixture.building_area)}`)
+  expect(description).toContain(`${fixture.bedrooms} KT/${fixture.bathrooms} KM`)
+  expect(description).toContain(`Harga katalog ${formatIdr(fixture.price_idr)}`)
+  expect(description).toContain(availabilityLabels[fixture.availability])
   await page.goto(`/properti/${fixture.slug}`)
   await expect(page.getByRole('heading', { name: fixture.title })).toBeVisible()
+  for (const selector of [
+    'meta[name="description"]',
+    'meta[property="og:description"]',
+    'meta[name="twitter:description"]',
+  ])
+    await expect(page.locator(selector)).toHaveAttribute('content', description!)
+  await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute(
+    'content',
+    fixture.title,
+  )
   const missing = await request.get('/properti/tidak-ada')
   expect(missing.status()).toBe(404)
   const withoutCsrf = await request.post('/auth/login', {
