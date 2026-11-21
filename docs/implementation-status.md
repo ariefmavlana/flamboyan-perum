@@ -15,11 +15,11 @@ Search Console telah diperiksa: sitemap Success16URL; inspeksi beranda dan
 empat tipe yang ditandai tertunda oleh agregat16November sudah indexed.
 HTML crawl beranda Google memuat identitas/metadata baru21November. Rencana,
 angka baseline, batas dan bukti kandidat: [audit metadata](audits/seo-dynamic-2026-11.md).
-Kandidat belum merge/deploy. Lint/typecheck,90unit,build node-server,3browser
+Kandidat belum merge atau deploy produksi. Lint/typecheck,90unit,build node-server,3browser
 flows built dan visual390/1440 lulus. Pint/Composer validate/audit0,
 PHPUnitSQLite163/1277/1skip khususPG danPostgreSQL163/1282 lulus; npm source
 serta manifest runtime0advisory. Review independen full diff PASS tanpa temuan
-actionable; PR tetap jalur rilis dan kandidat belum merge/deploy.
+actionable; PR tetap jalur rilis produksi. Preview PR terpisah dari produksi.
 
 ## Identitas pencarian dan informasi pembeli — 21 November 2026
 

@@ -106,7 +106,7 @@ operasional yang dimigrasi, di-seed atau diubah.
 API publik produksi22November dibaca tanpa autentikasi untuk memeriksa kelima
 tipe. Simulasi komposisi kandidat dari DTO aktual menghasilkan146karakter
 untuk tiap tipe; seluruhnya CHECK_REQUIRED dan ditulis sebagai Konfirmasi unit.
-Ini bukan klaim kandidat telah deployed. Tidak diberlakukan pemotongan155
+Ini bukan klaim kandidat telah deployed ke produksi. Tidak diberlakukan pemotongan155
 karakter: [Google](https://developers.google.com/search/docs/appearance/snippet)
 menyatakan tidak ada batas panjang meta description; ringkasan dapat dipotong
 sesuai perangkat atau dipilih dari isi halaman. Judul/lokasi yang diubah menjadi
@@ -117,4 +117,5 @@ CWV lapangan, pengukuran ranking setelah rilis. GSC tidak dimutasi dan tidak ada
 request indexing ulang: metadata beranda sudah dibaca Google21November.
 Review independen read-only22November atas lima berkas final: PASS, tidak ada
 temuan actionable. Privasi DTO/footer, harga/status aktif, SSR/hydration dan
-bukti pengujian diperiksa. Kandidat belum merge/deploy; PR tetap jalur rilis.
+bukti pengujian diperiksa. PR59 belum merge atau deploy produksi; deployment
+preview PR merupakan lingkungan terpisah dan tidak membuktikan smoke produksi.
