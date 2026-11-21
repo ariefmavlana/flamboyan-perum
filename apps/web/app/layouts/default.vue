@@ -9,7 +9,7 @@ const { data: consultationProperty } = useNuxtData<{ data: Property }>(
 )
 const consent = useConsent()
 const analytics = useAnalytics()
-const { whatsappNumber } = await useDevelopment()
+const { development, whatsappNumber } = await useDevelopment()
 const instagram = computed(() =>
   String(config.public.instagramUrl ?? '').trim(),
 )
@@ -103,7 +103,10 @@ function trackWhatsapp() {
         <div>
           <BrandLogo variant="footer" />
           <p>
-            Berbeda suasana. Satu naungan.<br />Ruang untuk cerita berikutnya.
+            Layanan informasi dan pemasaran Bukit Flamboyan Indah 2.
+          </p>
+          <p v-if="development?.address">
+            Alamat kunjungan: {{ development.address }}
           </p>
         </div>
         <nav aria-label="Navigasi footer">

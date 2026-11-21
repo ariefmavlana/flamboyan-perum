@@ -85,16 +85,24 @@ const shareImage = computed(() => {
 })
 const hasMedia = (kind: string) =>
   property.value.media?.some((media) => media.kind === kind)
+const seoDescription = computed(() => {
+  const item = property.value
+  return `${item.title} di ${item.location}. LT ${formatArea(item.land_area)}, LB ${formatArea(item.building_area)}, ${item.bedrooms} KT/${item.bathrooms} KM. Harga katalog ${formatIdr(item.price_idr)}. ${availabilityLabels[item.availability]}.`
+})
 useSeoMeta({
   title: () => property.value.title,
-  description: () => property.value.description.slice(0, 155),
+  description: () => seoDescription.value,
   ogTitle: () => property.value.title,
-  ogDescription: () => property.value.description.slice(0, 155),
+  ogDescription: () => seoDescription.value,
   ogUrl: () => canonical.value,
   ogType: 'website',
   ogImage: () => shareImage.value,
   ogImageAlt: () => cover.value?.alt,
   twitterCard: () => (shareImage.value ? 'summary_large_image' : 'summary'),
+  twitterTitle: () => property.value.title,
+  twitterDescription: () => seoDescription.value,
+  twitterImage: () => shareImage.value,
+  twitterImageAlt: () => cover.value?.alt,
 })
 useHead(() => ({
   link: [{ rel: 'canonical', href: canonical.value }],

@@ -1,5 +1,26 @@
 # Status implementasi
 
+## Metadata detail dinamis dan layanan pemasaran — 22 November 2026
+
+Kandidat pada branch `codex/dynamic-property-seo-20261122` dari main `245ec2b`:
+ringkasan detail memakai judul/lokasi/luas/kamar/harga aktif/status public DTO,
+menggantikan potongan155karakter. Deskripsi HTML, Open Graph dan Twitter
+diselaraskan; Twitter memakai judul/gambar publik halaman yang sama. Footer
+menjelaskan layanan informasi/pemasaran dan alamat kunjungan CMS existing.
+Pemilik menjelaskan peran pemasaran serta mengizinkan alamat Cikoneng,
+Ciguruwik, Cibiru Wetan, Kabupaten Bandung; tidak membuat klaim pengembang,
+badan usaha atau afiliasi eksklusif. Kontrak REST/database tidak berubah.
+
+Search Console telah diperiksa: sitemap Success16URL; inspeksi beranda dan
+empat tipe yang ditandai tertunda oleh agregat16November sudah indexed.
+HTML crawl beranda Google memuat identitas/metadata baru21November. Rencana,
+angka baseline, batas dan bukti kandidat: [audit metadata](audits/seo-dynamic-2026-11.md).
+Kandidat belum merge/deploy. Lint/typecheck,90unit,build node-server,3browser
+flows built dan visual390/1440 lulus. Pint/Composer validate/audit0,
+PHPUnitSQLite163/1277/1skip khususPG danPostgreSQL163/1282 lulus; npm source
+serta manifest runtime0advisory. Review independen full diff PASS tanpa temuan
+actionable; PR tetap jalur rilis dan kandidat belum merge/deploy.
+
 ## Identitas pencarian dan informasi pembeli — 21 November 2026
 
 Kandidat `codex/seo-recovery` dari main `8625407`: nama situs, title,
