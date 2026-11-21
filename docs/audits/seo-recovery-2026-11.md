@@ -83,6 +83,16 @@ Target performa lapangan mengikuti kontrak proyek: p75 mobile LCP≤2,5detik, IN
 
 ## Hasil implementasi dan verifikasi lokal
 
+### Penutupan gate sebelum merge
+
+Instruksi pemilik berikutnya pada21November mengotorisasi membuka PR, merge ke main dan melanjutkan pekerjaan yang belum selesai. PR58 dibuka draft. Pemeriksaan pada lingkungan filesystem normal sudah meluluskan build produksi27,4detik dan PHPUnit standar dengan phpunit.xml: SQLite163tes/1277assertion/1skip PostgreSQL, PostgreSQL163/1282 tanpa failure. Riwayat kegagalan lingkungan di bawah dipertahankan sebagai audit trail, bukan status rilis terakhir.
+
+Sisa18advisorymoderate ditelusuri ke Vitest/@vitest/mocker4.1.11 dan minimatch10.2.6. Rencana perbaikan bounded: naikkan Vitest ke patch4.1.12, perbarui rantai lint dalam constraint existing, dan override hanya `archiver → readdir-glob → minimatch` ke11.0.5. Tidak menurunkan Nuxt4.6.4 atau mengganti major readdir-glob. Pemakaian `Minimatch` yang dibutuhkan readdir-glob3 tetap tersedia; minimumNode proyek sudah memenuhi. Acceptance: audit sumber0, lint/type/unit/build, browser pada artefak produksi dan review independen diff baru. Harga, CRM, consent, schema database dan konfigurasi provider tidak masuk perluasan ini.
+
+Sumber patched version: [minimatch](https://github.com/advisories/GHSA-g3hv-75wg-m249), [mocker code injection](https://github.com/advisories/GHSA-qxg6-89mg-rqv8), [mocker traversal](https://github.com/advisories/GHSA-xp26-3454-mjgp). Tidak memakai audit force, suppression atau risk acceptance buatan.
+
+### Riwayat percobaan awal dengan filesystem terbatas
+
 Runtime: Windows, Node24.22.0, Nuxt4.6.4/Nitro2.13.6, PHP8.5.11, PHPUnit12.5.39, PostgreSQL17.6 pada cluster test baru localhost15579, Playwright1.63.0 dengan Chromium for Testing151.0.7922.34 existing. Tidak memakai profil/sesi Chrome pengguna; browser pengujian baru terisolasi.
 
 | Pemeriksaan | Perintah / seam | Hasil |
@@ -117,6 +127,51 @@ Resolver publik tidak menemukan TXT berprefix `google-site-verification` pada ap
 
 Koreksi503 memakai status/header SSR Nuxt ketika CMS atau katalog error; UI retry dan perilaku client tetap. Katalog/detail existing tidak diubah selain deskripsi katalog. Tidak menambahkan noindex permanen pada halaman bisnis atau menghapus data saat gangguan.
 
+## Verifikasi ulang untuk rilis PR58
+
+Pada filesystem normal, `is_readable`/`is_writable` kembali benar dan standard
+`php vendor/bin/phpunit` membaca phpunit.xml tanpa workaround bootstrap.
+SQLite lulus163tes/1277assertion/1skip khusus PostgreSQL dalam15,367detik;
+PostgreSQL lulus163/1282 tanpa skip/failure dalam25,617detik pada database test
+localhost15579. Wrapper `artisan test --compact` menampilkan147warning tanpa
+failure; PHPUnit standar tidak mengeluarkan warning dan meluluskan kasus media
+yang sebelumnya500. Pint, Composer validate strict dan audit0 juga lulus.
+
+Lint/typecheck dan90unit/20file lulus pada Vitest4.1.12; build Node final
+setelah copy layanan24/7 lulus19,9detik. Manifest/lock konsisten melalui
+`npm ci --dry-run --ignore-scripts`. Audit sumber0 dan audit manifest runtime
+generated0; yang terakhir tetap tidak menggantikan pemeriksaan kode bundled.
+Operasi ZIP nyata dengan archiver dan override minimatch lulus pemeriksaan
+include/exclude/nama serta bytes isi. Batas API/CRM/otorisasi tidak berubah.
+
+Tujuh flow browser dipilih: identitas SSR, konsultasi/share, konteks preview
+WhatsApp, detail/canonical/404, filter, editorial dan navigasi responsif
+320/768/1440. Semuanya lulus pada artefak produksi setelah patch dependency.
+Pengukuran ulang dua HTTPGET independen memberi1CMS+1katalog per render.
+Mematikan API fixture nyata memberi503+Retry-After60 dengan notice pada
+beranda dan kawasan, tanpa mock atau data fallback fiktif. Tidak mengklaim
+fullsuite workspace/provider dijalankan.
+
+Pemilik mengonfirmasi layanan24/7 pada21November. Beranda/footer menampilkan
+konsultasi24/7 dan kunjungan dengan konfirmasi Admin. Alamat kantor serta
+hubungan formal pengelola belum diberikan; alamat proyek bukan alamat kantor.
+Tidak ada klaim balasan instan, pengembang langsung, kantor atau afiliasi yang
+diinventaris sendiri.
+
+Akses GitHub sekarang terautentikasi dan PR58 dibuka draft; konektor Hostinger
+dapat membaca deployment setelah kendala DNS sementara pulih. SSH terverifikasi
+menunjukkan API masih pada main8625407 sebelum merge. Browser akun dihentikan
+oleh alat karena URL Windows tidak dapat dipastikan untuk policy; tidak ada
+interaksi lanjutan atau pengambilan sesi melalui jalur lain. Integrasi OpenSEO
+untuk Search Console ditemukan tetapi belum terpasang/terhubung. PageSpeed API
+tanpa key mengembalikan429quota; CWV lapangan tetap N/A, bukan skor rekaan.
+
 ## Status rilis
 
-**Kandidat lokal; belum tayang dan belum dapat dinyatakan SEO selesai.** Gate terbuka: backend/media runtime, source advisories, Search Console, performa lapangan/dinamis, identitas bisnis formal dan akses pengiriman PR/deployment. Review independen serta security classification wajib mengikat diff final sebelum commit; setiap perubahan sesudahnya perlu review ulang. Rollback tetap revert kode web, tanpa migrasi atau pemulihan data bisnis.
+**Sumber tervalidasi untuk review final dan merge PR58 atas instruksi pemilik.**
+Review independen/security wajib mengikat diff final; bukti merge, SHA web/API
+dan smoke produksi dicatat pada PR setelah promosi. Search Console, CWV lapangan
+serta identitas bisnis formal tetap eksternal dan bukan klaim selesai. Ranking,
+indexation dan predikat paling tepercaya tidak dijanjikan. Rollback: revert PR
+dan artefak web/API kompatibel sebelumnya; tidak ada migrasi/data yang perlu
+dipulihkan dan tidak memundurkan database di atas data bisnis baru.

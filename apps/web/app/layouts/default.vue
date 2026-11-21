@@ -139,7 +139,7 @@ function trackWhatsapp() {
       </div>
       <div class="container site-footer">
         <span>Bukit Flamboyan Indah 2 · Cibiru Wetan, Kabupaten Bandung</span
-        ><span>Temukan rumah. Rencanakan langkah berikutnya.</span>
+        ><span>Layanan konsultasi 24/7 · Kunjungan dengan konfirmasi Admin.</span>
       </div>
     </footer>
     <ConsentBanner />

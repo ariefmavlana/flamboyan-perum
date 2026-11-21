@@ -1,4 +1,28 @@
-# Dependency security — 2026-10-03
+# Dependency security
+
+## Status kandidat PR58 — 21 November 2026
+
+Audit sumber final menemukan **0 advisory** setelah Vitest4.1.12 dan patch
+transitif lint dalam constraint existing: ESLint10.15.0, typescript-eslint8.73.0,
+eslint-plugin-import-x4.18.1 dan minimatch11.0.9. Nuxt4.6.4/Nitro2.13.6
+dipertahankan. Jalur archiver8 → readdir-glob3 yang masih meminta minimatch10
+mempunyai override terbatas ke minimatch11.0.5; tidak ada override global.
+`Minimatch` tetap kompatibel dan minimumNode proyek memenuhi versi tersebut.
+Override ditinjau ulang ketika upstream menerima versi patched secara native.
+
+Advisory yang ditutup: [glob amplification](https://github.com/advisories/GHSA-g3hv-75wg-m249),
+[mocker code injection](https://github.com/advisories/GHSA-qxg6-89mg-rqv8), dan
+[mocker traversal](https://github.com/advisories/GHSA-xp26-3454-mjgp).
+Tidak ada scan suppression atau penerimaan risiko sebagai pengganti patch.
+
+Validasi: lock manifest konsisten melalui `npm ci --dry-run --ignore-scripts`,
+lint/typecheck,90tes/20file pada Vitest4.1.12, build produksi Node25,3detik,
+serta operasi ZIP nyata yang memeriksa glob/include/exclude dan isi file.
+Bukti browser, runtime audit dan batas produksi mengikuti
+[audit pemulihan SEO](audits/seo-recovery-2026-11.md). Audit dependency bukan
+jaminan tidak ada kerentanan lain; ulangi terhadap lock dan artefak setiap rilis.
+
+## Riwayat pemeriksaan Oktober 2026
 
 Composer audit dan npm audit lengkap dijalankan pada lockfile, bukan dianggap aman hanya karena versi terbaru. Pemeriksaan akhir pada commit `b5468a2` mencakup devDependencies. Nuxt4.5.2, Nitro2.13.4, listhen1.10.1, globby16.2.4, node-forge1.4.0 dan braces3.0.3 masih versi registry latest saat verifikasi 2026-10-03. Dua advisory upstream yang belum mempunyai patch dipropagasi npm sebagai 11 entry high; tidak ada temuan moderate/critical setelah fix Vitest.
 

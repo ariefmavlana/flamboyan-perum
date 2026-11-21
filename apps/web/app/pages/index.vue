@@ -138,7 +138,8 @@ useHead({
           /></NuxtLink>
         </div>
         <p class="banner-service">
-          Cibiru Wetan, Kabupaten Bandung · Tanyakan tipe, harga, dan kunjungan.
+          Cibiru Wetan, Kabupaten Bandung · Konsultasi 24/7. Jadwal kunjungan
+          dikonfirmasi bersama Admin.
         </p>
       </div>
     </PhotoBanner>
