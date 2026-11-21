@@ -11,13 +11,22 @@ import { absoluteUrl, canonicalUrl } from '#shared/utils/seo'
 import { formatDate } from '#shared/utils/format'
 import { breadcrumbSchema, jsonLdText } from '#shared/utils/structured-data'
 const config = useRuntimeConfig()
-const { development, financingPrograms } = await useDevelopment()
+const {
+  development,
+  financingPrograms,
+  error: contentError,
+} = await useDevelopment()
 const { data, error, refresh } = await useFetch<Paginated<Property>>(
   '/api/v1/properties',
   {
     query: { q: 'Bukit Flamboyan Indah 2', per_page: 48, sort: 'price_asc' },
   },
 )
+if (import.meta.server && (error.value || contentError.value)) {
+  const event = useRequestEvent()
+  if (event) setResponseStatus(event, 503)
+  useResponseHeader('Retry-After').value = '60'
+}
 const properties = computed(() =>
   (data.value?.data ?? []).filter(
     (property) =>
@@ -39,10 +48,15 @@ const toList = (value?: string | null) => [
 ]
 const facilities = computed(() => toList(development.value?.facilities))
 const nearby = computed(() => toList(development.value?.nearby))
+const title = 'Bukit Flamboyan Indah 2 | Tipe, Lokasi & Siteplan'
+const description =
+  'Pelajari tipe dan harga rumah Bukit Flamboyan Indah 2, lokasi Cibiru Wetan, foto aktual, denah dan siteplan. Konfirmasikan penawaran dan jadwal survei.'
 useSeoMeta({
-  title: 'Bukit Flamboyan Indah 2 — kawasan & pilihan rumah',
-  description:
-    'Kenali Bukit Flamboyan Indah 2 melalui dokumentasi aktual, ilustrasi gerbang, siteplan kawasan, serta pilihan tipe dan harga dari katalog.',
+  title,
+  description,
+  ogTitle: title,
+  ogDescription: description,
+  ogUrl: canonical,
   ogImage: absoluteUrl(String(config.public.siteUrl), gateDay.src),
   ogImageAlt: gateDay.alt,
 })
@@ -68,7 +82,9 @@ useHead({
 <template>
   <div class="flamboyan-project">
     <section class="container residence-intro">
-      <NuxtLink class="text-link" to="/perumahan"><AppIcon name="chevron-left" />Seluruh perumahan</NuxtLink>
+      <NuxtLink class="text-link" to="/perumahan"
+        ><AppIcon name="chevron-left" />Seluruh perumahan</NuxtLink
+      >
       <div class="residence-intro-grid">
         <div class="project-identity">
           <img
@@ -82,16 +98,16 @@ useHead({
         </div>
         <div>
           <p>
-            Kenali rumahnya. Pahami kawasannya. Mulai dari gambaran ruang,
-            dokumentasi lapangan, dan rencana yang dapat Anda pelajari sebelum
-            berkunjung.
+            Bukit Flamboyan Indah 2 berada di Cibiru Wetan, Kabupaten Bandung,
+            dalam kawasan Bandung Timur. Bandingkan tipe rumah, harga katalog,
+            denah dan dokumentasi sebelum menjadwalkan kunjungan.
           </p>
           <p v-if="development?.address" class="muted">
             {{ development.address }}
           </p>
           <a class="text-link" href="#pilihan-rumah"
-            >Jelajahi pilihan tipe <AppIcon name="chevron-down" /></a
-          >
+            >Jelajahi pilihan tipe <AppIcon name="chevron-down"
+          /></a>
         </div>
       </div>
       <nav class="residence-index project-nav" aria-label="Jelajahi kawasan">
@@ -99,6 +115,7 @@ useHead({
         <a href="#dokumentasi">DOKUMENTASI AKTUAL</a>
         <a href="#rancangan-gerbang">ILUSTRASI GERBANG</a>
         <a href="#siteplan">SITEPLAN</a>
+        <a href="#pertanyaan-pembeli">PERTANYAAN PEMBELI</a>
       </nav>
     </section>
     <figure class="project-hero container">
@@ -134,8 +151,8 @@ useHead({
         <NuxtLink
           to="/properti?q=Bukit%20Flamboyan%20Indah%202"
           class="text-link"
-          >Telusuri katalog<AppIcon name="arrow" /></NuxtLink
-        >
+          >Telusuri katalog<AppIcon name="arrow"
+        /></NuxtLink>
       </div>
       <div v-if="error" role="alert" class="notice">
         <p>Pilihan rumah belum dapat dimuat.</p>
@@ -176,8 +193,8 @@ useHead({
         <NuxtLink
           class="text-link"
           to="/konsultasi?kawasan=bukit-flamboyan-indah-2&tujuan=kunjungan"
-          >Rencanakan kunjungan<AppIcon name="arrow" /></NuxtLink
-        >
+          >Rencanakan kunjungan<AppIcon name="arrow"
+        /></NuxtLink>
       </div>
       <DevelopmentGallery
         :images="developmentPhotos"
@@ -268,6 +285,77 @@ useHead({
           · {{ formatDate(development.source_date) }}</span
         >. Kesiapan fasilitas dan akses diperiksa saat kunjungan.
       </p>
+    </section>
+    <section
+      id="pertanyaan-pembeli"
+      class="container section"
+      aria-labelledby="buyer-questions-title"
+    >
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">INFORMASI SEBELUM MEMBELI</p>
+          <h2 id="buyer-questions-title">
+            Pertanyaan tentang Bukit Flamboyan Indah 2
+          </h2>
+          <p class="muted">
+            Periksa informasi dan penawaran untuk unit yang Anda pilih.
+          </p>
+        </div>
+      </div>
+      <div class="facility-grid">
+        <article class="facility-card">
+          <h3>Di mana lokasi perumahan?</h3>
+          <p>
+            Bukit Flamboyan Indah 2 berada di Cibiru Wetan, Kabupaten Bandung.
+            Bandung Timur adalah konteks kawasan; alamat proyek bukan Kota
+            Bandung.
+          </p>
+          <p v-if="development?.address">{{ development.address }}</p>
+          <NuxtLink class="text-link" to="/bandung-timur"
+            >Pelajari lokasi dan persiapan kunjungan<AppIcon name="arrow"
+          /></NuxtLink>
+        </article>
+        <article class="facility-card">
+          <h3>Berapa harga dan tipe yang tersedia?</h3>
+          <p>
+            Harga dan spesifikasi setiap tipe ditampilkan pada katalog. Harga
+            program hanya berlaku sesuai periode yang dicantumkan; ketersediaan
+            unit dan rincian biaya dikonfirmasi bersama Admin.
+          </p>
+          <NuxtLink class="text-link" to="/properti"
+            >Lihat tipe, harga dan spesifikasi<AppIcon name="arrow"
+          /></NuxtLink>
+        </article>
+        <article class="facility-card">
+          <h3>Apakah semua gambar merupakan foto aktual?</h3>
+          <p>
+            Dokumentasi lapangan diberi label foto aktual. Ilustrasi gerbang,
+            rumah dan denah menjelaskan rancangan, bukan bukti kondisi unit saat
+            ini. Periksa kondisi dan spesifikasi unit saat survei.
+          </p>
+          <a class="text-link" href="#dokumentasi"
+            >Lihat dokumentasi kawasan<AppIcon name="arrow"
+          /></a>
+        </article>
+        <article class="facility-card">
+          <h3>Bagaimana memastikan penawaran yang diterima?</h3>
+          <p>
+            Minta rincian tertulis mengenai unit, harga, masa berlaku, biaya,
+            spesifikasi dan pihak penerima pembayaran. Cocokkan dokumen serta
+            identitas pihak yang bertransaksi dengan pengembang sebelum
+            mengambil keputusan.
+          </p>
+          <p v-if="development?.developer">
+            Pengembang yang tercantum dalam informasi kawasan:
+            {{ development.developer }}.
+          </p>
+          <NuxtLink
+            class="text-link"
+            to="/konsultasi?kawasan=bukit-flamboyan-indah-2"
+            >Konfirmasikan penawaran bersama Admin<AppIcon name="arrow"
+          /></NuxtLink>
+        </article>
+      </div>
     </section>
     <section class="container guide-help residence-help">
       <div>

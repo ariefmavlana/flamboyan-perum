@@ -32,7 +32,7 @@ describe('Structured data', () => {
     expect(schema).toEqual({
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      name: 'Flamboyan Perum',
+      name: 'Bukit Flamboyan Indah 2',
       url: 'https://flamboyan.example',
       inLanguage: 'id-ID',
     })

@@ -300,3 +300,18 @@ Tidak ada perubahan kontrak REST, schema database, atau izin. `/perumahan` dan `
 ## Alt media publik — 2026-10-15
 
 Public media DTO membuang hanya marker impor terminal `[ED:key]` atau `[RR:key]` dari `alt`. Label dokumentasi/ilustrasi dan catatan pengguna dipertahankan. API internal tetap menyimpan dan mengembalikan alt asli; tidak ada endpoint, schema database, atau izin baru. Dimensi READY tetap dimensi varian 1920 yang diproses server, bukan dimensi unggahan sumber.
+
+## Identitas SEO publik — 21 November 2026
+
+Kandidat pemulihan SEO menyesuaikan metadata/heading publik dan nama WebSite
+menjadi Bukit Flamboyan Indah 2, serta memakai respons `/api/v1/content`
+yang sama dalam satu render SSR melalui key `public-development` dan payload
+per-request; hydration memakai payload tersebut, navigasi/refresh mengambil
+data baru. Tidak ada cache lintas request/pengguna yang ditambahkan.
+Pada dokumen SSR beranda/kawasan, kegagalan CMS atau katalog memberi HTTP503
+dan `Retry-After: 60`, dengan notice retry tetap ditampilkan. Ini perilaku
+halaman web, bukan perubahan status endpoint REST.
+Tidak ada endpoint, field, otorisasi, status, schema database atau kontrak
+REST yang berubah. Harga/availability/kontak/pengembang tetap DTO existing;
+tidak menambah identitas Marketing/CRM ke metadata. Lihat
+[audit SEO](audits/seo-recovery-2026-11.md) untuk bukti dan batas rilis.

@@ -85,7 +85,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'id' },
-      title: 'Flamboyan Perum',
+      title: 'Bukit Flamboyan Indah 2',
       link: [
         {
           rel: 'icon',
@@ -100,7 +100,7 @@ export default defineNuxtConfig({
           content:
             'Jelajahi pilihan rumah Bukit Flamboyan Indah 2 di Bandung Timur. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
         },
-        { property: 'og:site_name', content: 'Flamboyan Perum' },
+        { property: 'og:site_name', content: 'Bukit Flamboyan Indah 2' },
         { property: 'og:locale', content: 'id_ID' },
         { property: 'og:type', content: 'website' },
         { name: 'twitter:card', content: 'summary_large_image' },

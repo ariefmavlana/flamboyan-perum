@@ -7,7 +7,7 @@ defineProps<{ variant?: 'footer' }>()
     class="brand"
     :class="{ 'brand-footer': variant === 'footer' }"
     to="/"
-    aria-label="Flamboyan beranda"
+    aria-label="Bukit Flamboyan Indah 2 beranda"
   >
     <span class="brand-artwork">
       <img
@@ -17,7 +17,7 @@ defineProps<{ variant?: 'footer' }>()
         alt="Bukit Flamboyan Indah"
       />
     </span>
-    <span class="brand-sub">PROPERTI & HUNIAN</span>
+    <span class="brand-sub">BUKIT FLAMBOYAN INDAH 2</span>
   </NuxtLink>
 </template>
 <style scoped>

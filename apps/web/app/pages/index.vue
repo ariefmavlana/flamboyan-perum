@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Paginated, Property, PublicContent } from '#shared/types'
+import type { Paginated, Property } from '#shared/types'
 import { formatIdr, whatsappLink } from '#shared/utils/catalog'
-import { canonicalUrl } from '#shared/utils/seo'
+import { absoluteUrl, canonicalUrl } from '#shared/utils/seo'
 import { formatDateRange, formatPercent } from '#shared/utils/format'
 import { jsonLdText, websiteSchema } from '#shared/utils/structured-data'
 import {
@@ -11,7 +11,12 @@ import {
 } from '#shared/content/flamboyan-assets'
 const actualFacade = developmentPhotos[0]!
 const config = useRuntimeConfig()
-const { whatsappNumber } = await useDevelopment()
+const {
+  whatsappNumber,
+  content,
+  error: contentError,
+  development,
+} = await useDevelopment()
 const tracking = useAnalytics()
 function trackWhatsapp() {
   tracking.track('click_whatsapp', {
@@ -26,9 +31,6 @@ function trackVisit() {
   })
 }
 const search = ref('')
-const { data: content, error: contentError } = await useFetch<{
-  data: PublicContent
-}>('/api/v1/content')
 const hero = computed(() => content.value?.data.hero)
 const bannerPhotos = computed(() => {
   const selected =
@@ -54,7 +56,6 @@ const bannerPhotos = computed(() => {
 const hasHeroVideo = computed(
   () => !!hero.value?.video_url || hero.value?.media?.kind === 'VIDEO',
 )
-const development = computed(() => content.value?.data.development)
 const heroMedia = computed(() =>
   hero.value?.property?.media?.find((media) => media.kind === 'PHOTO'),
 )
@@ -67,6 +68,11 @@ const { data, error, refresh } = await useFetch<Paginated<Property>>(
   '/api/v1/properties',
   { query: { per_page: 6, sort: 'price_asc' } },
 )
+if (import.meta.server && (error.value || contentError.value)) {
+  const event = useRequestEvent()
+  if (event) setResponseStatus(event, 503)
+  useResponseHeader('Retry-After').value = '60'
+}
 const wa = computed(() =>
   whatsappLink(
     whatsappNumber.value,
@@ -74,10 +80,20 @@ const wa = computed(() =>
     config.public.siteUrl,
   ),
 )
+const title = 'Bukit Flamboyan Indah 2 | Rumah di Cibiru Wetan'
+const description =
+  'Kenali Bukit Flamboyan Indah 2 di Cibiru Wetan, Kabupaten Bandung. Lihat tipe rumah, harga terkini, foto kawasan, denah, dan rencanakan kunjungan.'
 useSeoMeta({
-  title: 'Rumah Baru Bandung Timur',
-  description:
-    'Pilihan rumah Bukit Flamboyan Indah 2 di Bandung Timur dan rencana hunian Banjaran. Bandingkan harga, spesifikasi, simulasi KPR, dan rencanakan kunjungan.',
+  title,
+  description,
+  ogTitle: title,
+  ogDescription: description,
+  ogUrl: canonicalUrl(String(config.public.siteUrl)),
+  ogImage: absoluteUrl(String(config.public.siteUrl), gateDay.src),
+  ogImageAlt: gateDay.alt,
+  twitterTitle: title,
+  twitterDescription: description,
+  robots: 'index, follow, max-image-preview:large',
 })
 useHead({
   link: [
@@ -99,7 +115,8 @@ useHead({
         <p class="eyebrow">
           {{ hero?.eyebrow ?? 'FLAMBOYAN · PROPERTI & HUNIAN' }}
         </p>
-        <h1>{{ hero?.title ?? 'Ruang untuk cerita berikutnya.' }}</h1>
+        <h1>Bukit Flamboyan<br />Indah 2.</h1>
+        <p>{{ hero?.title ?? 'Rumah di Cibiru Wetan, Bandung Timur.' }}</p>
         <p>
           {{
             hero?.description ??
@@ -121,7 +138,8 @@ useHead({
           /></NuxtLink>
         </div>
         <p class="banner-service">
-          Tanyakan tipe, harga, dan rencana kunjungan bersama Admin.
+          Cibiru Wetan, Kabupaten Bandung · Konsultasi 24/7. Jadwal kunjungan
+          dikonfirmasi bersama Admin.
         </p>
       </div>
     </PhotoBanner>
@@ -173,8 +191,8 @@ useHead({
         <NuxtLink
           class="text-link"
           to="/perumahan/bukit-flamboyan-indah-2#dokumentasi"
-          >Dokumentasi & siteplan kawasan<AppIcon name="arrow" /></NuxtLink
-        >
+          >Dokumentasi & siteplan kawasan<AppIcon name="arrow"
+        /></NuxtLink>
       </div>
       <EditorialHeroMedia
         :media="hero?.media"
@@ -206,16 +224,19 @@ useHead({
     >
       <div class="section-heading">
         <div>
-          <p class="eyebrow">SATU NAUNGAN, BERAGAM CERITA</p>
-          <h2 id="residences-title">Temukan tempat Anda pulang.</h2>
+          <p class="eyebrow">KENALI KAWASAN</p>
+          <h2 id="residences-title">
+            Rumah di Cibiru Wetan,<br />Bandung Timur.
+          </h2>
           <p class="muted">
-            Dari Bandung Timur hingga rencana baru di Banjaran. Kenali setiap
-            kawasan dan cerita yang menyertainya.
+            Pelajari Bukit Flamboyan Indah 2 melalui foto aktual, siteplan,
+            pilihan tipe dan denah. Rencana kawasan Banjaran diperkenalkan
+            terpisah dan belum menjadi penawaran penjualan.
           </p>
         </div>
         <NuxtLink class="text-link" to="/perumahan"
-          >Seluruh perumahan<AppIcon name="arrow" /></NuxtLink
-        >
+          >Seluruh perumahan<AppIcon name="arrow"
+        /></NuxtLink>
       </div>
       <ResidenceCollection />
     </section>
@@ -226,7 +247,9 @@ useHead({
           <h2>Temukan ruang yang paling sesuai.</h2>
           <p class="muted">Kenali lokasi, harga, dan ruang yang ditawarkan.</p>
         </div>
-        <NuxtLink class="text-link" to="/properti">Seluruh properti<AppIcon name="arrow" /></NuxtLink>
+        <NuxtLink class="text-link" to="/properti"
+          >Seluruh properti<AppIcon name="arrow"
+        /></NuxtLink>
       </div>
       <div v-if="error" class="notice" role="alert">
         <p>Katalog belum dapat dimuat.</p>
@@ -308,8 +331,8 @@ useHead({
           class="text-link"
           to="/konsultasi?tujuan=kunjungan"
           @click="trackVisit"
-          >Rencanakan kunjungan<AppIcon name="arrow" /></NuxtLink
-        >
+          >Rencanakan kunjungan<AppIcon name="arrow"
+        /></NuxtLink>
       </div>
       <div class="neighbourhood-grid">
         <figure>
@@ -344,8 +367,8 @@ useHead({
           <NuxtLink
             class="text-link"
             to="/perumahan/bukit-flamboyan-indah-2#dokumentasi"
-            >Lihat dokumentasi kawasan<AppIcon name="arrow" /></NuxtLink
-          >
+            >Lihat dokumentasi kawasan<AppIcon name="arrow"
+          /></NuxtLink>
         </div>
       </div>
     </section>
@@ -402,8 +425,8 @@ useHead({
             Telusuri lokasi, anggaran, dan spesifikasi yang sesuai kebutuhan.
           </p>
           <NuxtLink class="text-link" to="/properti"
-            >Jelajahi katalog<AppIcon name="arrow" /></NuxtLink
-          >
+            >Jelajahi katalog<AppIcon name="arrow"
+          /></NuxtLink>
         </div>
         <div>
           <span class="step">02</span>
@@ -412,8 +435,8 @@ useHead({
             Bandingkan hingga tiga rumah dan pelajari estimasi pembiayaannya.
           </p>
           <NuxtLink class="text-link" to="/bandingkan"
-            >Bandingkan pilihan<AppIcon name="arrow" /></NuxtLink
-          >
+            >Bandingkan pilihan<AppIcon name="arrow"
+          /></NuxtLink>
         </div>
         <div>
           <span class="step">03</span>
@@ -426,8 +449,8 @@ useHead({
             target="_blank"
             rel="noopener noreferrer"
             @click="trackWhatsapp"
-            >Hubungi Admin<AppIcon name="external" /></a
-          >
+            >Hubungi Admin<AppIcon name="external"
+          /></a>
         </div>
       </div>
     </section>
@@ -480,8 +503,8 @@ useHead({
             :href="rate.source_url"
             target="_blank"
             rel="noopener noreferrer"
-            >Sumber bank<AppIcon name="external" /></a
-          >
+            >Sumber bank<AppIcon name="external"
+          /></a>
         </li>
       </ul>
     </section>
